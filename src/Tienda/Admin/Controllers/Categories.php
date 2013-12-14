@@ -19,8 +19,6 @@ class Categories extends \Admin\Controllers\BaseAuth
         \Base::instance()->set('subtitle', '');
         
         $model = $this->getModel();
-        $categories = $model->getList();
-        \Base::instance()->set('categories', $categories );
         
         $state = $model->emptyState()->populateState()->getState();
         \Base::instance()->set('state', $state );
@@ -34,7 +32,7 @@ class Categories extends \Admin\Controllers\BaseAuth
         \Base::instance()->set('selected', 'null' );
         
         $view = new \Dsc\Template;
-        echo $view->render('categories/list.php');
+        echo $view->render('Tienda/Admin/Views::categories/list.php');
     }
     
     public function getDatatable()
@@ -50,8 +48,8 @@ class Categories extends \Admin\Controllers\BaseAuth
         $pagination = new \Dsc\Pagination($list['total'], $list['limit']);
         \Base::instance()->set('pagination', $pagination );
     
-        $view = new \View;
-        $html = $view->render('categories/list_datatable.php');
+        $view = new \Dsc\Template;
+        $html = $view->renderLayout('Tienda/Admin/Views::categories/list_datatable.php');
         
         return $this->outputJson( $this->getJsonResponse( array(
                 'result' => $html
@@ -67,8 +65,8 @@ class Categories extends \Admin\Controllers\BaseAuth
 
         \Base::instance()->set('selected', 'null' );
         
-        $view = new \View;
-        $html = $view->render('categories/list_parents.php');
+        $view = new \Dsc\Template;
+        $html = $view->renderLayout('Tienda/Admin/Views::categories/list_parents.php');
         
         return $this->outputJson( $this->getJsonResponse( array(
                 'result' => $html
@@ -96,8 +94,8 @@ class Categories extends \Admin\Controllers\BaseAuth
         $flash->store( array( 'metadata'=>array('categories'=>$selected) ) );
         \Base::instance()->set('flash', $flash );
         
-        $view = new \View;
-        $html = $view->render('categories/checkboxes.php');
+        $view = new \Dsc\Template;
+        $html = $view->renderLayout('Tienda/Admin/Views::categories/checkboxes.php');
     
         return $this->outputJson( $this->getJsonResponse( array(
                 'result' => $html

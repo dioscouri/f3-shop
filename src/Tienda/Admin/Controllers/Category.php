@@ -46,7 +46,7 @@ class Category extends \Admin\Controllers\BaseAuth
         \Base::instance()->set('selected', null );
         
         $view = new \Dsc\Template;
-        echo $view->render('categories/create.php');        
+        echo $view->render('Tienda/Admin/Views::categories/create.php');        
     }
     
     protected function displayEdit()
@@ -63,7 +63,7 @@ class Category extends \Admin\Controllers\BaseAuth
         \Base::instance()->set('selected', $selected );
         
         $view = new \Dsc\Template;
-        echo $view->render('categories/edit.php');
+        echo $view->render('Tienda/Admin/Views::categories/edit.php');
     }
     
     /**
@@ -78,4 +78,14 @@ class Category extends \Admin\Controllers\BaseAuth
     }
     
     protected function displayRead() {}
+    
+    public function quickadd()
+    {
+    	$model = $this->getModel();
+    	$categories = $model->getList();
+    	\Base::instance()->set('categories', $categories );
+    	 
+    	$view = new \Dsc\Template;
+    	echo $view->renderLayout('Tienda/Admin/Views::categories/quickadd.php');
+    }
 }
