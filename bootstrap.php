@@ -7,6 +7,9 @@ switch ($global_app_name)
     case "admin":
         // register event listener
         \Dsc\System::instance()->getDispatcher()->addListener(\Tienda\Listener::instance());
+
+        // register the modules path
+        \Modules\Factory::registerPath( $f3->get('PATH_ROOT') . "vendor/dioscouri/f3-tienda/src/Tienda/Modules/" );
         
         // register all the routes
         $f3->route('GET|POST /admin/tienda/products', '\Tienda\Admin\Controllers\Products->display');

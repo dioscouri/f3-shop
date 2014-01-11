@@ -25,6 +25,7 @@ class Listener extends \Prefab
     
     public function onAdminNavigationGetQuickAddItems( $event )
     {
+        /*
         $items = $event->getArgument('items');
     
         $item = new \stdClass;
@@ -38,5 +39,6 @@ class Listener extends \Prefab
         $items[] = $item;
     
         $event->setArgument('items', $items);
+        */
     }
 }
