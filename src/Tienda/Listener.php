@@ -8,6 +8,7 @@ class Listener extends \Prefab
         if ($mapper = $event->getArgument('mapper')) 
         {
             $mapper->reset();
+            $mapper->priority = 20;
             $mapper->title = 'Catalog';
             $mapper->route = '';
             $mapper->icon = 'fa fa-ticket';
