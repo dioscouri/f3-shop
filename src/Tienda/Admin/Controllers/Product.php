@@ -6,9 +6,9 @@ class Product extends \Admin\Controllers\BaseAuth
     use \Dsc\Traits\Controllers\CrudItem;
 
     protected $list_route = '/admin/tienda/products';
-    protected $create_item_route = '/admin/tienda/product';
-    protected $get_item_route = '/admin/tienda/product/{id}';    
-    protected $edit_item_route = '/admin/tienda/product/{id}/edit';
+    protected $create_item_route = '/admin/tienda/product/create';
+    protected $get_item_route = '/admin/tienda/product/read/{id}';    
+    protected $edit_item_route = '/admin/tienda/product/edit/{id}';
     
     protected function getModel() 
     {
@@ -63,7 +63,7 @@ class Product extends \Admin\Controllers\BaseAuth
         \Base::instance()->set('all_tags', $all_tags );
         
         $view = new \Dsc\Template;
-        echo $view->render('products/create.php');
+        echo $view->render('Tienda\Admin\Views::products/create.php');
     }
     
     protected function displayEdit()
@@ -80,7 +80,7 @@ class Product extends \Admin\Controllers\BaseAuth
         \Base::instance()->set('all_tags', $all_tags );
         
         $view = new \Dsc\Template;
-        echo $view->render('products/edit.php');
+        echo $view->render('Tienda\Admin\Views::products/edit.php');
     }
     
     /**

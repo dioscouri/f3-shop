@@ -102,4 +102,15 @@ class Categories extends \Admin\Controllers\BaseAuth
         ) ) );
     
     }
+    
+    public function selectList( $selected=null )
+    {
+        $model = $this->getModel();
+        $categories = $model->getList();
+        \Base::instance()->set('categories', $categories );
+        \Base::instance()->set('selected', $selected );
+         
+        $view = new \Dsc\Template;
+        echo $view->renderLayout('Tienda/Admin/Views::categories/list_parents.php');
+    }
 }

@@ -19,6 +19,6 @@ class Products extends \Admin\Controllers\BaseAuth
         \Base::instance()->set('pagination', $pagination );
         
         $view = new \Dsc\Template;
-        echo $view->render('products/list.php');
+        echo $view->render('Tienda\Admin\Views::products/list.php');
     }
 }

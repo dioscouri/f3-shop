@@ -18,7 +18,9 @@ class Categories extends \Dsc\Models\Categories
     {
         // If the title of the category has changed, update all posts using this category
         $doUpdate = false;
-        if (!empty($values['title']) && $values['title'] != $mapper->title) 
+        if ((!empty($values['title']) && $values['title'] != $mapper->title)
+        || ($values['slug'] != $mapper->slug)
+    	)
         {
             $doUpdate = true;
         }
@@ -29,7 +31,8 @@ class Categories extends \Dsc\Models\Categories
         {
             $id = $update->id;
             $title = $update->title;
-            /*
+            $slug = $update->slug;
+            
             // update the category in the Products collection
             $model = \Tienda\Admin\Models\Products::instance();
             $collection = $model->getCollection();
@@ -37,12 +40,12 @@ class Categories extends \Dsc\Models\Categories
                     array('metadata.categories.id' => $id ),
                     array(
                             '$set' => array(
-                                    'metadata.categories.$.title' => $title
+                                    'metadata.categories.$.title' => $title,
+                            		'metadata.categories.$.slug' => $slug
                             )
                     ),
                     array( 'multiple' => true )
             );
-            */
         }
         
         return $update;
@@ -50,13 +53,12 @@ class Categories extends \Dsc\Models\Categories
     
     public function delete( $mapper, $options=array() )
     {
-        // If a category is deleted, remove it from any nested documents
+        // If a category is deleted, remove it from any nested 'categories' documents
         $id = $mapper->id;
         
         if ($delete = parent::delete( $mapper, $options )) 
         {
-            /*
-            // delete the category from the Products collection
+            // delete the category from the Posts collection
             $model = \Tienda\Admin\Models\Products::instance();
             $collection = $model->getCollection();
             $result = $collection->update(
@@ -67,8 +69,7 @@ class Categories extends \Dsc\Models\Categories
                             )
                     ),
                     array( 'multiple' => true )
-            );    
-            */        
+            );            
         }
         
         return $delete;
