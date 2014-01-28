@@ -3,9 +3,10 @@ namespace Tienda\Admin\Models;
 
 class Products extends \Dsc\Models\Content 
 {
+    protected $collection = 'tienda.products';
     protected $type = 'tienda.products';
     protected $default_ordering_direction = '1';
-    protected $default_ordering_field = 'metadata.created.time';
+    protected $default_ordering_field = 'metadata.title';
     
     public function __construct($config=array())
     {
@@ -14,6 +15,12 @@ class Products extends \Dsc\Models\Content
         $this->filter_fields = $this->filter_fields + array(
             'publication.start_date'
         );
+    }
+    
+    public function prefab( $source=array(), $options=array() ) 
+    {
+        $return = new \Tienda\Prefabs\Product($source, $options);
+        return $return;
     }
     
     protected function fetchFilters()

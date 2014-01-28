@@ -11,13 +11,13 @@
     
         <div class="form-group">
             <label>SKU</label>
-            <input type="text" name="inventory[sku]" placeholder="SKU" value="<?php echo $flash->old('inventory.sku'); ?>" class="form-control" />
+            <input type="text" name="tracking[sku]" placeholder="SKU" value="<?php echo $flash->old('tracking.sku'); ?>" class="form-control" />
         </div>
         <!-- /.form-group -->
         
         <div class="form-group">
             <label>UPC <small>(Barcode)</small></label>
-            <input type="text" name="inventory[upc]" placeholder="UPC" value="<?php echo $flash->old('inventory.upc'); ?>" class="form-control" />
+            <input type="text" name="tracking[upc]" placeholder="UPC" value="<?php echo $flash->old('tracking.upc'); ?>" class="form-control" />
         </div>
         <!-- /.form-group -->
         
@@ -39,16 +39,16 @@
     <!-- /.col-md-2 -->
                 
     <div class="col-md-10">
-    
+        // TODO Make this work like the Images, with multi-add capability.  Template should include price, publish_up, publish_down, shopper group (0=default), quantity_start, quantity_end      
         <div class="form-group">
             <label>Price</label>
-            <input type="text" name="prices[base]" placeholder="Price" value="<?php echo $flash->old('prices.base'); ?>" class="form-control" />
+            <?php /*?><input type="text" name="prices[base]" placeholder="Price" value="<?php echo $flash->old('prices.base'); ?>" class="form-control" /> */ ?>
         </div>
         <!-- /.form-group -->
         
         <div class="form-group">
             <label>List Price <small>(Normally displayed with a <strike>strikethrough</strike>)</small></label>
-            <input type="text" name="prices[list]" placeholder="List Price" value="<?php echo $flash->old('prices.list'); ?>" class="form-control" />
+            <?php /* ?><input type="text" name="prices[list]" placeholder="List Price" value="<?php echo $flash->old('prices.list'); ?>" class="form-control" /> */ ?>
         </div>
         <!-- /.form-group -->
         
