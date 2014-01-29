@@ -36,12 +36,15 @@
             <div class="row clearfix">
                 <div class="col-md-4">
                     <input type="text" name="shipping[dimensions][length]" placeholder="Length" value="<?php echo $flash->old('shipping.dimensions.length'); ?>" class="form-control" />
+                    <small class="help-block">Length</small>
                 </div>
                 <div class="col-md-4">
-                    <input type="text" name="shipping[dimensions][width]" placeholder="Width" value="<?php echo $flash->old('shipping.dimensions.width'); ?>" class="form-control" />                    
+                    <input type="text" name="shipping[dimensions][width]" placeholder="Width" value="<?php echo $flash->old('shipping.dimensions.width'); ?>" class="form-control" />
+                    <small class="help-block">Width</small>                    
                 </div>
                 <div class="col-md-4">
                     <input type="text" name="shipping[dimensions][height]" placeholder="Height" value="<?php echo $flash->old('shipping.dimensions.height'); ?>" class="form-control" />
+                    <small class="help-block">Height</small>
                 </div>
             </div>
             

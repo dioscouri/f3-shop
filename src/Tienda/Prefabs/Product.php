@@ -78,7 +78,18 @@ class Product extends \Dsc\Prefabs
         	
         ),
         'policies'=>array(
-        	
+            'track_inventory'=>true,
+            'quantity_input'=>array(
+                'product_detail'=>true,
+                'cart'=>true,
+                'default'=>1
+            ),
+            'quantity_restrictions'=>array(
+            	'enabled'=>false,
+            	'min'=>1,
+            	'max'=>10,
+            	'increment'=>1
+            )
         )
         
     );

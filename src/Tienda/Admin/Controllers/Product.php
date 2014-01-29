@@ -46,6 +46,14 @@ class Product extends \Admin\Controllers\BaseAuth
 
         $selected = array();
         $flash = \Dsc\Flash::instance();
+
+        $use_flash = \Dsc\System::instance()->getUserState('use_flash.' . $this->create_item_route);
+        if (!$use_flash) {
+            // this is a brand-new create, so store the prefab data
+            $prefab = $this->getModel()->prefab();
+            $flash->store( $prefab->cast() );
+        }        
+        
         $input = $flash->old('category_ids');
 
         if (!empty($input)) 
