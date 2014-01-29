@@ -5,7 +5,7 @@ jQuery(document).ready(function(){
 });
 </script>
 
-<form id="detail-form" action="./admin/tienda/product/update/<?php $flash->old('id') ?>" class="form" method="post">
+<form id="detail-form" action="./admin/tienda/product/update/<?php echo $flash->old('_id') ?>" class="form" method="post">
     <div class="row">
     
         <div class="col-md-12">

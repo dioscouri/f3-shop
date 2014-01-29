@@ -4,7 +4,7 @@ namespace Tienda\Prefabs;
 class Product extends \Dsc\Prefabs
 {
     protected $default_options = array(
-        'append' => true // set this to true so that ->bind() adds fields to $this->document even if they aren't in the default document structure
+        // 'append' => true // set this to true so that ->bind() adds fields to $this->document even if they aren't in the default document structure
     );
         
     /**
@@ -50,8 +50,12 @@ class Product extends \Dsc\Prefabs
         'visibility'=>array(
         	
         ),
-        'pricing'=>array(
-        	
+        'prices'=>array(
+            'default'=>null,
+            'list'=>null,
+            'special'=>array(
+            
+            )
         ),
         'shipping'=>array(
         	'weight'=>null,
@@ -62,7 +66,8 @@ class Product extends \Dsc\Prefabs
             )
         ),
         'taxes'=>array(
-        	
+        	'enabled'=>true,
+        	'class'=>null
         ),
         'attributes'=>array(
         	

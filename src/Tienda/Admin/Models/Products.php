@@ -19,8 +19,9 @@ class Products extends \Dsc\Models\Content
     
     public function prefab( $source=array(), $options=array() ) 
     {
-        $return = new \Tienda\Prefabs\Product($source, $options);
-        return $return;
+        $prefab = new \Tienda\Prefabs\Product($source, $options);
+        
+        return $prefab;
     }
     
     protected function fetchFilters()
@@ -118,33 +119,24 @@ class Products extends \Dsc\Models\Content
         return parent::save( $values, $options, $mapper );
     }
     
-    public function generateSlug( $values, $mapper=null, $unique=true )
+    public function create( $values, $options=array() )
     {
-        if (empty($values['metadata']['title'])) {
-            $this->setError('Title is required');
-        }
-        $this->checkErrors();
-        
-        $created = date('Y-m-d');
-        if (!empty($values['created']['time'])) {
-            $created = date('Y-m-d', $values['created']['time']);
-        } elseif (!empty($mapper->created) && !empty($mapper->created['time'])) {
-            $created = date('Y-m-d', $mapper->created['time']);
-        }
+        $values = $this->prefab( $values, $options )->cast();
 
-        $slug = \Web::instance()->slug( $created . '-' . $values['metadata']['title'] );
-        
-        if ($unique) 
-        {
-            $base_slug = $slug;
-            $n = 1;
-            while ($this->slugExists($slug))
-            {
-                $slug = $base_slug . '-' . $n;
-                $n++;
-            }
-        }
+        return $this->save( $values, $options );
+    }
     
-        return $slug;
+    /**
+     * An alias for the save command
+     *
+     * @param unknown_type $mapper
+     * @param unknown_type $values
+     * @param unknown_type $options
+     */
+    public function update( $mapper, $values, $options=array() )
+    {
+        $values = $this->prefab( $mapper->cast(), $options )->bind( $values )->cast();
+        
+        return $this->save( $values, $options, $mapper );
     }
 }

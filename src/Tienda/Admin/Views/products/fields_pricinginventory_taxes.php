@@ -9,8 +9,25 @@
                 
     <div class="col-md-10">
 
-        [Charge Taxes boolean]
-        [Tax Class Select List]
+        <div class="form-group">
+            <label>Charge Taxes</label>
+            <div class="form-group">
+            <label class="radio-inline">
+                <input type="radio" name="taxes[enabled]" value="1" <?php if ($flash->old('taxes.enabled')) { echo 'checked'; } ?>> Yes
+            </label>
+            <label class="radio-inline">
+                <input type="radio" name="taxes[enabled]" value="0" <?php if (!$flash->old('taxes.enabled')) { echo 'checked'; } ?>> No
+            </label>
+            </div>
+        </div>
+        <!-- /.form-group -->
+
+        <div class="form-group">
+            <label>Tax Class</label>
+            <select name="taxes[class]" class="form-control">
+                <option value="default" <?php if (!$flash->old('taxes.class') || $flash->old('taxes.class') == "default") { echo "selected='selected'"; } ?>>Default</option>
+            </select>
+        </div>
     
     </div>
     <!-- /.col-md-10 -->
