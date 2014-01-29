@@ -43,51 +43,54 @@
     
     <?php foreach ((array) $flash->old('prices.special') as $key=>$price) { ?>
         <fieldset class="template clearfix well well-sm">
-            <div class="clearfix">
+            <div class="form-group clearfix">
+                <label>Existing Price</label>
                 <a class="remove-price btn btn-xs btn-danger pull-right" onclick="TiendaRemovePrice(this);" href="javascript:void(0);">
                     <i class="fa fa-times"></i>
                 </a>
-            </div>      
+            </div>
+            
             <div class="form-group clearfix">
-                <div class="row">
-                    <div class="col-md-2">
-                        <input type="text" name="prices[special][<?php echo $key; ?>][price]" class="form-control input-sm" value="<?php echo $flash->old('prices.special.'.$key.'.price'); ?>" />
+                <div class="col-md-2">
+                    <input type="text" name="prices[special][<?php echo $key; ?>][price]" class="form-control input-sm" value="<?php echo $flash->old('prices.special.'.$key.'.price'); ?>" />
+                </div>
+                <div class="col-md-5">
+                    <div class="input-group">
+                        <input type="text" name="prices[special][<?php echo $key; ?>][start_date]" class="form-control input-datepicker input-sm" placeholder="Start" value="<?php echo $flash->old('prices.special.'.$key.'.start_date'); ?>" />
+                        <span class="input-group-addon">at</span>
+                        <span class="input-group bootstrap-timepicker">
+                            <input type="text" name="prices[special][<?php echo $key; ?>][start_time]" class="input-timepicker form-control input-sm" value="<?php echo $flash->old('prices.special.'.$key.'.start_time'); ?>" data-show-meridian="false" data-show-inputs="true" data-modal-backdrop="true">
+                            <span class="input-group-addon"><i class="fa fa-clock-o"></i></span>
+                        </span>
+                    </div>                    
+                </div>
+                <div class="col-md-5">
+                    <div class="input-group">
+                        <input type="text" name="prices[special][<?php echo $key; ?>][end_date]" class="form-control input-datepicker input-sm" placeholder="End" value="<?php echo $flash->old('prices.special.'.$key.'.end_date'); ?>" />
+                        <span class="input-group-addon">at</span>
+                        <span class="input-group bootstrap-timepicker">
+                            <input type="text" name="prices[special][<?php echo $key; ?>][end_time]" class="input-timepicker form-control input-sm" value="<?php echo $flash->old('prices.special.'.$key.'.end_time'); ?>" data-show-meridian="false" data-show-inputs="true" data-modal-backdrop="true">
+                            <span class="input-group-addon"><i class="fa fa-clock-o"></i></span>
+                        </span>
                     </div>
-                    <div class="col-md-2">
-                        <select class="form-control" name="prices[special][<?php echo $key; ?>][shoppergroup_id]">
-                            <option value="0">Default</option>
-                        </select>                    
-                    </div>
-                    <div class="col-md-3">
-                        <div class="input-group">
-                            <input type="text" name="prices[special][<?php echo $key; ?>][start_date]" class="form-control input-datepicker input-sm" placeholder="Start" value="<?php echo $flash->old('prices.special.'.$key.'.start_date'); ?>" />
-                            <span class="input-group-addon">at</span>
-                            <span class="input-group bootstrap-timepicker">
-                                <input type="text" name="prices[special][<?php echo $key; ?>][start_time]" class="input-timepicker form-control input-sm" value="<?php echo $flash->old('prices.special.'.$key.'.start_time'); ?>" data-show-meridian="false" data-show-inputs="true" data-modal-backdrop="true">
-                                <span class="input-group-addon"><i class="fa fa-clock-o"></i></span>
-                            </span>
-                        </div>                    
-                    </div>
-                    <div class="col-md-3">
-                        <div class="input-group">
-                            <input type="text" name="prices[special][<?php echo $key; ?>][end_date]" class="form-control input-datepicker input-sm" placeholder="End" value="<?php echo $flash->old('prices.special.'.$key.'.end_date'); ?>" />
-                            <span class="input-group-addon">at</span>
-                            <span class="input-group bootstrap-timepicker">
-                                <input type="text" name="prices[special][<?php echo $key; ?>][end_time]" class="input-timepicker form-control input-sm" value="<?php echo $flash->old('prices.special.'.$key.'.end_time'); ?>" data-show-meridian="false" data-show-inputs="true" data-modal-backdrop="true">
-                                <span class="input-group-addon"><i class="fa fa-clock-o"></i></span>
-                            </span>
-                        </div>
-                    </div>
-                    <div class="col-md-2">
-                        <div class="input-group">
-                            <input type="text" name="prices[special][<?php echo $key; ?>][quantity_min]" value="<?php echo $flash->old('prices.special.'.$key.'.quantity_min'); ?>" class="form-control input-sm" placeholder="Min" />
-                            <span class="input-group-addon">to</span>
-                            <input type="text" name="prices[special][<?php echo $key; ?>][quantity_max]" value="<?php echo $flash->old('prices.special.'.$key.'.quantity_max'); ?>" class="form-control input-sm" placeholder="Max" />                            
-                        </div>                        
-                    </div>
-                    
                 </div>
             </div>
+            <div class="form-group clearfix">
+                <div class="col-md-4">
+                    <select class="form-control" name="prices[special][<?php echo $key; ?>][shoppergroup_id]">
+                        <option value="0">Default</option>
+                    </select>                    
+                </div>                                    
+                <div class="col-md-8">
+                    <div class="input-group">
+                        <input type="text" name="prices[special][<?php echo $key; ?>][quantity_min]" value="<?php echo $flash->old('prices.special.'.$key.'.quantity_min'); ?>" class="form-control input-sm" placeholder="Min Quantity" />
+                        <span class="input-group-addon">to</span>
+                        <input type="text" name="prices[special][<?php echo $key; ?>][quantity_max]" value="<?php echo $flash->old('prices.special.'.$key.'.quantity_max'); ?>" class="form-control input-sm" placeholder="Max Quantity" />                            
+                    </div>                        
+                </div>
+                
+            </div>
+            
         </fieldset>                        
     <?php } ?>    
     

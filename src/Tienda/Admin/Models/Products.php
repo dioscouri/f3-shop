@@ -119,6 +119,12 @@ class Products extends \Dsc\Models\Content
         return parent::save( $values, $options, $mapper );
     }
     
+    /**
+     * An alias for the save command, used only for creating a new object
+     *
+     * @param array $values
+     * @param array $options
+     */
     public function create( $values, $options=array() )
     {
         $values = $this->prefab( $values, $options )->cast();
@@ -127,11 +133,11 @@ class Products extends \Dsc\Models\Content
     }
     
     /**
-     * An alias for the save command
+     * An alias for the save command, used only for updating an existing object
      *
      * @param unknown_type $mapper
-     * @param unknown_type $values
-     * @param unknown_type $options
+     * @param array $values
+     * @param array $options
      */
     public function update( $mapper, $values, $options=array() )
     {
