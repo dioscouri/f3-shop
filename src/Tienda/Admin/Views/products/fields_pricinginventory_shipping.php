@@ -8,19 +8,43 @@
     <!-- /.col-md-2 -->
                 
     <div class="col-md-10">
-    
+        
         <div class="form-group">
-            <label>[Requires Shipping? y/n]</label>
-        </div>
-        <!-- /.form-group -->    
-    
-        <div class="form-group">
-            <label>[Weight]</label>
+            <div class="row clearfix">
+                <div class="col-md-6">
+                    <label>Requires Shipping</label>
+                    <div class="form-group">
+                    <label class="radio-inline">
+                        <input type="radio" name="shipping[enabled]" value="1" <?php if ($flash->old('shipping.enabled')) { echo 'checked'; } ?>> Yes
+                    </label>
+                    <label class="radio-inline">
+                        <input type="radio" name="shipping[enabled]" value="0" <?php if (!$flash->old('shipping.enabled')) { echo 'checked'; } ?>> No
+                    </label>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <label>Weight</label>
+                    <input type="text" name="shipping[weight]" placeholder="Weight" value="<?php echo $flash->old('shipping.weight'); ?>" class="form-control" />
+                </div>
+            </div>
         </div>
         <!-- /.form-group -->
         
         <div class="form-group">
-            <label>[Dimensions]</label>
+            <label>Dimensions</label>
+            <div class="row clearfix">
+                <div class="col-md-4">
+                    <input type="text" name="shipping[dimensions][length]" placeholder="Length" value="<?php echo $flash->old('shipping.dimensions.length'); ?>" class="form-control" />
+                </div>
+                <div class="col-md-4">
+                    <input type="text" name="shipping[dimensions][width]" placeholder="Width" value="<?php echo $flash->old('shipping.dimensions.width'); ?>" class="form-control" />                    
+                </div>
+                <div class="col-md-4">
+                    <input type="text" name="shipping[dimensions][height]" placeholder="Height" value="<?php echo $flash->old('shipping.dimensions.height'); ?>" class="form-control" />
+                </div>
+            </div>
+            
         </div>
         <!-- /.form-group -->
     

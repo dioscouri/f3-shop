@@ -58,6 +58,7 @@ class Product extends \Dsc\Prefabs
             )
         ),
         'shipping'=>array(
+            'enabled'=>false,
         	'weight'=>null,
         	'dimensions'=>array(
         	   'length'=>null,
