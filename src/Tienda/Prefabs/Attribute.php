@@ -11,13 +11,14 @@ class Attribute extends \Dsc\Prefabs
         'id'=>null,          // unique id for this attribute, distinguishing it from all other attributes
         'title'=>null,          // e.g. "Sleeve Length" 
         'ordering'=>0,          // allows you to put "Sleeve Length" after "Color" on the product detail page
+        'type'=>'selectlist',   // selectlist only for now
         'options'=>array(
-            'title'=>null,                  // e.g. "Short", "Long", "Three-Quarter"
-            'price_change'=>null,           // inc, dec, new, null == this option will either increase, decrease, overwrite, or have no effect on the price
-            'price_change_amount'=>null,    // the absolute value of the change, e.g. 1.99, even if it is a negative price_change
-            'weight_change'=>null,          // same as price_change
-            'weight_change_amount'=>null,   // abs value of the weight change
-            'order'=>0
+            'value'=>null,                  // e.g. "Short", "Long", "Three-Quarter"
+            'price_impact'=>null,           // inc, dec, new, null == this option will either increase, decrease, overwrite, or have no impact on the price
+            'price_impact_amount'=>null,    // the absolute value of the change, e.g. 1.99, even if it is a negative price_impact
+            'weight_impact'=>null,          // same as price_impact
+            'weight_impact_amount'=>null,   // absolute value of the weight impact
+            'ordering'=>0
         )
     );
 }
