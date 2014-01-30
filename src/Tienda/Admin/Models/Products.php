@@ -113,6 +113,30 @@ class Products extends \Dsc\Models\Content
             $values['metadata']['categories'] = $categories; 
         }
         
+        if (!empty($values['attributes']) && is_array($values['attributes'])) {
+            // Compress the attributes array to just the values, then sort them by sort order
+            $values['attributes'] = array_values($values['attributes']);
+            usort($values['attributes'], function($a, $b) {
+                return $a['ordering'] - $b['ordering'];
+            });
+            array_walk($values['attributes'], function(&$item, $key){
+            	if ($item['ordering'] != ($key+1)) {
+            	    $item['ordering'] = $key+1;
+            	}
+            	
+            	// then Loop through each attribute and do the same for each attribute's options
+            	$item['options'] = array_values($item['options']);
+            	usort($item['options'], function($a, $b) {
+            	    return $a['ordering'] - $b['ordering'];
+            	});            	
+        	    array_walk($item['options'], function(&$item, $key){
+        	        if ($item['ordering'] != ($key+1)) {
+        	            $item['ordering'] = $key+1;
+        	        }
+        	    });            	       
+            });
+        }
+        
         unset($values['parent']);
         unset($values['new_category_title']);
     
