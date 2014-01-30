@@ -44,6 +44,7 @@ class Product extends \Dsc\Prefabs
 
         ),
         'tracking'=>array(
+            'model_number'=>null,
             'sku'=>null,
             'upc'=>null
         ),
@@ -53,7 +54,7 @@ class Product extends \Dsc\Prefabs
         'prices'=>array(
             'default'=>null,
             'list'=>null,
-            'special'=>array(
+            'special'=>array(       // array of \Tienda\Prefabs\Price
             
             )
         ),
@@ -70,11 +71,11 @@ class Product extends \Dsc\Prefabs
         	'enabled'=>true,
         	'class'=>null
         ),
-        'attributes'=>array(
+        'attributes'=>array( // an array of \Tienda\Prefabs\Attribute records
         	
         ),
-        // pre-built matrix of all possible product variations based on the attributes above
-        'variants'=>array(
+        // pre-built matrix of all possible product variations based on the attributes above        
+        'variants'=>array(          // an array of \Tienda\Prefabs\Variant
         	
         ),
         'policies'=>array(

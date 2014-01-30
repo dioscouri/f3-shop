@@ -43,10 +43,13 @@ jQuery(document).ready(function(){
                 </li>
                 <li>
                     <a href="#tab-pricinginventory" data-toggle="tab"> Pricing & Inventory </a>
-                </li>                
+                </li>
+                <li>
+                    <a href="#tab-attributes" data-toggle="tab"> Attributes </a>
+                </li>
                 <li>
                     <a href="#tab-images" data-toggle="tab"> Images </a>
-                </li>                
+                </li>
             </ul>
             
             <div class="tab-content">
@@ -64,6 +67,13 @@ jQuery(document).ready(function(){
                                         
                 </div>
                 <!-- /.tab-pane -->
+                
+                <div class="tab-pane" id="tab-attributes">
+
+                    <?php echo $this->renderLayout('Tienda/Admin/Views::products/fields_attributes.php'); ?>
+                                        
+                </div>
+                <!-- /.tab-pane -->                
                 
                 <div class="tab-pane" id="tab-images">
 

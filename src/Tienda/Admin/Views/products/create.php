@@ -45,6 +45,9 @@ jQuery(document).ready(function(){
                     <a href="#tab-pricinginventory" data-toggle="tab"> Pricing & Inventory </a>
                 </li>
                 <li>
+                    <a href="#tab-attributes" data-toggle="tab"> Attributes </a>
+                </li>
+                <li>
                     <a href="#tab-images" data-toggle="tab"> Images </a>
                 </li>                
             </ul>
@@ -61,6 +64,13 @@ jQuery(document).ready(function(){
                 <div class="tab-pane" id="tab-pricinginventory">
 
                     <?php echo $this->renderLayout('Tienda/Admin/Views::products/fields_pricinginventory.php'); ?>
+                                        
+                </div>
+                <!-- /.tab-pane -->
+                
+                <div class="tab-pane" id="tab-attributes">
+
+                    <?php echo $this->renderLayout('Tienda/Admin/Views::products/fields_attributes.php'); ?>
                                         
                 </div>
                 <!-- /.tab-pane -->

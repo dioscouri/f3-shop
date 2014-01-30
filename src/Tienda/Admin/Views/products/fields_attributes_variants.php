@@ -10,7 +10,7 @@
     <div class="col-md-10">
 
         <div class="form-group">
-            <label>[Product Attributes and Options Grid]</label>
+            <label>[Grid of Product Variants for bulk editing]</label>
         </div>
         <!-- /.form-group -->    
     
