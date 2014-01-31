@@ -1,5 +1,8 @@
-<?php $options = array(); ?>
+<?php echo $this->renderLayout('Tienda/Admin/Views::products/fields_attributes_variants.php'); ?>
 
+<hr />
+
+<?php $options = array(); ?>
 <div class="row">
     <div class="col-md-2">
         
@@ -27,6 +30,7 @@
                 <div class="col-md-6">
                     <label><small>Title</small></label>
                     <input type="text" name="attributes[<?php echo $key; ?>][title]" class="form-control input-sm" value="<?php echo $flash->old('attributes.'.$key.'.title'); ?>" />
+                    <input type="hidden" name="attributes[<?php echo $key; ?>][id]" value="<?php echo (string) $flash->old('attributes.'.$key.'.id'); ?>" />
                 </div>
                 <div class="col-md-2">
                     <label><small>Sort Order</small></label>
@@ -57,6 +61,7 @@
                                 <div class="col-md-6">
                                     <label><small>Value</small></label>
                                     <input type="text" name="attributes[<?php echo $key; ?>][options][<?php echo $option_key; ?>][value]" class="form-control input-sm" value="<?php echo $flash->old('attributes.'.$key.'.options.'.$option_key.'.value'); ?>" />
+                                    <input type="hidden" name="attributes[<?php echo $key; ?>][options][<?php echo $option_key; ?>][id]" value="<?php echo (string) $flash->old('attributes.'.$key.'.options.'.$option_key.'.id'); ?>" />
                                 </div>
                                 <div class="col-md-2">
                                     <label><small>Sort Order</small></label>
@@ -244,4 +249,57 @@
 
 <hr />
 
-<?php echo $this->renderLayout('Tienda/Admin/Views::products/fields_attributes_variants.php'); ?>
+<div class="row">
+    <div class="col-md-2">
+        
+        <h3>Rebuild</h3>
+        <p class="help-block">Some helpful WARNING text</p>
+                
+    </div>
+    <!-- /.col-md-2 -->
+                
+    <div class="col-md-10">
+
+        <?php if (!$flash->old('_id')) { ?>
+            <div class="form-group clearfix">
+                <div class="col-md-4">        
+                    <label>Automatically build Variants</label>
+                    <div class="form-group">
+                    <label class="radio-inline">
+                        <input type="radio" name="variants[build]" value="1" checked> Yes
+                    </label>
+                    <label class="radio-inline">
+                        <input type="radio" name="variants[build]" value="0"> No
+                    </label>
+                    </div>
+                </div>
+                
+                <div class="col-md-8">
+                    <div class="alert alert-warning"><b>Warning!</b> Something could happen!</div>
+                </div>        
+            </div>
+            <!-- /.form-group -->
+        <?php } else { ?>
+            <div class="form-group clearfix">
+                <div class="col-md-4">        
+                    <label>Rebuild Variants</label>
+                    <div class="form-group">
+                    <label class="radio-inline">
+                        <input type="radio" name="variants[build]" value="1"> Yes
+                    </label>
+                    <label class="radio-inline">
+                        <input type="radio" name="variants[build]" value="0" checked> No
+                    </label>
+                    </div>
+                </div>
+                
+                <div class="col-md-8">
+                    <div class="alert alert-warning"><b>Warning!</b> Something could happen!</div>
+                </div>        
+            </div>    
+            <!-- /.form-group -->    
+        <?php } ?>
+        
+    </div>
+    
+</div>

@@ -8,16 +8,16 @@ class Variant extends \Dsc\Prefabs
      * @var array
      */
     protected $document = array(
-        'title'=>null,          // e.g. Alternative Title for the product when this variant has been selected 
+        'id'=>null,             // the md5 hash of the dot-connected string of an alphabetized list of each attribute's MongoId
         'attributes'=>array(),  // array of \Tienda\Prefabs\Attribute ids, sorted alphanumerically
+        'sku'=>null,        
+        'price'=>null,          // alternative base price.  FINAL price override for this variant.  given priority over attribute price_changes.        
         'quantity'=>null,
-        'prices'=>array(),      // an array of \Tienda\Prefab\Price objects that are FINAL price overrides for this variant.  these are given priority over attribute price_changes.
-        'model_number'=>null,
-        'sku'=>null,
+                    
+        'model_number'=>null,        
+        'upc'=>null,
         'weight'=>null,
-        'images'=>array(
-            'primary'=>null,
-            'gallery'=>array()
-        )                
+        'image'=>null,
+        'title'=>null          // e.g. Alternative Title for the product when this variant has been selected                                    
     );
 }
