@@ -75,7 +75,8 @@
                         <div class="variant-fields">
                             <div class="row">
                                 <div class="col-md-3">
-                                    
+                                    <label><small>ID</small></label>
+                                    <p><?php echo $key; ?></p>
                                 </div>
                                 <div class="col-md-9">
 
