@@ -9,7 +9,7 @@ class Listener extends \Prefab
         {
             $mapper->reset();
             $mapper->priority = 20;
-            $mapper->title = 'Catalog';
+            $mapper->title = 'Shop';
             $mapper->route = '';
             $mapper->icon = 'fa fa-ticket';
             $mapper->children = array(
