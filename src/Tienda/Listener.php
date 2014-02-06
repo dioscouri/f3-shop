@@ -16,8 +16,10 @@ class Listener extends \Prefab
                     json_decode(json_encode(array( 'title'=>'Products', 'route'=>'/admin/tienda/products', 'icon'=>'fa fa-list' )))
             		,json_decode(json_encode(array( 'title'=>'Add New', 'route'=>'/admin/tienda/product/create', 'icon'=>'fa fa-plus' )))
             		,json_decode(json_encode(array( 'title'=>'Categories', 'route'=>'/admin/tienda/categories', 'icon'=>'fa fa-folder' )))
-            		,json_decode(json_encode(array( 'title'=>'Add New', 'route'=>'/admin/tienda/category', 'hidden'=>true )))            		
+            		,json_decode(json_encode(array( 'title'=>'Add New', 'route'=>'/admin/tienda/category', 'hidden'=>true )))
+                    ,json_decode(json_encode(array( 'title'=>'Manufacturers', 'route'=>'/admin/tienda/manufacturers', 'icon'=>'fa fa-barcode' )))
             );
+            $mapper->base = '/admin/tienda';
             $mapper->save();
             
             \Dsc\System::instance()->addMessage('Tienda added its admin menu items.');
@@ -26,20 +28,21 @@ class Listener extends \Prefab
     
     public function onAdminNavigationGetQuickAddItems( $event )
     {
-        /*
         $items = $event->getArgument('items');
-    
-        $item = new \stdClass;
-        $item->title = 'Product Category';
-        $item->form = 'This would be a QUICK ADD form for adding a Product Category menu item.';
-        $items[] = $item;
+        $tree = $event->getArgument('tree');
         
         $item = new \stdClass;
-        $item->title = 'Product Detail';
-        $item->form = 'This would be a QUICK ADD form for adding a Product Detail Page menu item.';
+        $item->title = 'Product Category';
+        $item->form = \Tienda\Admin\Controllers\MenuItemQuickAdd::instance()->category($event);
         $items[] = $item;
-    
-        $event->setArgument('items', $items);
+        
+        /*
+        $item = new \stdClass;
+        $item->title = 'Product Detail';
+        $item->form = \Tienda\Admin\Controllers\MenuItemQuickAdd::instance()->product($event);
+        $items[] = $item;
         */
+        
+        $event->setArgument('items', $items);
     }
 }

@@ -38,6 +38,17 @@ switch ($global_app_name)
         $f3->route('POST /admin/tienda/category/update/@id', '\Tienda\Admin\Controllers\Category->update');
         $f3->route('GET|DELETE /admin/tienda/category/delete/@id', '\Tienda\Admin\Controllers\Category->delete');
         
+        $f3->route('GET|POST /admin/tienda/manufacturers', '\Tienda\Admin\Controllers\Manufacturers->display');
+        $f3->route('GET|POST /admin/tienda/manufacturers/page/@page', '\Tienda\Admin\Controllers\Manufacturers->display');
+        $f3->route('GET|POST /admin/tienda/manufacturers/delete', '\Tienda\Admin\Controllers\Manufacturers->delete');
+        
+        $f3->route('GET /admin/tienda/manufacturer/create', '\Tienda\Admin\Controllers\Manufacturer->create');
+        $f3->route('POST /admin/tienda/manufacturer/add', '\Tienda\Admin\Controllers\Manufacturer->add');
+        $f3->route('GET /admin/tienda/manufacturer/read/@id', '\Tienda\Admin\Controllers\Manufacturer->read');
+        $f3->route('GET /admin/tienda/manufacturer/edit/@id', '\Tienda\Admin\Controllers\Manufacturer->edit');
+        $f3->route('POST /admin/tienda/manufacturer/update/@id', '\Tienda\Admin\Controllers\Manufacturer->update');
+        $f3->route('GET|DELETE /admin/tienda/manufacturer/delete/@id', '\Tienda\Admin\Controllers\Manufacturer->delete');
+        
         // append this app's UI folder to the path
         $ui = $f3->get('UI');
         $ui .= ";" . $f3->get('PATH_ROOT') . "vendor/dioscouri/f3-tienda/src/Tienda/Admin/Views/";
@@ -48,10 +59,16 @@ switch ($global_app_name)
         break;
     case "site":
         // TODO register all the routes
-        
-        // append this app's UI folder to the path
+        $f3->route('GET /tienda/product/@slug', '\Tienda\Site\Controllers\Product->read');
+        $f3->route('GET /tienda/category/@slug', '\Tienda\Site\Controllers\Category->index');
+        $f3->route('GET /tienda/category/@slug/@page', '\Tienda\Site\Controllers\Category->index');
+
                 
-        // TODO set some app-specific settings, if desired
+        // append this app's UI folder to the path
+        $ui = $f3->get('UI');
+        $ui .= ";" . $f3->get('PATH_ROOT') . "vendor/dioscouri/f3-tienda/src/Tienda/Site/Views/";
+        $f3->set('UI', $ui);
+        
         break;
 }
 ?>

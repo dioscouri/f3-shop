@@ -45,6 +45,7 @@
                             <div class="row">
                                 <div class="col-md-3">
                                     <?php echo !empty($variant['titles']) ? implode("&nbsp;|&nbsp;", (array) $variant['titles']) : null; ?>
+                                    <input type="hidden" name="variants[<?php echo $key; ?>][id]" value="<?php echo $key; ?>" />
                                     <input type="hidden" name="variants[<?php echo $key; ?>][attributes]" value="<?php echo htmlspecialchars( json_encode( $variant['attributes'] ) ); ?>" />
                                 </div>
                                 <div class="col-md-9">
