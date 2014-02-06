@@ -6,52 +6,52 @@ switch ($global_app_name)
 {
     case "admin":
         // register event listener
-        \Dsc\System::instance()->getDispatcher()->addListener(\Tienda\Listener::instance());
+        \Dsc\System::instance()->getDispatcher()->addListener(\Shop\Listener::instance());
 
         // register the modules path
-        \Modules\Factory::registerPath( $f3->get('PATH_ROOT') . "vendor/dioscouri/f3-tienda/src/Tienda/Modules/" );
+        \Modules\Factory::registerPath( $f3->get('PATH_ROOT') . "vendor/dioscouri/f3-shop/src/Shop/Modules/" );
         
         // register all the routes
-        $f3->route('GET|POST /admin/tienda/products', '\Tienda\Admin\Controllers\Products->display');
-        $f3->route('GET|POST /admin/tienda/products/page/@page', '\Tienda\Admin\Controllers\Products->display');
-        $f3->route('GET|POST /admin/tienda/products/delete', '\Tienda\Admin\Controllers\Products->delete');
+        $f3->route('GET|POST /admin/shop/products', '\Shop\Admin\Controllers\Products->display');
+        $f3->route('GET|POST /admin/shop/products/page/@page', '\Shop\Admin\Controllers\Products->display');
+        $f3->route('GET|POST /admin/shop/products/delete', '\Shop\Admin\Controllers\Products->delete');
         
-        $f3->route('GET /admin/tienda/product/create', '\Tienda\Admin\Controllers\Product->create');
-        $f3->route('POST /admin/tienda/product/add', '\Tienda\Admin\Controllers\Product->add');
-        $f3->route('GET /admin/tienda/product/read/@id', '\Tienda\Admin\Controllers\Product->read');
-        $f3->route('GET /admin/tienda/product/edit/@id', '\Tienda\Admin\Controllers\Product->edit');
-        $f3->route('POST /admin/tienda/product/update/@id', '\Tienda\Admin\Controllers\Product->update');
-        $f3->route('GET|DELETE /admin/tienda/product/delete/@id', '\Tienda\Admin\Controllers\Product->delete');
+        $f3->route('GET /admin/shop/product/create', '\Shop\Admin\Controllers\Product->create');
+        $f3->route('POST /admin/shop/product/add', '\Shop\Admin\Controllers\Product->add');
+        $f3->route('GET /admin/shop/product/read/@id', '\Shop\Admin\Controllers\Product->read');
+        $f3->route('GET /admin/shop/product/edit/@id', '\Shop\Admin\Controllers\Product->edit');
+        $f3->route('POST /admin/shop/product/update/@id', '\Shop\Admin\Controllers\Product->update');
+        $f3->route('GET|DELETE /admin/shop/product/delete/@id', '\Shop\Admin\Controllers\Product->delete');
         
-        $f3->route('GET /admin/tienda/categories [ajax]','\Tienda\Admin\Controllers\Categories->getDatatable');
-        $f3->route('GET /admin/tienda/categories/all [ajax]','\Tienda\Admin\Controllers\Categories->getAll');
-        $f3->route('GET|POST /admin/tienda/categories/checkboxes [ajax]','\Tienda\Admin\Controllers\Categories->getCheckboxes');
+        $f3->route('GET /admin/shop/categories [ajax]','\Shop\Admin\Controllers\Categories->getDatatable');
+        $f3->route('GET /admin/shop/categories/all [ajax]','\Shop\Admin\Controllers\Categories->getAll');
+        $f3->route('GET|POST /admin/shop/categories/checkboxes [ajax]','\Shop\Admin\Controllers\Categories->getCheckboxes');
         
-        $f3->route('GET|POST /admin/tienda/categories', '\Tienda\Admin\Controllers\Categories->display');
-        $f3->route('GET|POST /admin/tienda/categories/page/@page', '\Tienda\Admin\Controllers\Categories->display');
-        $f3->route('GET|POST /admin/tienda/categories/delete', '\Tienda\Admin\Controllers\Categories->delete');
+        $f3->route('GET|POST /admin/shop/categories', '\Shop\Admin\Controllers\Categories->display');
+        $f3->route('GET|POST /admin/shop/categories/page/@page', '\Shop\Admin\Controllers\Categories->display');
+        $f3->route('GET|POST /admin/shop/categories/delete', '\Shop\Admin\Controllers\Categories->delete');
         
-        $f3->route('GET /admin/tienda/category/create', '\Tienda\Admin\Controllers\Category->create');
-        $f3->route('POST /admin/tienda/category/add', '\Tienda\Admin\Controllers\Category->add');
-        $f3->route('GET /admin/tienda/category/read/@id', '\Tienda\Admin\Controllers\Category->read');
-        $f3->route('GET /admin/tienda/category/edit/@id', '\Tienda\Admin\Controllers\Category->edit');
-        $f3->route('POST /admin/tienda/category/update/@id', '\Tienda\Admin\Controllers\Category->update');
-        $f3->route('GET|DELETE /admin/tienda/category/delete/@id', '\Tienda\Admin\Controllers\Category->delete');
+        $f3->route('GET /admin/shop/category/create', '\Shop\Admin\Controllers\Category->create');
+        $f3->route('POST /admin/shop/category/add', '\Shop\Admin\Controllers\Category->add');
+        $f3->route('GET /admin/shop/category/read/@id', '\Shop\Admin\Controllers\Category->read');
+        $f3->route('GET /admin/shop/category/edit/@id', '\Shop\Admin\Controllers\Category->edit');
+        $f3->route('POST /admin/shop/category/update/@id', '\Shop\Admin\Controllers\Category->update');
+        $f3->route('GET|DELETE /admin/shop/category/delete/@id', '\Shop\Admin\Controllers\Category->delete');
         
-        $f3->route('GET|POST /admin/tienda/manufacturers', '\Tienda\Admin\Controllers\Manufacturers->display');
-        $f3->route('GET|POST /admin/tienda/manufacturers/page/@page', '\Tienda\Admin\Controllers\Manufacturers->display');
-        $f3->route('GET|POST /admin/tienda/manufacturers/delete', '\Tienda\Admin\Controllers\Manufacturers->delete');
+        $f3->route('GET|POST /admin/shop/manufacturers', '\Shop\Admin\Controllers\Manufacturers->display');
+        $f3->route('GET|POST /admin/shop/manufacturers/page/@page', '\Shop\Admin\Controllers\Manufacturers->display');
+        $f3->route('GET|POST /admin/shop/manufacturers/delete', '\Shop\Admin\Controllers\Manufacturers->delete');
         
-        $f3->route('GET /admin/tienda/manufacturer/create', '\Tienda\Admin\Controllers\Manufacturer->create');
-        $f3->route('POST /admin/tienda/manufacturer/add', '\Tienda\Admin\Controllers\Manufacturer->add');
-        $f3->route('GET /admin/tienda/manufacturer/read/@id', '\Tienda\Admin\Controllers\Manufacturer->read');
-        $f3->route('GET /admin/tienda/manufacturer/edit/@id', '\Tienda\Admin\Controllers\Manufacturer->edit');
-        $f3->route('POST /admin/tienda/manufacturer/update/@id', '\Tienda\Admin\Controllers\Manufacturer->update');
-        $f3->route('GET|DELETE /admin/tienda/manufacturer/delete/@id', '\Tienda\Admin\Controllers\Manufacturer->delete');
+        $f3->route('GET /admin/shop/manufacturer/create', '\Shop\Admin\Controllers\Manufacturer->create');
+        $f3->route('POST /admin/shop/manufacturer/add', '\Shop\Admin\Controllers\Manufacturer->add');
+        $f3->route('GET /admin/shop/manufacturer/read/@id', '\Shop\Admin\Controllers\Manufacturer->read');
+        $f3->route('GET /admin/shop/manufacturer/edit/@id', '\Shop\Admin\Controllers\Manufacturer->edit');
+        $f3->route('POST /admin/shop/manufacturer/update/@id', '\Shop\Admin\Controllers\Manufacturer->update');
+        $f3->route('GET|DELETE /admin/shop/manufacturer/delete/@id', '\Shop\Admin\Controllers\Manufacturer->delete');
         
         // append this app's UI folder to the path
         $ui = $f3->get('UI');
-        $ui .= ";" . $f3->get('PATH_ROOT') . "vendor/dioscouri/f3-tienda/src/Tienda/Admin/Views/";
+        $ui .= ";" . $f3->get('PATH_ROOT') . "vendor/dioscouri/f3-shop/src/Shop/Admin/Views/";
         $f3->set('UI', $ui);
         
         // TODO set some app-specific settings, if desired
@@ -59,14 +59,14 @@ switch ($global_app_name)
         break;
     case "site":
         // TODO register all the routes
-        $f3->route('GET /tienda/product/@slug', '\Tienda\Site\Controllers\Product->read');
-        $f3->route('GET /tienda/category/@slug', '\Tienda\Site\Controllers\Category->index');
-        $f3->route('GET /tienda/category/@slug/@page', '\Tienda\Site\Controllers\Category->index');
+        $f3->route('GET /shop/product/@slug', '\Shop\Site\Controllers\Product->read');
+        $f3->route('GET /shop/category/@slug', '\Shop\Site\Controllers\Category->index');
+        $f3->route('GET /shop/category/@slug/@page', '\Shop\Site\Controllers\Category->index');
 
                 
         // append this app's UI folder to the path
         $ui = $f3->get('UI');
-        $ui .= ";" . $f3->get('PATH_ROOT') . "vendor/dioscouri/f3-tienda/src/Tienda/Site/Views/";
+        $ui .= ";" . $f3->get('PATH_ROOT') . "vendor/dioscouri/f3-shop/src/Shop/Site/Views/";
         $f3->set('UI', $ui);
         
         break;

@@ -1,9 +1,9 @@
 {
-    "name": "dioscouri/f3-tienda",
+    "name": "dioscouri/f3-shop",
     "type": "component",
     "description": "E-commerce component for the F3-framework",
     "keywords": ["F3","RAD", "E-Commerce"],
-    "homepage": "https://github.com/dioscouri/f3-tienda",
+    "homepage": "https://github.com/dioscouri/f3-shop",
     "license": "GPL",
     "authors": [
         {
@@ -20,7 +20,7 @@
     },
     "autoload": {
         "psr-0": {
-            "Tienda": "src/"
+            "Shop": "src/"
         }
     }    
 }
