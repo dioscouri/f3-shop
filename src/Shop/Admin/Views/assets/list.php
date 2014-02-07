@@ -1,5 +1,5 @@
-<form id="list-form" action="./admin/shop/products" method="post">
-
+<form id="assets" class="searchForm" action="./admin/assets" method="post">
+        
     <div class="row datatable-header">
         <div class="col-sm-6">
             <div class="row row-marginless">
@@ -10,7 +10,7 @@
                 <?php } ?>
                 <?php if (!empty($list['count']) && $list['count'] > 1) { ?>
                 <div class="col-sm-8">
-                    <?php echo $pagination->serve(); ?>
+                    <?php echo (!empty($list['count']) && $list['count'] > 1) ? $pagination->serve() : null; ?>
                 </div>
                 <?php } ?>
             </div>
@@ -33,82 +33,99 @@
         <div class="col-md-6 col-lg-4 input-group">
             <select id="bulk-actions" name="bulk_action" class="form-control">
                 <option value="null">-Bulk Actions-</option>
-                <option value="delete" data-action="./admin/shop/products/delete">Delete</option>
+                <option value="delete" data-action="./admin/assets/delete">Delete</option>
             </select>
             <span class="input-group-btn">
                 <button class="btn btn-default bulk-actions" type="button" data-target="bulk-actions">Apply</button>
             </span>
         </div>
     </div>
-
+    
     <div class="table-responsive datatable">
     
-    <table class="table table-striped table-bordered table-hover table-highlight table-checkable">
-		<thead>
-			<tr>
-			    <th class="checkbox-column"><input type="checkbox" class="icheck-input"></th>
-			    <th class="col-md-1"></th>
-				<th data-sortable="metadata.title">Title</th>
-				<th>Categories</th>
-				<th>Tags</th>
-				<th data-sortable="publication.start_date">Publication</th>
-				<th class="col-md-1"></th>
-			</tr>
-		</thead>
-		<tbody>    
+    <table class="table table-striped table-bordered table-hover table-highlight table-checkable media-table">
+    	<thead>
+    		<tr>
+    		    <th class="checkbox-column"><input type="checkbox" class="icheck-input"></th>
+    		    <th class="col-md-1"></th>
+    			<th data-sortable="metadata.title">Title</th>
+    			<th class="col-md-1" data-sortable="storage">Location</th>
+    			<th>Tags</th>
+    			<th data-sortable="metadata.created.time">Created</th>
+    			<th data-sortable="metadata.last_modified.time">Last Modified</th>
+    			<th class="col-md-1"></th>
+    		</tr>
+    	</thead>
+    	<tbody>    
     
         <?php if (!empty($list['subset'])) { ?>
     
         <?php foreach ($list['subset'] as $item) { ?>
             <tr>
                 <td class="checkbox-column">
-                    <input type="checkbox" class="icheck-input" name="ids[]" value="<?php echo $item->id; ?>">
+                    <input type="checkbox" class="icheck-input" name="ids[]" value="<?php echo $item->_id; ?>">
                 </td>
                 
                 <td class="">
-                    <?php if ($item->{'details.featured_image.slug'}) { ?>
-                        <div class="thumbnail text-center">
+                    <?php if ($item->thumb) { ?>
+                        <?php if ($item->isImage()) { ?>
+                    	<div class="thumbnail text-center">
                         	<div class="thumbnail-view">
-                        		<a class="thumbnail-view-hover ui-lightbox" href="./asset/<?php echo $item->{'details.featured_image.slug'}; ?>">
+                        		<a class="thumbnail-view-hover ui-lightbox" href="./asset/<?php echo $item->{'metadata.slug'}; ?>">
                         		</a>
-                                <img src="./asset/thumb/<?php echo $item->{'details.featured_image.slug'}; ?>" />
+                                <img src="<?php echo \Dsc\Image::dataUri( $item->thumb->bin ); ?>" alt="<?php echo $item->{'metadata.title'}; ?>" />
     				        </div>
-    				    </div> <!-- /.thumbnail -->                    	
+    				    </div> <!-- /.thumbnail -->                
+                        <?php } else { ?>
+                            <div class="thumbnail text-center">
+                            <a href="./admin/asset/<?php echo $item->id; ?>/edit">
+                            <img src="<?php echo \Dsc\Image::dataUri( $item->thumb->bin ); ?>" alt="<?php echo $item->{'metadata.title'}; ?>" />
+                            </a>
+                            </div>
+                        <?php } ?>
                     <?php } ?>
                 </td>
-                                            
+                
                 <td class="">
                     <h5>
-                    <a href="./admin/shop/product/edit/<?php echo $item->id; ?>">
+                    <a href="./admin/asset/<?php echo $item->id; ?>/edit">
                     <?php echo $item->{'metadata.title'}; ?>
                     </a>
                     </h5>
+    
+                    <a class="help-block" target="_blank" href="./asset/<?php echo $item->{'metadata.slug'}; ?>">
+                    /<?php echo $item->{'metadata.slug'}; ?>
+                    </a>
                     
                     <p class="help-block">
-                    /<?php echo $item->{'metadata.slug'}; ?>
-                    </p>                    
+                    MD5: <?php echo $item->{'md5'} ? $item->{'md5'} : '<span class="text-danger"><strong>Invalid</strong></span>'; ?>
+                    </p>
+    
                 </td>
                 
                 <td class="">
-                <?php echo implode(", ", \Joomla\Utilities\ArrayHelper::getColumn( (array) $item->{'metadata.categories'}, 'title' ) ); ?>
+                <?php echo $item->{'storage'}; ?>
                 </td>
-                
+                 
                 <td class="">
                 <?php echo implode(", ", (array) $item->{'metadata.tags'} ); ?>
                 </td>
                 
                 <td class="">
-                    <div><?php echo ucwords( $item->{'publication.status'} ); ?></div>
-                    <div><?php if ($item->{'publication.start_date'}) { echo "Up: " . $item->{'publication.start_date'}; } ?></div>
-                    <div><?php if ($item->{'publication.end_date'}) { echo "Down: " . $item->{'publication.end_date'}; } ?></div>
+                <?php echo $item->{'metadata.creator.name'}; ?><br/>
+                <?php echo $item->{'metadata.created.time'} ? date( 'Y-m-d h:ia', $item->{'metadata.created.time'} ) : null; ?>
                 </td>
-                                
+                
+                <td class="">
+                <?php echo $item->{'metadata.last_modified.time'} ? date( 'Y-m-d h:ia', $item->{'metadata.last_modified.time'} ) : null; ?>
+                </td>
+                    
                 <td class="text-center">
-                    <a class="btn btn-xs btn-secondary" href="./admin/shop/product/edit/<?php echo $item->id; ?>">
+                    <a class="btn btn-xs btn-secondary" href="./admin/asset/<?php echo $item->_id; ?>/edit">
                         <i class="fa fa-pencil"></i>
                     </a>
                     &nbsp;
-                    <a class="btn btn-xs btn-danger" data-bootbox="confirm" href="./admin/shop/product/delete/<?php echo $item->id; ?>">
+                    <a class="btn btn-xs btn-danger" data-bootbox="confirm" href="./admin/asset/<?php echo $item->_id; ?>/delete">
                         <i class="fa fa-times"></i>
                     </a>
                 </td>
@@ -122,7 +139,7 @@
             </td>
             </tr>
         <?php } ?>
-
+    
         </tbody>
     </table>
     

@@ -49,7 +49,7 @@
                 </div>
                 
                 <div class="col-md-4">        
-                    <label>Default Quantity</label>
+                    <label>Default Quantity <small>when adding to cart</small></label>
                     <input type="text" name="policies[quantity_input][default]" placeholder="Default Quantity" value="<?php echo $flash->old('policies.quantity_input.default'); ?>" class="form-control" />
                 </div>                
             </div>

@@ -39,6 +39,10 @@
 
 <hr />
 
+<?php echo $this->renderLayout('Shop/Admin/Views::products/fields_pricinginventory_quantities.php'); ?>
+
+<hr />
+
 <?php echo $this->renderLayout('Shop/Admin/Views::products/fields_pricinginventory_taxes.php'); ?>
 
 <hr />

@@ -18,6 +18,7 @@ class Listener extends \Prefab
             		,json_decode(json_encode(array( 'title'=>'Categories', 'route'=>'/admin/shop/categories', 'icon'=>'fa fa-folder' )))
             		,json_decode(json_encode(array( 'title'=>'Add New', 'route'=>'/admin/shop/category', 'hidden'=>true )))
                     ,json_decode(json_encode(array( 'title'=>'Manufacturers', 'route'=>'/admin/shop/manufacturers', 'icon'=>'fa fa-barcode' )))
+                    ,json_decode(json_encode(array( 'title'=>'Media Assets', 'route'=>'/admin/shop/assets', 'icon'=>'fa fa-list' )))
             );
             $mapper->base = '/admin/shop';
             $mapper->save();

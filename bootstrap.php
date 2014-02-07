@@ -48,6 +48,10 @@ switch ($global_app_name)
         $f3->route('GET /admin/shop/manufacturer/edit/@id', '\Shop\Admin\Controllers\Manufacturer->edit');
         $f3->route('POST /admin/shop/manufacturer/update/@id', '\Shop\Admin\Controllers\Manufacturer->update');
         $f3->route('GET|DELETE /admin/shop/manufacturer/delete/@id', '\Shop\Admin\Controllers\Manufacturer->delete');
+
+        $f3->route('GET|POST /admin/shop/assets', '\Shop\Admin\Controllers\Assets->display');
+        $f3->route('GET|POST /admin/shop/assets/page/@page', '\Shop\Admin\Controllers\Assets->display');
+        $f3->route('GET|POST /admin/shop/assets/delete', '\Shop\Admin\Controllers\Assets->delete');
         
         // append this app's UI folder to the path
         $ui = $f3->get('UI');

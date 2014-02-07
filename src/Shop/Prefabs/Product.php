@@ -51,6 +51,9 @@ class Product extends \Dsc\Prefabs
         'visibility'=>array(
         	
         ),
+        'quantities'=>array(
+             'manual'=>null
+        ),        
         'prices'=>array(
             'default'=>null,
             'list'=>null,
@@ -74,7 +77,7 @@ class Product extends \Dsc\Prefabs
         'attributes'=>array( // an array of \Shop\Prefabs\Attribute records
         	
         ),
-        // pre-built matrix of all possible product variations based on the attributes above        
+        // all possible product variations based on the attributes above, each with their product override values        
         'variants'=>array(          // an array of \Shop\Prefabs\Variant
         	
         ),

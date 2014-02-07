@@ -9,11 +9,12 @@
                 
     <div class="col-md-10">
         
-        <div class="panel panel-default">
+        
             <?php 
             if ($variants = \Shop\Admin\Models\Products::instance()->getVariants( $flash->get('old') )) 
             {
                 ?>
+                <div class="panel panel-default">
                 <div class="panel-heading">
                     <div class="row">
                         <div class="col-md-3">
@@ -109,11 +110,13 @@
                 }
                 ?>
                 </div>
-                
+                </div>
                 <?php
-            } 
+            } else { 
             ?>
-        </div>
+                <div class="alert alert-warning">Variants will be created after you 1) add Attributes and 2) Save the product</div>
+            <?php } ?>
+        
     
     </div>
     <!-- /.col-md-10 -->
