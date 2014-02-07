@@ -8,8 +8,8 @@ class Variant extends \Dsc\Prefabs
      * @var array
      */
     protected $document = array(
-        'id'=>null,             // the md5 hash of the dot-connected string of an alphabetized list of each attribute's MongoId
-        'attributes'=>array(),  // array of \Shop\Prefabs\Attribute ids, sorted alphanumerically
+        'id'=>null,             // (string) MongoId
+        'attributes'=>array(),  // array of \Shop\Prefabs\Attribute (string) ids
         'sku'=>null,        
         'price'=>null,          // alternative base price.  FINAL price override for this variant.  given priority over attribute price_changes.        
         'quantity'=>null,

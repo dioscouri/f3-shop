@@ -146,6 +146,9 @@ class Products extends \Dsc\Models\Content
         if (!empty($values['variants']) && is_array($values['variants'])) 
         {
             array_walk($values['variants'], function(&$item, $key){
+                if (empty($item['id'])) {
+                    $item['id'] = (string) new \MongoId;
+                }                
             	if (!empty($item['attributes'])) {
             	    $item['attributes'] = json_decode( $item['attributes'] );
             	}
@@ -181,6 +184,13 @@ class Products extends \Dsc\Models\Content
      */
     public function update( $mapper, $values, $options=array() )
     {
+        if (empty($values['attributes'])) {
+            $values['attributes'] = array();
+        }
+        if (empty($values['variants'])) {
+            $values['variants'] = array();
+        }
+        
         $values = $this->prefab( $mapper->cast(), $options )->bind( $values )->cast();
         
         return $this->save( $values, $options, $mapper );
@@ -276,12 +286,16 @@ class Products extends \Dsc\Models\Content
             }
             sort( $combos[$key] );
             
+            /*
             $key_values = explode( '.', $key );
             sort( $key_values );
             $sorted_key = implode( '.', $key_values );
             $md5_key = md5($sorted_key);
+            */
+            $mongo_id = (string) new \MongoId;
             
-            $result[$md5_key] = array(
+            $result[] = array(
+                'id' => $mongo_id,
             	'attributes' => $combos[$key],
                 'titles' => $titles
             );
