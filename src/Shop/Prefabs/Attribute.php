@@ -12,7 +12,8 @@ class Attribute extends \Dsc\Prefabs
         'title'=>null,          // e.g. "Sleeve Length" 
         'ordering'=>0,          // allows you to put "Sleeve Length" after "Color" on the product detail page
         'type'=>'selectlist',   // selectlist only for now
-        'options'=>array(
+        'options'=>array(       // array of \Shop\Prefabs\AttributeOption objects
+            /*            
             'id'=>null,                     // (string) MongoId, unique id for this attribute option
             'value'=>null,                  // e.g. "Short", "Long", "Three-Quarter"
             'price_impact'=>null,           // inc, dec, new, null == this option will either increase, decrease, overwrite, or have no impact on the price
@@ -20,6 +21,7 @@ class Attribute extends \Dsc\Prefabs
             'weight_impact'=>null,          // same as price_impact
             'weight_impact_amount'=>null,   // absolute value of the weight impact
             'ordering'=>0
+            */
         )
     );
     

@@ -20,4 +20,10 @@ class Variant extends \Dsc\Prefabs
         'image'=>null,
         'title'=>null          // e.g. Alternative Title for the product when this variant has been selected                                    
     );
+    
+    public function __construct($source=array(), $options=array())
+    {
+        $this->set('id', (string) new \MongoId );
+        parent::__construct( $source, $options );
+    }
 }

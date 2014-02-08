@@ -149,7 +149,7 @@ class Products extends \Dsc\Models\Content
                 if (empty($item['id'])) {
                     $item['id'] = (string) new \MongoId;
                 }                
-            	if (!empty($item['attributes'])) {
+            	if (!empty($item['attributes']) && !is_array($item['attributes'])) {
             	    $item['attributes'] = json_decode( $item['attributes'] );
             	}
             });
@@ -286,15 +286,15 @@ class Products extends \Dsc\Models\Content
             }
             sort( $combos[$key] );
             
-            /*
             $key_values = explode( '.', $key );
             sort( $key_values );
-            $sorted_key = implode( '.', $key_values );
+            $sorted_key = implode( '-', $key_values );
+            /*
             $md5_key = md5($sorted_key);
             */
             $mongo_id = (string) new \MongoId;
             
-            $result[] = array(
+            $result[$sorted_key] = array(
                 'id' => $mongo_id,
             	'attributes' => $combos[$key],
                 'titles' => $titles

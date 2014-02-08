@@ -52,19 +52,19 @@
                                 <div class="col-md-9">
                                     <div class="row">
                                     
-                                        <div class="col-md-3">
+                                        <div class="col-md-7">
                                             <label><small>SKU</small></label>
                                             <input type="text" name="variants[<?php echo $key; ?>][sku]" class="form-control input-sm" value="<?php echo $flash->old('variants.'.$key.'.sku'); ?>" />
                                         </div>
-                                        <div class="col-md-3">
+                                        <div class="col-md-2">
                                             <label><small>Price</small></label>
                                             <input type="text" name="variants[<?php echo $key; ?>][price]" class="form-control input-sm" value="<?php echo $flash->old('variants.'.$key.'.price'); ?>" />
                                         </div>
-                                        <div class="col-md-3">
+                                        <div class="col-md-2">
                                             <label><small>Quantity</small></label>
                                             <input type="text" name="variants[<?php echo $key; ?>][quantity]" class="form-control input-sm" value="<?php echo $flash->old('variants.'.$key.'.quantity'); ?>" />
                                         </div>
-                                        <div class="col-md-3">
+                                        <div class="col-md-1">
                                             <p class="help-block"><small>&nbsp;</small></p>
                                             <a class="btn btn-link btn-sm" href="javascript:void(0);" onclick="ShopToggleVariantFields(this);">edit</a>
                                         </div>
@@ -87,16 +87,16 @@
                                             <label><small>Model</small></label>
                                             <input type="text" name="variants[<?php echo $key; ?>][model_number]" class="form-control input-sm" value="<?php echo $flash->old('variants.'.$key.'.model_number'); ?>" />
                                         </div>
-                                        <div class="col-md-3">
+                                        <div class="col-md-2">
                                             <label><small>UPC</small></label>
                                             <input type="text" name="variants[<?php echo $key; ?>][upc]" class="form-control input-sm" value="<?php echo $flash->old('variants.'.$key.'.upc'); ?>" />
                                         </div>
-                                        <div class="col-md-3">
+                                        <div class="col-md-2">
                                             <label><small>Weight</small></label>
                                             <input type="text" name="variants[<?php echo $key; ?>][weight]" class="form-control input-sm" value="<?php echo $flash->old('variants.'.$key.'.weight'); ?>" />
                                         </div>
-                                        <div class="col-md-3">
-                                            <label><small>Image URL</small></label>
+                                        <div class="col-md-5">
+                                            <label><small>Image Slug</small></label>
                                             <input type="text" name="variants[<?php echo $key; ?>][image]" class="form-control input-sm" value="<?php echo $flash->old('variants.'.$key.'.image'); ?>" />
                                         </div>
                                     </div>
