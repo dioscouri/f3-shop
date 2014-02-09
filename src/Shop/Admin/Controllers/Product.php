@@ -88,6 +88,8 @@ class Product extends \Admin\Controllers\BaseAuth
         \Base::instance()->set('all_tags', $all_tags );
         
         $view = new \Dsc\Template;
+        $view->event = $view->trigger( 'onDisplayShopProductsEdit', array( 'item' => $this->getItem(), 'tabs' => array(), 'content' => array() ) );
+        
         echo $view->render('Shop\Admin\Views::products/edit.php');
     }
     
