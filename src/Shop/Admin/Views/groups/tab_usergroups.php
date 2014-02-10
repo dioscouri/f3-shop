@@ -6,7 +6,7 @@
             <label class="col-md-3">Shop Discount</label>
 
             <div class="col-md-7">
-                <input type="text" name="shop[discount]" value="<?php echo $this->item['shop']['discount']; ?>" class="shop.discount" />
+                <input type="text" name="shop[discount]" value="<?php echo $this->item['shop']['discount']; ?>" class="form-control shop.discount" />
             </div>
             <!-- /.col -->
 

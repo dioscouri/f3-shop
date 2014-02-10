@@ -18,6 +18,6 @@ class Group extends \Dsc\Controller
 		} else {
 			$view->item = array_merge( $prefab->cast(), $view->item->cast() );
 		}
-		return $view->setLayout( 'view.php' )->render('Shop/Admin/Views::groups/tab_usergroups.php');
+		return $view->renderLayout('Shop/Admin/Views::groups/tab_usergroups.php');
 	}	
 }
