@@ -50,6 +50,11 @@ jQuery(document).ready(function(){
                 <li>
                     <a href="#tab-images" data-toggle="tab"> Images </a>
                 </li>
+                <?php foreach ((array) $this->event->getArgument('tabs') as $key => $title ) { ?>
+                <li>
+                    <a href="#tab-<?php echo $key; ?>" data-toggle="tab"> <?php echo $title; ?> </a>
+                </li>
+                <?php } ?>                
             </ul>
             
             <div class="tab-content">
@@ -81,6 +86,12 @@ jQuery(document).ready(function(){
                                         
                 </div>
                 <!-- /.tab-pane -->
+                
+                <?php foreach ((array) $this->event->getArgument('content') as $key => $content ) { ?>
+                <div class="tab-pane" id="tab-<?php echo $key; ?>">
+                    <?php echo $content; ?>
+                </div>
+                <?php } ?>
                 
             </div>
     

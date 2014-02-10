@@ -170,8 +170,8 @@ class Products extends \Dsc\Models\Content
      */
     public function create( $values, $options=array() )
     {
-        $values = $this->prefab( $values, $options )->cast();
-
+        $values = array_merge( $this->prefab()->cast(), $values );
+        
         return $this->save( $values, $options );
     }
     
@@ -191,7 +191,7 @@ class Products extends \Dsc\Models\Content
             $values['variants'] = array();
         }
         
-        $values = $this->prefab( $mapper->cast(), $options )->bind( $values )->cast();
+        $values = array_merge( $mapper->cast(), $values ); 
         
         return $this->save( $values, $options, $mapper );
     }
