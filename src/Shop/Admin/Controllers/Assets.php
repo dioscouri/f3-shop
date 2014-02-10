@@ -11,7 +11,7 @@ class Assets extends \Admin\Controllers\BaseAuth
         $model = new \Shop\Admin\Models\Assets;
         $state = $model->populateState()->getState();
         \Base::instance()->set('state', $state );
-        
+
         $list = $model->paginate();
         \Base::instance()->set('list', $list );
         

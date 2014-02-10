@@ -1,4 +1,4 @@
-<form id="assets" class="searchForm" action="./admin/assets" method="post">
+<form id="assets" class="searchForm" action="./admin/shop/assets" method="post">
         
     <div class="row datatable-header">
         <div class="col-sm-6">
@@ -33,7 +33,7 @@
         <div class="col-md-6 col-lg-4 input-group">
             <select id="bulk-actions" name="bulk_action" class="form-control">
                 <option value="null">-Bulk Actions-</option>
-                <option value="delete" data-action="./admin/assets/delete">Delete</option>
+                <option value="delete" data-action="./admin/shop/assets/delete">Delete</option>
             </select>
             <span class="input-group-btn">
                 <button class="btn btn-default bulk-actions" type="button" data-target="bulk-actions">Apply</button>
