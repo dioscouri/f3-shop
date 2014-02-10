@@ -46,4 +46,24 @@ class Listener extends \Prefab
         
         $event->setArgument('items', $items);
     }
+	
+	public function onDisplayAdminGroupEdit( $event ) {
+        $item = $event->getArgument('item');
+        $tabs = $event->getArgument('tabs');
+        $ontent = $event->getArgument('content');
+        $isNew = $event->getArgument( 'isNew' );
+		$identifier = $event->getArgument( 'identifier' );
+		
+		if( empty( $tabs ) ) {
+			$tabs = array();
+		}
+		if( empty( $content ) ) {
+			$content = array();
+		}
+		$tabs['shop'] = 'Shop Details';
+		$content['shop'] = \Shop\Admin\Controllers\Group::instance()->fetchTabGroups( $item, $isNew, $identifier );
+
+        $event->setArgument('tabs', $tabs);
+        $event->setArgument('content', $content);
+	}
 }
