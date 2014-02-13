@@ -1,7 +1,7 @@
 <?php 
 namespace Shop\Site\Controllers;
 
-class Category extends \Dsc\Controller 
+class Home extends \Dsc\Controller 
 {    
     protected function model($type=null) 
     {
@@ -30,7 +30,7 @@ class Category extends \Dsc\Controller
     	$products_model = $this->model('products');
     	
     	try {
-    	    $category = $this->model('categories')->setState('filter.slug', $slug)->getItem();
+    	    $category = $this->model('categories')->getMapper();
     		$list = $products_model->populateState()->paginate();
     	} catch ( \Exception $e ) {
     	    // TODO Change to a normal 404 error
@@ -41,7 +41,7 @@ class Category extends \Dsc\Controller
     	
     	\Base::instance()->set('category', $category );
     	
-    	\Base::instance()->set('pagetitle', $category->{'metadata.title'});
+    	\Base::instance()->set('pagetitle', '');
     	\Base::instance()->set('subtitle', '');
     	
     	$state = $products_model->getState();
@@ -53,7 +53,7 @@ class Category extends \Dsc\Controller
     	\Base::instance()->set('pagination', $pagination );
     	
     	$view = new \Dsc\Template;
-    	echo $view->render('Shop/Site/Views::category/grid.php');
+    	echo $view->render('Shop/Site/Views::home/index.php');
     	 
     }
 }

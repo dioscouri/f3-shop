@@ -1,7 +1,7 @@
 <?php 
 namespace Shop\Admin\Models;
 
-class Manufacturers extends \Dsc\Models\Content 
+class Manufacturers extends \Dsc\Models\Categories 
 {
     protected $collection = 'shop.manufacturers';
     protected $type = 'shop.manufacturers';

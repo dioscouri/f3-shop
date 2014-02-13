@@ -1,6 +1,3 @@
-<?php //echo \Dsc\Debug::dump( $state, false ); ?>
-<?php //echo \Dsc\Debug::dump( $list ); ?>
-
 <script>
 Dsc.refreshParents = function() {
     var request = jQuery.ajax({

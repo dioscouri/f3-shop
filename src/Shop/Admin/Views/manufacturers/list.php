@@ -1,11 +1,8 @@
-<?php //echo \Dsc\Debug::dump( $state, false ); ?>
-<?php //echo \Dsc\Debug::dump( $list ); ?>
-
 <script>
 Dsc.refreshParents = function() {
     var request = jQuery.ajax({
         type: 'get', 
-        url: './admin/shop/categories/all'
+        url: './admin/shop/manufacturers/all'
     }).done(function(data){
         var lr = jQuery.parseJSON( JSON.stringify(data), false);
         if (lr.result) {
@@ -17,15 +14,15 @@ Dsc.refreshParents = function() {
 
 <div class="row">
     <div class="col-md-9">
-        <form id="categories" class="searchForm" action="./admin/shop/categories" method="post">
+        <form id="manufacturers" class="searchForm" action="./admin/shop/manufacturers" method="post">
         
-            <?php echo $this->renderLayout('Shop/Admin/Views::categories/list_datatable.php'); ?>
+            <?php echo $this->renderLayout('Shop/Admin/Views::manufacturers/list_datatable.php'); ?>
         
         </form>
     </div>
     <div class="col-md-3">
     
-    	<?php echo \Dsc\Request::internal( "\Shop\Admin\Controllers\Category->quickadd" ); ?>
+    	<?php echo \Dsc\Request::internal( "\Shop\Admin\Controllers\Manufacturer->quickadd" ); ?>
 		
     </div>
 </div>

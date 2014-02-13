@@ -1,21 +1,10 @@
-<?php // echo \Dsc\Debug::dump( $flash->get('old'), false ); ?>
-
-<form id="detail-form" action="./admin/shop/category/<?php echo $item->get( $model->getItemKey() ); ?>" class="form" method="post">
+<form id="detail-form" action="./admin/shop/manufacturer/update/<?php echo $item->get( $model->getItemKey() ); ?>" class="form" method="post">
     <div class="row">
         <div class="col-md-12">
-            <div class="form-group">
-                <input type="text" name="title" placeholder="Title" value="<?php echo $flash->old('title'); ?>" class="form-control" />
-            </div>
-            <!-- /.form-group -->
             
-            <div class="form-group">
-                <?php echo $this->renderLayout('categories/list_parents.php'); ?>
-            </div>
-            <!-- /.form-group -->     
-            
-            <div class="form-actions">
+            <div class="form-actions clearfix">
 
-                <div>
+                <div class="pull-right">
                     <div class="btn-group">
                         <button type="submit" class="btn btn-primary">Save</button>
                         <input id="primarySubmit" type="hidden" value="save_edit" name="submitType" />
@@ -36,12 +25,46 @@
                     </div>
                         
                     &nbsp;
-                    <a class="btn btn-default" href="./admin/shop/categories">Cancel</a>
+                    <a class="btn btn-default" href="./admin/shop/manufacturers">Cancel</a>
                 </div>
 
             </div>
             <!-- /.form-group -->
-    
+            
+            <hr />
+            
+            <ul class="nav nav-tabs">
+                <li class="active">
+                    <a href="#tab-basics" data-toggle="tab"> Basics </a>
+                </li>
+                <?php foreach ((array) $this->event->getArgument('tabs') as $key => $title ) { ?>
+                <li>
+                    <a href="#tab-<?php echo $key; ?>" data-toggle="tab"> <?php echo $title; ?> </a>
+                </li>
+                <?php } ?>                
+            </ul>
+            
+            <div class="tab-content">
+
+                <div class="tab-pane active" id="tab-basics">
+                
+                    <div class="form-group">
+                        <label>Title</label>
+                        <input type="text" name="title" placeholder="Title" value="<?php echo $flash->old('title'); ?>" class="form-control" />
+                    </div>
+                    <!-- /.form-group -->
+                    
+                    <div class="form-group">
+                    <label>Slug</label>
+                         <input type="text" name="slug" placeholder="Slug" value="<?php echo $flash->old('slug'); ?>" class="form-control" />
+                    </div>
+                    <!-- /.form-group -->
+                
+                </div>
+                <!-- /.tab-pane -->
+            
+            </div>
+
         </div>
         
     </div>

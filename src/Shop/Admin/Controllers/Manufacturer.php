@@ -46,6 +46,7 @@ class Manufacturer extends \Admin\Controllers\BaseAuth
         \Base::instance()->set('selected', null );
         
         $view = new \Dsc\Template;
+        $view->event = $view->trigger( 'onDisplayShopManufacturersEdit', array( 'item' => $this->getItem(), 'tabs' => array(), 'content' => array() ) );
         echo $view->render('Shop/Admin/Views::manufacturers/create.php');        
     }
     
@@ -63,6 +64,7 @@ class Manufacturer extends \Admin\Controllers\BaseAuth
         \Base::instance()->set('selected', $selected );
         
         $view = new \Dsc\Template;
+        $view->event = $view->trigger( 'onDisplayShopManufacturersEdit', array( 'item' => $this->getItem(), 'tabs' => array(), 'content' => array() ) );
         echo $view->render('Shop/Admin/Views::manufacturers/edit.php');
     }
     

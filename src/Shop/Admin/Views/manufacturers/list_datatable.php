@@ -1,6 +1,3 @@
-<?php //echo \Dsc\Debug::dump( $state, false ); ?>
-<?php //echo \Dsc\Debug::dump( $list ); ?>
-        
 <div class="row datatable-header">
     <div class="col-sm-6">
         <div class="row row-marginless">
@@ -34,7 +31,7 @@
     <div class="col-md-6 col-lg-4 input-group">
         <select id="bulk-actions" name="bulk_action" class="form-control">
             <option value="null">-Bulk Actions-</option>
-            <option value="delete" data-action="./admin/shop/categories/delete">Delete</option>
+            <option value="delete" data-action="./admin/shop/manufacturers/delete">Delete</option>
         </select>
         <span class="input-group-btn">
             <button class="btn btn-default bulk-actions" type="button" data-target="bulk-actions">Apply</button>
@@ -64,23 +61,23 @@
             </td>
             
             <td class="">
-                <a href="./admin/shop/category/<?php echo $item->_id; ?>/edit">
+                <a href="./admin/shop/manufacturer/edit/<?php echo $item->_id; ?>">
                 <?php echo @str_repeat( "&ndash;", substr_count( @$item->path, "/" ) - 1 ) . " " . $item->title; ?>
                 </a>
             </td>
             
             <td class="">
-                <a href="./admin/shop/category/<?php echo $item->_id; ?>/edit">
+                <a href="./admin/shop/manufacturer/edit/<?php echo $item->_id; ?>">
                 <?php echo $item->path; ?>
                 </a>
             </td>
                             
             <td class="text-center">
-                <a class="btn btn-xs btn-secondary" href="./admin/shop/category/<?php echo $item->_id; ?>/edit">
+                <a class="btn btn-xs btn-secondary" href="./admin/shop/manufacturer/edit/<?php echo $item->_id; ?>">
                     <i class="fa fa-pencil"></i>
                 </a>
                 &nbsp;
-                <a class="btn btn-xs btn-danger" data-bootbox="confirm" href="./admin/shop/category/<?php echo $item->_id; ?>/delete">
+                <a class="btn btn-xs btn-danger" data-bootbox="confirm" href="./admin/shop/manufacturer/delete/<?php echo $item->_id; ?>">
                     <i class="fa fa-times"></i>
                 </a>
             </td>

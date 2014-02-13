@@ -41,6 +41,10 @@ switch ($global_app_name)
         $f3->route('GET|POST /admin/shop/manufacturers', '\Shop\Admin\Controllers\Manufacturers->display');
         $f3->route('GET|POST /admin/shop/manufacturers/page/@page', '\Shop\Admin\Controllers\Manufacturers->display');
         $f3->route('GET|POST /admin/shop/manufacturers/delete', '\Shop\Admin\Controllers\Manufacturers->delete');
+
+        $f3->route('GET /admin/shop/manufacturers [ajax]','\Shop\Admin\Controllers\Manufacturers->getDatatable');
+        $f3->route('GET /admin/shop/manufacturers/all [ajax]','\Shop\Admin\Controllers\Manufacturers->getAll');
+        $f3->route('GET|POST /admin/shop/manufacturers/checkboxes [ajax]','\Shop\Admin\Controllers\Manufacturers->getCheckboxes');
         
         $f3->route('GET /admin/shop/manufacturer/create', '\Shop\Admin\Controllers\Manufacturer->create');
         $f3->route('POST /admin/shop/manufacturer/add', '\Shop\Admin\Controllers\Manufacturer->add');
@@ -53,6 +57,21 @@ switch ($global_app_name)
         $f3->route('GET|POST /admin/shop/assets/page/@page', '\Shop\Admin\Controllers\Assets->display');
         $f3->route('GET|POST /admin/shop/assets/delete', '\Shop\Admin\Controllers\Assets->delete');
         
+        $f3->route('GET /admin/shop/collections [ajax]','\Shop\Admin\Controllers\Collections->getDatatable');
+        $f3->route('GET /admin/shop/collections/all [ajax]','\Shop\Admin\Controllers\Collections->getAll');
+        $f3->route('GET|POST /admin/shop/collections/checkboxes [ajax]','\Shop\Admin\Controllers\Collections->getCheckboxes');
+        
+        $f3->route('GET|POST /admin/shop/collections', '\Shop\Admin\Controllers\Collections->display');
+        $f3->route('GET|POST /admin/shop/collections/page/@page', '\Shop\Admin\Controllers\Collections->display');
+        $f3->route('GET|POST /admin/shop/collections/delete', '\Shop\Admin\Controllers\Collections->delete');
+        
+        $f3->route('GET /admin/shop/collection/create', '\Shop\Admin\Controllers\Collection->create');
+        $f3->route('POST /admin/shop/collection/add', '\Shop\Admin\Controllers\Collection->add');
+        $f3->route('GET /admin/shop/collection/read/@id', '\Shop\Admin\Controllers\Collection->read');
+        $f3->route('GET /admin/shop/collection/edit/@id', '\Shop\Admin\Controllers\Collection->edit');
+        $f3->route('POST /admin/shop/collection/update/@id', '\Shop\Admin\Controllers\Collection->update');
+        $f3->route('GET|DELETE /admin/shop/collection/delete/@id', '\Shop\Admin\Controllers\Collection->delete');
+        
         // append this app's UI folder to the path
         $ui = $f3->get('UI');
         $ui .= ";" . $f3->get('PATH_ROOT') . "vendor/dioscouri/f3-shop/src/Shop/Admin/Views/";
@@ -63,9 +82,11 @@ switch ($global_app_name)
         break;
     case "site":
         // TODO register all the routes
+        $f3->route('GET /shop', '\Shop\Site\Controllers\Home->index');
+        $f3->route('GET /shop/page/@page', '\Shop\Site\Controllers\Home->index');        
         $f3->route('GET /shop/product/@slug', '\Shop\Site\Controllers\Product->read');
         $f3->route('GET /shop/category/@slug', '\Shop\Site\Controllers\Category->index');
-        $f3->route('GET /shop/category/@slug/@page', '\Shop\Site\Controllers\Category->index');
+        $f3->route('GET /shop/category/@slug/page/@page', '\Shop\Site\Controllers\Category->index');
 
                 
         // append this app's UI folder to the path

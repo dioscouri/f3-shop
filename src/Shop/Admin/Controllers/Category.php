@@ -46,6 +46,7 @@ class Category extends \Admin\Controllers\BaseAuth
         \Base::instance()->set('selected', null );
         
         $view = new \Dsc\Template;
+        $view->event = $view->trigger( 'onDisplayShopCategoriesEdit', array( 'item' => $this->getItem(), 'tabs' => array(), 'content' => array() ) );
         echo $view->render('Shop/Admin/Views::categories/create.php');        
     }
     
@@ -63,6 +64,7 @@ class Category extends \Admin\Controllers\BaseAuth
         \Base::instance()->set('selected', $selected );
         
         $view = new \Dsc\Template;
+        $view->event = $view->trigger( 'onDisplayShopCategoriesEdit', array( 'item' => $this->getItem(), 'tabs' => array(), 'content' => array() ) );
         echo $view->render('Shop/Admin/Views::categories/edit.php');
     }
     

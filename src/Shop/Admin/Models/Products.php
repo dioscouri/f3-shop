@@ -26,34 +26,8 @@ class Products extends \Dsc\Models\Content
     
     protected function fetchFilters()
     {
-        $this->filters = array();
+        $this->filters = parent::fetchFilters();
     
-        $filter_keyword = $this->getState('filter.keyword');
-        if ($filter_keyword && is_string($filter_keyword))
-        {
-            $key =  new \MongoRegex('/'. $filter_keyword .'/i');
-    
-            $where = array();
-            $where[] = array('metadata.title'=>$key);
-            $where[] = array('details.copy'=>$key);
-            $where[] = array('metadata.creator.name'=>$key);
-    
-            $this->filters['$or'] = $where;
-        }
-    
-        $filter_id = $this->getState('filter.id');
-        if (strlen($filter_id))
-        {
-            $this->filters['_id'] = new \MongoId((string) $filter_id);
-        }
-        
-        $filter_copy_contains = $this->getState('filter.copy-contains');
-        if (strlen($filter_copy_contains))
-        {
-            $key =  new \MongoRegex('/'. $filter_copy_contains .'/i');
-            $this->filters['details.copy'] = $key;
-        }
-        
         $this->filters['metadata.type'] = $this->type;
     
         return $this->filters;

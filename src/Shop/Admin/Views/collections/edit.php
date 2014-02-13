@@ -1,4 +1,4 @@
-<form id="detail-form" action="./admin/shop/category/update/<?php echo $item->get( $model->getItemKey() ); ?>" class="form" method="post">
+<form id="detail-form" action="./admin/shop/collection/update/<?php echo $item->get( $model->getItemKey() ); ?>" class="form" method="post">
     <div class="row">
         <div class="col-md-12">
             
@@ -25,7 +25,7 @@
                     </div>
                         
                     &nbsp;
-                    <a class="btn btn-default" href="./admin/shop/categories">Cancel</a>
+                    <a class="btn btn-default" href="./admin/shop/collections">Cancel</a>
                 </div>
 
             </div>
@@ -59,11 +59,6 @@
                          <input type="text" name="slug" placeholder="Slug" value="<?php echo $flash->old('slug'); ?>" class="form-control" />
                     </div>
                     <!-- /.form-group -->
-                    
-                    <div class="form-group">
-                        <?php echo $this->renderLayout('Shop/Admin/Views::categories/list_parents.php'); ?>
-                    </div>
-                    <!-- /.form-group -->     
                 
                 </div>
                 <!-- /.tab-pane -->

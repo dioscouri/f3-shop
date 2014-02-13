@@ -1,6 +1,3 @@
-<?php //echo \Dsc\Debug::dump( $state, false ); ?>
-<?php //echo \Dsc\Debug::dump( $list ); ?>
-        
 <div class="row datatable-header">
     <div class="col-sm-6">
         <div class="row row-marginless">
@@ -64,23 +61,23 @@
             </td>
             
             <td class="">
-                <a href="./admin/shop/category/<?php echo $item->_id; ?>/edit">
+                <a href="./admin/shop/category/edit/<?php echo $item->_id; ?>">
                 <?php echo @str_repeat( "&ndash;", substr_count( @$item->path, "/" ) - 1 ) . " " . $item->title; ?>
                 </a>
             </td>
             
             <td class="">
-                <a href="./admin/shop/category/<?php echo $item->_id; ?>/edit">
+                <a href="./admin/shop/category/edit/<?php echo $item->_id; ?>">
                 <?php echo $item->path; ?>
                 </a>
             </td>
                             
             <td class="text-center">
-                <a class="btn btn-xs btn-secondary" href="./admin/shop/category/<?php echo $item->_id; ?>/edit">
+                <a class="btn btn-xs btn-secondary" href="./admin/shop/category/edit/<?php echo $item->_id; ?>">
                     <i class="fa fa-pencil"></i>
                 </a>
                 &nbsp;
-                <a class="btn btn-xs btn-danger" data-bootbox="confirm" href="./admin/shop/category/<?php echo $item->_id; ?>/delete">
+                <a class="btn btn-xs btn-danger" data-bootbox="confirm" href="./admin/shop/category/delete/<?php echo $item->_id; ?>">
                     <i class="fa fa-times"></i>
                 </a>
             </td>

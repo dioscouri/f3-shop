@@ -1,21 +1,11 @@
 <?php 
 namespace Shop\Site\Controllers;
 
-class Category extends \Dsc\Controller 
+class Collection extends \Dsc\Controller 
 {    
-    protected function model($type=null) 
+    protected function getModel() 
     {
-        switch (strtolower($type)) 
-        {
-        	case "products":
-        	case "product":
-        	    $model = new \Shop\Admin\Models\Products;
-        	    break;
-        	default:
-        	    $model = new \Shop\Admin\Models\Categories;
-        	    break;
-        }
-        
+        $model = new \Shop\Admin\Models\Products;
         return $model; 
     }
     
@@ -27,11 +17,11 @@ class Category extends \Dsc\Controller
     	
     	$f3 = \Base::instance();
     	$slug = $this->inputfilter->clean( $f3->get('PARAMS.slug'), 'cmd' );
-    	$products_model = $this->model('products');
+    	$model = $this->getModel()->populateState()
+            ->setState('filter.category.slug', $slug);
     	
     	try {
-    	    $category = $this->model('categories')->setState('filter.slug', $slug)->getItem();
-    		$list = $products_model->populateState()->paginate();
+    		$list = $model->paginate();
     	} catch ( \Exception $e ) {
     	    // TODO Change to a normal 404 error
     		\Dsc\System::instance()->addMessage( "Invalid Items: " . $e->getMessage(), 'error');
@@ -39,12 +29,10 @@ class Category extends \Dsc\Controller
     		return;
     	}
     	
-    	\Base::instance()->set('category', $category );
-    	
-    	\Base::instance()->set('pagetitle', $category->{'metadata.title'});
+    	\Base::instance()->set('pagetitle', 'Posts');
     	\Base::instance()->set('subtitle', '');
     	
-    	$state = $products_model->getState();
+    	$state = $model->getState();
     	\Base::instance()->set('state', $state );
     	
     	\Base::instance()->set('list', $list );
@@ -53,7 +41,7 @@ class Category extends \Dsc\Controller
     	\Base::instance()->set('pagination', $pagination );
     	
     	$view = new \Dsc\Template;
-    	echo $view->render('Shop/Site/Views::category/grid.php');
+    	echo $view->render('Blog/Site/Views::posts/category.php');
     	 
     }
 }
