@@ -12,6 +12,9 @@ switch ($global_app_name)
         \Modules\Factory::registerPath( $f3->get('PATH_ROOT') . "vendor/dioscouri/f3-shop/src/Shop/Modules/" );
         
         // register all the routes
+        $f3->route('GET /admin/shop/settings', '\Shop\Admin\Controllers\Settings->display');
+        $f3->route('POST /admin/shop/settings', '\Shop\Admin\Controllers\Settings->save');
+        
         $f3->route('GET|POST /admin/shop/products', '\Shop\Admin\Controllers\Products->display');
         $f3->route('GET|POST /admin/shop/products/page/@page', '\Shop\Admin\Controllers\Products->display');
         $f3->route('GET|POST /admin/shop/products/delete', '\Shop\Admin\Controllers\Products->delete');
