@@ -10,13 +10,11 @@
         <div class="col-md-3 col-sm-4">
             <ul class="nav nav-pills nav-stacked">
                 <li class="active">
+                    <a href="#tab-general" data-toggle="tab"> General Settings </a>
+                </li>            
+                <li>
                     <a href="#tab-home" data-toggle="tab"> Home View </a>
                 </li>
-                <?php /* ?>
-                <li>
-                    <a href="#tab-general" data-toggle="tab"> General Settings </a>
-                </li>
-                */ ?>
                 <?php if (!empty($this->event)) { foreach ((array) $this->event->getArgument('tabs') as $key => $title ) { ?>
                 <li>
                     <a href="#tab-<?php echo $key; ?>" data-toggle="tab"> <?php echo $title; ?> </a>
@@ -28,35 +26,19 @@
         <div class="col-md-9 col-sm-8">
 
             <div class="tab-content stacked-content">
-
-                <div class="tab-pane fade in active" id="tab-home">
-                    <h3 class="">Home View Settings</h3>
-                    <p class="help-block">The home view is the 'landing page' for your shop, available at <a href="./shop" target="_blank">/shop</a>.  Configure its settings below.</p>
-                    <hr/>
-                    
-                    <div class="form-group">
-                        <label class="control-label col-md-3">Include Categories Widget</label>
-                        
-                        <div class="col-md-7">
-                            <label class="radio-inline">
-                                <input type="radio" name="home[include_categories_widget]" value="0" <?php if (!$flash->old('home.include_categories_widget')) { echo "checked"; } ?>> No
-                            </label>
-                            <label class="radio-inline">
-                                <input type="radio" name="home[include_categories_widget]" value="1" <?php if ($flash->old('home.include_categories_widget')) { echo "checked"; } ?>> Yes
-                            </label>
-                        </div>
-                    </div>
-
-                </div>
-
-                <?php /* ?>
-                <div class="tab-pane fade in" id="tab-general">
-                    <h3 class="">General Settings</h3>
-
-                    <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec.</p>
-                </div>
-                */ ?>
+            
+                <div class="tab-pane fade in active" id="tab-general">
                 
+                    <?php echo $this->renderLayout('Shop/Admin/Views::settings/general.php'); ?>
+
+                </div>
+            
+                <div class="tab-pane fade in" id="tab-home">
+                
+                    <?php echo $this->renderLayout('Shop/Admin/Views::settings/home.php'); ?>
+
+                </div>
+
                 <?php if (!empty($this->event)) { foreach ((array) $this->event->getArgument('content') as $key => $content ) { ?>
                 <div class="tab-pane fade in" id="tab-<?php echo $key; ?>">
                     <?php echo $content; ?>
