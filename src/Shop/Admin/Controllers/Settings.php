@@ -26,7 +26,7 @@ class Settings extends \Admin\Controllers\BaseAuth
         }
         $flash->store($item_data);        
         
-        $view = new \Dsc\Template;
+        $view = \Dsc\System::instance()->get('theme');
         echo $view->render('Shop/Admin/Views::settings/default.php');
     }
     

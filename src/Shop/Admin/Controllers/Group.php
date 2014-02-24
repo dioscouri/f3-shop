@@ -10,7 +10,7 @@ class Group extends \Dsc\Controller
 	
 	public function fetchTabGroups( $item, $isNew, $identifier = '' ) {
 		
-        $view = new \Dsc\Template;
+        $view = \Dsc\System::instance()->get('theme');
 		$view->item = $item;
         $prefab = $this->getModel()->prefab();
 		if( !isset($view->item['shop'] ) ) {

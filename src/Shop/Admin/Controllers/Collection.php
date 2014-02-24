@@ -41,7 +41,7 @@ class Collection extends \Admin\Controllers\BaseAuth
 
         $model = new \Shop\Admin\Models\Collections;
         
-        $view = new \Dsc\Template;
+        $view = \Dsc\System::instance()->get('theme');
         $view->event = $view->trigger( 'onDisplayShopCollectionsEdit', array( 'item' => $this->getItem(), 'tabs' => array(), 'content' => array() ) );
         echo $view->render('Shop/Admin/Views::collections/create.php');        
     }
@@ -55,7 +55,7 @@ class Collection extends \Admin\Controllers\BaseAuth
         
         $flash = \Dsc\Flash::instance();
         
-        $view = new \Dsc\Template;
+        $view = \Dsc\System::instance()->get('theme');
         $view->event = $view->trigger( 'onDisplayShopCollectionsEdit', array( 'item' => $this->getItem(), 'tabs' => array(), 'content' => array() ) );        
         echo $view->render('Shop/Admin/Views::collections/edit.php');
     }

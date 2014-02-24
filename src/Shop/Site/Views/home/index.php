@@ -11,7 +11,7 @@
             
             <li class="position-<?php echo $position; ?>">
             <?php $this->item = $item; ?> 
-            <?php echo $this->renderLayout('Shop/Site/Views::category/list_item.php'); ?> 
+            <?php echo $this->renderView('Shop/Site/Views::category/list_item.php'); ?> 
             </li>
             
         <?php } ?>

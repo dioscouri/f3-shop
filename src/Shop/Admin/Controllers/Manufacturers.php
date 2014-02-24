@@ -31,7 +31,7 @@ class Manufacturers extends \Admin\Controllers\BaseAuth
         
         \Base::instance()->set('selected', 'null' );
         
-        $view = new \Dsc\Template;
+        $view = \Dsc\System::instance()->get('theme');
         echo $view->render('Shop/Admin/Views::manufacturers/list.php');
     }
     
@@ -48,7 +48,7 @@ class Manufacturers extends \Admin\Controllers\BaseAuth
         $pagination = new \Dsc\Pagination($list['total'], $list['limit']);
         \Base::instance()->set('pagination', $pagination );
     
-        $view = new \Dsc\Template;
+        $view = \Dsc\System::instance()->get('theme');
         $html = $view->renderLayout('Shop/Admin/Views::manufacturers/list_datatable.php');
         
         return $this->outputJson( $this->getJsonResponse( array(
@@ -65,7 +65,7 @@ class Manufacturers extends \Admin\Controllers\BaseAuth
 
         \Base::instance()->set('selected', 'null' );
         
-        $view = new \Dsc\Template;
+        $view = \Dsc\System::instance()->get('theme');
         $html = $view->renderLayout('Shop/Admin/Views::manufacturers/list_parents.php');
         
         return $this->outputJson( $this->getJsonResponse( array(
@@ -94,7 +94,7 @@ class Manufacturers extends \Admin\Controllers\BaseAuth
         $flash->store( array( 'metadata'=>array('manufacturers'=>$selected) ) );
         \Base::instance()->set('flash', $flash );
         
-        $view = new \Dsc\Template;
+        $view = \Dsc\System::instance()->get('theme');
         $html = $view->renderLayout('Shop/Admin/Views::manufacturers/checkboxes.php');
     
         return $this->outputJson( $this->getJsonResponse( array(
@@ -110,7 +110,7 @@ class Manufacturers extends \Admin\Controllers\BaseAuth
         \Base::instance()->set('manufacturers', $manufacturers );
         \Base::instance()->set('selected', $selected );
          
-        $view = new \Dsc\Template;
+        $view = \Dsc\System::instance()->get('theme');
         echo $view->renderLayout('Shop/Admin/Views::manufacturers/list_parents.php');
     }
 }

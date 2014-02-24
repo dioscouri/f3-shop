@@ -76,9 +76,13 @@ switch ($global_app_name)
         $f3->route('GET|DELETE /admin/shop/collection/delete/@id', '\Shop\Admin\Controllers\Collection->delete');
         
         // append this app's UI folder to the path
+        // new way
+        \Dsc\System::instance()->get('theme')->registerViewPath( __dir__ . '/src/Shop/Admin/Views/', 'Shop/Admin/Views' );
+        // old way
         $ui = $f3->get('UI');
         $ui .= ";" . $f3->get('PATH_ROOT') . "vendor/dioscouri/f3-shop/src/Shop/Admin/Views/";
         $f3->set('UI', $ui);
+        
         
         // TODO set some app-specific settings, if desired
                 
@@ -91,11 +95,14 @@ switch ($global_app_name)
         $f3->route('GET /shop/category/@slug', '\Shop\Site\Controllers\Category->index');
         $f3->route('GET /shop/category/@slug/page/@page', '\Shop\Site\Controllers\Category->index');
 
-                
-        // append this app's UI folder to the path
+        // register the view path
+        // new way
+        \Dsc\System::instance()->get('theme')->registerViewPath( __dir__ . '/src/Shop/Site/Views/', 'Shop/Site/Views' );
+        // old way
         $ui = $f3->get('UI');
         $ui .= ";" . $f3->get('PATH_ROOT') . "vendor/dioscouri/f3-shop/src/Shop/Site/Views/";
         $f3->set('UI', $ui);
+        
         
         break;
 }

@@ -45,7 +45,7 @@ class Manufacturer extends \Admin\Controllers\BaseAuth
         
         \Base::instance()->set('selected', null );
         
-        $view = new \Dsc\Template;
+        $view = \Dsc\System::instance()->get('theme');
         $view->event = $view->trigger( 'onDisplayShopManufacturersEdit', array( 'item' => $this->getItem(), 'tabs' => array(), 'content' => array() ) );
         echo $view->render('Shop/Admin/Views::manufacturers/create.php');        
     }
@@ -63,7 +63,7 @@ class Manufacturer extends \Admin\Controllers\BaseAuth
         $selected = $flash->old('parent');
         \Base::instance()->set('selected', $selected );
         
-        $view = new \Dsc\Template;
+        $view = \Dsc\System::instance()->get('theme');
         $view->event = $view->trigger( 'onDisplayShopManufacturersEdit', array( 'item' => $this->getItem(), 'tabs' => array(), 'content' => array() ) );
         echo $view->render('Shop/Admin/Views::manufacturers/edit.php');
     }
@@ -87,7 +87,7 @@ class Manufacturer extends \Admin\Controllers\BaseAuth
     	$manufacturers = $model->getList();
     	\Base::instance()->set('manufacturers', $manufacturers );
     	 
-    	$view = new \Dsc\Template;
+    	$view = \Dsc\System::instance()->get('theme');
     	echo $view->renderLayout('Shop/Admin/Views::manufacturers/quickadd.php');
     }
 }

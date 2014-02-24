@@ -9,7 +9,7 @@ class MenuItemQuickAdd extends \Admin\Controllers\BaseAuth
 		$categories = $model->getList();
 		\Base::instance()->set('categories', $categories );
 		
-		$view = new \Dsc\Template;
+		$view = \Dsc\System::instance()->get('theme');
 		return $view->renderLayout('Shop/Admin/Views::quickadd/category.php');
 	}
 	
@@ -19,7 +19,7 @@ class MenuItemQuickAdd extends \Admin\Controllers\BaseAuth
 	    $tags = $model->getTags();
 	    \Base::instance()->set('tags', $tags );
 	
-	    $view = new \Dsc\Template;
+	    $view = \Dsc\System::instance()->get('theme');
 	    return $view->renderLayout('Shop/Admin/Views::quickadd/tag.php');
 	}
 }

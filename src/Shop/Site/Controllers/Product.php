@@ -35,7 +35,7 @@ class Product extends \Dsc\Controller
     	
     	\Base::instance()->set('item', $item );
     	
-    	$view = new \Dsc\Template;
+    	$view = \Dsc\System::instance()->get('theme');
     	echo $view->render('Shop/Site/Views::product/detail.php');
     	 
     }

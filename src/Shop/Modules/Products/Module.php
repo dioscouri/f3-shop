@@ -25,8 +25,9 @@ class Module extends \Modules\Abstracts\Module
         $f3->set('UI', $temp_ui);
         
         $f3->set('module', $this);
-        
-        $string = \Dsc\Template::instance()->renderLayout('Shop/Modules/Products/Views::default.php');
+
+        \Dsc\System::instance()->get('theme')->registerViewPath( __dir__ . '/Views/', 'Shop/Modules/Products/Views' );
+        $string = \Dsc\System::instance()->get('theme')->renderLayout('Shop/Modules/Products/Views::default.php');
         
         $f3->set('UI', $old_ui);
         
