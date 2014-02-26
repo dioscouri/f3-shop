@@ -37,6 +37,7 @@
 
             </div>
             <!-- /.form-group -->
+            <input id="primarySubmit" type="hidden" value="save_close" name="submitType" />
         </form>
 
     </div>
