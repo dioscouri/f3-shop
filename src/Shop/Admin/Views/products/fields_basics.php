@@ -1,7 +1,7 @@
 <div class="row">
     <div class="col-md-2">
         
-        <h3>Product Details</h3>
+        <h3>Basics</h3>
         <p class="help-block">Some helpful text</p>
                 
     </div>

@@ -1,144 +1,20 @@
-<form id="list-form" action="./admin/shop/products" method="post">
+<div class="row">
+	<div class="col-xs-12 col-sm-7 col-md-7 col-lg-4">
+		<h1 class="page-title txt-color-blueDark">
+			<i class="fa fa-table fa-fw "></i> 
+				Products 
+			<span> > 
+				List
+			</span>
+		</h1>
+	</div>
+	<div class="col-xs-12 col-sm-5 col-md-5 col-lg-8">
+        <ul id="sparks" class="list-actions list-unstyled list-inline">
+            <li>
+                <a class="btn btn-default" href="./admin/shop/product/create">Add New</a>
+            </li>
+        </ul>            	
+	</div>
+</div>
 
-    <div class="row datatable-header">
-        <div class="col-sm-6">
-            <div class="row row-marginless">
-                <?php if (!empty($list['subset'])) { ?>
-                <div class="col-sm-4">
-                    <?php echo $pagination->getLimitBox( $state->get('list.limit') ); ?>
-                </div>
-                <?php } ?>
-                <?php if (!empty($list['count']) && $list['count'] > 1) { ?>
-                <div class="col-sm-8">
-                    <?php echo $pagination->serve(); ?>
-                </div>
-                <?php } ?>
-            </div>
-        </div>    
-        <div class="col-sm-6">
-            <div class="input-group">
-                <input class="form-control" type="text" name="filter[keyword]" placeholder="Keyword" maxlength="200" value="<?php echo $state->get('filter.keyword'); ?>"> 
-                <span class="input-group-btn">
-                    <input class="btn btn-primary" type="submit" onclick="this.form.submit();" value="Search" />
-                    <button class="btn btn-danger" type="button" onclick="Dsc.resetFormFilters(this.form);">Reset</button>
-                </span>
-            </div>
-        </div>
-    </div>
-    
-    <input type="hidden" name="list[order]" value="<?php echo $state->get('list.order'); ?>" />
-    <input type="hidden" name="list[direction]" value="<?php echo $state->get('list.direction'); ?>" />
-    
-    <div class="row table-actions">
-        <div class="col-md-6 col-lg-4 input-group">
-            <select id="bulk-actions" name="bulk_action" class="form-control">
-                <option value="null">-Bulk Actions-</option>
-                <option value="delete" data-action="./admin/shop/products/delete">Delete</option>
-            </select>
-            <span class="input-group-btn">
-                <button class="btn btn-default bulk-actions" type="button" data-target="bulk-actions">Apply</button>
-            </span>
-        </div>
-    </div>
-
-    <div class="table-responsive datatable">
-    
-    <table class="table table-striped table-bordered table-hover table-highlight table-checkable">
-		<thead>
-			<tr>
-			    <th class="checkbox-column"><input type="checkbox" class="icheck-input"></th>
-			    <th class="col-md-1"></th>
-				<th data-sortable="metadata.title">Title</th>
-				<th>Categories</th>
-				<th>Tags</th>
-				<th data-sortable="publication.start_date">Publication</th>
-				<th class="col-md-1"></th>
-			</tr>
-		</thead>
-		<tbody>    
-    
-        <?php if (!empty($list['subset'])) { ?>
-    
-        <?php foreach ($list['subset'] as $item) { ?>
-            <tr>
-                <td class="checkbox-column">
-                    <input type="checkbox" class="icheck-input" name="ids[]" value="<?php echo $item->id; ?>">
-                </td>
-                
-                <td class="">
-                    <?php if ($item->{'details.featured_image.slug'}) { ?>
-                        <div class="thumbnail text-center">
-                        	<div class="thumbnail-view">
-                        		<a class="thumbnail-view-hover ui-lightbox" href="./asset/<?php echo $item->{'details.featured_image.slug'}; ?>">
-                        		</a>
-                                <img src="./asset/thumb/<?php echo $item->{'details.featured_image.slug'}; ?>" />
-    				        </div>
-    				    </div> <!-- /.thumbnail -->                    	
-                    <?php } ?>
-                </td>
-                                            
-                <td class="">
-                    <h5>
-                    <a href="./admin/shop/product/edit/<?php echo $item->id; ?>">
-                    <?php echo $item->{'metadata.title'}; ?>
-                    </a>
-                    </h5>
-                    
-                    <p class="help-block">
-                    /<?php echo $item->{'metadata.slug'}; ?>
-                    </p>                    
-                </td>
-                
-                <td class="">
-                <?php echo implode(", ", \Joomla\Utilities\ArrayHelper::getColumn( (array) $item->{'metadata.categories'}, 'title' ) ); ?>
-                </td>
-                
-                <td class="">
-                <?php echo implode(", ", (array) $item->{'metadata.tags'} ); ?>
-                </td>
-                
-                <td class="">
-                    <div><?php echo ucwords( $item->{'publication.status'} ); ?></div>
-                    <div><?php if ($item->{'publication.start_date'}) { echo "Up: " . $item->{'publication.start_date'}; } ?></div>
-                    <div><?php if ($item->{'publication.end_date'}) { echo "Down: " . $item->{'publication.end_date'}; } ?></div>
-                </td>
-                                
-                <td class="text-center">
-                    <a class="btn btn-xs btn-secondary" href="./admin/shop/product/edit/<?php echo $item->id; ?>">
-                        <i class="fa fa-pencil"></i>
-                    </a>
-                    &nbsp;
-                    <a class="btn btn-xs btn-danger" data-bootbox="confirm" href="./admin/shop/product/delete/<?php echo $item->id; ?>">
-                        <i class="fa fa-times"></i>
-                    </a>
-                </td>
-            </tr>
-        <?php } ?>
-        
-        <?php } else { ?>
-            <tr>
-            <td colspan="100">
-                <div class="">No items found.</div>
-            </td>
-            </tr>
-        <?php } ?>
-
-        </tbody>
-    </table>
-    
-    </div>
-    
-    <div class="row datatable-footer">
-        <?php if (!empty($list['count']) && $list['count'] > 1) { ?>
-        <div class="col-sm-10">
-            <?php echo (!empty($list['count']) && $list['count'] > 1) ? $pagination->serve() : null; ?>
-        </div>
-        <?php } ?>
-        <div class="col-sm-2 pull-right">
-            <div class="datatable-results-count pull-right">
-            <?php echo $pagination ? $pagination->getResultsCounter() : null; ?>
-            </div>
-        </div>        
-    </div>
-
-</form>
+<?php echo $this->renderView('Shop/Admin/Views::products/list_datatable.php'); ?>

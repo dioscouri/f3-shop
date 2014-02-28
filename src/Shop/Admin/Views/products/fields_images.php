@@ -1,3 +1,5 @@
+<div class="clearfix">
+
 <div class="col-md-8">
 
     <div class="portlet">
@@ -79,3 +81,5 @@
 
 </div>
 <!-- /.col-md-4 -->
+
+</div>
