@@ -1,7 +1,7 @@
 <?php 
 namespace Shop\Admin\Models;
 
-class Group extends \Users\Admin\Models\Groups
+class Group extends \Users\Models\Groups
 {
 
     public function __construct($config=array())
