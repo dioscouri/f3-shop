@@ -1,4 +1,4 @@
-<form class="form-horizontal" action="./admin/menu" method="post">
+<form class="form-horizontal" action="./admin/menu/create" method="post">
 	<div class="form-group">
 		<label for="link-url" class="col-sm-4 control-label">Category</label>
 		<div class="col-sm-8">

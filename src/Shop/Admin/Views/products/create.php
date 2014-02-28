@@ -7,7 +7,8 @@ jQuery(document).ready(function(){
 
 <div class="well">
 
-<form id="detail-form" action="./admin/shop/product/add" class="form" method="post">
+<form id="detail-form" class="form" method="post">
+
     <div class="row">
     
         <div class="col-md-12">

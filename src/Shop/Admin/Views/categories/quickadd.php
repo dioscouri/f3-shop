@@ -10,7 +10,7 @@
     <div class="portlet-content">
         <div id="quick-form-response-container"></div>
 
-        <form id="quick-form" action="./admin/shop/category/add"
+        <form id="quick-form" action="./admin/shop/category/create"
             class="form dsc-ajax-form" method="post"
             data-callback="Dsc.refreshParents"
             data-message_container="quick-form-response-container"

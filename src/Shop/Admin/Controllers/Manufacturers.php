@@ -13,7 +13,7 @@ class Manufacturers extends \Admin\Controllers\BaseAuth
         return $model;
     }
     
-    public function display()
+    public function index()
     {
         \Base::instance()->set('pagetitle', 'Manufacturers');
         \Base::instance()->set('subtitle', '');
