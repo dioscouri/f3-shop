@@ -13,7 +13,7 @@ class Categories extends \Admin\Controllers\BaseAuth
         return $model;
     }
     
-    public function display()
+    public function index()
     {
         \Base::instance()->set('pagetitle', 'Categories');
         \Base::instance()->set('subtitle', '');

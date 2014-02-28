@@ -3,7 +3,7 @@ namespace Shop\Admin\Controllers;
 
 class Products extends \Admin\Controllers\BaseAuth 
 {
-    public function display()
+    public function index()
     {
         \Base::instance()->set('pagetitle', 'Products');
         \Base::instance()->set('subtitle', '');

@@ -3,7 +3,7 @@ namespace Shop\Admin\Controllers;
 
 class Settings extends \Admin\Controllers\BaseAuth 
 {
-    public function display()
+    public function index()
     {
         \Base::instance()->set('pagetitle', 'Settings');
         \Base::instance()->set('subtitle', '');

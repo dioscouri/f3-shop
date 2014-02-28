@@ -13,7 +13,7 @@ class Collections extends \Admin\Controllers\BaseAuth
         return $model;
     }
     
-    public function display()
+    public function index()
     {
         \Base::instance()->set('pagetitle', 'Collections');
         \Base::instance()->set('subtitle', '');

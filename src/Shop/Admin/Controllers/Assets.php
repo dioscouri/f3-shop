@@ -3,7 +3,7 @@ namespace Shop\Admin\Controllers;
 
 class Assets extends \Admin\Controllers\BaseAuth 
 {
-    public function display()
+    public function index()
     {
         \Base::instance()->set('pagetitle', 'Assets');
         \Base::instance()->set('subtitle', '');
