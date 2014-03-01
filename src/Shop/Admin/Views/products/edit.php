@@ -5,16 +5,9 @@ jQuery(document).ready(function(){
 });
 </script>
 
-<<<<<<< HEAD
 <div class="well">
 
-<form id="detail-form" action="./admin/shop/product/update/<?php echo $flash->old('_id'); ?>" class="form" method="post">
-=======
 <form id="detail-form" class="form" method="post">
-    <div class="row">
-    
-        <div class="col-md-12">
->>>>>>> c0f1b3ebd40adbf9c70306660c1264c88bdebaa7
         
     <div class="clearfix">
 
