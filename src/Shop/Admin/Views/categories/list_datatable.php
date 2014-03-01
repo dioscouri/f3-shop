@@ -4,12 +4,14 @@
         <div class="col-xs-12 col-sm-5 col-md-5 col-lg-8">
         </div>
         <div class="col-xs-12 col-sm-7 col-md-7 col-lg-4">
-            <div class="input-group">
-                <input class="form-control" type="text" name="filter[keyword]" placeholder="Search..." maxlength="200" value="<?php echo $state->get('filter.keyword'); ?>"> 
-                <span class="input-group-btn">
-                    <input class="btn btn-primary" type="submit" onclick="this.form.submit();" value="Search" />
-                    <button class="btn btn-danger" type="button" onclick="Dsc.resetFormFilters(this.form);">Reset</button>
-                </span>
+            <div class="form-group">
+                <div class="input-group">
+                    <input class="form-control" type="text" name="filter[keyword]" placeholder="Search..." maxlength="200" value="<?php echo $state->get('filter.keyword'); ?>"> 
+                    <span class="input-group-btn">
+                        <input class="btn btn-primary" type="submit" onclick="this.form.submit();" value="Search" />
+                        <button class="btn btn-danger" type="button" onclick="Dsc.resetFormFilters(this.form);">Reset</button>
+                    </span>
+                </div>
             </div>
         </div>
     </div>

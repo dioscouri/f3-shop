@@ -1,9 +1,10 @@
-<form id="list-form" action="./admin/shop/products" method="post">
+<form class="searchForm" method="post">
 
     <div class="no-padding">
     
         <div class="row">
             <div class="col-xs-12 col-sm-5 col-md-5 col-lg-8">
+                <?php /* ?>
                 <ul class="list-filters list-unstyled list-inline">
                     <li>
                         <a class="btn btn-link">Advanced Filtering</a>
@@ -14,15 +15,18 @@
                     <li>
                         <a class="btn btn-link">Quicklink Filter</a>
                     </li>                    
-                </ul>            
+                </ul>    
+                */ ?>        
             </div>
             <div class="col-xs-12 col-sm-7 col-md-7 col-lg-4">
-                <div class="input-group">
-                    <input class="form-control" type="text" name="filter[keyword]" placeholder="Search..." maxlength="200" value="<?php echo $state->get('filter.keyword'); ?>"> 
-                    <span class="input-group-btn">
-                        <input class="btn btn-primary" type="submit" onclick="this.form.submit();" value="Search" />
-                        <button class="btn btn-danger" type="button" onclick="Dsc.resetFormFilters(this.form);">Reset</button>
-                    </span>
+                <div class="form-group">
+                    <div class="input-group">
+                        <input class="form-control" type="text" name="filter[keyword]" placeholder="Search..." maxlength="200" value="<?php echo $state->get('filter.keyword'); ?>"> 
+                        <span class="input-group-btn">
+                            <input class="btn btn-primary" type="submit" onclick="this.form.submit();" value="Search" />
+                            <button class="btn btn-danger" type="button" onclick="Dsc.resetFormFilters(this.form);">Reset</button>
+                        </span>
+                    </div>
                 </div>
             </div>
         </div>
