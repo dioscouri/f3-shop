@@ -21,7 +21,7 @@
             <div class="portlet-content">
             
                 <div class="input-group">
-                    <input name="metadata[tags]" data-tags='<?php echo json_encode( $all_tags ); ?>' value="<?php echo implode(",", (array) $flash->old('metadata.tags') ); ?>" type="text" class="form-control ui-select2-tags" /> 
+                    <input name="tags" data-tags='<?php echo json_encode( $all_tags ); ?>' value="<?php echo implode(",", (array) $flash->old('tags') ); ?>" type="text" class="form-control ui-select2-tags" /> 
                 </div>
                 <!-- /.form-group -->
 

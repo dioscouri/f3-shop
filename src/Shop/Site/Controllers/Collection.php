@@ -5,7 +5,7 @@ class Collection extends \Dsc\Controller
 {    
     protected function getModel() 
     {
-        $model = new \Shop\Admin\Models\Products;
+        $model = new \Shop\Models\Products;
         return $model; 
     }
     

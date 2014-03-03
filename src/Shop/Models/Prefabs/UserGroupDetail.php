@@ -1,5 +1,5 @@
 <?php 
-namespace Shop\Prefabs;
+namespace Shop\Models\Prefabs;
 
 class UserGroupDetail extends \Dsc\Prefabs
 {

@@ -8,16 +8,13 @@ class Products extends \Admin\Controllers\BaseAuth
         \Base::instance()->set('pagetitle', 'Products');
         \Base::instance()->set('subtitle', '');
         
-        $model = new \Shop\Admin\Models\Products;
+        $model = new \Shop\Models\Products;
         $state = $model->populateState()->getState();
         \Base::instance()->set('state', $state );
         
-        $list = $model->paginate();
-        \Base::instance()->set('list', $list );
-        
-        $pagination = new \Dsc\Pagination($list['total'], $list['limit']);       
-        \Base::instance()->set('pagination', $pagination );
-        
+        $paginated = $model->paginate();     
+        \Base::instance()->set('paginated', $paginated );
+                
         $view = \Dsc\System::instance()->get('theme');
         echo $view->render('Shop\Admin\Views::products/list.php');
     }

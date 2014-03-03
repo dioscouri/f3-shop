@@ -1,5 +1,5 @@
 <?php 
-namespace Shop\Prefabs;
+namespace Shop\Models\Prefabs;
 
 class Price extends \Dsc\Prefabs
 {

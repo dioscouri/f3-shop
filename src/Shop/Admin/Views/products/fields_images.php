@@ -13,7 +13,7 @@
 
         <div class="portlet-content">
 
-            <?php echo \Assets\Admin\Controllers\Assets::instance()->fetchElementImage('featured_image', $flash->old('details.featured_image.slug'), array('field'=>'details[featured_image][slug]') ); ?>
+            <?php echo \Assets\Admin\Controllers\Assets::instance()->fetchElementImage('featured_image', $flash->old('featured_image.slug'), array('field'=>'featured_image[slug]') ); ?>
         
         </div>
         <!-- /.portlet-content -->

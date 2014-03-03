@@ -11,7 +11,7 @@
         
         
             <?php 
-            if ($variants = \Shop\Admin\Models\Products::instance()->getVariants( $flash->get('old') )) 
+            if ($variants = (new \Shop\Models\Products)->getVariants( $flash->get('old') )) 
             {
                 ?>
                 <div class="panel panel-default">

@@ -1,5 +1,5 @@
 <?php 
-namespace Shop\Prefabs;
+namespace Shop\Models\Prefabs;
 
 class Variant extends \Dsc\Prefabs
 {
@@ -9,7 +9,7 @@ class Variant extends \Dsc\Prefabs
      */
     protected $document = array(
         'id'=>null,             // (string) MongoId
-        'attributes'=>array(),  // array of \Shop\Prefabs\Attribute (string) ids
+        'attributes'=>array(),  // array of \Shop\Models\Prefabs\Attribute (string) ids
         'sku'=>null,        
         'price'=>null,          // alternative base price.  FINAL price override for this variant.  given priority over attribute price_changes.        
         'quantity'=>null,

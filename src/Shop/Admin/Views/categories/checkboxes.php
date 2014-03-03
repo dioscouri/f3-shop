@@ -1,7 +1,7 @@
 <?php if (!empty($categories)) { ?>
 <div class="max-height-200 list-group-item">
     
-    <?php $current = \Joomla\Utilities\ArrayHelper::getColumn( (array) $flash->old('metadata.categories'), 'id' ); ?>
+    <?php $current = \Joomla\Utilities\ArrayHelper::getColumn( (array) $flash->old('categories'), 'id' ); ?>
     <?php foreach ($categories as $one) { ?>
     <div class="checkbox">
         <label>

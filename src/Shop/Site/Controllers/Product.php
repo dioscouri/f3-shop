@@ -9,7 +9,7 @@ class Product extends \Dsc\Controller
         {
         	case "products":
         	case "product":
-        	    $model = new \Shop\Admin\Models\Products;
+        	    $model = new \Shop\Models\Products;
         	    break;
         	default:
         	    $model = new \Shop\Admin\Models\Categories;

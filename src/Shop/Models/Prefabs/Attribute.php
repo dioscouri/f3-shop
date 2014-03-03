@@ -1,5 +1,5 @@
 <?php 
-namespace Shop\Prefabs;
+namespace Shop\Models\Prefabs;
 
 class Attribute extends \Dsc\Prefabs
 {
@@ -12,7 +12,7 @@ class Attribute extends \Dsc\Prefabs
         'title'=>null,          // e.g. "Sleeve Length" 
         'ordering'=>0,          // allows you to put "Sleeve Length" after "Color" on the product detail page
         'type'=>'selectlist',   // selectlist only for now
-        'options'=>array(       // array of \Shop\Prefabs\AttributeOption objects
+        'options'=>array(       // array of \Shop\Models\Prefabs\AttributeOption objects
             /*            
             'id'=>null,                     // (string) MongoId, unique id for this attribute option
             'value'=>null,                  // e.g. "Short", "Long", "Three-Quarter"

@@ -3,7 +3,7 @@ namespace Shop\Admin\Controllers;
 
 class Product extends \Admin\Controllers\BaseAuth 
 {
-    use \Dsc\Traits\Controllers\CrudItem;
+    use \Dsc\Traits\Controllers\CrudItemCollection;
 
     protected $list_route = '/admin/shop/products';
     protected $create_item_route = '/admin/shop/product/create';
@@ -12,7 +12,7 @@ class Product extends \Admin\Controllers\BaseAuth
     
     protected function getModel() 
     {
-        $model = new \Shop\Admin\Models\Products;
+        $model = new \Shop\Models\Products;
         return $model; 
     }
     
@@ -50,8 +50,7 @@ class Product extends \Admin\Controllers\BaseAuth
         $use_flash = \Dsc\System::instance()->getUserState('use_flash.' . $this->create_item_route);
         if (!$use_flash) {
             // this is a brand-new create, so store the prefab data
-            $prefab = $this->getModel()->prefab();
-            $flash->store( $prefab->cast() );
+            $flash->store( $this->getModel()->cast() );
         }        
         
         $input = $flash->old('category_ids');

@@ -50,14 +50,14 @@
                 <div class="col-xs-12 col-sm-7 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3">
                     <div class="row text-align-right">
                         <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10">
-                            <?php if (!empty($list['count']) && $list['count'] > 1 && !empty($pagination)) { ?>
-                                <?php echo $pagination->serve(); ?>
+                            <?php if (!empty($paginated->total_pages) && $paginated->total_pages > 1) { ?>
+                                <?php echo $paginated->serve(); ?>
                             <?php } ?>
                         </div>
-                        <?php if (!empty($list['subset'])) { ?>
+                        <?php if (!empty($paginated->items)) { ?>
                         <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
                             <span class="pagination">
-                            <?php echo $pagination->getLimitBox( $state->get('list.limit') ); ?>
+                            <?php echo $paginated->getLimitBox( $state->get('list.limit') ); ?>
                             </span>
                         </div>
                         <?php } ?>
@@ -87,21 +87,21 @@
         	</thead>
         	<tbody>    
         
-            <?php if (!empty($list['subset'])) { ?>
-        
-            <?php foreach ($list['subset'] as $item) { ?>
+            <?php if (!empty($paginated->items)) { ?>
+            
+                <?php foreach($paginated->items as $item) { ?>
                 <tr>
                     <td class="checkbox-column">
                         <input type="checkbox" class="icheck-input" name="ids[]" value="<?php echo $item->id; ?>">
                     </td>
                     
                     <td class="">
-                        <?php if ($item->{'details.featured_image.slug'}) { ?>
+                        <?php if ($item->{'featured_image.slug'}) { ?>
                             <div class="thumbnail text-center">
                             	<div class="thumbnail-view">
-                            		<a class="thumbnail-view-hover ui-lightbox" href="./asset/<?php echo $item->{'details.featured_image.slug'}; ?>">
+                            		<a class="thumbnail-view-hover ui-lightbox" href="./asset/<?php echo $item->{'featured_image.slug'}; ?>">
                             		</a>
-                                    <img src="./asset/thumb/<?php echo $item->{'details.featured_image.slug'}; ?>" />
+                                    <img src="./asset/thumb/<?php echo $item->{'featured_image.slug'}; ?>" />
         				        </div>
         				    </div> <!-- /.thumbnail -->                    	
                         <?php } ?>
@@ -110,21 +110,21 @@
                     <td class="">
                         <h5>
                         <a href="./admin/shop/product/edit/<?php echo $item->id; ?>">
-                        <?php echo $item->{'metadata.title'}; ?>
+                        <?php echo $item->{'title'}; ?>
                         </a>
                         </h5>
                         
                         <p class="help-block">
-                        /<?php echo $item->{'metadata.slug'}; ?>
+                        /<?php echo $item->{'slug'}; ?>
                         </p>                    
                     </td>
                     
                     <td class="">
-                    <?php echo implode(", ", \Joomla\Utilities\ArrayHelper::getColumn( (array) $item->{'metadata.categories'}, 'title' ) ); ?>
+                    <?php echo implode(", ", \Joomla\Utilities\ArrayHelper::getColumn( (array) $item->{'categories'}, 'title' ) ); ?>
                     </td>
                     
                     <td class="">
-                    <?php echo implode(", ", (array) $item->{'metadata.tags'} ); ?>
+                    <?php echo implode(", ", (array) $item->{'tags'} ); ?>
                     </td>
                     
                     <td class="">
@@ -162,17 +162,17 @@
         <div class="dt-row dt-bottom-row">
             <div class="row">
                 <div class="col-sm-10">
-                <?php if (!empty($list['count']) && $list['count'] > 1 && !empty($pagination)) { ?>
-                    <?php echo (!empty($list['count']) && $list['count'] > 1) ? $pagination->serve() : null; ?>
-                <?php } ?>
+                    <?php if (!empty($paginated->total_pages) && $paginated->total_pages > 1) { ?>
+                        <?php echo $paginated->serve(); ?>
+                    <?php } ?>
                 </div>
                 <div class="col-sm-2">
                     <div class="datatable-results-count pull-right">
                         <span class="pagination">
-                            <?php echo (!empty($pagination)) ? $pagination->getResultsCounter() : null; ?>
+                            <?php echo (!empty($paginated->total_pages)) ? $paginated->getResultsCounter() : null; ?>
                         </span>
                     </div>
-                </div>        
+                </div>
             </div>
         </div>
     
