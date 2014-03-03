@@ -4,10 +4,10 @@
 
     <div>
     
-    <?php if (!empty($list['subset'])) { ?>
+    <?php if (!empty($paginated->items)) { ?>
         <ul class="list-inline">
-        <?php foreach ($list['subset'] as $position=>$item) { ?>
-            <?php $item->_url = './shop/product/' . $item->{'metadata.slug'}; ?>
+        <?php foreach ($paginated->items as $position=>$item) { ?>
+            <?php $item->_url = './shop/product/' . $item->{'slug'}; ?>
             
             <li class="position-<?php echo $position; ?>">
             <?php $this->item = $item; ?> 
@@ -17,18 +17,22 @@
         <?php } ?>
         </ul>
 
-        <div class="row datatable-footer">
-            <?php if (!empty($list['count']) && $list['count'] > 1) { ?>
-            <div class="col-sm-10">
-                <?php echo (!empty($list['count']) && $list['count'] > 1) ? $pagination->serve() : null; ?>
-            </div>
-            <?php } ?>
-            <div class="col-sm-2 pull-right">
-                <div class="datatable-results-count pull-right">
-                <?php echo $pagination ? $pagination->getResultsCounter() : null; ?>
+        <div class="dt-row dt-bottom-row">
+            <div class="row">
+                <div class="col-sm-10">
+                    <?php if (!empty($paginated->total_pages) && $paginated->total_pages > 1) { ?>
+                        <?php echo $paginated->serve(); ?>
+                    <?php } ?>
+                </div>
+                <div class="col-sm-2">
+                    <div class="datatable-results-count pull-right">
+                        <span class="pagination">
+                            <?php echo (!empty($paginated->total_pages)) ? $paginated->getResultsCounter() : null; ?>
+                        </span>
+                    </div>
                 </div>
             </div>
-        </div>    
+        </div>
     
     <?php } else { ?>
         

@@ -4,7 +4,7 @@
 
     <div class="dsc-wrap product-info">
         <h3 class="dsc-wrap product_name">
-            <a href="<?php echo $item->_url; ?>"> <?php echo $item->{'metadata.title'}; ?> </a>
+            <a href="<?php echo $item->_url; ?>"> <?php echo $item->{'title'}; ?> </a>
         </h3>    
 
         <div class="dsc-wrap product-price-wrapper">
@@ -12,11 +12,11 @@
         </div>
     </div>
     
-    <?php if ($item->{'details.featured_image.slug'}) { ?>
+    <?php if ($item->{'featured_image.slug'}) { ?>
     <div class="product_thumb dsc-wrap">
         <div class="dsc-wrap product_listimage">
             <a href="<?php echo $item->_url; ?>">
-                <img src="./asset/thumb/<?php echo $item->{'details.featured_image.slug'}; ?>" title="<?php echo $item->{'metadata.title'}; ?>" alt="<?php echo $item->{'metadata.title'}; ?>">
+                <img src="./asset/thumb/<?php echo $item->{'featured_image.slug'}; ?>" title="<?php echo $item->{'title'}; ?>" alt="<?php echo $item->{'title'}; ?>">
             </a>
         </div>
     </div>

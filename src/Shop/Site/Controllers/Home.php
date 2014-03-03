@@ -31,7 +31,7 @@ class Home extends \Dsc\Controller
     	
     	try {
     	    $category = $this->model('categories')->getMapper();
-    		$list = $products_model->populateState()->paginate();
+    		$paginated = $products_model->populateState()->paginate();
     	} catch ( \Exception $e ) {
     	    // TODO Change to a normal 404 error
     		\Dsc\System::instance()->addMessage( "Invalid Items: " . $e->getMessage(), 'error');
@@ -47,10 +47,7 @@ class Home extends \Dsc\Controller
     	$state = $products_model->getState();
     	\Base::instance()->set('state', $state );
     	
-    	\Base::instance()->set('list', $list );
-    	
-    	$pagination = new \Dsc\Pagination($list['total'], $list['limit']);
-    	\Base::instance()->set('pagination', $pagination );
+    	\Base::instance()->set('paginated', $paginated );
     	
     	$view = \Dsc\System::instance()->get('theme');
     	echo $view->render('Shop/Site/Views::home/index.php');

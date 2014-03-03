@@ -21,7 +21,7 @@ class Collection extends \Dsc\Controller
             ->setState('filter.category.slug', $slug);
     	
     	try {
-    		$list = $model->paginate();
+    		$paginated = $model->paginate();
     	} catch ( \Exception $e ) {
     	    // TODO Change to a normal 404 error
     		\Dsc\System::instance()->addMessage( "Invalid Items: " . $e->getMessage(), 'error');
@@ -35,10 +35,7 @@ class Collection extends \Dsc\Controller
     	$state = $model->getState();
     	\Base::instance()->set('state', $state );
     	
-    	\Base::instance()->set('list', $list );
-    	
-    	$pagination = new \Dsc\Pagination($list['total'], $list['limit']);
-    	\Base::instance()->set('pagination', $pagination );
+    	\Base::instance()->set('paginated', $paginated );
     	
     	$view = \Dsc\System::instance()->get('theme');
     	echo $view->render('Shop/Site/Views::posts/category.php');
