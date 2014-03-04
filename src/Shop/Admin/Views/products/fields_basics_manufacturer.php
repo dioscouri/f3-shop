@@ -13,8 +13,7 @@
 
             <select name="manufacturer[id]" class="form-control">
                 <option value="">None</option>
-                <?php $items = \Shop\Models\Manufacturers::find(); ?>
-                <?php foreach ($items as $one) { ?>
+                <?php foreach (\Shop\Models\Manufacturers::find() as $one) { ?>
                     <option value="<?php echo $one->id; ?>" <?php if ($one->id == $flash->old('manufacturer.id')) { echo "selected='selected'"; } ?>><?php echo $one->title; ?></option>                    
                 <?php } ?> 
             </select>

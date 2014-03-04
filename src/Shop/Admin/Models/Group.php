@@ -21,7 +21,7 @@ class Group extends \Users\Models\Groups
     
     public function prefab( $source=array(), $options=array() ) 
     {
-        $prefab = new \Shop\Prefabs\UserGroupDetail($source, $options);
+        $prefab = new \Shop\Models\Prefabs\UserGroupDetail($source, $options);
         
         return $prefab;
     }

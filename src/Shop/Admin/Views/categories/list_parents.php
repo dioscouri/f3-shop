@@ -1,4 +1,4 @@
-<?php if (!empty($categories)) { ?>
+<?php if ($categories = \Shop\Models\Categories::find()) { ?>
 <label>Parent</label> 
 <select name="parent" class="form-control">
     <option value="null">None</option>

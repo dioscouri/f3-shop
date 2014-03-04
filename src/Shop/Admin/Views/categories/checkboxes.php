@@ -1,4 +1,4 @@
-<?php if (!empty($categories)) { ?>
+<?php if ($categories = \Shop\Models\Categories::find()) { ?>
 <div class="max-height-200 list-group-item">
     
     <?php $current = \Joomla\Utilities\ArrayHelper::getColumn( (array) $flash->old('categories'), 'id' ); ?>

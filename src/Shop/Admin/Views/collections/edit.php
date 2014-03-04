@@ -1,3 +1,10 @@
+<script src="./ckeditor/ckeditor.js"></script>
+<script>
+jQuery(document).ready(function(){
+    CKEDITOR.replaceAll( 'wysiwyg' );    
+});
+</script>
+
 <div class="well">
 
 <form id="detail-form" class="form" method="post">
@@ -39,31 +46,27 @@
                 <li class="active">
                     <a href="#tab-basics" data-toggle="tab"> Basics </a>
                 </li>
-                <?php foreach ((array) $this->event->getArgument('tabs') as $key => $title ) { ?>
+                <?php if (!empty($this->event)) { foreach ((array) $this->event->getArgument('tabs') as $key => $title ) { ?>
                 <li>
                     <a href="#tab-<?php echo $key; ?>" data-toggle="tab"> <?php echo $title; ?> </a>
                 </li>
-                <?php } ?>                
+                <?php } } ?>                
             </ul>
             
-            <div class="tab-content">
+            <div class="tab-content padding-10">
 
                 <div class="tab-pane active" id="tab-basics">
                 
-                    <div class="form-group">
-                        <label>Title</label>
-                        <input type="text" name="title" placeholder="Title" value="<?php echo $flash->old('title'); ?>" class="form-control" />
-                    </div>
-                    <!-- /.form-group -->
-                    
-                    <div class="form-group">
-                    <label>Slug</label>
-                         <input type="text" name="slug" placeholder="Slug" value="<?php echo $flash->old('slug'); ?>" class="form-control" />
-                    </div>
-                    <!-- /.form-group -->
+                    <?php echo $this->renderLayout('Shop/Admin/Views::collections/fields_basics.php'); ?>
                 
                 </div>
                 <!-- /.tab-pane -->
+                
+                <?php if (!empty($this->event)) { foreach ((array) $this->event->getArgument('content') as $key => $content ) { ?>
+                <div class="tab-pane" id="tab-<?php echo $key; ?>">
+                    <?php echo $content; ?>
+                </div>
+                <?php } } ?>
             
             </div>
 

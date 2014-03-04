@@ -1,21 +1,28 @@
 <?php 
-namespace Shop\Admin\Models;
+namespace Shop\Models;
 
-class Variants extends \Dsc\Models\Db\Mongo 
+/**
+ * UNFINISHED Class ultimately intended to simplify Variant management 
+ * so it doesn't all have to go through the Products model
+ * 
+ * @author Rafael Diaz-Tushman
+ *
+ */
+class Variants extends \Dsc\Mongo\Collection 
 {
-    protected $collection = 'shop.products';
-    protected $type = 'shop.products';
-    protected $default_ordering_direction = '1';
-    protected $default_ordering_field = 'metadata.title';
-
-    /**
-     * Gets the prefab
-     */
-    public function prefab( $source=array(), $options=array() ) 
-    {
-        $prefab = new \Shop\Prefabs\Variant($source, $options);
-        return $prefab;
-    }
+    public $attributes = array();  // array of \Shop\Models\Prefabs\Attribute (string) ids
+    public $sku = null;
+    public $price = null;          // alternative base price.  FINAL price override for this variant.  given priority over attribute price_changes.
+    public $quantity = null;
+    
+    public $model_number = null;
+    public $upc = null;
+    public $weight = null;
+    public $image = null;
+    public $title = null;          // e.g. Alternative Title for the product when this variant has been selected
+    
+    protected $__collection_name = 'shop.products';
+    protected $__type = 'shop.products';
     
     /**
      * Searches Variants 

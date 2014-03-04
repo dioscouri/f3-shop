@@ -3,7 +3,7 @@ namespace Shop\Admin\Controllers;
 
 class Collection extends \Admin\Controllers\BaseAuth 
 {
-    use \Dsc\Traits\Controllers\CrudItem;
+    use \Dsc\Traits\Controllers\CrudItemCollection;
 
     protected $list_route = '/admin/shop/collections';
     protected $create_item_route = '/admin/shop/collection/create';
@@ -12,7 +12,7 @@ class Collection extends \Admin\Controllers\BaseAuth
     
     protected function getModel() 
     {
-        $model = new \Shop\Admin\Models\Collections;
+        $model = new \Shop\Models\Collections;
         return $model; 
     }
     
@@ -39,7 +39,7 @@ class Collection extends \Admin\Controllers\BaseAuth
         $f3 = \Base::instance();
         $f3->set('pagetitle', 'Edit Collection');
 
-        $model = new \Shop\Admin\Models\Collections;
+        $model = new \Shop\Models\Collections;
         
         $view = \Dsc\System::instance()->get('theme');
         $view->event = $view->trigger( 'onDisplayShopCollectionsEdit', array( 'item' => $this->getItem(), 'tabs' => array(), 'content' => array() ) );
@@ -51,7 +51,7 @@ class Collection extends \Admin\Controllers\BaseAuth
         $f3 = \Base::instance();
         $f3->set('pagetitle', 'Edit Collection');
 
-        $model = new \Shop\Admin\Models\Collections;
+        $model = new \Shop\Models\Collections;
         
         $flash = \Dsc\Flash::instance();
         

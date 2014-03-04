@@ -9,7 +9,7 @@ class Categories extends \Admin\Controllers\BaseAuth
 
     protected function getModel()
     {
-        $model = new \Shop\Admin\Models\Categories;
+        $model = new \Shop\Models\Categories;
         return $model;
     }
     
@@ -23,11 +23,8 @@ class Categories extends \Admin\Controllers\BaseAuth
         $state = $model->emptyState()->populateState()->getState();
         \Base::instance()->set('state', $state );
         
-        $list = $model->paginate();
-        \Base::instance()->set('list', $list );
-        
-        $pagination = new \Dsc\Pagination($list['total'], $list['limit']);       
-        \Base::instance()->set('pagination', $pagination );
+        $paginated = $model->paginate();
+        \Base::instance()->set('paginated', $paginated );
         
         \Base::instance()->set('selected', 'null' );
         
@@ -42,11 +39,8 @@ class Categories extends \Admin\Controllers\BaseAuth
         $state = $model->populateState()->getState();
         \Base::instance()->set('state', $state );
         
-        $list = $model->paginate();
-        \Base::instance()->set('list', $list );
-        
-        $pagination = new \Dsc\Pagination($list['total'], $list['limit']);
-        \Base::instance()->set('pagination', $pagination );
+        $paginated = $model->paginate();
+        \Base::instance()->set('paginated', $paginated );
     
         $view = \Dsc\System::instance()->get('theme');
         $html = $view->renderLayout('Shop/Admin/Views::categories/list_datatable.php');

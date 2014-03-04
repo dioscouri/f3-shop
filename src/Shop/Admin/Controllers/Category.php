@@ -3,7 +3,7 @@ namespace Shop\Admin\Controllers;
 
 class Category extends \Admin\Controllers\BaseAuth 
 {
-    use \Dsc\Traits\Controllers\CrudItem;
+    use \Dsc\Traits\Controllers\CrudItemCollection;
 
     protected $list_route = '/admin/shop/categories';
     protected $create_item_route = '/admin/shop/category/create';
@@ -12,7 +12,7 @@ class Category extends \Admin\Controllers\BaseAuth
     
     protected function getModel() 
     {
-        $model = new \Shop\Admin\Models\Categories;
+        $model = new \Shop\Models\Categories;
         return $model; 
     }
     
@@ -39,7 +39,7 @@ class Category extends \Admin\Controllers\BaseAuth
         $f3 = \Base::instance();
         $f3->set('pagetitle', 'Edit Category');
 
-        $model = new \Shop\Admin\Models\Categories;
+        $model = new \Shop\Models\Categories;
         $all = $model->emptyState()->getList();
         \Base::instance()->set('all', $all );
         
@@ -55,7 +55,7 @@ class Category extends \Admin\Controllers\BaseAuth
         $f3 = \Base::instance();
         $f3->set('pagetitle', 'Edit Category');
 
-        $model = new \Shop\Admin\Models\Categories;
+        $model = new \Shop\Models\Categories;
         $categories = $model->emptyState()->getList();
         \Base::instance()->set('categories', $categories );
         
