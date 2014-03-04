@@ -3,7 +3,7 @@ namespace Shop\Admin\Controllers;
 
 class Manufacturer extends \Admin\Controllers\BaseAuth 
 {
-    use \Dsc\Traits\Controllers\CrudItem;
+    use \Dsc\Traits\Controllers\CrudItemCollection;
 
     protected $list_route = '/admin/shop/manufacturers';
     protected $create_item_route = '/admin/shop/manufacturer/create';
@@ -12,7 +12,7 @@ class Manufacturer extends \Admin\Controllers\BaseAuth
     
     protected function getModel() 
     {
-        $model = new \Shop\Admin\Models\Manufacturers;
+        $model = new \Shop\Models\Manufacturers;
         return $model; 
     }
     
@@ -39,7 +39,7 @@ class Manufacturer extends \Admin\Controllers\BaseAuth
         $f3 = \Base::instance();
         $f3->set('pagetitle', 'Edit Manufacturer');
 
-        $model = new \Shop\Admin\Models\Manufacturers;
+        $model = $this->getModel();
         $all = $model->emptyState()->getList();
         \Base::instance()->set('all', $all );
         
@@ -55,7 +55,7 @@ class Manufacturer extends \Admin\Controllers\BaseAuth
         $f3 = \Base::instance();
         $f3->set('pagetitle', 'Edit Manufacturer');
 
-        $model = new \Shop\Admin\Models\Manufacturers;
+        $model = $this->getModel();
         $manufacturers = $model->emptyState()->getList();
         \Base::instance()->set('manufacturers', $manufacturers );
         

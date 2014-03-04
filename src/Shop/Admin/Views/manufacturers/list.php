@@ -1,12 +1,12 @@
 <script>
-Dsc.refreshParents = function() {
+Dsc.refreshDatatable = function() {
     var request = jQuery.ajax({
         type: 'get', 
-        url: './admin/shop/manufacturers/all'
+        url: './admin/shop/manufacturers'
     }).done(function(data){
         var lr = jQuery.parseJSON( JSON.stringify(data), false);
         if (lr.result) {
-            jQuery('#parents').html(lr.result);
+            jQuery('.searchForm').html(lr.result);
         }
     });
 }
@@ -36,7 +36,7 @@ Dsc.refreshParents = function() {
 <div class="row">
     <div class="col-md-9">
         <div class="well">
-            <form id="manufacturers" class="searchForm" action="./admin/shop/manufacturers" method="post">
+            <form class="searchForm" method="post">
                 <?php echo $this->renderLayout('Shop/Admin/Views::manufacturers/list_datatable.php'); ?>
             </form>
         </div>

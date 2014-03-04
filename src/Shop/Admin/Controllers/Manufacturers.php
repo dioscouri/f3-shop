@@ -9,7 +9,7 @@ class Manufacturers extends \Admin\Controllers\BaseAuth
 
     protected function getModel()
     {
-        $model = new \Shop\Admin\Models\Manufacturers;
+        $model = new \Shop\Models\Manufacturers;
         return $model;
     }
     
@@ -23,11 +23,8 @@ class Manufacturers extends \Admin\Controllers\BaseAuth
         $state = $model->emptyState()->populateState()->getState();
         \Base::instance()->set('state', $state );
         
-        $list = $model->paginate();
-        \Base::instance()->set('list', $list );
-        
-        $pagination = new \Dsc\Pagination($list['total'], $list['limit']);       
-        \Base::instance()->set('pagination', $pagination );
+        $paginated = $model->paginate();
+        \Base::instance()->set('paginated', $paginated );
         
         \Base::instance()->set('selected', 'null' );
         
@@ -42,11 +39,8 @@ class Manufacturers extends \Admin\Controllers\BaseAuth
         $state = $model->populateState()->getState();
         \Base::instance()->set('state', $state );
         
-        $list = $model->paginate();
-        \Base::instance()->set('list', $list );
-        
-        $pagination = new \Dsc\Pagination($list['total'], $list['limit']);
-        \Base::instance()->set('pagination', $pagination );
+        $paginated = $model->paginate();
+        \Base::instance()->set('paginated', $paginated );
     
         $view = \Dsc\System::instance()->get('theme');
         $html = $view->renderLayout('Shop/Admin/Views::manufacturers/list_datatable.php');

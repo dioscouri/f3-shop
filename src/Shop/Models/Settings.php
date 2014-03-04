@@ -1,8 +1,7 @@
 <?php 
-namespace Shop\Admin\Models;
+namespace Shop\Models;
 
-class Settings extends \Dsc\Models\Settings 
+class Settings extends \Dsc\Mongo\Collections\Settings 
 {
-    protected $type = 'shop.settings';
-
+    protected $__type = 'shop.settings';
 }

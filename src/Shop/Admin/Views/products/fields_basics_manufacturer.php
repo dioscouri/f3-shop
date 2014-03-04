@@ -9,7 +9,19 @@
                 
     <div class="col-md-10">
 
-        [Manufacturer select list, with option to add new manufacturer inline]
+        <div class="form-group">
+
+            <select name="manufacturer[id]" class="form-control">
+                <option value="">None</option>
+                <?php $items = \Shop\Models\Manufacturers::find(); ?>
+                <?php foreach ($items as $one) { ?>
+                    <option value="<?php echo $one->id; ?>" <?php if ($one->id == $flash->old('manufacturer.id')) { echo "selected='selected'"; } ?>><?php echo $one->title; ?></option>                    
+                <?php } ?> 
+            </select>
+                    
+
+        </div>
+        <!-- /.form-group -->
     
     </div>
     <!-- /.col-md-10 -->

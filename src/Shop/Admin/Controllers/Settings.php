@@ -13,18 +13,10 @@ class Settings extends \Admin\Controllers\BaseAuth
         $f3->set('flash', $flash );
         
         $model = $this->getModel();
-        $item = $this->getItem();
-        
         $f3->set('model', $model );
-        $f3->set('item', $item );
         
-        $item_data = $model->prefab()->cast();
-        if (method_exists($item, 'cast')) {
-            $item_data = $item->cast();
-        } elseif (is_object($item)) {
-            $item_data = \Joomla\Utilities\ArrayHelper::fromObject($item);
-        }
-        $flash->store($item_data);        
+        $data = $model->cast();
+        $flash->store($data);        
         
         $view = \Dsc\System::instance()->get('theme');
         echo $view->render('Shop/Admin/Views::settings/default.php');
@@ -38,7 +30,6 @@ class Settings extends \Admin\Controllers\BaseAuth
         $flash = \Dsc\Flash::instance();
         $data = $f3->get('REQUEST');
         $model = $this->getModel();
-        $this->item = $this->getItem();
         
         // save
         $save_as = false;
@@ -46,11 +37,11 @@ class Settings extends \Admin\Controllers\BaseAuth
             $values = $data;
             unset($values['submitType']);
 
-            if (empty($this->item->id)) {
-                $this->item = $model->create($values);
+            if (empty($model->id)) {
+                $model->create($values);
                 \Dsc\System::instance()->addMessage('Settings saved');
             } else {
-                $this->item = $model->update($this->item, $values);
+                $model->update($values);
                 \Dsc\System::instance()->addMessage('Settings updated');
             }            
         }
@@ -80,15 +71,11 @@ class Settings extends \Admin\Controllers\BaseAuth
         
         if ($f3->get('AJAX')) 
         {
-            if (method_exists($this->item, 'cast')) {
-                $this->item_data = $this->item->cast();
-            } else {
-                $this->item_data = \Joomla\Utilities\ArrayHelper::fromObject($this->item);
-            }
+            $data = $model->cast();
             
             return $this->outputJson( $this->getJsonResponse( array(
                             'message' => \Dsc\System::instance()->renderMessages(),
-                            'result' => $this->item_data
+                            'result' => $data
             ) ) );
         }
         
@@ -99,24 +86,18 @@ class Settings extends \Admin\Controllers\BaseAuth
     
     protected function getModel()
     {
-        $model = new \Shop\Admin\Models\Settings;
-        return $model;
-    }
-    
-    protected function getItem()
-    {
         $f3 = \Base::instance();
-        $model = $this->getModel()
+        $model = (new \Shop\Models\Settings)
         ->setState('filter.type', true);
     
         try {
-            $item = $model->getItem();
+            $model->getItem();
         } catch ( \Exception $e ) {
             \Dsc\System::instance()->addMessage( "Invalid Item: " . $e->getMessage(), 'error');
             $f3->reroute( '/admin/shop/settings' );
             return;
         }
     
-        return $item;
+        return $model;
     }
 }

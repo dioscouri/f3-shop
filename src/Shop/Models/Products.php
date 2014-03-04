@@ -84,6 +84,22 @@ class Products extends \Dsc\Mongo\Collections\Content
 
     protected function beforeValidate()
     {
+        if (!empty($this->{'manufacturer.id'}))
+        {
+            $manufacturer = array();
+            if ($item = (new \Shop\Models\Manufacturers)->setState('filter.id', $this->{'manufacturer.id'})->getItem())
+            {
+                $manufacturer = array(
+                    'id' => $item->id,
+                    'title' => $item->title,
+                    'slug' => $item->slug
+                );
+            }
+            $this->manufacturer = $manufacturer;
+        } else {
+            $this->manufacturer = array();
+        }
+                
         if (!empty($this->category_ids))
         {
             $category_ids = $this->category_ids;
