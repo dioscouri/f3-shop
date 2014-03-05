@@ -25,20 +25,19 @@ class Routes extends \Dsc\Routes\Group{
 		);
 
 		$this->addSettingsRoutes();
-		$this->addCrudList( 'Products' );
-		$this->addCrudItem( 'Product' );
-
-		$this->addCrudList( 'Categories', array( 'databable_links' => true ) );
+		$this->addCrudGroup( 'Products', 'Product');
+		$this->addCrudGroup( 'Categories', 'Category', array( 'datatable_links' => true, 'get_parent_link' => true ));
+		$this->addCrudGroup( 'Manufacturers', 'Manufacturer', array( 'datatable_links' => true, 'get_parent_link' => true ));
+		$this->addCrudGroup( 'Collections', 'Collection', array( 'datatable_links' => true, 'get_parent_link' => true ));
+		
+		
 		$this->add( '/checkboxes', array( 'GET', 'POST' ),
 					array(
 						'controller' => 'Categories',
 						'action' => 'getCheckboxes'
 						)
 					);
-		$this->addCrudItem( 'Category' );
 
-		$this->addCrudList( 'Manufacturers', array( 'databable_links' => true ) );
-		$this->addCrudItem( 'Manufacturer' );
 		$this->add( '/checkboxes', array( 'GET', 'POST' ),
 					array(
 						'controller' => 'Categories',
@@ -46,8 +45,5 @@ class Routes extends \Dsc\Routes\Group{
 						)
 					);
 		$this->addCrudList( 'Assets' );
-
-		$this->addCrudList( 'Collections', array( 'databable_links' => true ) );
-		$this->addCrudItem( 'Collection' );
 	}
 }
