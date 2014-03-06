@@ -2,11 +2,11 @@
 	<div class="form-group">
 		<label for="link-url" class="col-sm-4 control-label">Category</label>
 		<div class="col-sm-8">
-			<?php if (!empty($categories)) { ?>
+			<?php if ($__items = \Shop\Models\Collections::find()) { ?>
 			<select name="details[url]" class="form-control">
-			<?php foreach ($categories as $one) { ?>
-			    <option value="./shop/category/<?php echo $one->slug; ?>">
-			    	<?php echo @str_repeat( "&ndash;", substr_count( @$one->path, "/" ) - 1 ) . " " . $one->title; ?>
+			<?php foreach ($__items as $__item) { ?>
+			    <option value="./shop/category/<?php echo $__item->slug; ?>">
+			    	<?php echo @str_repeat( "&ndash;", substr_count( @$__item->path, "/" ) - 1 ) . " " . $__item->title; ?>
 			    </option>                    
 			<?php } ?> 
 			</select>

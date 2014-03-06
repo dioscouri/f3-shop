@@ -1,7 +1,7 @@
 <?php 
 namespace Shop\Models;
 
-class Manufacturers extends \Dsc\Mongo\Collections\Describable
+class Manufacturers extends \Dsc\Mongo\Collections\Describable implements \MassUpdate\Service\Models\MassUpdateOperations
 {
     protected $__collection_name = 'shop.manufacturers';
     protected $__type = 'shop.manufacturers';
@@ -41,5 +41,19 @@ class Manufacturers extends \Dsc\Mongo\Collections\Describable
             }
         }
         */
+    }
+
+    /**
+     * This method gets list of UpdateOperation groups
+     */
+    public function getUpdateOperationGroups(){
+    	$arr = array();
+
+    	$attr_title = new \MassUpdate\Service\Models\AttributeGroup;
+    	$attr_title->setAttribute('metadata.title')
+    				->addOperation( new \MassUpdate\Operations\Update\AppendTo );
+    	
+    	$arr []= $attr_title;
+    	return $arr;
     }
 }
