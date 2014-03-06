@@ -50,6 +50,6 @@ class Category extends \Dsc\Controller
     	\Base::instance()->set('paginated', $paginated );
     	
     	$view = \Dsc\System::instance()->get('theme');
-    	echo $view->render('Shop/Site/Views::category/grid.php');
+    	echo $view->render('Shop/Site/Views::category/index.php');
     }
 }

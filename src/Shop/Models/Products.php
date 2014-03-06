@@ -276,4 +276,14 @@ class Products extends \Dsc\Mongo\Collections\Content
         
         return $result;
     }
+    
+    public function price( $groups=array() )
+    {
+        $price = $this->get('prices.default');
+        
+        // TODO get this product's price for the user's array of groups.
+        // lowest price is given priority
+        
+        return $price;
+    }
 }
