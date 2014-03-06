@@ -42,6 +42,10 @@ jQuery(document).ready(function(){
             
             <hr />
             
+            <div class="alert alert-info">
+                <p><b>Note:</b> Collections will only display products that satisfy <u>all</u> of the conditions you have set.  For example, if you have checked three categories and selected two tags, only products that have <i>at least one</i> of the categories <b>AND</b> <i>at least one</i> of the tags will be displayed in the collection.</p>
+            </div>
+            
             <ul class="nav nav-tabs">
                 <li class="active">
                     <a href="#tab-basics" data-toggle="tab"> Basics </a>

@@ -106,7 +106,7 @@ class Products extends \Dsc\Mongo\Collections\Content
             unset($this->category_ids);
     
             $categories = array();
-            if ($list = (new \Shop\Admin\Models\Categories)->setState('select.fields', array('title', 'slug'))->setState('filter.ids', $category_ids)->getList())
+            if ($list = (new \Shop\Models\Categories)->setState('select.fields', array('title', 'slug'))->setState('filter.ids', $category_ids)->getList())
             {
                 foreach ($list as $list_item) {
                     $cat = array(

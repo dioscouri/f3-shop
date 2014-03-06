@@ -33,6 +33,11 @@ class Listener extends \Prefab
         $tree = $event->getArgument('tree');
         
         $item = new \stdClass;
+        $item->title = 'Product Collection';
+        $item->form = \Shop\Admin\Controllers\MenuItemQuickAdd::instance()->collection($event);
+        $items[] = $item;
+        
+        $item = new \stdClass;
         $item->title = 'Product Category';
         $item->form = \Shop\Admin\Controllers\MenuItemQuickAdd::instance()->category($event);
         $items[] = $item;

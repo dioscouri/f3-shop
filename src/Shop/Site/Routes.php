@@ -48,5 +48,15 @@ class Routes extends \Dsc\Routes\Group{
 				'controller' => 'Category',
 				'action' => 'index'
 		));
+		
+		$this->add( '/collection/@slug', 'GET', array(
+		                'controller' => 'Collection',
+		                'action' => 'index'
+		));
+		
+		$this->add( '/collection/@slug/page/@page', 'GET', array(
+		                'controller' => 'Collection',
+		                'action' => 'index'
+		));
 	}
 }

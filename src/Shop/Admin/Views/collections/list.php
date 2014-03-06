@@ -9,13 +9,11 @@
 		</h1>
 	</div>
 	<div class="col-xs-12 col-sm-5 col-md-5 col-lg-8">
-	   <?php /* ?>
         <ul id="sparks" class="list-actions list-unstyled list-inline">
             <li>
-                
+                <a class="btn btn-default" href="./admin/shop/collection/create">Add New</a>
             </li>
-        </ul>   
-        */ ?>         	
+        </ul>
 	</div>
 </div>
 
@@ -99,7 +97,7 @@
         		<tr>
         		    <th class="checkbox-column"><input type="checkbox" class="icheck-input"></th>
         			<th>Title</th>
-        			<th>Path</th>
+        			<th>Slug</th>
         			<th class="col-md-1"></th>
         		</tr>
         	</thead>
@@ -121,7 +119,7 @@
                     
                     <td class="">
                         <a href="./admin/shop/collection/edit/<?php echo $item->_id; ?>">
-                        <?php echo $item->path; ?>
+                        <?php echo $item->slug; ?>
                         </a>
                     </td>
                                     

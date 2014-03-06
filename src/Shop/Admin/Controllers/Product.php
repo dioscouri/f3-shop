@@ -39,7 +39,7 @@ class Product extends \Admin\Controllers\BaseAuth
         $f3 = \Base::instance();
         $f3->set('pagetitle', 'Create Product');
         
-        $model = new \Shop\Admin\Models\Categories;
+        $model = new \Shop\Models\Categories;
         $categories = $model->getList();
         \Base::instance()->set('categories', $categories );
         \Base::instance()->set('selected', 'null' );
@@ -80,7 +80,7 @@ class Product extends \Admin\Controllers\BaseAuth
         $f3 = \Base::instance();
         $f3->set('pagetitle', 'Edit Product');
 
-        $model = new \Shop\Admin\Models\Categories;
+        $model = new \Shop\Models\Categories;
         $categories = $model->getList();
         \Base::instance()->set('categories', $categories );
         \Base::instance()->set('selected', 'null' );

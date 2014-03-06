@@ -12,7 +12,7 @@ class Category extends \Dsc\Controller
         	    $model = new \Shop\Models\Products;
         	    break;
         	default:
-        	    $model = new \Shop\Admin\Models\Categories;
+        	    $model = new \Shop\Models\Categories;
         	    break;
         }
         
@@ -41,7 +41,7 @@ class Category extends \Dsc\Controller
     	
     	\Base::instance()->set('category', $category );
     	
-    	\Base::instance()->set('pagetitle', $category->{'metadata.title'});
+    	\Base::instance()->set('pagetitle', $category->{'title'});
     	\Base::instance()->set('subtitle', '');
     	
     	$state = $products_model->getState();

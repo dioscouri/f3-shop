@@ -21,15 +21,19 @@ class Collection extends \Dsc\Controller
             ->setState('filter.category.slug', $slug);
     	
     	try {
-    		$paginated = $model->paginate();
+    	    $collection = (new \Shop\Models\Collections)->setState('filter.slug', $slug)->getItem();
+    	    $conditions = \Shop\Models\Collections::getProductQueryConditions($collection->id);
+    		$paginated = $model->setParam('conditions', $conditions)->paginate();
     	} catch ( \Exception $e ) {
     	    // TODO Change to a normal 404 error
-    		\Dsc\System::instance()->addMessage( "Invalid Items: " . $e->getMessage(), 'error');
+    		\Dsc\System::instance()->addMessage( "Invalid Items: " . (string) $e, 'error');
     		$f3->reroute( '/' );
     		return;
     	}
     	
-    	\Base::instance()->set('pagetitle', 'Posts');
+    	\Base::instance()->set('collection', $collection );
+    	
+    	\Base::instance()->set('pagetitle', $collection->{'metadata.title'});
     	\Base::instance()->set('subtitle', '');
     	
     	$state = $model->getState();
@@ -38,7 +42,7 @@ class Collection extends \Dsc\Controller
     	\Base::instance()->set('paginated', $paginated );
     	
     	$view = \Dsc\System::instance()->get('theme');
-    	echo $view->render('Shop/Site/Views::posts/category.php');
+    	echo $view->render('Shop/Site/Views::collection/grid.php');
     	 
     }
 }

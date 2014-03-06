@@ -12,7 +12,7 @@ class Product extends \Dsc\Controller
         	    $model = new \Shop\Models\Products;
         	    break;
         	default:
-        	    $model = new \Shop\Admin\Models\Categories;
+        	    $model = new \Shop\Models\Categories;
         	    break;
         }
         
