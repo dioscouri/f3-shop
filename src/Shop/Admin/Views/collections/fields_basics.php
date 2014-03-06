@@ -21,12 +21,6 @@
         </div>
         <!-- /.form-group -->
         
-        <div class="form-group">
-            <label>Description</label>
-            <textarea name="description" class="form-control wysiwyg"><?php echo $flash->old('description'); ?></textarea>
-        </div>
-        <!-- /.form-group -->
-        
     </div>
     <!-- /.col-md-10 -->
     

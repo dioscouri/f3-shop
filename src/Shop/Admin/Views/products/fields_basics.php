@@ -16,7 +16,13 @@
         <!-- /.form-group -->
         
         <div class="form-group">
-            <label>Description</label>
+            <label>Short Description - Used in Grid and List layouts</label>
+            <textarea name="description" class="form-control"><?php echo $flash->old('description'); ?></textarea>
+        </div>
+        <!-- /.form-group -->
+        
+        <div class="form-group">
+            <label>Full Description - Used only on the product detail page</label>
             <textarea name="copy" class="form-control wysiwyg"><?php echo $flash->old('copy'); ?></textarea>
         </div>
         <!-- /.form-group -->

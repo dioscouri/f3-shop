@@ -33,7 +33,7 @@ class Collection extends \Dsc\Controller
     	
     	\Base::instance()->set('collection', $collection );
     	
-    	\Base::instance()->set('pagetitle', $collection->{'metadata.title'});
+    	\Base::instance()->set('pagetitle', $collection->{'title'});
     	\Base::instance()->set('subtitle', '');
     	
     	$state = $model->getState();
@@ -42,7 +42,7 @@ class Collection extends \Dsc\Controller
     	\Base::instance()->set('paginated', $paginated );
     	
     	$view = \Dsc\System::instance()->get('theme');
-    	echo $view->render('Shop/Site/Views::collection/grid.php');
+    	echo $view->render('Shop/Site/Views::collection/index.php');
     	 
     }
 }

@@ -1,8 +1,3 @@
-<h1 id="page-title"><?php echo $collection->title; ?></h1>
-
-<div>
-
-    <div>
     
     <?php if (!empty($paginated->items)) { ?>
         <ul class="list-inline">
@@ -39,8 +34,3 @@
         <div class="">No items found.</div>
         
     <?php } ?>
-
-    
-    </div>
-
-</div>

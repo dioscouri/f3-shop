@@ -3,6 +3,9 @@ namespace Shop\Models;
 
 class Collections extends \Dsc\Mongo\Collections\Describable 
 {
+    public $categories = array();
+    public $featured_image;
+    
     protected $__collection_name = 'shop.collections';
     protected $__type = 'shop.collections';
     
