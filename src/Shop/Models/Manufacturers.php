@@ -10,6 +10,8 @@ class Manufacturers extends \Dsc\Mongo\Collections\Describable implements \MassU
             'title' => 1
         ),
     );
+
+    use \Massupdate\Service\Traits\Model;
     
     protected function beforeUpdate()
     {
