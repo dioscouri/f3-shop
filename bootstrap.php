@@ -8,7 +8,7 @@ class ShopBootstrap extends \Dsc\BaseBootstrap{
 		try{
 			$service = \Dsc\System::instance()->get('massupdate');
 			if( !empty( $service ) ){
-				$service->regiseterGroup( new \Shop\MassUpdateGroup );
+				$service->registerGroup( new \Shop\MassUpdateGroup );
 			}
 		} catch( \Exception $e){}
 	}

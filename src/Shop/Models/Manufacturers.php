@@ -46,14 +46,15 @@ class Manufacturers extends \Dsc\Mongo\Collections\Describable implements \MassU
     }
 
     /**
-     * This method gets list of UpdateOperation groups
+     * This method gets list of attribute groups with operations
      */
-    public function getUpdateOperationGroups(){
+    public function getMassUpdateOperationGroups(){
     	$arr = array();
 
     	$attr_title = new \MassUpdate\Service\Models\AttributeGroup;
-    	$attr_title->setAttribute('metadata.title')
-    				->addOperation( new \MassUpdate\Operations\Update\AppendTo );
+    	$attr_title->setAttributeCollection('metadata.title')
+    				->setAttributeTitle( "Title" )
+    				->addOperation( new \MassUpdate\Operations\Update\ChangeTo, 'update' );
     	
     	$arr []= $attr_title;
     	return $arr;
