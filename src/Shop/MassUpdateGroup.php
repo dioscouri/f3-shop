@@ -8,9 +8,11 @@ class MassUpdateGroup extends \MassUpdate\Service\Models\Group{
 	
 	/**
 	 * Initialize list of models
+	 * 
+	 * @param	$mode	Mode of updater
 	 */
-	public function initialize() {
-		$this->addModel( new \Shop\Models\Manufacturers );
+	public function initialize($mode) {
+		$this->addModel( new \Shop\Models\Manufacturers, $mode );
 	}
 }
 ?>
