@@ -10,6 +10,8 @@ class Manufacturers extends \Dsc\Mongo\Collections\Describable implements \MassU
             'title' => 1
         ),
     );
+
+    use \MassUpdate\Service\Traits\Model;
     
     protected function beforeUpdate()
     {
@@ -44,16 +46,22 @@ class Manufacturers extends \Dsc\Mongo\Collections\Describable implements \MassU
     }
 
     /**
-     * This method gets list of UpdateOperation groups
+     * This method gets list of attribute groups with operations
+     * 
+     * @return	Array with attribute groups
      */
-    public function getUpdateOperationGroups(){
-    	$arr = array();
-
-    	$attr_title = new \MassUpdate\Service\Models\AttributeGroup;
-    	$attr_title->setAttribute('metadata.title')
-    				->addOperation( new \MassUpdate\Operations\Update\AppendTo );
+     public function getMassUpdateOperationGroups(){
+    	static $arr = null;
+		if( $arr == null ){
+			$arr = array();
+	    	$attr_title = new \MassUpdate\Service\Models\AttributeGroup;
+	    	$attr_title->setAttributeCollection('metadata.title')
+	    				->setAttributeTitle( "Title" )
+	    				->addOperation( new \MassUpdate\Operations\Update\ChangeTo, 'update' );
+	    	
+	    	$arr []= $attr_title;
+		}
     	
-    	$arr []= $attr_title;
     	return $arr;
     }
 }
