@@ -1,9 +1,10 @@
 <?php 
 namespace Shop\Models;
 
-class Products extends \Dsc\Mongo\Collections\Content 
-{
-    public $categories = array();
+class Products extends \Dsc\Mongo\Collections\Content implements \MassUpdate\Service\Models\MassUpdateOperations{
+	
+	use \MassUpdate\Service\Traits\Model;
+	public $categories = array();
     public $featured_image = array();
     public $images = array();       // array of f3-asset slugs
 
@@ -307,6 +308,33 @@ class Products extends \Dsc\Mongo\Collections\Content
         // lowest price is given priority
         
         return $price;
+    }
+
+    /**
+     * This method gets list of attribute groups with operations
+     *
+     * @return	Array with attribute groups
+     */
+    public function getMassUpdateOperationGroups(){
+    	static $arr = null;
+    	if( $arr == null ){
+    		
+    		$arr = array();
+    		$attr_cat = new \MassUpdate\Service\Models\AttributeGroup;
+    		$attr_cat->setAttributeCollection('categories')
+    		->setAttributeTitle( "Product Category" )
+    		->addOperation( new \Shop\Operations\Condition\ProductCategory, 'where' );
+    		
+    		$attr_title = new \MassUpdate\Service\Models\AttributeGroup;
+    		$attr_title->setAttributeCollection('title')
+    		->setAttributeTitle( "Product Name" )
+    		->addOperation( new \MassUpdate\Operations\Update\ChangeTo, 'update');
+    		
+    		$arr []= $attr_title;
+    		$arr []= $attr_cat;
+    	}
+    	 
+    	return $arr;
     }
     
     /**

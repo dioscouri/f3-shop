@@ -1,8 +1,15 @@
+<<<<<<< HEAD
 <?php
 class ShopBootstrap extends \Dsc\BaseBootstrap
 {
     protected $dir = __DIR__;
     protected $namespace = 'Shop';
+=======
+<?php 
+class ShopBootstrap extends \Dsc\Bootstrap{
+	protected $dir = __DIR__;
+	protected $namespace = 'Shop';
+>>>>>>> 2a7664e488a270437128579631b82859632a9607
 
     protected function runAdmin()
     {
