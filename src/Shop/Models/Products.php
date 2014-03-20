@@ -176,6 +176,7 @@ class Products extends \Dsc\Mongo\Collections\Content
                 if (!empty($item['attributes']) && !is_array($item['attributes'])) {
                     $item['attributes'] = json_decode( $item['attributes'] );
                 }
+                // TODO if the variant's title is empty, build it automatically
             });
         }
     
@@ -257,7 +258,12 @@ class Products extends \Dsc\Mongo\Collections\Content
                 $id = (string) $option['id'];
                 if (empty($ids[$id]))
                 {
-                    $ids[$id] = $option['value'];
+                    if (is_numeric($option['value'])) {
+                        $ids[$id] = $attribute['title'] . ": " . $option['value'];
+                    } else {
+                        $ids[$id] = $option['value'];
+                    }
+                    
                 }
             }
             $traits[] = \Joomla\Utilities\ArrayHelper::getColumn($attribute['options'], 'id');
@@ -310,7 +316,7 @@ class Products extends \Dsc\Mongo\Collections\Content
      * @param unknown $cast
      * @return array
      */
-    public function getImages()
+    public function images()
     {
         $featured_image = array();
         if (!empty($this->featured_image['slug'])) {
@@ -333,5 +339,41 @@ class Products extends \Dsc\Mongo\Collections\Content
         $images = array_unique( array_merge( array(), (array) $featured_image, (array) $variant_images, (array) $related_images ) );
         
         return $images;
+    }
+    
+    public function variants()
+    {
+        $cast = $this->cast();
+        return self::getVariants($cast);
+    }
+    
+    /**
+     * Get a variant using its id
+     * 
+     * @param unknown $id
+     */
+    public function variant($id)
+    {
+        $cast = $this->cast();
+        if (empty($cast['variants'])) {
+        	return false;
+        }
+        
+        foreach ($cast['variants'] as $variant) 
+        {
+            if ($variant['id'] == $id) {
+                if (empty($variant['title'])) {
+                	// TODO build it
+                    $variants = $this->variants();
+                	foreach ($variants as $hr_variant) 
+                	{
+                		
+                	} 
+                }
+            	return $variant;
+            }
+        }
+        
+        return false;
     }
 }
