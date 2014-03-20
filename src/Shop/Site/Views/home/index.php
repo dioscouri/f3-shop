@@ -1,4 +1,4 @@
-<h1 id="page-title"><?php echo $category->title; ?></h1>
+<h1 id="page-title">Home</h1>
 
 <div>
 

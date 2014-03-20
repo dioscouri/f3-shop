@@ -30,7 +30,6 @@ class Home extends \Dsc\Controller
     	$products_model = $this->model('products');
     	
     	try {
-    	    $category = $this->model('categories')->getMapper();
     		$paginated = $products_model->populateState()->paginate();
     	} catch ( \Exception $e ) {
     	    // TODO Change to a normal 404 error
@@ -38,8 +37,6 @@ class Home extends \Dsc\Controller
     		$f3->reroute( '/' );
     		return;
     	}
-    	
-    	\Base::instance()->set('category', $category );
     	
     	\Base::instance()->set('pagetitle', '');
     	\Base::instance()->set('subtitle', '');

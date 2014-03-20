@@ -16,6 +16,12 @@
         <!-- /.form-group -->
         
         <div class="form-group">
+            <label>Slug</label>
+            <input type="text" name="slug" placeholder="Slug" value="<?php echo $flash->old('slug'); ?>" class="form-control" />
+        </div>
+        <!-- /.form-group -->
+        
+        <div class="form-group">
             <label>Short Description - Used in Grid and List layouts</label>
             <textarea name="description" class="form-control"><?php echo $flash->old('description'); ?></textarea>
         </div>

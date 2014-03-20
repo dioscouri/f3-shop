@@ -22,15 +22,15 @@
     <!-- /.portlet -->    
 
 
-    <?php foreach ((array) $flash->old('relatedimages') as $key=>$relatedimage) { ?>
+    <?php foreach ((array) $flash->old('images') as $key=>$image) { ?>
         <fieldset class="template well clearfix">
-            <a class="remove-relatedimage btn btn-xs btn-danger pull-right" onclick="ShopRemoveRelatedImage(this);" href="javascript:void(0);">
+            <a class="remove-image btn btn-xs btn-danger pull-right" onclick="ShopRemoveRelatedImage(this);" href="javascript:void(0);">
                 <i class="fa fa-times"></i>
             </a>                        
             <label>Image</label>
             <div class="form-group clearfix">
                 <div class="col-md-12">
-                    <?php echo \Assets\Admin\Controllers\Assets::instance()->fetchElementImage('relatedimage_' . $key, $flash->old('relatedimages.'.$key.'.image'), array('field'=>'relatedimages['.$key.'][image]') ); ?>
+                    <?php echo \Assets\Admin\Controllers\Assets::instance()->fetchElementImage('image_' . $key, $flash->old('images.'.$key.'.image'), array('field'=>'images['.$key.'][image]') ); ?>
                 </div>
             </div>
         </fieldset>                        
@@ -40,35 +40,37 @@
 
 <div class="col-md-4 col-sidebar-right">
 
-    <template type="text/template" id="add-relatedimage-template">
+    <input type="hidden" name="images[][image]" value="" />
+
+    <template type="text/template" id="add-image-template">
         <fieldset class="template well clearfix">
-            <a class="remove-relatedimage btn btn-xs btn-danger pull-right" onclick="ShopRemoveRelatedImage(this);" href="javascript:void(0);">
+            <a class="remove-image btn btn-xs btn-danger pull-right" onclick="ShopRemoveRelatedImage(this);" href="javascript:void(0);">
                 <i class="fa fa-times"></i>
             </a>                        
             <label>New Image</label>
             <div class="form-group clearfix">
                 <div class="col-md-12">
-                    <?php echo \Assets\Admin\Controllers\Assets::instance()->fetchElementImage('image_{id}', null, array('field'=>'relatedimages[{id}][image]') ); ?>
+                    <?php echo \Assets\Admin\Controllers\Assets::instance()->fetchElementImage('image_{id}', null, array('field'=>'images[{id}][image]') ); ?>
                 </div>
             </div>
         </fieldset>
     </template>
     
     <div class="form-group">
-        <a class="btn btn-warning" id="add-relatedimage">Add New Image</a>
+        <a class="btn btn-warning" id="add-image">Add New Image</a>
     </div>
     
-    <div id="new-relatedimages" class="form-group"></div>
+    <div id="new-images" class="form-group"></div>
     
     <script>
     jQuery(document).ready(function(){
-        window.new_relatedimages = <?php echo count( $flash->old('relatedimages') ); ?>;
-        jQuery('#add-relatedimage').click(function(){
-            var container = jQuery('#new-relatedimages');
-            var template = jQuery('#add-relatedimage-template').html();
-            template = template.replace( new RegExp("{id}", 'g'), window.new_relatedimages);
+        window.new_images = <?php echo count( $flash->old('images') ); ?>;
+        jQuery('#add-image').click(function(){
+            var container = jQuery('#new-images');
+            var template = jQuery('#add-image-template').html();
+            template = template.replace( new RegExp("{id}", 'g'), window.new_images);
             container.append(template);
-            window.new_relatedimages = window.new_relatedimages + 1;
+            window.new_images = window.new_images + 1;
             Dsc.setupColorbox();                            
         });
 
