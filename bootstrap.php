@@ -1,5 +1,5 @@
 <?php 
-class ShopBootstrap extends \Dsc\BaseBootstrap{
+class ShopBootstrap extends \Dsc\Bootstrap{
 	protected $dir = __DIR__;
 	protected $namespace = 'Shop';
 

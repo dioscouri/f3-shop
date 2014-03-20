@@ -85,6 +85,22 @@ class Products extends \Dsc\Mongo\Collections\Content implements \MassUpdate\Ser
 
     protected function beforeValidate()
     {
+        if (!empty($this->images))
+        {
+            $images = array();
+            $current = $this->images;
+            $this->images = array();
+            
+            foreach ($current as $image)
+            {
+                if (!empty($image['image'])) {
+                    $images[] = array( 'image' => $image['image'] );
+                }
+            }
+            
+            $this->images = $images;
+        }
+                
         if (!empty($this->{'manufacturer.id'}))
         {
             $manufacturer = array();
@@ -313,5 +329,37 @@ class Products extends \Dsc\Mongo\Collections\Content implements \MassUpdate\Ser
     	}
     	 
     	return $arr;
+    }
+    
+    /**
+     * Get all the images associated with a product
+     * incl. featured image, related images, and variant images
+     *  
+     * @param unknown $cast
+     * @return array
+     */
+    public function getImages()
+    {
+        $featured_image = array();
+        if (!empty($this->featured_image['slug'])) {
+            $featured_image = array( $this->featured_image['slug'] );
+        }
+         
+        $variant_images = \Dsc\ArrayHelper::where($this->variants, function($key, $variant) {
+            if (!empty($variant['image'])) {
+                return $variant['image'];
+            }
+        });
+            
+        
+        $related_images = \Dsc\ArrayHelper::where($this->images, function($key, $ri) {
+            if (!empty($ri['image'])) {
+                return $ri['image'];
+            }
+        });        
+                    
+        $images = array_unique( array_merge( array(), (array) $featured_image, (array) $variant_images, (array) $related_images ) );
+        
+        return $images;
     }
 }
