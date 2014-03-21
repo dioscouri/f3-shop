@@ -80,6 +80,18 @@ class Product extends \Admin\Controllers\BaseAuth
         $f3 = \Base::instance();
         $f3->set('pagetitle', 'Edit Product');
 
+        $flash = \Dsc\Flash::instance();
+        $variants = array();
+        if ($flashed_variants = $flash->old('variants')) {
+        	foreach ($flashed_variants as $variant) 
+        	{
+        	    $key = implode("-", $variant['attributes']);
+        		$variants[$key] = $variant;
+        	}
+        }
+        $old = array_merge( $flash->get('old'), array( 'variants' => $variants ) );
+        $flash->store( $old );
+        
         $model = new \Shop\Models\Categories;
         $categories = $model->getList();
         \Base::instance()->set('categories', $categories );

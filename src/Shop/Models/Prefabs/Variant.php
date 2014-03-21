@@ -9,6 +9,9 @@ class Variant extends \Dsc\Prefabs
      */
     protected $document = array(
         'id'=>null,             // (string) MongoId
+        'key'=>null,            // alphabetized, hyphenated string of each attribute's MongoId
+        'title'=>null,          // human-readable string; title of each attribute
+        'titles'=>array(),      // array of each attribute's title
         'attributes'=>array(),  // array of \Shop\Models\Prefabs\Attribute (string) ids
         'sku'=>null,        
         'price'=>null,          // alternative base price.  FINAL price override for this variant.  given priority over attribute price_changes.        
@@ -17,8 +20,7 @@ class Variant extends \Dsc\Prefabs
         'model_number'=>null,        
         'upc'=>null,
         'weight'=>null,
-        'image'=>null,
-        'title'=>null          // e.g. Alternative Title for the product when this variant has been selected                                    
+        'image'=>null                                    
     );
     
     public function __construct($source=array(), $options=array())

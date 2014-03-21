@@ -51,6 +51,9 @@ class Products extends \Dsc\Mongo\Collections\Content implements \MassUpdate\Ser
     // all possible product variations based on the attributes above, each with their product override values
     public $variants = array();          // an array of \Shop\Prefabs\Variant
     
+    public $attributes_count = null;
+    public $variants_count = null;
+    
     public $policies = array(
         'track_inventory'=>true,
         'quantity_input'=>array(
@@ -170,21 +173,46 @@ class Products extends \Dsc\Mongo\Collections\Content implements \MassUpdate\Ser
         
         if (!empty($this->variants) && is_array($this->variants))
         {
-            array_walk($this->variants, function(&$item, $key){
+            $variants = $this->variants();
+            
+            array_walk($this->variants, function(&$item, $key) use($variants) {
                 if (empty($item['id'])) {
                     $item['id'] = (string) new \MongoId;
                 }
                 if (!empty($item['attributes']) && !is_array($item['attributes'])) {
                     $item['attributes'] = json_decode( $item['attributes'] );
                 }
-                // TODO if the variant's title is empty, build it automatically
+                // if the variant's key is empty, build if from the attributes
+                if (empty($item['key'])) {
+                    $item['key'] = implode("-", $item['attributes']);
+                }
+                if (empty($variants[$item['key']])) {
+                    unset($this->variants[$key]);
+                } else {
+                    // if the variant's titles is empty, add it
+                    if (empty($item['titles'])) {
+                        $item['titles'] = $variants[$item['key']]['titles'];
+                    }
+                    // if the variant's title is empty, build it automatically
+                    if (empty($item['title'])) {
+                        $item['title'] = implode("&nbsp;|&nbsp;", (array) $item['titles']);
+                    }
+                }
             });
+            
+            $this->variants = \Dsc\ArrayHelper::sortArrays(array_values( $this->variants ), 'title');
         }
     
         unset($this->parent);
         unset($this->new_category_title);
     
         return parent::beforeValidate();
+    }
+    
+    protected function beforeSave()
+    {
+        $this->attributes_count = count( $this->attributes );
+        $this->variants_count = count( $this->variants );
     }
     
     /**
@@ -238,7 +266,14 @@ class Products extends \Dsc\Mongo\Collections\Content implements \MassUpdate\Ser
         return $return;
     }
     
-    public static function getVariants( $cast )
+    /**
+     * Returns an array of the product's variants, indexed by key
+     * where key is an alphabetized, hyphenated string of each attribute's MongoId
+     * 
+     * @param unknown $cast
+     * @return multitype:|multitype:multitype:string unknown multitype:Ambigous <string, unknown>
+     */
+    public static function buildVariants( $cast )
     {
         $combos = array();
         
@@ -264,7 +299,6 @@ class Products extends \Dsc\Mongo\Collections\Content implements \MassUpdate\Ser
                     } else {
                         $ids[$id] = $option['value'];
                     }
-                    
                 }
             }
             $traits[] = \Joomla\Utilities\ArrayHelper::getColumn($attribute['options'], 'id');
@@ -292,6 +326,7 @@ class Products extends \Dsc\Mongo\Collections\Content implements \MassUpdate\Ser
             
             $result[$sorted_key] = array(
                 'id' => $mongo_id,
+                'key' => $sorted_key,
             	'attributes' => $combos[$key],
                 'titles' => $titles
             );
@@ -369,10 +404,10 @@ class Products extends \Dsc\Mongo\Collections\Content implements \MassUpdate\Ser
         return $images;
     }
     
-    public function variants()
+    public function rebuildVariants()
     {
         $cast = $this->cast();
-        return self::getVariants($cast);
+        return self::buildVariants($cast);
     }
     
     /**
@@ -390,14 +425,6 @@ class Products extends \Dsc\Mongo\Collections\Content implements \MassUpdate\Ser
         foreach ($cast['variants'] as $variant) 
         {
             if ($variant['id'] == $id) {
-                if (empty($variant['title'])) {
-                	// TODO build it
-                    $variants = $this->variants();
-                	foreach ($variants as $hr_variant) 
-                	{
-                		
-                	} 
-                }
             	return $variant;
             }
         }
