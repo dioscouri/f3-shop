@@ -49,7 +49,7 @@
                                     <?php echo !empty($variant['titles']) ? implode("&nbsp;|&nbsp;", (array) $variant['titles']) : null; ?>
                                     <input type="hidden" name="variants[<?php echo $key; ?>][id]" value="<?php echo $flash->old('variants.'.$key.'.id'); ?>" />
                                     <input type="hidden" name="variants[<?php echo $key; ?>][key]" value="<?php echo implode("-", $flash->old('variants.'.$key.'.attributes')); ?>" />
-                                    <input type="hidden" name="variants[<?php echo $key; ?>][title]" value="<?php echo implode("&nbsp;|&nbsp;", (array) $variant['titles']); ?>" />
+                                    <input type="hidden" name="variants[<?php echo $key; ?>][attribute_title]" value="<?php echo implode("&nbsp;|&nbsp;", (array) $variant['titles']); ?>" />
                                     <input type="hidden" name="variants[<?php echo $key; ?>][attributes]" value="<?php echo htmlspecialchars( json_encode( $flash->old('variants.'.$key.'.attributes') ) ); ?>" />
                                 </div>
                                 <div class="col-md-9">

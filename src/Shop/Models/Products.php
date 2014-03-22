@@ -1,9 +1,10 @@
 <?php 
 namespace Shop\Models;
 
-class Products extends \Dsc\Mongo\Collections\Content implements \MassUpdate\Service\Models\MassUpdateOperations{
-	
+class Products extends \Dsc\Mongo\Collections\Content implements \MassUpdate\Service\Models\MassUpdateOperations
+{
 	use \MassUpdate\Service\Traits\Model;
+	
 	public $categories = array();
     public $featured_image = array();
     public $images = array();       // array of f3-asset slugs
@@ -173,7 +174,7 @@ class Products extends \Dsc\Mongo\Collections\Content implements \MassUpdate\Ser
         
         if (!empty($this->variants) && is_array($this->variants))
         {
-            $variants = $this->variants();
+            $variants = $this->rebuildVariants();
             
             array_walk($this->variants, function(&$item, $key) use($variants) {
                 if (empty($item['id'])) {
@@ -182,25 +183,38 @@ class Products extends \Dsc\Mongo\Collections\Content implements \MassUpdate\Ser
                 if (!empty($item['attributes']) && !is_array($item['attributes'])) {
                     $item['attributes'] = json_decode( $item['attributes'] );
                 }
-                // if the variant's key is empty, build if from the attributes
+                // if the variant's key is empty, build it from the attributes
                 if (empty($item['key'])) {
                     $item['key'] = implode("-", $item['attributes']);
                 }
                 if (empty($variants[$item['key']])) {
                     unset($this->variants[$key]);
                 } else {
-                    // if the variant's titles is empty, add it
-                    if (empty($item['titles'])) {
-                        $item['titles'] = $variants[$item['key']]['titles'];
+                    // if the variant's attribute titles is empty, add it
+                    if (empty($item['attribute_titles'])) {
+                        $item['attribute_titles'] = $variants[$item['key']]['titles'];
                     }
-                    // if the variant's title is empty, build it automatically
-                    if (empty($item['title'])) {
-                        $item['title'] = implode("&nbsp;|&nbsp;", (array) $item['titles']);
+                    // if the variant's attribute title is empty, build it automatically
+                    if (empty($item['attribute_title'])) {
+                        $item['attribute_title'] = implode("&nbsp;|&nbsp;", (array) $item['attribute_titles']);
                     }
                 }
             });
             
-            $this->variants = \Dsc\ArrayHelper::sortArrays(array_values( $this->variants ), 'title');
+            $this->variants = \Dsc\ArrayHelper::sortArrays(array_values( $this->variants ), 'attribute_title');
+        }
+        
+        if (empty($this->attributes))
+        {
+            // build the variants array for just the single variant
+            $mongo_id = (string) new \MongoId;
+        
+            $variant = new \Shop\Models\Prefabs\Variant(array(
+                'id' => $mongo_id,
+                'key' => $mongo_id
+            ));
+        
+            $this->variants = array( $variant->cast() );
         }
     
         unset($this->parent);
@@ -335,6 +349,12 @@ class Products extends \Dsc\Mongo\Collections\Content implements \MassUpdate\Ser
         return $result;
     }
     
+    public function rebuildVariants()
+    {
+        $cast = $this->cast();
+        return self::buildVariants($cast);
+    }
+    
     public function price( $groups=array() )
     {
         $price = $this->get('prices.default');
@@ -402,12 +422,6 @@ class Products extends \Dsc\Mongo\Collections\Content implements \MassUpdate\Ser
         $images = array_unique( array_merge( array(), (array) $featured_image, (array) $variant_images, (array) $related_images ) );
         
         return $images;
-    }
-    
-    public function rebuildVariants()
-    {
-        $cast = $this->cast();
-        return self::buildVariants($cast);
     }
     
     /**

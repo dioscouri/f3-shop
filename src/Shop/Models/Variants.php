@@ -24,6 +24,7 @@ class Variants extends \Dsc\Mongo\Collection
     protected $__collection_name = 'shop.products';
     protected $__type = 'shop.products';
     
+    
     /**
      * Searches Variants 
      * @return multitype:
@@ -35,19 +36,23 @@ class Variants extends \Dsc\Mongo\Collection
     
     /**
      * Gets a single Variant based on ID.
-     * Actually returns a Product object with the Variant's overrides in place
+     * Actually returns a \Shop\Models\Products object 
+     * (with the Variant's overrides in place or something like that?)
      * 
      * @return 
      */
-    public function read()
+    public function getById( $id )
     {
-        return array();
+        $return = (new \Shop\Models\Products)->load( array('variants.id' => $id ) );
+        // TODO set the overrides? 
+        
+        return $return;
     }
     
     /**
      * Creates a new variant for a product
      */
-    public function create( $product_id, $values, $options=array() )
+    public function creates( $product_id, $values, $options=array() )
     {
         
     }
@@ -55,7 +60,7 @@ class Variants extends \Dsc\Mongo\Collection
     /**
      * Updates one or more fields in a Variant
      */
-    public function update( $variant_id, $values, $options=array() )
+    public function updates( $variant_id, $values, $options=array() )
     {
         return $this->getCollection()->update(
     	   array( 'variants.id' => $variant_id ),
@@ -67,7 +72,7 @@ class Variants extends \Dsc\Mongo\Collection
     /**
      * Deletes a Variant
      */
-    public function delete()
+    public function deletes()
     {
         
     }
