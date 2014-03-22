@@ -42,6 +42,11 @@ class Listener extends \Prefab
         $item->form = \Shop\Admin\Controllers\MenuItemQuickAdd::instance()->category($event);
         $items[] = $item;
         
+        $item = new \stdClass;
+        $item->title = 'Shopping Cart';
+        $item->form = \Shop\Admin\Controllers\MenuItemQuickAdd::instance()->cart($event);
+        $items[] = $item;
+        
         /*
         $item = new \stdClass;
         $item->title = 'Product Detail';

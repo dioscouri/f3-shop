@@ -96,7 +96,7 @@ class Cart extends \Dsc\Controller
         // Start: validation
         // -----------------------------------------------------
         // TODO validate the POST values
-            // min: variant_id
+            // min: cartitem_hash
         $cartitem_hash = $this->inputfilter->clean( $f3->get('PARAMS.cartitem_hash'), 'cmd' );
         
         // TODO if validation fails, respond appropriately

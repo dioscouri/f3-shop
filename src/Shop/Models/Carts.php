@@ -225,6 +225,62 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
         $subtotal = $data['quantity'] * $data['price'];
         return $subtotal;
     }
+    
+    /**
+     * Gets the subtotal
+     * 
+     * @return number
+     */
+    public function subtotal()
+    {
+        $subtotal = 0;
+        
+        if (empty($this->items)) {
+            return $subtotal;
+        }
+        
+        foreach ($this->items as $item)
+        {
+            $subtotal += self::calcItemSubtotal( $item );
+        }
+        
+        return $subtotal;
+    }
+    
+    /**
+     * 
+     * @return number
+     */
+    public function shipping_estimate()
+    {
+        $estimate = 0;
+        return $estimate;
+    }
+    
+    /**
+     * 
+     * @return number
+     */
+    public function tax_estimate()
+    {
+        $estimate = 0;
+        return $estimate;
+    }
+    
+    /**
+     * Gets the total,
+     * incl. subtotal, shipping estimate (if possible) and tax (if possible).
+     * 
+     * @return number
+     */
+    public function total()
+    {
+        $total = $this->subtotal()
+            + $this->shipping_estimate()
+            + $this->tax_estimate();
+    
+        return $total;
+    }
 
     protected function beforeValidate()
     {

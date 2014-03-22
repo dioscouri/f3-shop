@@ -24,4 +24,10 @@ class MenuItemQuickAdd extends \Admin\Controllers\BaseAuth
 	    $view = \Dsc\System::instance()->get('theme');
 	    return $view->renderLayout('Shop/Admin/Views::quickadd/tag.php');
 	}
+	
+	public function cart($event)
+	{
+	    $view = \Dsc\System::instance()->get('theme');
+	    return $view->renderLayout('Shop/Admin/Views::quickadd/cart.php');
+	}
 }
