@@ -15,9 +15,8 @@ class CartItem extends \Dsc\Prefabs
         'options'=>array(),     // (array) custom field for plugins that add to cart items
         'price'=>null,
         'quantity'=>null,
-        'product'=>null,        // complete \Shop\Models\Products object cast as an array
         
-        // TODO Set these based on the variant_id and the product     
+        // Set these based on the variant_id and the product     
         // Make the fields mirror those of a \Shop\Models\Prefabs\Variant object
         'attribute_title'=>null,          // human-readable string; title of each attribute
         'attribute_titles'=>array(),      // array of each attribute's title        
@@ -26,8 +25,9 @@ class CartItem extends \Dsc\Prefabs
         'model_number'=>null,        
         'upc'=>null,
         'weight'=>null,
-        'image'=>null                   
-        
+        'image'=>null,
+
+        'product'=>null        // complete \Shop\Models\Products object cast as an array                                       
     );
     
     public function __construct($source=array(), $options=array())

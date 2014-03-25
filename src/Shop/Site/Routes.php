@@ -6,6 +6,7 @@ namespace Shop\Site;
  */
 class Routes extends \Dsc\Routes\Group
 {
+
     /**
      * Initializes all routes for this group
      * NOTE: This method should be overriden by every group
@@ -64,13 +65,27 @@ class Routes extends \Dsc\Routes\Group
         
         $this->add( '/cart/remove/@cartitem_hash', 'GET|POST', array(
             'controller' => 'Cart',
-            'action' => 'remove'
+            'action' => 'remove' 
         ) );
         
         $this->add( '/cart/updateQuantities', 'POST', array(
             'controller' => 'Cart',
-            'action' => 'updateQuantities'
-        ) );        
+            'action' => 'updateQuantities' 
+        ) );
         
+        $this->add( '/checkout', 'GET', array(
+            'controller' => 'Checkout',
+            'action' => 'index' 
+        ) );
+        
+        $this->add( '/checkout/billing', 'GET', array(
+            'controller' => 'Checkout',
+            'action' => 'billing' 
+        ) );
+        
+        $this->add( '/checkout/update', 'POST', array(
+            'controller' => 'Checkout',
+            'action' => 'update' 
+        ) );
     }
 }

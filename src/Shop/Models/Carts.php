@@ -10,6 +10,8 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
     public $coupons = array();      // array of \Shop\Models\Prefabs\Coupon objects
     public $discounts = array();    // array of \Shop\Models\Prefabs\Discount objects
     public $shipping_address = array();      // address used for estimating shipping
+    public $billing_address = array();      // address used for estimating shipping
+    public $order_comments = null;      // custom comments from the user re: the order
     public $name = null;            // user-defined name for cart
     
     // TODO Remove these?  Why would we use these?
@@ -30,6 +32,12 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
         
         $this->setCondition( 'type', $this->__type );
         
+        $filter_user = $this->getState('filter.user');
+        if (strlen($filter_user))
+        {
+            $this->setCondition('user_id', new \MongoId((string) $filter_user));
+        }
+        
         return $this;
     }
     
@@ -42,30 +50,112 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
     {
         $cart = new self;
         
+        // TODO does the session have a cart_id specified?  if so, use it to get the cart
+        
         $identity = \Dsc\System::instance()->get('auth')->getIdentity();
         $session_id = \Dsc\System::instance()->get('session')->id();
         
         if (empty($identity->id))
         {
             $cart->load(array('session_id' => $session_id));
-            if (empty($cart->id))
-            {
-                $cart->session_id = $session_id;
-                try {
-                    $cart->save();
-                } catch (\Exception $e) {
-                    // TODO respond appropriately with failure message
-                    // return;
-                }
-            }
+            $cart->session_id = $session_id;
         }
         else
         {
-            $cart->load(array('user_id' => $identity->id));
-            $cart->session_id = $session_id;
-            $cart->save();
+            $cart->load(array('user_id' => new \MongoId( (string) $identity->id ) ));
+            $cart->user_id = $identity->id;
+            
+            $session_cart = self::fetchForSession();
+            
+            // if there was no user cart but there IS a session cart, just add the user_id to the session cart and save it
+            if (empty($cart->id) && !empty($session_cart->id)) 
+            {
+            	$cart = $session_cart;
+            	$cart->user_id = $identity->id;
+            	$cart->save();
+            }
+            
+            // if there was a user cart and there is a session cart, merge them and delete the session cart
+            // if we already did the merge, skip this
+            $session_cart_merged = \Dsc\System::instance()->get('session')->get('shop.session_cart_merged');
+            if (!empty($session_cart->id) && $session_cart->id != $cart->id && empty($session_cart_merged))
+            {
+                $cart->session_id = $session_id;
+                $cart->merge( $session_cart->cast() );
+                $session_cart->remove();
+                \Dsc\System::instance()->get('session')->set('shop.session_cart_merged', true);
+            }
+            
+            /*
+            if (!empty($cart->id)) 
+            {
+                if ($cart->session_id != $session_id)
+                {
+                    $cart->session_id = $session_id;
+                    $cart->save();
+                }
+            }
+             */
         }
         
+        return $cart;
+    }
+    
+    /**
+     * Get the current session's cart
+     *
+     * @return \Shop\Models\Carts
+     */
+    public static function fetchForSession()
+    {
+        $cart = new self;
+
+        $session_id = \Dsc\System::instance()->get('session')->id();
+    
+        $cart->load(array('session_id' => $session_id));
+        $cart->session_id = $session_id;
+    
+        return $cart;
+    }
+    
+    /**
+     * Get the current user's cart
+     *
+     * @return \Shop\Models\Carts
+     */
+    public static function fetchForUser()
+    {
+        $cart = new self;
+    
+        $identity = \Dsc\System::instance()->get('auth')->getIdentity();
+        $session_id = \Dsc\System::instance()->get('session')->id();
+        
+        if (!empty($identity->id))
+        {
+            $cart->load(array('user_id' => $identity->id));
+            $cart->user_id = $identity->id;
+            if (!empty($cart->id))
+            {
+                if ($cart->session_id != $session_id) 
+                {
+                    $cart->session_id = $session_id;
+                    $cart->save();                    	
+                }
+            }
+            
+            // Is there a different session cart?  If so, merge them
+            $session_cart = self::fetchForSession();
+            // have we already done the merge?  if so, skip it
+            $session_cart_merged = \Dsc\System::instance()->get('session')->get('shop.session_cart_merged');
+            if (!empty($session_cart->id) && empty($session_cart_merged))
+            {
+                $cart->session_id = $session_id;
+                $cart->merge( $session_cart->cast() );
+                $session_cart->remove();
+                \Dsc\System::instance()->get('session')->set('shop.session_cart_merged', true);
+            }            
+        }
+    
         return $cart;
     }
 
@@ -136,6 +226,12 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
         return $this->save();
     }
 
+    /**
+     * 
+     * @param unknown $cartitem_hash
+     * @param unknown $new_quantity
+     * @return \Shop\Models\Carts
+     */
     public function updateItemQuantity( $cartitem_hash, $new_quantity )
     {
         $exists = false;
@@ -185,12 +281,39 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
     }
 
     /**
-     * Merges the data object into $this
+     * Merges the data array into $this
+     * giving quantities in the data array priority over quantities in $this
      *
      * @param unknown $data            
      */
     public function merge( $data )
     {
+        if (!empty($data['items'])) 
+        {
+            foreach ($data['items'] as $data_key=>$data_item)
+            {
+            	// does it exist in $this?  if so, merge
+                $exists = false;
+                foreach ($this->items as $key=>$item)
+                {
+                    if ($item['hash'] == $data_item['hash'])
+                    {
+                        $exists = true;
+                        $data_item['id'] = $item['id'];
+                        $this->items[$key] = $data_item;
+                        break;
+                    }
+                }
+                
+                // otherwise add it
+                if (!$exists) {
+                    $this->items[] = $data_item;
+                }
+            }
+            
+            $this->save();
+        }
+        
         return $this;
     }
     
@@ -224,6 +347,69 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
     {
         $subtotal = $data['quantity'] * $data['price'];
         return $subtotal;
+    }
+    
+    /**
+     * Does this cart require shipping?
+     *
+     * @return number
+     */
+    public function shipping_required()
+    {
+        $shipping_required = false;
+    
+        if (empty($this->items)) {
+            return $shipping_required;
+        }
+    
+        foreach ($this->items as $item)
+        {
+            if (\Dsc\ArrayHelper::get($item, 'product.shipping.enabled')) 
+            {
+                $shipping_required = true;
+            }
+        }
+    
+        return $shipping_required;
+    }
+    
+    /**
+     * Gets the total weight of all items in the cart
+     * 
+     */
+    public function weight()
+    {
+        $weight = 0;
+        
+        if (empty($this->items)) {
+            return $weight;
+        }
+        
+        foreach ($this->items as $item)
+        {
+            $weight += $item['weight'];
+        }
+        
+        return $weight;
+    }
+    
+    /**
+     * Gets the total number of items in the cart
+     */
+    public function quantity()
+    {
+        $quantity = 0;
+        
+        if (empty($this->items)) {
+            return $quantity;
+        }
+        
+        foreach ($this->items as $item)
+        {
+            $quantity += (int) $item['quantity'];
+        }
+        
+        return $quantity;
     }
     
     /**
@@ -266,10 +452,22 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
         $estimate = 0;
         return $estimate;
     }
+
+    /**
+     * Gets the total of all the applied discounts
+     * 
+     * @return number
+     */
+    public function discount()
+    {
+        $discount = 0;
+        return $discount;
+    }    
     
     /**
      * Gets the total,
-     * incl. subtotal, shipping estimate (if possible) and tax (if possible).
+     * incl. subtotal, discounts/coupons, gift certificates, 
+     * shipping estimate (if possible) and tax (if possible).
      * 
      * @return number
      */
@@ -282,6 +480,9 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
         return $total;
     }
 
+    /**
+     * 
+     */
     protected function beforeValidate()
     {
         if (! $this->get( 'metadata.creator' ))

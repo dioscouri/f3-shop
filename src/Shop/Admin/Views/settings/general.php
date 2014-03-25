@@ -1,3 +1,15 @@
 <h3 class="">General Settings</h3>
+<hr />
 
-<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec.</p>
+<div class="form-group">
+    <label class="control-label col-md-3">Require Shipping Address for All Orders</label>
+
+    <div class="col-md-7">
+        <label class="radio-inline">
+            <input type="radio" name="shipping[required]" value="0" <?php if (!$flash->old('shipping.required')) { echo "checked"; } ?>> No
+        </label>
+        <label class="radio-inline">
+            <input type="radio" name="shipping[required]" value="1" <?php if ($flash->old('shipping.required')) { echo "checked"; } ?>> Yes
+        </label>
+    </div>
+</div>
