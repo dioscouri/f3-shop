@@ -26,6 +26,8 @@ class ShopBootstrap extends \Dsc\Bootstrap
         \Minify\Factory::registerPath( $this->dir . "/src/" );
         
         $files = array(
+            'Shop/Assets/js/class.js',
+            'Shop/Assets/js/validation.js',
             'Shop/Assets/js/site.js' 
         );
         

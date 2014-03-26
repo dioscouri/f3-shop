@@ -48,7 +48,7 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
      */
     public static function fetch()
     {
-        $cart = new self;
+        $cart = new static;
         
         // TODO does the session have a cart_id specified?  if so, use it to get the cart
         
@@ -65,7 +65,7 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
             $cart->load(array('user_id' => new \MongoId( (string) $identity->id ) ));
             $cart->user_id = $identity->id;
             
-            $session_cart = self::fetchForSession();
+            $session_cart = static::fetchForSession();
             
             // if there was no user cart but there IS a session cart, just add the user_id to the session cart and save it
             if (empty($cart->id) && !empty($session_cart->id)) 
@@ -108,7 +108,7 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
      */
     public static function fetchForSession()
     {
-        $cart = new self;
+        $cart = new static;
 
         $session_id = \Dsc\System::instance()->get('session')->id();
     
@@ -125,7 +125,7 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
      */
     public static function fetchForUser()
     {
-        $cart = new self;
+        $cart = new static;
     
         $identity = \Dsc\System::instance()->get('auth')->getIdentity();
         $session_id = \Dsc\System::instance()->get('session')->id();
@@ -144,7 +144,7 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
             }
             
             // Is there a different session cart?  If so, merge them
-            $session_cart = self::fetchForSession();
+            $session_cart = static::fetchForSession();
             // have we already done the merge?  if so, skip it
             $session_cart_merged = \Dsc\System::instance()->get('session')->get('shop.session_cart_merged');
             if (!empty($session_cart->id) && empty($session_cart_merged))
@@ -351,12 +351,16 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
     
     /**
      * Does this cart require shipping?
+     * 
+     * 0    = return if shipping is not required for this cart and global setting = no
+     * 1    = return if global setting = yes but the cart itself does not require shipping
+     * true = return if cart itself requires shipping
      *
-     * @return number
+     * @return boolean
      */
     public function shipping_required()
     {
-        $shipping_required = false;
+        $shipping_required = (int) \Shop\Models\Settings::fetch()->{'shipping.required'};
     
         if (empty($this->items)) {
             return $shipping_required;
@@ -427,7 +431,7 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
         
         foreach ($this->items as $item)
         {
-            $subtotal += self::calcItemSubtotal( $item );
+            $subtotal += static::calcItemSubtotal( $item );
         }
         
         return $subtotal;

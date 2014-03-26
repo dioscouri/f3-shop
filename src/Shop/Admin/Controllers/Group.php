@@ -1,23 +1,27 @@
-<?php 
+<?php
 namespace Shop\Admin\Controllers;
 
-class Group extends \Dsc\Controller
+class Group extends \Admin\Controllers\BaseAuth
 {
-	public function getModel(){
-        $model = new \Shop\Admin\Models\Group();
+    public function getModel()
+    {
+        $model = new \Shop\Admin\Models\Group;
         return $model;
-	}
-	
-	public function fetchTabGroups( $item, $isNew, $identifier = '' ) {
-		
-        $view = \Dsc\System::instance()->get('theme');
-		$view->item = $item;
+    }
+
+    public function fetchTabGroups( $item, $isNew, $identifier = '' )
+    {
+        $view = \Dsc\System::instance()->get( 'theme' );
+        $view->item = $item;
         $prefab = $this->getModel()->prefab();
-		if( !isset($view->item['shop'] ) ) {
-			$view->item = $prefab->cast();
-		} else {
-			$view->item = array_merge( $prefab->cast(), $view->item->cast() );
-		}
-		return $view->renderLayout('Shop/Admin/Views::groups/tab_usergroups.php');
-	}	
+        if (! isset( $view->item['shop'] ))
+        {
+            $view->item = $prefab->cast();
+        }
+        else
+        {
+            $view->item = array_merge( $prefab->cast(), $view->item->cast() );
+        }
+        return $view->renderLayout( 'Shop/Admin/Views::groups/tab_usergroups.php' );
+    }
 }

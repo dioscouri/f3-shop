@@ -87,5 +87,20 @@ class Routes extends \Dsc\Routes\Group
             'controller' => 'Checkout',
             'action' => 'update' 
         ) );
+        
+        $this->add( '/address/countries [ajax]', 'GET', array(
+            'controller' => 'Address',
+            'action' => 'countries' 
+        ) );
+        
+        $this->add( '/address/regions/@country_isocode_2 [ajax]', 'GET', array(
+            'controller' => 'Address',
+            'action' => 'regions' 
+        ) );
+        
+        $this->add( '/address/validate [ajax]', 'GET|POST', array(
+            'controller' => 'Address',
+            'action' => 'validate' 
+        ) );
     }
 }

@@ -1,7 +1,26 @@
+<div class="row">
+	<div class="col-xs-12 col-sm-7 col-md-7 col-lg-4">
+		<h1 class="page-title txt-color-blueDark">
+			<i class="fa fa-table fa-fw "></i> 
+				Countries 
+			<span> > 
+				List
+			</span>
+		</h1>
+	</div>
+	<div class="col-xs-12 col-sm-5 col-md-5 col-lg-8">
+        <ul id="sparks" class="list-actions list-unstyled list-inline">
+            <li>
+                <a class="btn btn-default" href="./admin/shop/country/create">Add New</a>
+            </li>
+        </ul>
+	</div>
+</div>
+
 <form class="searchForm" method="post">
 
     <div class="no-padding">
-    
+        
         <div class="row">
             <div class="col-xs-12 col-sm-5 col-md-5 col-lg-8">
                 <?php /* ?>
@@ -15,8 +34,8 @@
                     <li>
                         <a class="btn btn-link">Quicklink Filter</a>
                     </li>                    
-                </ul>    
-                */ ?>        
+                </ul>
+                */ ?>
             </div>
             <div class="col-xs-12 col-sm-7 col-md-7 col-lg-4">
                 <div class="form-group">
@@ -39,7 +58,7 @@
                     <div class="input-group">
                         <select id="bulk-actions" name="bulk_action" class="form-control">
                             <option value="null">-Bulk Actions-</option>
-                            <option value="delete" data-action="./admin/shop/products/delete">Delete</option>
+                            <option value="delete" data-action="./admin/shop/countries/delete">Delete</option>
                         </select>
                         <span class="input-group-btn">
                             <button class="btn btn-default bulk-actions" type="button" data-target="bulk-actions">Apply</button>
@@ -50,9 +69,9 @@
                 <div class="col-xs-12 col-sm-7 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3">
                     <div class="row text-align-right">
                         <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10">
-                            <?php if (!empty($paginated->total_pages) && $paginated->total_pages > 1) { ?>
-                                <?php echo $paginated->serve(); ?>
-                            <?php } ?>
+                        <?php if (!empty($paginated->total_pages) && $paginated->total_pages > 1) { ?>
+                            <?php echo $paginated->serve(); ?>
+                        <?php } ?>
                         </div>
                         <?php if (!empty($paginated->items)) { ?>
                         <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
@@ -72,16 +91,13 @@
         <input type="hidden" name="list[direction]" value="<?php echo $state->get('list.direction'); ?>" />
         
         <div class="table-responsive datatable dt-wrapper dataTables_wrapper">
-        
-        <table class="table table-striped table-bordered table-hover table-highlight table-checkable">
+            
+            <table class="table table-striped table-bordered table-hover table-highlight table-checkable">
         	<thead>
         		<tr>
         		    <th class="checkbox-column"><input type="checkbox" class="icheck-input"></th>
-        		    <th class="col-md-1"></th>
-        			<th data-sortable="title">Title</th>
-        			<th>Categories</th>
-        			<th>Tags</th>
-        			<th data-sortable="publication.start_date">Publication</th>
+        			<th data-sortable="name">Name</th>
+        			<th>ISO Codes: 2 | 3</th>
         			<th class="col-md-1"></th>
         		</tr>
         	</thead>
@@ -89,56 +105,30 @@
         
             <?php if (!empty($paginated->items)) { ?>
             
-                <?php foreach($paginated->items as $item) { ?>
+            <?php foreach($paginated->items as $item) { ?>
                 <tr>
                     <td class="checkbox-column">
-                        <input type="checkbox" class="icheck-input" name="ids[]" value="<?php echo $item->id; ?>">
+                        <input type="checkbox" class="icheck-input" name="ids[]" value="<?php echo $item->_id; ?>">
                     </td>
                     
                     <td class="">
-                        <?php if ($item->{'featured_image.slug'}) { ?>
-                            <div class="thumbnail text-center">
-                            	<div class="thumbnail-view">
-                            		<a class="thumbnail-view-hover ui-lightbox" href="./asset/<?php echo $item->{'featured_image.slug'}; ?>">
-                            		</a>
-                                    <img src="./asset/thumb/<?php echo $item->{'featured_image.slug'}; ?>" />
-        				        </div>
-        				    </div> <!-- /.thumbnail -->                    	
-                        <?php } ?>
-                    </td>
-                                                
-                    <td class="">
-                        <h5>
-                        <a href="./admin/shop/product/edit/<?php echo $item->id; ?>">
-                        <?php echo $item->{'title'}; ?>
+                        <a href="./admin/shop/country/edit/<?php echo $item->_id; ?>">
+                        <?php echo $item->name; ?>
                         </a>
-                        </h5>
-                        
-                        <p class="help-block">
-                        /<?php echo $item->{'slug'}; ?>
-                        </p>                    
                     </td>
                     
                     <td class="">
-                    <?php echo implode(", ", \Joomla\Utilities\ArrayHelper::getColumn( (array) $item->{'categories'}, 'title' ) ); ?>
-                    </td>
-                    
-                    <td class="">
-                    <?php echo implode(", ", (array) $item->{'tags'} ); ?>
-                    </td>
-                    
-                    <td class="">
-                        <div><?php echo ucwords( $item->{'publication.status'} ); ?></div>
-                        <div><?php if ($item->{'publication.start_date'}) { echo "Up: " . $item->{'publication.start_date'}; } ?></div>
-                        <div><?php if ($item->{'publication.end_date'}) { echo "Down: " . $item->{'publication.end_date'}; } ?></div>
+                        <a href="./admin/shop/country/edit/<?php echo $item->_id; ?>">
+                        <?php echo $item->isocode_2; ?> | <?php echo $item->isocode_3; ?>
+                        </a>
                     </td>
                                     
                     <td class="text-center">
-                        <a class="btn btn-xs btn-secondary" href="./admin/shop/product/edit/<?php echo $item->id; ?>">
+                        <a class="btn btn-xs btn-secondary" href="./admin/shop/country/edit/<?php echo $item->_id; ?>">
                             <i class="fa fa-pencil"></i>
                         </a>
                         &nbsp;
-                        <a class="btn btn-xs btn-danger" data-bootbox="confirm" href="./admin/shop/product/delete/<?php echo $item->id; ?>">
+                        <a class="btn btn-xs btn-danger" data-bootbox="confirm" href="./admin/shop/country/delete/<?php echo $item->_id; ?>">
                             <i class="fa fa-times"></i>
                         </a>
                     </td>
@@ -154,10 +144,9 @@
             <?php } ?>
         
             </tbody>
-        </table>
-        
+            </table>
+            
         </div>
-        <!-- /.table-responsive .datatable .dt-wrapper -->
         
         <div class="dt-row dt-bottom-row">
             <div class="row">
@@ -177,6 +166,6 @@
         </div>
     
     </div>
-    <!-- /.no-padding -->
-    
+
 </form>
+
