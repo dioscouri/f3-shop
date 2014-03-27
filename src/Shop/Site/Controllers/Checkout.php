@@ -103,6 +103,7 @@ class Checkout extends \Dsc\Controller
         \Base::instance()->set( 'cart', $cart );
         
         // TODO Get the available shipping methods
+        // store them in the cart, in checkout
         
         $view = \Dsc\System::instance()->get('theme');
         echo $view->renderView('Shop/Site/Views::checkout/shipping_methods.php');

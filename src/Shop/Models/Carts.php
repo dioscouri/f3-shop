@@ -24,7 +24,7 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
     protected $__type = 'shop.carts';
     protected $__config = array(
         'default_sort' => array(
-            'metadata.created.time' => - 1 
+            'metadata.created.time' => -1 
         ) 
     );
 
