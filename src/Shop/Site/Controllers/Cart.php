@@ -22,7 +22,7 @@ class Cart extends \Dsc\Controller
         \Base::instance()->set('cart', $cart);
         
         $view = \Dsc\System::instance()->get('theme');
-        echo $view->render('Shop/Site/Views::cart/read.php');        
+        echo $view->renderTheme('Shop/Site/Views::cart/read.php');        
     }
         
     /**

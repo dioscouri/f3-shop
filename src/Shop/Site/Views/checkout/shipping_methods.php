@@ -1,0 +1,1 @@
+<p>Please complete your shipping address to select a shipping method (this is just a test message from the server.  Valid shipping methods come next).</p>

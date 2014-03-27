@@ -8,7 +8,6 @@ class Address extends \Dsc\Controller
      */
     public function countries()
     {
-        $f3 = \Base::instance();
         $result = \Shop\Models\Countries::find();
         
         return $this->outputJson( $this->getJsonResponse( array(
@@ -22,7 +21,6 @@ class Address extends \Dsc\Controller
      */
     public function regions()
     {
-        $f3 = \Base::instance();
         $country_isocode_2 = $f3->get('PARAMS.country_isocode_2');
         
         $result = \Shop\Models\Regions::byCountry( $country_isocode_2 );

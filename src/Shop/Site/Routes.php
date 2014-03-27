@@ -83,6 +83,11 @@ class Routes extends \Dsc\Routes\Group
             'action' => 'billing' 
         ) );
         
+        $this->add( '/checkout/shipping-methods [ajax]', 'GET', array(
+            'controller' => 'Checkout',
+            'action' => 'shippingMethods' 
+        ) );
+        
         $this->add( '/checkout/update', 'POST', array(
             'controller' => 'Checkout',
             'action' => 'update' 

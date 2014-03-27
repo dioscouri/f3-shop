@@ -6,17 +6,19 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
     public $user_id = null;
     public $session_id = null;
     public $items = array();        // array of \Shop\Models\Prefabs\CartItem objects
+    
     public $taxes = array();        // array of \Shop\Models\Prefabs\Tax objects
     public $coupons = array();      // array of \Shop\Models\Prefabs\Coupon objects
     public $discounts = array();    // array of \Shop\Models\Prefabs\Discount objects
-    public $shipping_address = array();      // address used for estimating shipping
-    public $billing_address = array();      // address used for estimating shipping
-    public $order_comments = null;      // custom comments from the user re: the order
     public $name = null;            // user-defined name for cart
     
-    // TODO Remove these?  Why would we use these?
-    public $order = null;           // \Shop\Models\Orders object cast as array when cart is completed
-    public $order_id = null;        // id of order after checkout    
+    public $checkout = array( // array of values used during checkout
+        'order_comments' => null,
+        'shipping_address' => array(),
+        'billing_address' => array()
+    );
+    
+    public $shipping_methods = array();    // array of \Shop\Models\ShippingMethod objects, each with a rate
     
     protected $__collection_name = 'shop.carts';
     protected $__type = 'shop.carts';
