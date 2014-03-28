@@ -21,6 +21,7 @@ class Address extends \Dsc\Controller
      */
     public function regions()
     {
+        $f3 = \Base::instance();
         $country_isocode_2 = $f3->get('PARAMS.country_isocode_2');
         
         $result = \Shop\Models\Regions::byCountry( $country_isocode_2 );
