@@ -27,7 +27,7 @@
             <div class="form-group">
                 <div class="row">
                     <div class="col-xs-12 col-sm-12 col-md-6">
-                        <select class="form-control state" data-required="true" name="checkout[shipping_address][region]" id="shipping-region" autocomplete="region">
+                        <select class="form-control region" data-required="true" name="checkout[shipping_address][region]" id="shipping-region" autocomplete="region">
                         <?php foreach (\Shop\Models\Regions::byCountry( $cart->selected_country ) as $region) { ?>
                             <option value="<?php echo $region->code; ?>" <?php if ($cart->{'checkout.shipping_address.region'} == $region->code) { echo "selected"; } ?>><?php echo $region->name; ?></option>
                         <?php } ?>
@@ -135,7 +135,7 @@ jQuery(document).ready(function(){
 		// Set original zip
 		if (!jQuery(this).data('shipping-params'))
 		{
-			jQuery(this).data('shipping-params', jQuery('#checkout-shipping-info input.postal-code').val() + jQuery('#checkout-shipping-info select.country').val());
+			jQuery(this).data('shipping-params', jQuery('#checkout-shipping-info input.postal-code').val() + jQuery('#checkout-shipping-address select.region').val() + jQuery('#checkout-shipping-info select.country').val());
 		}
     	
     	// Reload event.
@@ -143,14 +143,15 @@ jQuery(document).ready(function(){
     	{
     		// Get zip from checkout form.
     		var zip = jQuery('#checkout-shipping-address input.postal-code').val();
+    		var region = jQuery('#checkout-shipping-address select.region').val();
     		var country = jQuery('#checkout-shipping-address select.country').val();
 
-    		if (!zip || !country) return;
+    		if (!zip || !region || !country) return;
     		
     		// Zip changed?
-    		if (jQuery(this).data('shipping-params') != zip+country)
+    		if (jQuery(this).data('shipping-params') != zip+region+country)
     		{
-    			jQuery(this).data('shipping-params', zip+country);
+    			jQuery(this).data('shipping-params', zip+region+country);
     			
     			// Appear to be loading.
     			jQuery('#checkout-shipping-methods').css({ opacity: 0.5 });
