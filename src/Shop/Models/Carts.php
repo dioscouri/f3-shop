@@ -15,7 +15,8 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
     public $checkout = array( // array of values used during checkout
         'order_comments' => null,
         'shipping_address' => array(),
-        'billing_address' => array()
+        'billing_address' => array(),
+        'shipping_method' => null,
     );
     
     public $shipping_methods = array();    // array of \Shop\Models\ShippingMethod objects, each with a rate
@@ -50,54 +51,14 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
      */
     public static function fetch()
     {
-        $cart = new static;
-        
-        // TODO does the session have a cart_id specified?  if so, use it to get the cart
-        
         $identity = \Dsc\System::instance()->get('auth')->getIdentity();
-        $session_id = \Dsc\System::instance()->get('session')->id();
-        
         if (empty($identity->id))
         {
-            $cart->load(array('session_id' => $session_id));
-            $cart->session_id = $session_id;
+            $cart = static::fetchForSession();
         }
         else
         {
-            $cart->load(array('user_id' => new \MongoId( (string) $identity->id ) ));
-            $cart->user_id = $identity->id;
-            
-            $session_cart = static::fetchForSession();
-            
-            // if there was no user cart but there IS a session cart, just add the user_id to the session cart and save it
-            if (empty($cart->id) && !empty($session_cart->id)) 
-            {
-            	$cart = $session_cart;
-            	$cart->user_id = $identity->id;
-            	$cart->save();
-            }
-            
-            // if there was a user cart and there is a session cart, merge them and delete the session cart
-            // if we already did the merge, skip this
-            $session_cart_merged = \Dsc\System::instance()->get('session')->get('shop.session_cart_merged');
-            if (!empty($session_cart->id) && $session_cart->id != $cart->id && empty($session_cart_merged))
-            {
-                $cart->session_id = $session_id;
-                $cart->merge( $session_cart->cast() );
-                $session_cart->remove();
-                \Dsc\System::instance()->get('session')->set('shop.session_cart_merged', true);
-            }
-            
-            /*
-            if (!empty($cart->id)) 
-            {
-                if ($cart->session_id != $session_id)
-                {
-                    $cart->session_id = $session_id;
-                    $cart->save();
-                }
-            }
-             */
+            $cart = static::fetchForUser();
         }
         
         return $cart;
@@ -134,28 +95,29 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
         
         if (!empty($identity->id))
         {
-            $cart->load(array('user_id' => $identity->id));
+            $cart->load(array('user_id' => new \MongoId( (string) $identity->id ) ));
             $cart->user_id = $identity->id;
-            if (!empty($cart->id))
+            
+            $session_cart = static::fetchForSession();
+            
+            // if there was no user cart but there IS a session cart, just add the user_id to the session cart and save it
+            if (empty($cart->id) && !empty($session_cart->id))
             {
-                if ($cart->session_id != $session_id) 
-                {
-                    $cart->session_id = $session_id;
-                    $cart->save();                    	
-                }
+                $cart = $session_cart;
+                $cart->user_id = $identity->id;
+                $cart->save();
             }
             
-            // Is there a different session cart?  If so, merge them
-            $session_cart = static::fetchForSession();
-            // have we already done the merge?  if so, skip it
+            // if there was a user cart and there is a session cart, merge them and delete the session cart
+            // if we already did the merge, skip this
             $session_cart_merged = \Dsc\System::instance()->get('session')->get('shop.session_cart_merged');
-            if (!empty($session_cart->id) && empty($session_cart_merged))
+            if (!empty($session_cart->id) && $session_cart->id != $cart->id && empty($session_cart_merged))
             {
                 $cart->session_id = $session_id;
                 $cart->merge( $session_cart->cast() );
                 $session_cart->remove();
                 \Dsc\System::instance()->get('session')->set('shop.session_cart_merged', true);
-            }            
+            }
         }
     
         return $cart;
@@ -360,7 +322,7 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
      *
      * @return boolean
      */
-    public function shipping_required()
+    public function shippingRequired()
     {
         $shipping_required = (int) \Shop\Models\Settings::fetch()->{'shipping.required'};
     
@@ -443,7 +405,7 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
      * 
      * @return number
      */
-    public function shipping_estimate()
+    public function shippingEstimate()
     {
         $estimate = 0;
         return $estimate;
@@ -453,7 +415,7 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
      * 
      * @return number
      */
-    public function tax_estimate()
+    public function taxEstimate()
     {
         $estimate = 0;
         return $estimate;
@@ -480,10 +442,70 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
     public function total()
     {
         $total = $this->subtotal()
-            + $this->shipping_estimate()
-            + $this->tax_estimate();
+            + $this->shippingEstimate()
+            + $this->taxEstimate();
     
         return $total;
+    }
+    
+    /**
+     * Gets valid shipping methods for this cart,
+     * fetching them from Listeners if requested or necessary
+     * 
+     * @return array
+     */
+    public function shippingMethods( $refresh=false )
+    {
+        if (empty($this->shipping_methods) || $refresh) 
+        {
+            $this->shipping_methods = $this->fetchShippingMethods();
+            $this->save();
+        }
+        
+        return $this->shipping_methods;
+    }
+    
+    /**
+     * Return false if not set in checkout.shipping_method
+     * Return null if set but not found in array of valid shipping methods for this cart
+     * Return \Shop\Mopdels\Prefabs\ShippingMethod object if found
+     *  
+     */
+    public function shippingMethod()
+    {
+        // is it not set in checkout?
+        if (!$this->{'checkout.shipping_method'}) 
+        {
+        	return false;
+        }
+        
+        // otherwise get its full object from the array of methods
+        foreach ($this->shippingMethods() as $method_array) 
+        {
+            if ($this->{'checkout.shipping_method'} == \Dsc\ArrayHelper::get( $method_array, 'id' )) 
+            {
+                $method = new \Shop\Models\Prefabs\ShippingMethods( $method_array );
+            	return $method;
+            }
+        }
+        
+        return null;
+    }
+    
+    /**
+     * Fetches valid shipping methods for this cart
+     * 
+     */
+    protected function fetchShippingMethods()
+    {
+        $methods = array();
+        
+        $event = new \Joomla\Event\Event( 'onFetchShippingMethods' );
+        $event->addArgument('cart', $this);
+        $event->addArgument('methods', $methods);
+        \Dsc\System::instance()->getDispatcher()->triggerEvent($event);
+        
+        return $event->getArgument('methods');
     }
 
     /**

@@ -56,13 +56,13 @@
                     <td><div class="strong">
                             Shipping <small>(est)</small>:
                         </div></td>
-                    <td><div class="price">$<?php echo $cart->shipping_estimate(); ?></div></td>
+                    <td><div class="price">$<?php echo $cart->shippingEstimate(); ?></div></td>
                 </tr>
                 <tr>
                     <td><div class="strong">
                             Tax <small>(est)</small>:
                         </div></td>
-                    <td><div class="price">$<?php echo $cart->tax_estimate(); ?></div></td>
+                    <td><div class="price">$<?php echo $cart->taxEstimate(); ?></div></td>
                 </tr>
             </tbody>
             <tfoot>

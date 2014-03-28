@@ -69,7 +69,7 @@ ShopValidation = ShopClass.extend({
                 }
                 break;
             case "radio":
-                var val = el.find('input:radio[name='+ field.attr('name') +']:checked').val();
+                var val = el.find("input[type=radio][name='"+ field.attr('name') +"']:checked").val();
                 if (!val) {
                     return true;
                 }

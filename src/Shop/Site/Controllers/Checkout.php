@@ -56,9 +56,8 @@ class Checkout extends \Dsc\Controller
         
         // TODO Do the selective update, saving the data to the Cart if it validates
         $checkout = $this->input->get( 'checkout', array(), 'array' );
-        
-        $cart_checkout = array_merge( array(), (array) $cart->{'checkout'}, $checkout );
-        $cart->set( 'checkout', $cart_checkout );
+        $cart_checkout = array_merge( (array) $cart->{'checkout'}, $checkout );
+        $cart->checkout = $cart_checkout;
         $cart->save();
         
         // TODO If the select data doesn't validate, return an error message while redirecting back to referring page (if http request)
@@ -101,9 +100,6 @@ class Checkout extends \Dsc\Controller
     {
         $cart = \Shop\Models\Carts::fetch();
         \Base::instance()->set( 'cart', $cart );
-        
-        // TODO Get the available shipping methods
-        // store them in the cart, in checkout
         
         $view = \Dsc\System::instance()->get('theme');
         echo $view->renderView('Shop/Site/Views::checkout/shipping_methods.php');

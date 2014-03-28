@@ -8,9 +8,9 @@
         <legend>
             <small>Shipping Address</small>
         </legend>
-        <?php if ($cart->shipping_required()) { ?>        
-            <p>Shipping Required? If so, display form for shipping address. If not, say so. <small>(Store address in cart and autocomplete when/if returning to this page later.)</small></p>
-            <p>If account has stored addresses, display a select list and when one is selected, prefill the form fields.</p>
+        <?php if ($cart->shippingRequired()) { ?>        
+
+            <?php /* TODO If account has stored addresses, display a select list and when one is selected, prefill the form fields */ ?>
             
             <div class="form-group">
                 <input type="text" class="form-control name" data-required="true" name="checkout[shipping_address][name]" value="<?php echo $cart->{'checkout.shipping_address.name'}; ?>" placeholder="Full Name" autocomplete="name">
@@ -59,7 +59,7 @@
         <?php } ?>
     </div>
     
-    <?php if ($cart->shipping_required()) { ?>
+    <?php if ($cart->shippingRequired()) { ?>
 
     <div id="checkout-shipping-methods" class="well well-sm">
         <legend>
@@ -67,8 +67,6 @@
         </legend>
         
         <div id="checkout-shipping-methods-container"></div>     
-        
-        <p>Shipping required and address provided? If so, display shipping method options. If not, hide entire well or display "provide address" message</p>
     </div>
     
     <?php } ?>
@@ -146,11 +144,8 @@ jQuery(document).ready(function(){
     		// Get zip from checkout form.
     		var zip = jQuery('#checkout-shipping-address input.postal-code').val();
     		var country = jQuery('#checkout-shipping-address select.country').val();
-    		console.log(zip);
-    		console.log(country);
-    		if (!zip || !country) return;
 
-    		console.log(jQuery(this));
+    		if (!zip || !country) return;
     		
     		// Zip changed?
     		if (jQuery(this).data('shipping-params') != zip+country)
@@ -192,5 +187,7 @@ jQuery(document).ready(function(){
     	// Remember this was loaded once.
     	window.shipping_methods_loaded = true;
     }
+
+    jQuery('#checkout-shipping-methods').trigger('reload');
 });
 </script>

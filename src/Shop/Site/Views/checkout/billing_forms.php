@@ -18,17 +18,25 @@
                 <?php echo !empty($cart->{'checkout.shipping_address.line_2'}) ? $cart->{'checkout.shipping_address.line_2'} . '<br/>' : null; ?>
                 <?php echo $cart->{'checkout.shipping_address.city'}; ?> <?php echo $cart->{'checkout.shipping_address.region'}; ?> <?php echo $cart->{'checkout.shipping_address.postal_code'}; ?><br/>
                 <?php echo $cart->{'checkout.shipping_address.country'}; ?><br/>
-                <?php if (!empty($cart->{'checkout.shipping_address.phone_number'})) { ?>
-                <div>
-                    Phone: <?php echo $cart->{'checkout.shipping_address.phone_number'}; ?>
-                </div>
-                <?php } ?>
             </address>
+            <?php if (!empty($cart->{'checkout.shipping_address.phone_number'})) { ?>
+            <div>
+                <label>Phone:</label> <?php echo $cart->{'checkout.shipping_address.phone_number'}; ?>
+            </div>
+            <?php } ?>
+        
         <?php } ?>
-        <?php if (!empty($cart->{'checkout.shipping_method'})) { ?>
-        <div>
-            Method: <?php echo $cart->{'checkout.shipping_method.title'}; ?>
-        </div>
+        
+        <?php if ($method = $cart->shippingMethod()) { ?>
+            <div>
+                <label>Method:</label> <?php echo $method->{'name'}; ?> &mdash; $<?php echo $method->total(); ?>
+            </div>
+        <?php } ?>
+        <?php if ($cart->{'checkout.order_comments'}) { ?>
+            <div>
+                <label>Comments:</label>
+                <?php echo $cart->{'checkout.order_comments'}; ?>
+            </div>
         <?php } ?>
         
     </div>
