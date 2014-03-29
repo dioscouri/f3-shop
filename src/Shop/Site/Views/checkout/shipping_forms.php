@@ -23,35 +23,30 @@
             </div>
             <div class="form-group">
                 <input type="text" class="form-control city" data-required="true" name="checkout[shipping_address][city]" value="<?php echo $cart->{'checkout.shipping_address.city'}; ?>" placeholder="City" autocomplete="locality">
-            </div>            
-            <div class="form-group">
-                <div class="row">
-                    <div class="col-xs-12 col-sm-12 col-md-6">
-                        <select class="form-control region" data-required="true" name="checkout[shipping_address][region]" id="shipping-region" autocomplete="region">
-                        <?php foreach (\Shop\Models\Regions::byCountry( $cart->selected_country ) as $region) { ?>
-                            <option value="<?php echo $region->code; ?>" <?php if ($cart->{'checkout.shipping_address.region'} == $region->code) { echo "selected"; } ?>><?php echo $region->name; ?></option>
-                        <?php } ?>
-                        </select>                        
-                    </div>
-                    <div class="col-xs-12 col-sm-12 col-md-6">
-                        <select class="form-control country" data-required="true" name="checkout[shipping_address][country]" id="shipping-country" autocomplete="country">
-                        <?php foreach (\Shop\Models\Countries::find() as $country) { ?>
-                            <option value="<?php echo $country->isocode_2; ?>" <?php if ($cart->{'selected_country'} == $country->isocode_2) { echo "selected"; } ?>><?php echo $country->name; ?></option>
-                        <?php } ?>
-                        </select>
-                    </div>            
-                </div>            
             </div>
-            <div class="form-group">
-                <div class="row">
-                    <div class="col-xs-12 col-sm-12 col-md-4">
-                        <input type="text" class="form-control postal-code" data-required="true" name="checkout[shipping_address][postal_code]" value="<?php echo $cart->{'checkout.shipping_address.postal_code'}; ?>" placeholder="Postal Code" autocomplete="postal-code" >
-                    </div>
-                    <div class="col-xs-12 col-sm-12 col-md-8">
-                        <input type="text" class="form-control phone" data-required="true" name="checkout[shipping_address][phone_number]" value="<?php echo $cart->{'checkout.shipping_address.phone_number'}; ?>" placeholder="Phone Number" autocomplete="tel">
-                    </div>            
-                </div>                        
-                
+            <div class="row">
+                <div class="form-group col-xs-12 col-sm-12 col-md-6">
+                    <select class="form-control region" data-required="true" name="checkout[shipping_address][region]" id="shipping-region" autocomplete="region">
+                    <?php foreach (\Shop\Models\Regions::byCountry( $cart->selected_country ) as $region) { ?>
+                        <option value="<?php echo $region->code; ?>" <?php if ($cart->{'checkout.shipping_address.region'} == $region->code) { echo "selected"; } ?>><?php echo $region->name; ?></option>
+                    <?php } ?>
+                    </select>                        
+                </div>
+                <div class="form-group col-xs-12 col-sm-12 col-md-6">
+                    <select class="form-control country" data-required="true" name="checkout[shipping_address][country]" id="shipping-country" autocomplete="country">
+                    <?php foreach (\Shop\Models\Countries::find() as $country) { ?>
+                        <option value="<?php echo $country->isocode_2; ?>" <?php if ($cart->{'selected_country'} == $country->isocode_2) { echo "selected"; } ?>><?php echo $country->name; ?></option>
+                    <?php } ?>
+                    </select>
+                </div>            
+            </div>            
+            <div class="row">
+                <div class="form-group col-xs-12 col-sm-12 col-md-4">
+                    <input type="text" class="form-control postal-code" data-required="true" name="checkout[shipping_address][postal_code]" value="<?php echo $cart->{'checkout.shipping_address.postal_code'}; ?>" placeholder="Postal Code" autocomplete="postal-code" >
+                </div>
+                <div class="form-group col-xs-12 col-sm-12 col-md-8">
+                    <input type="text" class="form-control phone" data-required="true" name="checkout[shipping_address][phone_number]" value="<?php echo $cart->{'checkout.shipping_address.phone_number'}; ?>" placeholder="Phone Number" autocomplete="tel">
+                </div>            
             </div>
             
         <?php } else { ?>
@@ -146,7 +141,7 @@ jQuery(document).ready(function(){
     		var region = jQuery('#checkout-shipping-address select.region').val();
     		var country = jQuery('#checkout-shipping-address select.country').val();
 
-    		if (!zip || !region || !country) return;
+    		//if (!zip || !region || !country) return;
     		
     		// Zip changed?
     		if (jQuery(this).data('shipping-params') != zip+region+country)

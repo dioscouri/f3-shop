@@ -54,9 +54,17 @@
                 </tr>
                 <tr>
                     <td><div class="strong">
-                            Shipping <small>(est)</small>:
+                            Shipping:
                         </div></td>
-                    <td><div class="price">$<?php echo $cart->shippingEstimate(); ?></div></td>
+                    <td><div class="price">
+                        <?php if (!$shippingMethod = $cart->shippingMethod()) {
+                            echo '$' . $cart->shippingEstimate();
+                            echo '<small>(est)</small>';
+                        } else {
+                        	echo '$' . $shippingMethod->total();
+                        }
+                        ?>
+                    </div></td>
                 </tr>
                 <tr>
                     <td><div class="strong">

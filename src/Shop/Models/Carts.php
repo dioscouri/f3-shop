@@ -402,6 +402,32 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
     }
     
     /**
+     * Gets the total shipping surcharge to be applied to each shipping method.
+     * Shipping surcharges can be either global (set in the Shop config)
+     * or per item (set in each Product) 
+     */
+    public function shippingSurchargeTotal()
+    {
+        // TODO fire a plugin event here, sending $this as an argument
+        
+        $total = 0;
+        
+        if (empty($this->items)) {
+            return $total;
+        }
+        
+        // TODO finish this.  get the surcharge amount for each product
+        /*
+        foreach ($this->items as $item)
+        {
+            //$total += static::calcItemSubtotal( $item );
+        }
+        */
+        
+        return $total;        
+    }
+    
+    /**
      * 
      * @return number
      */
