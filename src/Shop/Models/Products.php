@@ -39,7 +39,8 @@ class Products extends \Dsc\Mongo\Collections\Content implements \MassUpdate\Ser
             'length'=>null,
             'width'=>null,
             'height'=>null
-        )
+        ),
+        'surcharge'=>null // an amount added to shipping total regardless of shipping method
     );
     
     public $taxes = array(

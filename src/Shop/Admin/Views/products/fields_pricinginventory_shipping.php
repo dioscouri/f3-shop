@@ -50,6 +50,21 @@
             
         </div>
         <!-- /.form-group -->
+        
+        <div class="form-group">
+            <div class="row clearfix">
+                <div class="col-md-2">
+                    <label>Shipping Surcharge</label>
+                    <input type="text" name="shipping[surcharge]" placeholder="Surcharge" value="<?php echo $flash->old('shipping.surcharge'); ?>" class="form-control" />
+                    <small class="help-block">A shipping/handling fee added regardless of shipping method.</small>                    
+                </div>
+                
+                <div class="col-md-10">
+
+                </div>
+            </div>
+        </div>
+        <!-- /.form-group -->
     
     </div>
     <!-- /.col-md-10 -->
