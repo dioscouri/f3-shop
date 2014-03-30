@@ -172,11 +172,34 @@ class Products extends \Dsc\Mongo\Collections\Content implements \MassUpdate\Ser
                 });
             });
         }
+    
+        unset($this->parent);
+        unset($this->new_category_title);
+    
+        return parent::beforeValidate();
+    }
+    
+    protected function beforeSave()
+    {
+        $this->attributes_count = count( $this->attributes );
+        $this->variants_count = count( $this->variants );
         
+        return parent::beforeSave();
+    }
+    
+    protected function beforeCreate()
+    {
+        $this->createVariants();
+        
+        return parent::beforeCreate();
+    }
+    
+    protected function createVariants()
+    {
         if (!empty($this->variants) && is_array($this->variants))
         {
             $variants = $this->rebuildVariants();
-            
+        
             array_walk($this->variants, function(&$item, $key) use($variants) {
                 if (empty($item['id'])) {
                     $item['id'] = (string) new \MongoId;
@@ -201,7 +224,7 @@ class Products extends \Dsc\Mongo\Collections\Content implements \MassUpdate\Ser
                     }
                 }
             });
-            
+        
             $this->variants = \Dsc\ArrayHelper::sortArrays(array_values( $this->variants ), 'attribute_title');
         }
         
@@ -217,17 +240,54 @@ class Products extends \Dsc\Mongo\Collections\Content implements \MassUpdate\Ser
         
             $this->variants = array( $variant->cast() );
         }
-    
-        unset($this->parent);
-        unset($this->new_category_title);
-    
-        return parent::beforeValidate();
     }
     
-    protected function beforeSave()
+    protected function beforeUpdate()
     {
-        $this->attributes_count = count( $this->attributes );
-        $this->variants_count = count( $this->variants );
+        // IMPORTANT: Variant IDs need to be preserved, SO,
+        // if the attributes array is diff from before, Variants are no longer valid and can be recreated (IDs included)
+        // but if the attributes array is the same, match the Variant with its pre-existing ID
+        
+        $prev_product = (new static)->setState('filter.id', $this->id)->getItem();
+        
+        // get the attribute ids for the prev_product and $this, sorted
+        $prev_attributes = \Joomla\Utilities\ArrayHelper::getColumn($prev_product->attributes, 'id');
+        sort( $prev_attributes );
+        
+        $this_attributes = \Joomla\Utilities\ArrayHelper::getColumn($this->attributes, 'id');
+        sort( $this_attributes );
+
+        if ($prev_attributes != $this_attributes) 
+        {
+        	// a complete variant rebuild is fine
+        	$this->createVariants();
+        }
+        
+        elseif (count($this->attributes) == 0)
+        {
+            // there's only one variant, the default product, so 
+            // preserve variant IDs since the attribute set hasn't changed
+            $this->createVariants();             
+            
+            $this->variants[0]['id'] = $prev_product->variants[0]['id'];
+            $this->variants[0]['key'] = $prev_product->variants[0]['key'];
+        }
+        
+        else
+        {
+            // preserve variant IDs since the attribute set hasn't changed
+            $this->createVariants();
+            
+            array_walk($this->variants, function(&$item, $key) use($prev_product) {
+            	// if a variant with this attribute set existed, then preserve its ID
+            	if ($prev_variant = $prev_product->variantByKey($item['key'])) {
+            		$item['id'] = $prev_variant['id'];
+            	}
+            });
+            
+        }
+        
+        return parent::beforeUpdate();
     }
     
     /**
@@ -428,7 +488,7 @@ class Products extends \Dsc\Mongo\Collections\Content implements \MassUpdate\Ser
     /**
      * Get a variant using its id
      * 
-     * @param unknown $id
+     * @param string $id
      */
     public function variant($id)
     {
@@ -439,11 +499,58 @@ class Products extends \Dsc\Mongo\Collections\Content implements \MassUpdate\Ser
         
         foreach ($cast['variants'] as $variant) 
         {
-            if ($variant['id'] == $id) {
+            if ($variant['id'] == (string) $id) {
             	return $variant;
             }
         }
         
+        return false;
+    }
+    
+    /**
+     * Get a variant using its key,
+     * which is an alphabetized, hyphenated string using each of its attributes's MongoId
+     *
+     * @param string $key
+     */
+    public function variantByKey($key)
+    {
+        $cast = $this->cast();
+        if (empty($cast['variants'])) {
+            return false;
+        }
+    
+        foreach ($cast['variants'] as $variant)
+        {
+            if ($variant['key'] == (string) $key) {
+                return $variant;
+            }
+        }
+    
+        return false;
+    }
+    
+    /**
+     * Get a variant using its attributes
+     *
+     * @param array $attributes
+     */
+    public function variantByAttributes(array $attributes)
+    {
+        $attributes = sort($attributes);
+        
+        $cast = $this->cast();
+        if (empty($cast['variants'])) {
+            return false;
+        }
+    
+        foreach ($cast['variants'] as $variant)
+        {
+            if ($variant['attributes'] == $attributes) {
+                return $variant;
+            }
+        }
+    
         return false;
     }
 }

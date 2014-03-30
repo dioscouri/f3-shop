@@ -7,8 +7,12 @@ class Checkout extends \Dsc\Controller
     public function index()
     {
         $cart = \Shop\Models\Carts::fetch();
-        $cart->selected_country = $cart->{'checkout.shipping_address.country'} ? $cart->{'checkout.shipping_address.country'} : \Shop\Models\Settings::fetch()->{'country'};
+        // Update product fields stored in cart
+        foreach ($cart->validateProducts() as $change) {
+        	\Dsc\System::addMessage($change);
+        }
         
+        $cart->selected_country = $cart->{'checkout.shipping_address.country'} ? $cart->{'checkout.shipping_address.country'} : \Shop\Models\Settings::fetch()->{'country'};
         \Base::instance()->set( 'cart', $cart );
         
         $identity = $this->getIdentity();

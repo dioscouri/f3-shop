@@ -19,6 +19,10 @@ class Cart extends \Dsc\Controller
     public function read()
     {
         $cart = \Shop\Models\Carts::fetch();
+        // Update product fields stored in cart
+        foreach ($cart->validateProducts() as $change) {
+        	\Dsc\System::addMessage($change);
+        }
         \Base::instance()->set('cart', $cart);
         
         $view = \Dsc\System::instance()->get('theme');

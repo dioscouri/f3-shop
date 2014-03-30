@@ -12,7 +12,7 @@ class Variant extends \Dsc\Prefabs
         'key'=>null,            // alphabetized, hyphenated string of each attribute's MongoId
         'attribute_title'=>null,          // human-readable string; pipe-concatenated string with title of each attribute 
         'attribute_titles'=>array(),      // array of each attribute's title
-        'attributes'=>array(),  // array of \Shop\Models\Prefabs\Attribute (string) ids
+        'attributes'=>array(),  // array of \Shop\Models\Prefabs\Attribute (string) ids, sorted
         'sku'=>null,        
         'price'=>null,          // alternative base price.  FINAL price override for this variant.  given priority over attribute price_changes.        
         'quantity'=>null,

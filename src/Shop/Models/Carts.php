@@ -282,6 +282,60 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
     }
     
     /**
+     * A diagnostic method. Updates/Removes products from stored carts.
+     * Should be run each time a cart is viewed or when a checkout begins.
+     * Checks that products are still available,
+     * that the product definition in the cart is up to date,
+     * etc. 
+     * 
+     * @return Array of messages from actions taken
+     */
+    public function validateProducts()
+    {
+        $return = array();
+        
+        if (empty($this->items)) {
+            return $return;
+        }
+        
+        $change = false;
+        foreach ($this->items as $key=>$cartitem)
+        {
+            $variant_id = \Dsc\ArrayHelper::get($cartitem, 'variant_id');
+            
+            try {
+                $product = (new \Shop\Models\Variants)->getById($variant_id);
+            } catch (\Exception $e) {
+                // remove item from cart and add message to $return
+                $title = \Dsc\ArrayHelper::get($cartitem, 'product.title');
+                $return[] = 'The item "'. $title .'" is invalid and has been removed from your cart.';
+                unset($this->items[$key]);
+                $change = true;
+                continue;
+            }
+
+            // TODO If the product is not available, remove item from cart and add message to $return
+            
+            // update the cart's stored product definition
+            $cast = $product->cast();
+            if ($this->items[$key]['product'] != $cast) 
+            {
+                $change = true;
+                $this->items[$key]['product'] = $cast;
+            }
+            
+            // TODO Has the price changed?  If so, update the cart and add message to $return
+            
+        }
+        
+        if ($change) {
+        	$this->save();
+        }        
+        
+        return $return;
+    }
+    
+    /**
      * Get a cart item using its hash
      *
      * @param unknown $id
@@ -416,13 +470,13 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
             return $total;
         }
         
-        // TODO finish this.  get the surcharge amount for each product
-        /*
+        // Get the surcharge amount for each product
         foreach ($this->items as $item)
         {
-            //$total += static::calcItemSubtotal( $item );
+            if ($product_surchage = \Dsc\ArrayHelper::get($item, 'product.shipping.surcharge')) {
+                $total += $product_surchage;
+            }
         }
-        */
         
         return $total;        
     }

@@ -44,8 +44,35 @@ class Variants extends \Dsc\Mongo\Collection
     public function getById( $id )
     {
         $return = (new \Shop\Models\Products)->load( array('variants.id' => $id ) );
+        
+        if (empty($return->id)) {
+        	throw new \Exception('Invalid Variant ID');
+        }
+        
         // TODO set the overrides? 
         
+        return $return;
+    }
+    
+    /**
+     * Gets a single Variant based on a product_id and an array of attribute IDs.
+     * Actually returns a \Shop\Models\Products object
+     * (with the Variant's overrides in place or something like that?)
+     *
+     * @return
+     */
+    public function getByAttributes( $product_id, array $attributes=array() )
+    {
+        $attributes = sort($attributes);
+        
+        $return = (new \Shop\Models\Products)->load( array( '_id' => new \MongoId( (string) $product_id ),  'variants.attributes' => $attributes ) );
+    
+        if (empty($return->id)) {
+            throw new \Exception('Invalid Variant Attributes');
+        }
+    
+        // TODO set the overrides?
+    
         return $return;
     }
     
