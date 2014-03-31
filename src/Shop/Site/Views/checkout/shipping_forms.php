@@ -109,9 +109,6 @@ jQuery(document).ready(function(){
         el.submit();    
     });
 
-    //jQuery('#checkout-shipping-methods');
-    // jQuery('#checkout-shipping-methods-container');
-
     if (!window.shipping_methods_loaded)
     {
     	// Trigger shipping method reload on shipping info change.

@@ -93,6 +93,11 @@ class Routes extends \Dsc\Routes\Group
             'action' => 'update' 
         ) );
         
+        $this->add( '/checkout/submit', 'POST', array(
+            'controller' => 'Checkout',
+            'action' => 'submit' 
+        ) );
+        
         $this->add( '/address/countries [ajax]', 'GET', array(
             'controller' => 'Address',
             'action' => 'countries' 
@@ -107,5 +112,70 @@ class Routes extends \Dsc\Routes\Group
             'controller' => 'Address',
             'action' => 'validate' 
         ) );
+        
+        // $this->add( '/checkout/gateway/@gateway_id/authorize', 'GET', array(
+        // 'controller' => 'Gateway',
+        // 'action' => 'getCreateAuthorization'
+        // ) );
+        
+        // $this->add( '/checkout/gateway/@gateway_id/authorize', 'POST', array(
+        // 'controller' => 'Gateway',
+        // 'action' => 'submitAuthorization'
+        // ) );
+        
+        // $this->add( '/checkout/gateway/@gateway_id/capture', 'GET', array(
+        // 'controller' => 'Gateway',
+        // 'action' => 'getCreateCapture'
+        // ) );
+        
+        // $this->add( '/checkout/gateway/@gateway_id/capture', 'POST', array(
+        // 'controller' => 'Gateway',
+        // 'action' => 'submitCapture'
+        // ) );
+        
+        // $this->add( '/checkout/gateway/@gateway_id/purchase', 'GET', array(
+        // 'controller' => 'Gateway',
+        // 'action' => 'getCreatePurchase'
+        // ) );
+        
+        // $this->add( '/checkout/gateway/@gateway_id/purchase', 'POST', array(
+        // 'controller' => 'Gateway',
+        // 'action' => 'submitPurchase'
+        // ) );
+        
+        // $this->add( '/checkout/gateway/@gateway_id/completePurchase', 'GET|POST', array(
+        // 'controller' => 'Gateway',
+        // 'action' => 'completePurchase'
+        // ) );
+        
+        // $this->add( '/checkout/gateway/@gateway_id/create-card', 'GET', array(
+        // 'controller' => 'Gateway',
+        // 'action' => 'getCreateCard'
+        // ) );
+        
+        // $this->add( '/checkout/gateway/@gateway_id/create-card', 'POST', array(
+        // 'controller' => 'Gateway',
+        // 'action' => 'submitCreateCard'
+        // ) );
+        
+        // $this->add( '/checkout/gateway/@gateway_id/update-card', 'GET', array(
+        // 'controller' => 'Gateway',
+        // 'action' => 'getUpdateCard'
+        // ) );
+        
+        // $this->add( '/checkout/gateway/@gateway_id/update-card', 'POST', array(
+        // 'controller' => 'Gateway',
+        // 'action' => 'submitUpdateCard'
+        // ) );
+        
+        // $this->add( '/checkout/gateway/@gateway_id/delete-card', 'GET', array(
+        // 'controller' => 'Gateway',
+        // 'action' => 'getDeleteCard'
+        // ) );
+        
+        // $this->add( '/checkout/gateway/@gateway_id/delete-card', 'POST', array(
+        // 'controller' => 'Gateway',
+        // 'action' => 'submitDeleteCard'
+        // ) );
     }
 }
