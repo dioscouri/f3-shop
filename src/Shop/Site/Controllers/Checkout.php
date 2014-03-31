@@ -46,6 +46,26 @@ class Checkout extends \Dsc\Controller
         $view = \Dsc\System::instance()->get( 'theme' );
         echo $view->render( 'Shop/Site/Views::checkout/payment.php' );
     }
+    
+    /**
+     * Displays step 2 (of 2) of the default checkout process
+     */
+    public function confirmation()
+    {
+        $cart = \Shop\Models\Carts::fetch();
+        \Base::instance()->set( 'cart', $cart );
+    
+        $identity = $this->getIdentity();
+        if (empty( $identity->id ))
+        {
+            $view = \Dsc\System::instance()->get( 'theme' );
+            echo $view->render( 'Shop/Site/Views::checkout/identity.php' );
+            return;
+        }
+    
+        $view = \Dsc\System::instance()->get( 'theme' );
+        echo $view->render( 'Shop/Site/Views::checkout/payment.php' );
+    }
 
     /**
      * Adds POST data to the user's cart.
@@ -119,5 +139,116 @@ class Checkout extends \Dsc\Controller
     
         $view = \Dsc\System::instance()->get('theme');
         echo $view->renderView('Shop/Site/Views::checkout/payment_methods.php');
+    }
+    
+    /**
+     * Submits a completed cart checkout processing
+     * 
+     */
+    public function submit()
+    {
+        $f3 = \Base::instance();
+        
+        // Get \Shop\Models\Checkout
+            // Bind the cart and payment data to the checkout model
+        $checkout = \Shop\Models\Checkout::instance();            
+        $cart = \Shop\Models\Carts::fetch();
+        $checkout->addCart($cart)->addPayment($f3->get('POST'));
+        
+        // Fire a beforeShopCheckout event that allows Listeners to hijack the checkout process
+            // Add the checkout model to the event
+        $event = new \Joomla\Event\Event( 'beforeShopCheckout' );
+        $event->addArgument('checkout', $checkout);
+        
+        try {
+            $event = \Dsc\System::instance()->getDispatcher()->triggerEvent($event);
+        }
+        catch (\Exception $e) {
+            $checkout->setError( $e->getMessage() );
+            $event->setArgument('checkout', $checkout);
+        }
+        
+        $checkout = $event->getArgument('checkout');
+
+        // option 1: ERRORS in checkout from beforeShopCheckout        
+        if (!empty($checkout->getErrors())) 
+        {
+            // Add the errors to the stack and redirect
+            foreach ($checkout->getErrors() as $exception) 
+            {
+            	\Dsc\System::addMessage( $exception->getMessage(), 'error' );
+            }
+            
+            // redirect to the ./shop/checkout/payment page unless a failure redirect has been set in the session (site.shop.checkout.redirect.fail)
+            $redirect = '/shop/checkout/payment';
+            if ($custom_redirect = \Dsc\System::instance()->get( 'session' )->get( 'site.shop.checkout.redirect.fail' ))
+            {
+                $redirect = $custom_redirect;
+            }
+            
+            \Dsc\System::instance()->get( 'session' )->set( 'site.shop.checkout.redirect.fail', null );
+            $f3->reroute( $redirect );
+            
+            return;
+        }
+        
+        // option 2: NO ERROR in checkout from beforeShopCheckout
+        
+        // If checkout is not completed, do the standard checkout process
+        // If checkout was completed by a Listener during the beforeShopCheckout process, skip the standard checkout process and go to the afterShopCheckout event
+        if (!$checkout->isCompleted()) 
+        {
+            // the standard checkout process
+            try {
+                $checkout->process();
+            } catch (\Exception $e) {
+                $checkout->setError( $e->getMessage() );
+            }
+            
+            if (!$checkout->isCompleted() || !empty($checkout->getErrors()))
+            {
+                \Dsc\System::addMessage( 'Checkout could not be completed.  Please try again or contact us if you have further difficulty.', 'error' );
+                
+                // Add the errors to the stack and redirect
+                foreach ($checkout->getErrors() as $exception)
+                {
+                    \Dsc\System::addMessage( $exception->getMessage(), 'error' );
+                }
+            
+                // redirect to the ./shop/checkout/payment page unless a failure redirect has been set in the session (site.shop.checkout.redirect.fail)
+                $redirect = '/shop/checkout/payment';
+                if ($custom_redirect = \Dsc\System::instance()->get( 'session' )->get( 'site.shop.checkout.redirect.fail' ))
+                {
+                    $redirect = $custom_redirect;
+                }
+            
+                \Dsc\System::instance()->get( 'session' )->set( 'site.shop.checkout.redirect.fail', null );
+                $f3->reroute( $redirect );
+            
+                return;
+            }        
+        }
+        
+        // Fire an afterShopCheckout event
+        $event_after = new \Joomla\Event\Event( 'afterShopCheckout' );
+        $event_after->addArgument('checkout', $checkout);
+        
+        try {
+            $event_after = \Dsc\System::instance()->getDispatcher()->triggerEvent($event_after);
+        } catch (\Exception $e) {
+            \Dsc\System::addMessage( $e->getMessage(), 'warning' );
+        }
+        
+        // Redirect to ./shop/checkout/confirmation unless a site.shop.checkout.redirect has been set
+        $redirect = '/shop/checkout/confirmation';
+        if ($custom_redirect = \Dsc\System::instance()->get( 'session' )->get( 'site.shop.checkout.redirect' ))
+        {
+            $redirect = $custom_redirect;
+        }
+        
+        \Dsc\System::instance()->get( 'session' )->set( 'site.shop.checkout.redirect', null );
+        $f3->reroute( $redirect );
+        
+        return;
     }
 }

@@ -548,7 +548,7 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
     /**
      * Return false if not set in checkout.shipping_method
      * Return null if set but not found in array of valid shipping methods for this cart
-     * Return \Shop\Mopdels\Prefabs\ShippingMethod object if found
+     * Return \Shop\Mopdels\Prefabs\ShippingMethods object if found
      *  
      */
     public function shippingMethod()
@@ -578,13 +578,73 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
      */
     protected function fetchShippingMethods()
     {
-        $methods = array();
+        $methods = array(); // TODO Set this to an array of the enabled core shipping methods 
         
         $event = new \Joomla\Event\Event( 'onFetchShippingMethodsForCart' );
         $event->addArgument('cart', $this);
         $event->addArgument('methods', $methods);
         \Dsc\System::instance()->getDispatcher()->triggerEvent($event);
         
+        return $event->getArgument('methods');
+    }
+    
+    /**
+     * Gets valid payment methods for this cart,
+     * fetching them from Listeners if requested or necessary
+     *
+     * @return array
+     */
+    public function paymentMethods( $refresh=false )
+    {
+        if (empty($this->payment_methods) || $refresh)
+        {
+            $this->payment_methods = $this->fetchPaymentMethods();
+            $this->save();
+        }
+    
+        return $this->payment_methods;
+    }
+    
+    /**
+     * Return false if not set in checkout.payment_method
+     * Return null if set but not found in array of valid payment methods for this cart
+     * Return \Shop\Mopdels\Prefabs\PaymentMethods object if found
+     *
+     */
+    public function paymentMethod()
+    {
+        // is it not set in checkout?
+        if (!$this->{'checkout.payment_method'})
+        {
+            return false;
+        }
+    
+        // otherwise get its full object from the array of methods
+        foreach ($this->paymentMethods() as $method_array)
+        {
+            if ($this->{'checkout.payment_method'} == \Dsc\ArrayHelper::get( $method_array, 'id' ))
+            {
+                $method = new \Shop\Models\Prefabs\PaymentMethods( $method_array );
+                return $method;
+            }
+        }
+    
+        return null;
+    }
+    
+    /**
+     * Fetches valid payment methods for this cart
+     *
+     */
+    protected function fetchPaymentMethods()
+    {
+        $methods = array(); // TODO Set this to an array of the enabled core payment methods 
+    
+        $event = new \Joomla\Event\Event( 'onFetchPaymentMethodsForCart' );
+        $event->addArgument('cart', $this);
+        $event->addArgument('methods', $methods);
+        \Dsc\System::instance()->getDispatcher()->triggerEvent($event);
+    
         return $event->getArgument('methods');
     }
 

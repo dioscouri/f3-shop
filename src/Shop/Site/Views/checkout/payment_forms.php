@@ -2,7 +2,7 @@
     Checkout <small>Step 2 of 2</small>
 </h2>
 
-<form action="./shop/checkout/submit" method="post" id="checkout-billing-form">
+<form action="./shop/checkout/submit" method="post" id="checkout-payment-form">
 
     <div id="checkout-shipping-summary" class="well well-sm">
         <?php // TODO Validate that it's all present, and if not, redirect to /shop/checkout ?>
@@ -41,38 +41,55 @@
         
     </div>
 
-    <div id="checkout-billing-method" class="well well-sm">
+    <div id="checkout-payment-methods" class="well well-sm">
     <?php // TODO Multiple payment methods configured?  If so, display select list that displays additional form on change.  If not, just display the form of the one payment method available. ?>
+        <legend>
+            <small>Payment</small>
+        </legend>
+        
+        <div id="checkout-payment-methods-container"></div>    
     
-    <?php foreach (["number", "expiryMonth", "expiryYear", "cvv"] as $key) { ?>
-
-        <div class="form-group">
-            <label class="control-label" for="card_<?php echo $key; ?>"><?php echo $key; ?></label>
-            <div class="controls">
-                <input class="form-control" data-required="true" type="text" name="card[<?php echo $key; ?>]" id="card_<?php echo $key; ?>" value="<?php echo $cart->{'card.'.$key}; ?>" />
-            </div>
-        </div>
-
-    <?php } ?>
     </div>
 
     <div class="input-group form-group">
         <button type="submit" class="btn btn-default custom-button btn-lg">Submit Order</button>
-        <?php \Dsc\System::instance()->get('session')->set('site.shop.checkout.redirect', '/shop/checkout/complete'); ?>
+        <?php \Dsc\System::instance()->get('session')->set('site.shop.checkout.redirect', '/shop/checkout/confirmation'); ?>
     </div>
 
 </form>
 
 <script>
 jQuery(document).ready(function(){
-    var validation = new ShopValidation('#checkout-billing-form');
+    var validation = new ShopValidation('#checkout-payment-form');
     
-    jQuery('#checkout-billing-form').on('submit', function(){
+    jQuery('#checkout-payment-form').on('submit', function(){
         var el = jQuery(this); 
         if (!validation.validateForm()) {
             return false;
         }
+        if (el.data('locked')) {
+            return false;
+        }
+        el.data('locked', true);
         el.submit();    
     });
+
+    if (!window.payment_methods_loaded)
+    {
+		// Appear to be loading.
+		jQuery('#checkout-payment-methods').css({ opacity: 0.5 });
+		jQuery(this).closest('form').data('locked', true);
+		        
+		jQuery('#checkout-payment-methods-container').load('./shop/checkout/payment-methods', function ( response, status, xhr )
+		{
+		    if ( status != "error" ) {
+		        window.payment_methods_loaded = true;
+		    }
+		    
+			jQuery('#checkout-payment-form').data('locked', false);
+			jQuery('#checkout-payment-methods').css({ opacity: '' });
+		});
+
+    }
 });
 </script>

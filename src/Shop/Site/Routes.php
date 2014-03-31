@@ -88,6 +88,11 @@ class Routes extends \Dsc\Routes\Group
             'action' => 'shippingMethods' 
         ) );
         
+        $this->add( '/checkout/payment-methods [ajax]', 'GET', array(
+            'controller' => 'Checkout',
+            'action' => 'paymentMethods' 
+        ) );
+        
         $this->add( '/checkout/update', 'POST', array(
             'controller' => 'Checkout',
             'action' => 'update' 
@@ -96,6 +101,11 @@ class Routes extends \Dsc\Routes\Group
         $this->add( '/checkout/submit', 'POST', array(
             'controller' => 'Checkout',
             'action' => 'submit' 
+        ) );
+        
+        $this->add( '/checkout/confirmation', 'GET', array(
+            'controller' => 'Checkout',
+            'action' => 'confirmation' 
         ) );
         
         $this->add( '/address/countries [ajax]', 'GET', array(
