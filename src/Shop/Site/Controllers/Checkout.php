@@ -30,7 +30,7 @@ class Checkout extends \Dsc\Controller
     /**
      * Displays step 2 (of 2) of the default checkout process
      */
-    public function billing()
+    public function payment()
     {
         $cart = \Shop\Models\Carts::fetch();
         \Base::instance()->set( 'cart', $cart );
@@ -44,7 +44,7 @@ class Checkout extends \Dsc\Controller
         }
         
         $view = \Dsc\System::instance()->get( 'theme' );
-        echo $view->render( 'Shop/Site/Views::checkout/billing.php' );
+        echo $view->render( 'Shop/Site/Views::checkout/payment.php' );
     }
 
     /**
@@ -76,7 +76,7 @@ class Checkout extends \Dsc\Controller
         else
         {
             
-            $redirect = '/shop/checkout/billing';
+            $redirect = '/shop/checkout/payment';
             if ($custom_redirect = \Dsc\System::instance()->get( 'session' )->get( 'site.shop.checkout.redirect' ))
             {
                 $redirect = $custom_redirect;
@@ -107,5 +107,17 @@ class Checkout extends \Dsc\Controller
         
         $view = \Dsc\System::instance()->get('theme');
         echo $view->renderView('Shop/Site/Views::checkout/shipping_methods.php');
+    }
+    
+    /**
+     * Gets valid payment methods for the cart
+     */
+    public function paymentMethods()
+    {
+        $cart = \Shop\Models\Carts::fetch();
+        \Base::instance()->set( 'cart', $cart );
+    
+        $view = \Dsc\System::instance()->get('theme');
+        echo $view->renderView('Shop/Site/Views::checkout/payment_methods.php');
     }
 }

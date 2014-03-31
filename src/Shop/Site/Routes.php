@@ -78,9 +78,9 @@ class Routes extends \Dsc\Routes\Group
             'action' => 'index' 
         ) );
         
-        $this->add( '/checkout/billing', 'GET', array(
+        $this->add( '/checkout/payment', 'GET', array(
             'controller' => 'Checkout',
-            'action' => 'billing' 
+            'action' => 'payment' 
         ) );
         
         $this->add( '/checkout/shipping-methods [ajax]', 'GET', array(
