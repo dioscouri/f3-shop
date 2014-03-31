@@ -580,7 +580,7 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
     {
         $methods = array();
         
-        $event = new \Joomla\Event\Event( 'onFetchShippingMethods' );
+        $event = new \Joomla\Event\Event( 'onFetchShippingMethodsForCart' );
         $event->addArgument('cart', $this);
         $event->addArgument('methods', $methods);
         \Dsc\System::instance()->getDispatcher()->triggerEvent($event);
