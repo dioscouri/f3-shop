@@ -8,7 +8,8 @@ class Checkout extends \Dsc\Singleton
     protected $__payment = array();
     
     /**
-     * Process a checkout and mark it as completed if success
+     * Process a checkout and mark it as completed if success.
+     * Processing a checkout means creating an order object  
      * 
      * @return \Shop\Models\Checkout
      */
