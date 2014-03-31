@@ -48,23 +48,12 @@ class Checkout extends \Dsc\Controller
     }
     
     /**
-     * Displays step 2 (of 2) of the default checkout process
+     * Displays an order confirmation page
      */
     public function confirmation()
     {
-        $cart = \Shop\Models\Carts::fetch();
-        \Base::instance()->set( 'cart', $cart );
-    
-        $identity = $this->getIdentity();
-        if (empty( $identity->id ))
-        {
-            $view = \Dsc\System::instance()->get( 'theme' );
-            echo $view->render( 'Shop/Site/Views::checkout/identity.php' );
-            return;
-        }
-    
         $view = \Dsc\System::instance()->get( 'theme' );
-        echo $view->render( 'Shop/Site/Views::checkout/payment.php' );
+        echo $view->render( 'Shop/Site/Views::checkout/confirmation.php' );
     }
 
     /**
