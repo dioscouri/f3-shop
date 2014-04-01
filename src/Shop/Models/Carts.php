@@ -500,17 +500,6 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
         $estimate = 0;
         return $estimate;
     }
-
-    /**
-     * Gets the total of all the applied discounts
-     * 
-     * @return number
-     */
-    public function discount()
-    {
-        $discount = 0;
-        return $discount;
-    }    
     
     /**
      * Gets the total,
@@ -527,6 +516,48 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
     
         return $total;
     }
+    
+    /**
+     *
+     * @return number
+     */
+    public function shippingTotal()
+    {
+        $total = 0;
+        return $total;
+    }
+    
+    /**
+     *
+     * @return number
+     */
+    public function taxTotal()
+    {
+        $total = 0;
+        return $total;
+    }
+    
+    /**
+     * Gets the total of all the applied discounts
+     *
+     * @return number
+     */
+    public function discountTotal()
+    {
+        $discount = 0;
+        return $discount;
+    }
+    
+    /**
+     * Gets the total of all the applied credits
+     *
+     * @return number
+     */
+    public function creditTotal()
+    {
+        $credit = 0;
+        return $credit;
+    }    
     
     /**
      * Gets valid shipping methods for this cart,
@@ -678,5 +709,14 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
         }
         
         return parent::beforeValidate();
+    }
+    
+    /**
+     * Converts a cart to an Order
+     * 
+     */
+    public function convertToOrder()
+    {
+        return \Shop\Models\Order::fromCart( $this );
     }
 }

@@ -142,9 +142,10 @@ class Checkout extends \Dsc\Controller
             // Bind the cart and payment data to the checkout model
         $checkout = \Shop\Models\Checkout::instance();            
         $cart = \Shop\Models\Carts::fetch();
-        $checkout->addCart($cart)->addPayment($f3->get('POST'));
+        $checkout->addCart($cart)->addPaymentData($f3->get('POST'));
         
         // Fire a beforeShopCheckout event that allows Listeners to hijack the checkout process
+        // Payment processing & authorization could occur at this event, and the Listener would update the checkout object
             // Add the checkout model to the event
         $event = new \Joomla\Event\Event( 'beforeShopCheckout' );
         $event->addArgument('checkout', $checkout);
@@ -185,16 +186,16 @@ class Checkout extends \Dsc\Controller
         
         // If checkout is not completed, do the standard checkout process
         // If checkout was completed by a Listener during the beforeShopCheckout process, skip the standard checkout process and go to the afterShopCheckout event
-        if (!$checkout->isCompleted()) 
+        if (!$checkout->orderCreated()) 
         {
             // the standard checkout process
             try {
-                $checkout->process();
+                $checkout->createOrder();
             } catch (\Exception $e) {
                 $checkout->setError( $e->getMessage() );
             }
             
-            if (!$checkout->isCompleted() || !empty($checkout->getErrors()))
+            if (!$checkout->orderCreated() || !empty($checkout->getErrors()))
             {
                 \Dsc\System::addMessage( 'Checkout could not be completed.  Please try again or contact us if you have further difficulty.', 'error' );
                 

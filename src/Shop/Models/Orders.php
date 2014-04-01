@@ -37,7 +37,8 @@ class Orders extends \Dsc\Mongo\Collections\Nodes
     public $coupons = array();      
     public $discounts = array();    
     
-    public $recurring = array(
+    // TODO Add support for recurring charges products
+    //public $recurring = array(
         // enabled => null,         // boolean, is there a trial period or no?                    
     	// amount => null,          // the amount of the recurring charge
     	// payment_count => null,   // the number of recurring payments that should be made
@@ -49,7 +50,7 @@ class Orders extends \Dsc\Mongo\Collections\Nodes
                 // period_unit => null,                        
                 // period_interval => null,
         // )
-    );
+    //);
         
     protected $__collection_name = 'shop.orders';
     protected $__type = 'shop.orders';
@@ -104,5 +105,27 @@ class Orders extends \Dsc\Mongo\Collections\Nodes
         }
         
         return parent::beforeValidate();
+    }
+    
+    /**
+     * Creates an order from a cart object
+     * 
+     * @param \Shop\Models\Carts $cart
+     * 
+     * @return \Shop\Models\Orders
+     */
+    public static function fromCart( \Shop\Models\Carts $cart )
+    {
+        $order = new static;
+        
+        $order->status = 'new';
+        $order->grand_total = $cart->total();
+        $order->sub_total = $cart->subtotal();
+        $order->tax_total = $cart->taxTotal();
+        $order->shipping_total = $cart->shippingTotal();
+        $order->discount_total = $cart->discountTotal();
+        $order->credit_total = $cart->creditTotal();
+        
+        return $order;
     }
 }
