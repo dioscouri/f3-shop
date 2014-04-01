@@ -4,6 +4,7 @@ namespace Shop\Models;
 class Carts extends \Dsc\Mongo\Collections\Nodes
 {
     public $user_id = null;
+    public $user_email = null;      // could be a useful way of pre-creating carts for users.  alternatively, put this in the $this->checkout array
     public $session_id = null;
     public $items = array();        // array of \Shop\Models\Prefabs\CartItem objects
     

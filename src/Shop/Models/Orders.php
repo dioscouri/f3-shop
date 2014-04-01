@@ -19,7 +19,7 @@ class Orders extends \Dsc\Mongo\Collections\Nodes
     public $user_email = null;
     public $is_guest = null;
     public $ip_address = null;
-    public $order_comments = null;
+    public $comments = null;
     public $currency = null;
     
     public $requires_shipping = null;
@@ -36,6 +36,7 @@ class Orders extends \Dsc\Mongo\Collections\Nodes
     public $taxes = array();        
     public $coupons = array();      
     public $discounts = array();    
+    public $credits = array();
     
     // TODO Add support for recurring charges products
     //public $recurring = array(
@@ -125,6 +126,22 @@ class Orders extends \Dsc\Mongo\Collections\Nodes
         $order->shipping_total = $cart->shippingTotal();
         $order->discount_total = $cart->discountTotal();
         $order->credit_total = $cart->creditTotal();
+        
+        $order->user_id = $cart->user_id;
+        $order->user_email = $cart->user_email;
+        // $order->is_guest = $cart->isGuest(); ? or is that from the checkout object?
+        // $order->ip_address = $cart->ipAddress(); ? or is that from the checkout object?
+        $order->comments = $cart->{'checkout.order_comments'};
+        // $order->currency = $cart->currency; // TODO support multiple currencies
+        
+        $order->items = $cart->items;
+        
+        // TODO Shipping fields
+        // TODO Payment/Billing fields
+        // TODO Taxes
+        // TODO Coupons
+        // TODO Discounts
+        // TODO Credits
         
         return $order;
     }
