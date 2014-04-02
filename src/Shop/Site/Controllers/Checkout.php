@@ -183,8 +183,6 @@ class Checkout extends \Dsc\Controller
         // option 1: ERRORS in checkout from beforeShopCheckout        
         if (!empty($checkout->getErrors())) 
         {
-            \Dsc\System::addMessage( 'E1', 'error' );
-            
             // Add the errors to the stack and redirect
             foreach ($checkout->getErrors() as $exception) 
             {
@@ -219,8 +217,6 @@ class Checkout extends \Dsc\Controller
             
             if (!$checkout->orderCompleted() || !empty($checkout->getErrors()))
             {
-                \Dsc\System::addMessage( 'E2', 'error' );
-                
                 \Dsc\System::addMessage( 'Checkout could not be completed.  Please try again or contact us if you have further difficulty.', 'error' );
                 
                 // Add the errors to the stack and redirect
