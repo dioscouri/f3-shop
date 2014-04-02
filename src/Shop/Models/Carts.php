@@ -568,7 +568,14 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
      */
     public function shippingMethods( $refresh=false )
     {
-        if (empty($this->shipping_methods) || $refresh) 
+        if (empty($this->{'checkout.shipping_address.country'}) || empty($this->{'checkout.shipping_address.region'}) || empty($this->{'checkout.shipping_address.postal_code'}) )
+        {
+            $this->{'checkout.shipping_method'} = null;
+            $this->shipping_methods = array();
+            $this->save();
+        }
+        
+        elseif (empty($this->shipping_methods) || $refresh) 
         {
             $this->shipping_methods = $this->fetchShippingMethods();
             $this->save();
