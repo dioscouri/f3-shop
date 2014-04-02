@@ -108,6 +108,11 @@ class Orders extends \Dsc\Mongo\Collections\Nodes
             $this->items = array_values($this->items);
         }
         
+        if (empty($this->number)) 
+        {
+            $this->number = $this->createNumber();
+        }
+        
         return parent::beforeValidate();
     }
     
@@ -121,6 +126,8 @@ class Orders extends \Dsc\Mongo\Collections\Nodes
     public static function fromCart( \Shop\Models\Carts $cart )
     {
         $order = new static;
+        
+        $order->number = $order->createNumber();
         
         $order->grand_total = $cart->total();
         $order->sub_total = $cart->subtotal();
@@ -157,6 +164,20 @@ class Orders extends \Dsc\Mongo\Collections\Nodes
         // TODO Credits
         
         return $order;
+    }
+    
+    public function createNumber()
+    {
+        if (empty($this->id)) 
+        {
+        	$this->id = new \MongoId;
+        }
+        
+        $id = (string) $this->id;
+        
+        $number = strtolower( substr( $id, 0, 4 ) . '-' . substr( $id, 4, 4 ) . '-' . substr( $id, 8, 4 ) . '-' . substr( $id, 12, 4 ) . '-' . substr( $id, 16, 4 ) . '-' . substr( $id, 20, 4 ) );
+        
+        return $number;
     }
     
     /**
