@@ -3,7 +3,7 @@ namespace Shop\Models;
 
 class Checkout extends \Dsc\Singleton
 {
-    protected $__orderCreated = false;
+    protected $__orderCompleted = false;
     protected $__cart = null;             // \Shop\Models\Carts object
     protected $__paymentData = array();
     protected $__order = null;             // \Shop\Models\Carts object
@@ -16,12 +16,37 @@ class Checkout extends \Dsc\Singleton
      */
     public function createOrder()
     {
-        // TODO Convert the cart to an Order object
-        $order = \Shop\Models\Order::fromCart( $this->cart() );
+        // Convert the cart to an Order object
+        $this->__order = \Shop\Models\Orders::fromCart( $this->cart() );
         
-        // TODO Add payment details if applicable
+        // Add payment details if applicable
+        // TODO Don't add the credit card number form the PaymentData to the cart, it shouldn't be stored in the order object in the DB
+        $this->__order->addPayment( $this->paymentData() );
+        
+        return $this;
+    }
+    
+    public function completeOrder()
+    {
+        \Dsc\System::addMessage( \Dsc\Debug::dump( $this->order() ) );
+        
+        if ($this->__order->save()) 
+        {
+            $this->setOrderCompleted();
+            $this->cart()->remove();            
+            \Dsc\System::instance()->get('session')->set('shop.just_completed_order', true );
+            \Dsc\System::instance()->get('session')->set('shop.just_completed_order_id', (string) $this->__order->id );
+        }
 
         return $this;
+    }
+    
+    /**
+     * 
+     */
+    public function order()
+    {
+        return $this->__order;
     }
     
     /**
@@ -30,19 +55,19 @@ class Checkout extends \Dsc\Singleton
      * 
      * @return boolean
      */
-    public function orderCreated()
+    public function orderCompleted()
     {
-        return true === $this->__orderCreated;
+        return true === $this->__orderCompleted;
     }
     
     /**
      * Mark the checkout as complete, which means the order has been created for the cart+payment
      */
-    public function setOrderCreated()
+    public function setOrderCompleted()
     {
         // TODO before and after Events?
         
-        $this->__orderCreated = true;
+        $this->__orderCompleted = true;
         
         return $this;
     }

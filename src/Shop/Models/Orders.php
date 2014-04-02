@@ -3,8 +3,8 @@ namespace Shop\Models;
 
 class Orders extends \Dsc\Mongo\Collections\Nodes
 {
-    public $order_number = null;
-    public $status = null;
+    public $number = null;
+    public $status = null;                  // null / incomplete / pending (payment) / ready (for shipment/processing -- payment received or authorized) / hold / shipped / cancelled
     public $status_history = array();
     
     public $grand_total = null;
@@ -22,16 +22,19 @@ class Orders extends \Dsc\Mongo\Collections\Nodes
     public $comments = null;
     public $currency = null;
     
-    public $requires_shipping = null;
-    public $shipping_status = null;
+    // Shipping Fields
+    public $shipping_required = null;
+    public $shipping_status = null;         // null / processing / shipped
     public $shipping_method = null;
     public $shipping_address = array();               
     public $tracking_numbers = array();
     
+    // Payment Fields
     public $payment_method = null;
     public $billing_address = array();
     public $payments = array();
     
+    // Lists
     public $items = array();            
     public $taxes = array();        
     public $coupons = array();      
@@ -119,7 +122,6 @@ class Orders extends \Dsc\Mongo\Collections\Nodes
     {
         $order = new static;
         
-        $order->status = 'new';
         $order->grand_total = $cart->total();
         $order->sub_total = $cart->subtotal();
         $order->tax_total = $cart->taxTotal();
@@ -134,15 +136,39 @@ class Orders extends \Dsc\Mongo\Collections\Nodes
         $order->comments = $cart->{'checkout.order_comments'};
         // $order->currency = $cart->currency; // TODO support multiple currencies
         
+        // Items
         $order->items = $cart->items;
         
-        // TODO Shipping fields
+        // Shipping fields
+        $order->shipping_required = $cart->shippingRequired();
+        $order->shipping_status = 'processing';
+        if ($shipping_method = $cart->shippingMethod()) 
+        {
+            $order->shipping_method = $shipping_method->cast();
+        }        
+        $order->shipping_address = $cart->{'checkout.shipping_address'}; 
+        
         // TODO Payment/Billing fields
+        $order->billing_address = $cart->{'checkout.billing_address'};
+        
         // TODO Taxes
         // TODO Coupons
         // TODO Discounts
         // TODO Credits
         
         return $order;
+    }
+    
+    /**
+     * Add payment data to the model
+     *
+     * @param array $data
+     * @return \Shop\Models\Orders
+     */
+    public function addPayment(array $data)
+    {
+        $this->payments[] = $data;
+         
+        return $this;
     }
 }

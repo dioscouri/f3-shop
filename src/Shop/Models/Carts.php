@@ -718,6 +718,6 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
      */
     public function convertToOrder()
     {
-        return \Shop\Models\Order::fromCart( $this );
+        return \Shop\Models\Orders::fromCart( $this );
     }
 }

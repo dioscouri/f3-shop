@@ -52,8 +52,28 @@ class Checkout extends \Dsc\Controller
      */
     public function confirmation()
     {
+        $just_completed_order = \Dsc\System::instance()->get('session')->get('shop.just_completed_order' );
+        $just_completed_order_id = \Dsc\System::instance()->get('session')->get('shop.just_completed_order_id' );
+        
+        if (!empty($just_completed_order_id)) 
+        {
+            try {
+                $order = (new \Shop\Models\Orders)->load(array('_id' => new \MongoId( (string) $just_completed_order_id ) ));
+            } catch (\Exception $e) {
+            	// TODO Handle when it's an invalid order
+            }
+            
+            if (!empty($order->id)) 
+            {
+                \Base::instance()->set('order', $order);
+            }
+        }
+        
         $view = \Dsc\System::instance()->get( 'theme' );
         echo $view->render( 'Shop/Site/Views::checkout/confirmation.php' );
+        
+        \Dsc\System::instance()->get('session')->set('shop.just_completed_order', false );
+        \Dsc\System::instance()->get('session')->set('shop.just_completed_order_id', null );
     }
 
     /**
@@ -163,6 +183,8 @@ class Checkout extends \Dsc\Controller
         // option 1: ERRORS in checkout from beforeShopCheckout        
         if (!empty($checkout->getErrors())) 
         {
+            \Dsc\System::addMessage( 'E1', 'error' );
+            
             // Add the errors to the stack and redirect
             foreach ($checkout->getErrors() as $exception) 
             {
@@ -186,17 +208,19 @@ class Checkout extends \Dsc\Controller
         
         // If checkout is not completed, do the standard checkout process
         // If checkout was completed by a Listener during the beforeShopCheckout process, skip the standard checkout process and go to the afterShopCheckout event
-        if (!$checkout->orderCreated()) 
+        if (!$checkout->orderCompleted()) 
         {
             // the standard checkout process
             try {
-                $checkout->createOrder();
+                $checkout->createOrder()->completeOrder();
             } catch (\Exception $e) {
                 $checkout->setError( $e->getMessage() );
             }
             
-            if (!$checkout->orderCreated() || !empty($checkout->getErrors()))
+            if (!$checkout->orderCompleted() || !empty($checkout->getErrors()))
             {
+                \Dsc\System::addMessage( 'E2', 'error' );
+                
                 \Dsc\System::addMessage( 'Checkout could not be completed.  Please try again or contact us if you have further difficulty.', 'error' );
                 
                 // Add the errors to the stack and redirect
