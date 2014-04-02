@@ -28,8 +28,6 @@ class Checkout extends \Dsc\Singleton
     
     public function completeOrder()
     {
-        \Dsc\System::addMessage( \Dsc\Debug::dump( $this->order() ) );
-        
         if ($this->__order->save()) 
         {
             $this->setOrderCompleted();
