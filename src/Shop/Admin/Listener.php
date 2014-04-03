@@ -13,7 +13,8 @@ class Listener extends \Prefab
             $mapper->route = '';
             $mapper->icon = 'fa fa-ticket';
             $mapper->children = array(
-                    json_decode(json_encode(array( 'title'=>'Products', 'route'=>'/admin/shop/products', 'icon'=>'fa fa-list' )))
+                     json_decode(json_encode(array( 'title'=>'Orders', 'route'=>'/admin/shop/orders', 'icon'=>'fa fa-money' )))
+                    ,json_decode(json_encode(array( 'title'=>'Products', 'route'=>'/admin/shop/products', 'icon'=>'fa fa-list' )))
                     ,json_decode(json_encode(array( 'title'=>'Collections', 'route'=>'/admin/shop/collections', 'icon'=>'fa fa-hdd' )))
             		,json_decode(json_encode(array( 'title'=>'Categories', 'route'=>'/admin/shop/categories', 'icon'=>'fa fa-folder' )))
                     ,json_decode(json_encode(array( 'title'=>'Manufacturers', 'route'=>'/admin/shop/manufacturers', 'icon'=>'fa fa-barcode' )))

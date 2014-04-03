@@ -20,6 +20,8 @@ class Routes extends \Dsc\Routes\Group
         
         $this->addSettingsRoutes();
         
+        $this->addCrudGroup( 'Orders', 'Order' );
+        
         $this->addCrudGroup( 'Products', 'Product' );
         
         $this->addCrudGroup( 'Categories', 'Category', array(
