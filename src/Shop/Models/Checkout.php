@@ -122,7 +122,7 @@ class Checkout extends \Dsc\Singleton
      */
     public function paymentData()
     {
-        // TODO Handle when $this->__payment is empty.  throw error?
+        // TODO Handle when $this->__paymentData is empty.  throw error?
     
         return $this->__paymentData;
     }

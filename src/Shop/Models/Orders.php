@@ -149,7 +149,6 @@ class Orders extends \Dsc\Mongo\Collections\Nodes
         
         // Shipping fields
         $order->shipping_required = $cart->shippingRequired();
-        $order->shipping_status = 'processing';
         if ($shipping_method = $cart->shippingMethod()) 
         {
             $order->shipping_method = $shipping_method->cast();
