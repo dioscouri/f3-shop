@@ -727,4 +727,145 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
     {
         return \Shop\Models\Orders::fromCart( $this );
     }
+    
+    /**
+     * Gets the shipping country, default one if not set
+     */
+    public function shippingCountry()
+    {
+        if ($this->{'checkout.shipping_address.country'}) {
+            return $this->{'checkout.shipping_address.country'};
+        }
+    
+        return \Shop\Models\Settings::fetch()->{'country'};
+    }
+    
+    /**
+     *
+     */
+    public function billingSameAsShipping()
+    {
+        if (!isset($this->checkout['billing_address']['same_as_shipping'])
+        || !empty($this->{'checkout.billing_address.same_as_shipping'})
+        ) {
+            return true;
+        }
+    
+        return false;
+    }
+        
+    /**
+     * 
+     * @param string $default
+     * @return string
+     */
+    public function billingName( $default=null ) 
+    {
+        if ($this->{'checkout.billing_address.name'}) {
+            return $this->{'checkout.billing_address.name'};
+        }
+        
+        return $default;
+    }
+    
+    /**
+     *
+     * @param string $default
+     * @return string
+     */
+    public function billingLine1( $default=null )
+    {
+        if ($this->{'checkout.billing_address.line_1'}) {
+            return $this->{'checkout.billing_address.line_1'};
+        }
+    
+        return $default;
+    }
+    
+    /**
+     *
+     * @param string $default
+     * @return string
+     */
+    public function billingLine2( $default=null )
+    {
+        if ($this->{'checkout.billing_address.line_2'}) {
+            return $this->{'checkout.billing_address.line_2'};
+        }
+    
+        return $default;
+    }
+    
+    /**
+     *
+     * @param string $default
+     * @return string
+     */
+    public function billingCity( $default=null )
+    {
+        if ($this->{'checkout.billing_address.city'}) {
+            return $this->{'checkout.billing_address.city'};
+        }
+    
+        return $default;
+    }
+    
+    /**
+     *
+     * @param string $default
+     * @return string
+     */
+    public function billingRegion( $default=null )
+    {
+        if ($this->{'checkout.billing_address.region'}) {
+            return $this->{'checkout.billing_address.region'};
+        }
+    
+        return $default;
+    }
+    
+    /**
+     *
+     * @param string $default
+     * @return string
+     */
+    public function billingPostalCode( $default=null )
+    {
+        if ($this->{'checkout.billing_address.postal_code'}) {
+            return $this->{'checkout.billing_address.postal_code'};
+        }
+    
+        return $default;
+    }
+    
+    /**
+     *
+     * @param string $default
+     * @return string
+     */
+    public function billingPhone( $default=null )
+    {
+        if ($this->{'checkout.billing_address.phone_number'}) {
+            return $this->{'checkout.billing_address.phone_number'};
+        }
+    
+        return $default;
+    }
+    
+    /**
+     * Gets the billing country, default one if not set
+     *
+     * @param string $default
+     * @return string
+     */
+    public function billingCountry( $default=null )
+    {
+        if ($this->{'checkout.billing_address.country'}) {
+            return $this->{'checkout.billing_address.country'};
+        }
+    
+        return $default ? $default : \Shop\Models\Settings::fetch()->{'country'};
+    }
+    
+    
 }

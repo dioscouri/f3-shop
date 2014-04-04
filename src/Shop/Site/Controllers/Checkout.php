@@ -11,8 +11,6 @@ class Checkout extends \Dsc\Controller
         foreach ($cart->validateProducts() as $change) {
         	\Dsc\System::addMessage($change);
         }
-        
-        $cart->selected_country = $cart->{'checkout.shipping_address.country'} ? $cart->{'checkout.shipping_address.country'} : \Shop\Models\Settings::fetch()->{'country'};
         \Base::instance()->set( 'cart', $cart );
         
         $identity = $this->getIdentity();
@@ -157,11 +155,22 @@ class Checkout extends \Dsc\Controller
     public function submit()
     {
         $f3 = \Base::instance();
+
+        // Update the cart with checkout data from the form
+        $cart = \Shop\Models\Carts::fetch();
+        $checkout_inputs = $this->input->get( 'checkout', array(), 'array' );
+        if (!empty($checkout_inputs['billing_address']['same_as_shipping'])) {
+            $checkout_inputs['billing_address']['same_as_shipping'] = true;
+        } else {
+            $checkout_inputs['billing_address']['same_as_shipping'] = false;
+        }
+        $cart_checkout = array_merge( (array) $cart->{'checkout'}, $checkout_inputs );
+        $cart->checkout = $cart_checkout;
+        $cart->save();        
         
         // Get \Shop\Models\Checkout
             // Bind the cart and payment data to the checkout model
-        $checkout = \Shop\Models\Checkout::instance();            
-        $cart = \Shop\Models\Carts::fetch();
+        $checkout = \Shop\Models\Checkout::instance();
         $checkout->addCart($cart)->addPaymentData($f3->get('POST'));
         
         // Fire a beforeShopCheckout event that allows Listeners to hijack the checkout process

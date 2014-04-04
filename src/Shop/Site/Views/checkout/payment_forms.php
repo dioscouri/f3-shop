@@ -65,12 +65,15 @@ jQuery(document).ready(function(){
     jQuery('#checkout-payment-form').on('submit', function(){
         var el = jQuery(this); 
         if (!validation.validateForm()) {
+            el.data('validated', false);
             return false;
         }
         if (el.data('locked')) {
             return false;
         }
         el.data('locked', true);
+        el.data('validated', true);
+        jQuery('#checkout-payment-methods').css({ opacity: 0.5 });
         el.submit();    
     });
 
