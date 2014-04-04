@@ -4,7 +4,7 @@ namespace Shop\Models;
 class Orders extends \Dsc\Mongo\Collections\Nodes
 {
     public $number = null;
-    public $status = null;                  // null / incomplete / pending (payment) / ready (for shipment/processing -- payment received or authorized) / hold / shipped / cancelled
+    public $status = \Shop\Constants\OrderStatus::open;
     public $status_history = array();
     
     public $grand_total = null;
@@ -23,13 +23,14 @@ class Orders extends \Dsc\Mongo\Collections\Nodes
     public $currency = null;
     
     // Shipping Fields
+    public $fulfillment_status = \Shop\Constants\OrderFulfillmentStatus::unfulfilled;
     public $shipping_required = null;
-    public $shipping_status = null;         // null / processing / shipped
     public $shipping_method = null;
     public $shipping_address = array();               
     public $tracking_numbers = array();
     
     // Payment Fields
+    public $financial_status = \Shop\Constants\OrderFinancialStatus::pending;
     public $payment_method = null;
     public $billing_address = array();
     public $payments = array();

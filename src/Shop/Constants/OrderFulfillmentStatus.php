@@ -3,7 +3,7 @@ namespace Shop\Constants;
 
 class OrderFulfillmentStatus 
 {
-    const unfulfilled = "fulfilled";
+    const unfulfilled = "unfulfilled";
     const partial = "partial";
     const fulfilled = "fulfilled";
 }
