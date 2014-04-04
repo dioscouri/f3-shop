@@ -16,6 +16,11 @@ class Checkout extends \Dsc\Singleton
      */
     public function createOrder()
     {
+        if (!empty($this->__order))
+        {
+             return $this;
+        }
+                
         // Convert the cart to an Order object
         $this->__order = \Shop\Models\Orders::fromCart( $this->cart() );
         
@@ -28,7 +33,7 @@ class Checkout extends \Dsc\Singleton
     
     public function completeOrder()
     {
-        if ($this->__order->save()) 
+        if ($this->order()->save()) 
         {
             $this->setOrderCompleted();
             $this->cart()->remove();            
@@ -44,6 +49,11 @@ class Checkout extends \Dsc\Singleton
      */
     public function order()
     {
+        if (empty($this->__order))
+        {
+            $this->createOrder();
+        }
+                
         return $this->__order;
     }
     
