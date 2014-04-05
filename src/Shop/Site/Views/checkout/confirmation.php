@@ -3,15 +3,29 @@
         <h1>Order not found.</h1>
     <?php } else { ?>
     
-        <h1>Your checkout is complete. <small>Order #<?php echo $order->number; ?></small></h1>
+        <h1>Thank you for your order <br/> <small>Your order number is <a href="./shop/order/<?php echo $order->id; ?>"><?php echo $order->number; ?></a></small></h1>
         
-        <div>
-        [Order details]
-        </div>
+        <p>
+            <a href="./shop/order/print/<?php echo $order->id; ?>">Print receipt.</a>
+        </p>
         
-        <div>
+        <?php /* ?>
+        <p>
         [tracking pixels]
-        </div>
+        </p>
+        */ ?>
+        
+        <?php /* ?>
+        <p>
+        [upsells]
+        </p>
+        */ ?>
+        
+        <?php /* ?>
+        <p>
+        [newsletter signup w/one-click]
+        </p>
+        */ ?>
         
     <?php } ?>
 </div>

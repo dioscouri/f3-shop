@@ -219,7 +219,7 @@ class Checkout extends \Dsc\Controller
         {
             // the standard checkout process
             try {
-                $checkout->createOrder()->completeOrder();
+                $checkout->completeOrder();
             } catch (\Exception $e) {
                 $checkout->setError( $e->getMessage() );
             }

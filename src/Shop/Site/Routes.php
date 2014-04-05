@@ -187,5 +187,26 @@ class Routes extends \Dsc\Routes\Group
         // 'controller' => 'Gateway',
         // 'action' => 'submitDeleteCard'
         // ) );
+        
+        $this->add( '/orders', 'GET|POST', array(
+            'controller' => 'Order',
+            'action' => 'index' 
+        ) );
+        
+        $this->add( '/orders/page/@page', 'GET', array(
+            'controller' => 'Order',
+            'action' => 'index' 
+        ) );
+        
+        $this->add( '/order/@id', 'GET', array(
+            'controller' => 'Order',
+            'action' => 'read' 
+        ) );
+        
+        $f3 = \Base::instance();
+        $f3->route( 'GET /shop/order/print/@id', function($f3){
+        	$f3->set('print', true);
+        	(new \Shop\Site\Controllers\Order)->read();
+        });
     }
 }
