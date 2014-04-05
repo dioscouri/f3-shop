@@ -5,7 +5,9 @@
 <form action="./shop/checkout/submit" method="post" id="checkout-payment-form">
 
     <div id="checkout-shipping-summary" class="well well-sm">
-        <?php // TODO Validate that it's all present, and if not, redirect to /shop/checkout ?>
+        <?php if ($cart->shippingRequired() && (!$cart->shippingMethod() || !$cart->validShippingAddress())) { ?>
+            <?php \Base::instance()->reroute('/shop/checkout'); ?>
+        <?php } ?>
         <legend>
             <small>Shipping Summary
             <a class="pull-right" href="./shop/checkout">Edit</a>

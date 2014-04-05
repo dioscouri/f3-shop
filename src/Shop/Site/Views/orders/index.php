@@ -10,7 +10,8 @@
     <?php if (empty($paginated->items)) { ?>
         <h2>You have made no orders. <a href="./shop"><small>Go Shopping</small></a></h2>
     <?php } else { ?>
-        
+        <form action="./shop/orders" method="post">     
+           
         <div class="well well-sm search">
             <div class="input-group">
                 <input class="form-control" type="text" name="filter[keyword]" placeholder="Search..." maxlength="200" value="<?php echo $state->get('filter.keyword'); ?>"> 
@@ -42,6 +43,8 @@
                 </div>           
             </div>
         </div>
+        
+        </form>
         
         <?php foreach ($paginated->items as $order) { ?>
         <div class="panel panel-default">

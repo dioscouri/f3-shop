@@ -729,6 +729,23 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
     }
     
     /**
+     * Validates that the provided shipping address can be used for determining a shipping method
+     * 
+     * @return boolean
+     */
+    public function validShippingAddress()
+    {
+        if (!$this->{'checkout.shipping_address.country'}
+            || !$this->{'checkout.shipping_address.region'}
+            || !$this->{'checkout.shipping_address.postal_code'}
+        ) {
+            return false;
+        }
+        
+        return true;
+    }
+    
+    /**
      * Gets the shipping country, default one if not set
      */
     public function shippingCountry()
