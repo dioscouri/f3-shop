@@ -27,7 +27,8 @@ class Orders extends \Dsc\Mongo\Collections\Nodes
     public $shipping_required = null;
     public $shipping_method = null;
     public $shipping_address = array();               
-    public $tracking_numbers = array();
+    public $shipments = array();            // an array of Shipment objects, each with a tracking number
+    public $tracking_numbers = array();     // TODO Remove this and make it a field within each shipments object
     
     // Payment Fields
     public $financial_status = \Shop\Constants\OrderFinancialStatus::pending;

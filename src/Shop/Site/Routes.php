@@ -13,6 +13,8 @@ class Routes extends \Dsc\Routes\Group
      */
     public function initialize()
     {
+        $f3 = \Base::instance();
+        
         $this->setDefaults( array(
             'namespace' => '\Shop\Site\Controllers',
             'url_prefix' => '/shop' 
@@ -189,12 +191,12 @@ class Routes extends \Dsc\Routes\Group
         // ) );
         
         $this->add( '/orders', 'GET|POST', array(
-            'controller' => 'Order',
+            'controller' => 'Orders',
             'action' => 'index' 
         ) );
         
         $this->add( '/orders/page/@page', 'GET', array(
-            'controller' => 'Order',
+            'controller' => 'Orders',
             'action' => 'index' 
         ) );
         
@@ -203,10 +205,15 @@ class Routes extends \Dsc\Routes\Group
             'action' => 'read' 
         ) );
         
-        $f3 = \Base::instance();
-        $f3->route( 'GET /shop/order/print/@id', function($f3){
-        	$f3->set('print', true);
-        	(new \Shop\Site\Controllers\Order)->read();
-        });
+        $f3->route( 'GET /shop/order/print/@id', function ( $f3 )
+        {
+            $f3->set( 'print', true );
+            (new \Shop\Site\Controllers\Order())->read();
+        } );
+        
+        $this->add( '/account', 'GET', array(
+            'controller' => 'Account',
+            'action' => 'index' 
+        ) );
     }
 }
