@@ -3,7 +3,6 @@ namespace Shop\Site\Controllers;
 
 class Checkout extends \Dsc\Controller
 {
-
     public function index()
     {
         $cart = \Shop\Models\Carts::fetch();

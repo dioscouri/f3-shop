@@ -17,7 +17,7 @@
                         Register
                     </label>
                 
-                    <p class="margin-top">By creating an account with our store, you will be able to move through the checkout process faster, store multiple shipping addresses, view and track your orders in your account and more.</p>
+                    <p class="margin-top">By creating an account with our store, you will be able to move through the checkout process faster, store multiple shipping addresses, view and track your orders in your account and more.</p>
                     
                     <a class="btn btn-default custom-button btn-lg" href="javascript:void(0);">Continue</a>
                 </form>

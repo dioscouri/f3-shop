@@ -193,4 +193,36 @@ class Orders extends \Dsc\Mongo\Collections\Nodes
          
         return $this;
     }
+    
+    /**
+     * Return \Shop\Mopdels\Prefabs\ShippingMethods object if found
+     *
+     */
+    public function shippingMethod()
+    {
+        if (!$this->{'shipping_method'})
+        {
+            return false;
+        }
+    
+        $method = new \Shop\Models\Prefabs\ShippingMethods( $this->{'shipping_method'} );
+        
+        return $method;
+    }
+    
+    /**
+     * Return \Shop\Mopdels\Prefabs\PaymentMethods object if found
+     *
+     */
+    public function paymentMethod()
+    {
+        if (!$this->{'payment_method'})
+        {
+            return false;
+        }
+    
+        $method = new \Shop\Models\Prefabs\PaymentMethods( $this->{'payment_method'} );
+    
+        return $method;
+    }
 }

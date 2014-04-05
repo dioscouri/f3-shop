@@ -17,7 +17,7 @@ class Order extends \Dsc\Controller
     		return;
     	}
     	
-    	\Base::instance()->set('item', $item );
+    	\Base::instance()->set('order', $item );
     	
     	if ($f3->get('print')) {
     	    $view = \Dsc\System::instance()->get('theme');
