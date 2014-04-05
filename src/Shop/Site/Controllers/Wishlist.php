@@ -1,8 +1,18 @@
 <?php 
 namespace Shop\Site\Controllers;
 
-class Cart extends \Dsc\Controller 
+class Wishlist extends \Dsc\Controller 
 {
+    /**
+     * List a user's carts, 
+     * e.g. abandoned, closed (ordered), named (wishlists, sorta), and default (current), etc
+     * 
+     */
+    public function index()
+    {
+        
+    }
+    
     /**
      * Display a user's cart
      */

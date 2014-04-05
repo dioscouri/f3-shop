@@ -5,6 +5,6 @@ class Listener extends \Prefab
 {
 	public function afterUserLogin( $event ) 
 	{
-	    \Dsc\System::addMessage( 'This is the Shop Listener and I am observing the afterUserLogin event for front-end logins' );
+	    // TODO Add any wishlist items in session to the actual wishlist in the DB
 	}
 }

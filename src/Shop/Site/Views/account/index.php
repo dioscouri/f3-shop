@@ -11,7 +11,7 @@
                             <a href="./shop/orders"><small>Browse</small></a>
                         </div>                    
                     </legend>
-                    <small>View and print recent orders</small>
+                    <p class="help-block"><small>View and print recent orders</small></p>
                 </div>
                 <div class="col-xs-12 col-sm-12 col-md-8">
                     <div>
@@ -37,10 +37,25 @@
             <div class="row">
                 <div class="col-xs-12 col-sm-12 col-md-4">
                     <legend>Settings</legend>
-                    <small>Change your password, email, and stored addresses</small>
+                    <p class="help-block"><small>Change your password, email, and stored addresses</small></p>
                 </div>
                 <div class="col-xs-12 col-sm-12 col-md-8">
-                                            
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-12 col-md-6">
+                            <h4>Account Settings</h4>
+                            <ul class="list-unstyled">
+                                <li>Change email</li>
+                                <li>Change password</li>
+                            </ul>
+                        </div>
+                        <div class="col-xs-12 col-sm-12 col-md-6">
+                            <h4>Address Book</h4>
+                            <ul class="list-unstyled">
+                                <li>Manage existing addresses</li>
+                                <li>Add new address</li>
+                            </ul>
+                        </div>
+                    </div>                
                 </div>
             </div>
         </div>

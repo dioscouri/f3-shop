@@ -191,12 +191,12 @@ class Routes extends \Dsc\Routes\Group
         // ) );
         
         $this->add( '/orders', 'GET|POST', array(
-            'controller' => 'Orders',
+            'controller' => 'Order',
             'action' => 'index' 
         ) );
         
         $this->add( '/orders/page/@page', 'GET', array(
-            'controller' => 'Orders',
+            'controller' => 'Order',
             'action' => 'index' 
         ) );
         

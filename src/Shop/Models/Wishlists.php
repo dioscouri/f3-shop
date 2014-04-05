@@ -1,29 +1,15 @@
 <?php
 namespace Shop\Models;
 
-class Carts extends \Dsc\Mongo\Collections\Nodes
+class Wishlists extends \Dsc\Mongo\Collections\Nodes
 {
     public $user_id = null;
-    public $user_email = null;      // could be a useful way of pre-creating carts for users.  alternatively, put this in the $this->checkout array
     public $session_id = null;
-    public $items = array();        // array of \Shop\Models\Prefabs\CartItem objects
+    public $items = array();        // array of \Shop\Models\Prefabs\CartItem objects, for easy copying to/from cart
+    public $name = null;            // user-defined name for wishlist
     
-    public $taxes = array();        // array of \Shop\Models\Prefabs\Tax objects
-    public $coupons = array();      // array of \Shop\Models\Prefabs\Coupon objects
-    public $discounts = array();    // array of \Shop\Models\Prefabs\Discount objects
-    public $name = null;            // user-defined name for cart
-    
-    public $checkout = array(       // array of values used during checkout
-        'order_comments' => null,
-        'shipping_address' => array(),
-        'billing_address' => array(),
-        'shipping_method' => null,
-    );
-    
-    public $shipping_methods = array();    // array of \Shop\Models\ShippingMethod objects, each with a rate
-    
-    protected $__collection_name = 'shop.carts';
-    protected $__type = 'shop.carts';
+    protected $__collection_name = 'shop.wishlists';
+    protected $__type = 'shop.wishlists';
     protected $__config = array(
         'default_sort' => array(
             'metadata.created.time' => -1 
