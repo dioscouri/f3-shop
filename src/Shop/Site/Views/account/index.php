@@ -1,5 +1,5 @@
 <div class="container">
-    <h1>Account</h1>
+    <h1>Your Account</h1>
     
     <div class="panel panel-default">
         <div class="panel-body">

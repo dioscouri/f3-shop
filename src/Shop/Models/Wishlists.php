@@ -5,7 +5,7 @@ class Wishlists extends \Dsc\Mongo\Collections\Nodes
 {
     public $user_id = null;
     public $session_id = null;
-    public $items = array();        // array of \Shop\Models\Prefabs\CartItem objects, for easy copying to/from cart
+    public $items = array();        // array of \Shop\Models\Prefabs\CartItem objects, for easy copying to/from wishlist
     public $name = null;            // user-defined name for wishlist
     
     protected $__collection_name = 'shop.wishlists';
@@ -32,86 +32,90 @@ class Wishlists extends \Dsc\Mongo\Collections\Nodes
     }
     
     /**
-     * Get the current user's cart, either based on session_id (visitor) or user_id (logged-in)
+     * Get the current user's wishlist, either based on session_id (visitor) or user_id (logged-in)
      * 
-     * @return \Shop\Models\Carts
+     * @return \Shop\Models\Wishlists
      */
     public static function fetch()
     {
         $identity = \Dsc\System::instance()->get('auth')->getIdentity();
         if (empty($identity->id))
         {
-            $cart = static::fetchForSession();
+            $wishlist = static::fetchForSession();
         }
         else
         {
-            $cart = static::fetchForUser();
+            $wishlist = static::fetchForUser();
         }
         
-        return $cart;
+        return $wishlist;
     }
     
     /**
-     * Get the current session's cart
+     * Get the current session's wishlist
      *
-     * @return \Shop\Models\Carts
+     * @return \Shop\Models\Wishlists
      */
     public static function fetchForSession()
     {
-        $cart = new static;
+        $wishlist = new static;
 
         $session_id = \Dsc\System::instance()->get('session')->id();
     
-        $cart->load(array('session_id' => $session_id));
-        $cart->session_id = $session_id;
+        $wishlist->load(array('session_id' => $session_id));
+        $wishlist->session_id = $session_id;
     
-        return $cart;
+        return $wishlist;
     }
     
     /**
-     * Get the current user's cart
+     * Get the current user's wishlist
      *
-     * @return \Shop\Models\Carts
+     * @return \Shop\Models\Wishlists
      */
     public static function fetchForUser()
     {
-        $cart = new static;
+        $wishlist = new static;
     
         $identity = \Dsc\System::instance()->get('auth')->getIdentity();
         $session_id = \Dsc\System::instance()->get('session')->id();
         
         if (!empty($identity->id))
         {
-            $cart->load(array('user_id' => new \MongoId( (string) $identity->id ) ));
-            $cart->user_id = $identity->id;
+            $wishlist->load(array('user_id' => new \MongoId( (string) $identity->id ) ));
+            $wishlist->user_id = $identity->id;
             
-            $session_cart = static::fetchForSession();
+            $session_wishlist = static::fetchForSession();
             
-            // if there was no user cart but there IS a session cart, just add the user_id to the session cart and save it
-            if (empty($cart->id) && !empty($session_cart->id))
+            // if there was no user wishlist but there IS a session wishlist, just add the user_id to the session wishlist and save it
+            if (empty($wishlist->id) && !empty($session_wishlist->id))
             {
-                $cart = $session_cart;
-                $cart->user_id = $identity->id;
-                $cart->save();
+                $wishlist = $session_wishlist;
+                $wishlist->user_id = $identity->id;
+                $wishlist->save();
             }
             
-            // if there was a user cart and there is a session cart, merge them and delete the session cart
+            // if there was a user wishlist and there is a session wishlist, merge them and delete the session wishlist
             // if we already did the merge, skip this
-            $session_cart_merged = \Dsc\System::instance()->get('session')->get('shop.session_cart_merged');
-            if (!empty($session_cart->id) && $session_cart->id != $cart->id && empty($session_cart_merged))
+            $session_wishlist_merged = \Dsc\System::instance()->get('session')->get('shop.session_wishlist_merged');
+            if (!empty($session_wishlist->id) && $session_wishlist->id != $wishlist->id && empty($session_wishlist_merged))
             {
-                $cart->session_id = $session_id;
-                $cart->merge( $session_cart->cast() );
-                $session_cart->remove();
-                \Dsc\System::instance()->get('session')->set('shop.session_cart_merged', true);
+                $wishlist->session_id = $session_id;
+                $wishlist->merge( $session_wishlist->cast() );
+                $session_wishlist->remove();
+                \Dsc\System::instance()->get('session')->set('shop.session_wishlist_merged', true);
+            }
+            
+            if (empty($wishlist->id)) {
+                $wishlist->save();
             }
         }
     
-        return $cart;
+        return $wishlist;
     }
 
     /**
-     * Adds an item to the cart
+     * Adds an item to the wishlist
      * 
      * @param string $variant_id
      * @param \Shop\Models\Products $product
@@ -135,7 +139,7 @@ class Wishlists extends \Dsc\Mongo\Collections\Nodes
         $weight = \Dsc\ArrayHelper::get( $variant, 'weight' );
         $image = \Dsc\ArrayHelper::get( $variant, 'image' );
         
-        $cartitem = new \Shop\Models\Prefabs\CartItem(array(
+        $wishlistitem = new \Shop\Models\Prefabs\CartItem(array(
         	'variant_id' => (string) $variant_id,
             'options' => (array) $options,
             'product' => $product->cast(),
@@ -153,25 +157,25 @@ class Wishlists extends \Dsc\Mongo\Collections\Nodes
             'image' => !empty($image) ? $image : $product->{'featured_image.slug'}                        
         )); 
         
-        // Is the item already in the cart?
+        // Is the item already in the wishlist?
             // if so, inc quantity
-            // otherwise add the cartitem
+            // otherwise add the wishlistitem
         $exists = false;
         foreach ($this->items as $key=>$item)
         {
-            if ($item['hash'] == $cartitem->hash)
+            if ($item['hash'] == $wishlistitem->hash)
             {
                 $exists = true;
-                $cartitem->id = $item['id'];
-                $cartitem->quantity = $cartitem->quantity + $item['quantity']; 
-                $this->items[$key] = $cartitem->cast();
+                $wishlistitem->id = $item['id'];
+                $wishlistitem->quantity = $wishlistitem->quantity + $item['quantity']; 
+                $this->items[$key] = $wishlistitem->cast();
                 
                 break;
             }
         }
         
         if (!$exists) {
-            $this->items[] = $cartitem->cast();
+            $this->items[] = $wishlistitem->cast();
         }        
         
         return $this->save();
@@ -179,16 +183,16 @@ class Wishlists extends \Dsc\Mongo\Collections\Nodes
 
     /**
      * 
-     * @param unknown $cartitem_hash
+     * @param unknown $wishlistitem_hash
      * @param unknown $new_quantity
-     * @return \Shop\Models\Carts
+     * @return \Shop\Models\Wishlists
      */
-    public function updateItemQuantity( $cartitem_hash, $new_quantity )
+    public function updateItemQuantity( $wishlistitem_hash, $new_quantity )
     {
         $exists = false;
         foreach ($this->items as $key=>$item)
         {
-            if ($item['hash'] == $cartitem_hash)
+            if ($item['hash'] == $wishlistitem_hash)
             {
                 $exists = true;
                 $this->items[$key]['quantity'] = $new_quantity;
@@ -205,17 +209,17 @@ class Wishlists extends \Dsc\Mongo\Collections\Nodes
     }
 
     /**
-     * Removes an item from the cart
+     * Removes an item from the wishlist
      * 
-     * @param unknown $cartitem_hash
-     * @return \Shop\Models\Carts
+     * @param unknown $wishlistitem_hash
+     * @return \Shop\Models\Wishlists
      */
-    public function removeItem( $cartitem_hash )
+    public function removeItem( $wishlistitem_hash )
     {
         $exists = false;
         foreach ($this->items as $key=>$item)
         {
-            if ($item['hash'] == $cartitem_hash)
+            if ($item['hash'] == $wishlistitem_hash)
             {
                 $exists = true;
                 unset($this->items[$key]);
@@ -269,10 +273,10 @@ class Wishlists extends \Dsc\Mongo\Collections\Nodes
     }
     
     /**
-     * A diagnostic method. Updates/Removes products from stored carts.
-     * Should be run each time a cart is viewed or when a checkout begins.
+     * A diagnostic method. Updates/Removes products from stored wishlists.
+     * Should be run each time a wishlist is viewed or when a checkout begins.
      * Checks that products are still available,
-     * that the product definition in the cart is up to date,
+     * that the product definition in the wishlist is up to date,
      * etc. 
      * 
      * @return Array of messages from actions taken
@@ -286,24 +290,24 @@ class Wishlists extends \Dsc\Mongo\Collections\Nodes
         }
         
         $change = false;
-        foreach ($this->items as $key=>$cartitem)
+        foreach ($this->items as $key=>$wishlistitem)
         {
-            $variant_id = \Dsc\ArrayHelper::get($cartitem, 'variant_id');
+            $variant_id = \Dsc\ArrayHelper::get($wishlistitem, 'variant_id');
             
             try {
                 $product = (new \Shop\Models\Variants)->getById($variant_id);
             } catch (\Exception $e) {
-                // remove item from cart and add message to $return
-                $title = \Dsc\ArrayHelper::get($cartitem, 'product.title');
-                $return[] = 'The item "'. $title .'" is invalid and has been removed from your cart.';
+                // remove item from wishlist and add message to $return
+                $title = \Dsc\ArrayHelper::get($wishlistitem, 'product.title');
+                $return[] = 'The item "'. $title .'" is invalid and has been removed from your wishlist.';
                 unset($this->items[$key]);
                 $change = true;
                 continue;
             }
 
-            // TODO If the product is not available, remove item from cart and add message to $return
+            // TODO If the product is not available, remove item from wishlist and add message to $return
             
-            // update the cart's stored product definition
+            // update the wishlist's stored product definition
             $cast = $product->cast();
             if ($this->items[$key]['product'] != $cast) 
             {
@@ -311,7 +315,7 @@ class Wishlists extends \Dsc\Mongo\Collections\Nodes
                 $this->items[$key]['product'] = $cast;
             }
             
-            // TODO Has the price changed?  If so, update the cart and add message to $return
+            // TODO Has the price changed?  If so, update the wishlist and add message to $return
             
         }
         
@@ -323,7 +327,7 @@ class Wishlists extends \Dsc\Mongo\Collections\Nodes
     }
     
     /**
-     * Get a cart item using its hash
+     * Get a wishlist item using its hash
      *
      * @param unknown $id
      */
@@ -343,336 +347,6 @@ class Wishlists extends \Dsc\Mongo\Collections\Nodes
         return false;
     }
     
-    /**
-     * Given a cartitem, calculates the subtotal
-     * 
-     * @param unknown $item
-     */
-    public static function calcItemSubtotal( $data )
-    {
-        $subtotal = $data['quantity'] * $data['price'];
-        return $subtotal;
-    }
-    
-    /**
-     * Does this cart require shipping?
-     * 
-     * 0    = return if shipping is not required for this cart and global setting = no
-     * 1    = return if global setting = yes but the cart itself does not require shipping
-     * true = return if cart itself requires shipping
-     *
-     * @return boolean
-     */
-    public function shippingRequired()
-    {
-        $shipping_required = (int) \Shop\Models\Settings::fetch()->{'shipping.required'};
-    
-        if (empty($this->items)) {
-            return $shipping_required;
-        }
-    
-        foreach ($this->items as $item)
-        {
-            if (\Dsc\ArrayHelper::get($item, 'product.shipping.enabled')) 
-            {
-                $shipping_required = true;
-            }
-        }
-    
-        return $shipping_required;
-    }
-    
-    /**
-     * Gets the total weight of all items in the cart
-     * 
-     */
-    public function weight()
-    {
-        $weight = 0;
-        
-        if (empty($this->items)) {
-            return $weight;
-        }
-        
-        foreach ($this->items as $item)
-        {
-            $weight += $item['weight'];
-        }
-        
-        return $weight;
-    }
-    
-    /**
-     * Gets the total number of items in the cart
-     */
-    public function quantity()
-    {
-        $quantity = 0;
-        
-        if (empty($this->items)) {
-            return $quantity;
-        }
-        
-        foreach ($this->items as $item)
-        {
-            $quantity += (int) $item['quantity'];
-        }
-        
-        return $quantity;
-    }
-    
-    /**
-     * Gets the subtotal
-     * 
-     * @return number
-     */
-    public function subtotal()
-    {
-        $subtotal = 0;
-        
-        if (empty($this->items)) {
-            return $subtotal;
-        }
-        
-        foreach ($this->items as $item)
-        {
-            $subtotal += static::calcItemSubtotal( $item );
-        }
-        
-        return $subtotal;
-    }
-    
-    /**
-     * Gets the total shipping surcharge to be applied to each shipping method.
-     * Shipping surcharges can be either global (set in the Shop config)
-     * or per item (set in each Product) 
-     */
-    public function shippingSurchargeTotal()
-    {
-        // TODO fire a plugin event here, sending $this as an argument
-        
-        $total = 0;
-        
-        if (empty($this->items)) {
-            return $total;
-        }
-        
-        // Get the surcharge amount for each product
-        foreach ($this->items as $item)
-        {
-            if ($product_surchage = \Dsc\ArrayHelper::get($item, 'product.shipping.surcharge')) {
-                $total += $product_surchage;
-            }
-        }
-        
-        return $total;        
-    }
-    
-    /**
-     * 
-     * @return number
-     */
-    public function shippingEstimate()
-    {
-        $estimate = 0;
-        return $estimate;
-    }
-    
-    /**
-     * 
-     * @return number
-     */
-    public function taxEstimate()
-    {
-        $estimate = 0;
-        return $estimate;
-    }
-    
-    /**
-     * Gets the total,
-     * incl. subtotal, discounts/coupons, gift certificates, 
-     * shipping estimate (if possible) and tax (if possible).
-     * 
-     * @return number
-     */
-    public function total()
-    {
-        $total = $this->subtotal()
-            + $this->shippingEstimate()
-            + $this->taxEstimate();
-    
-        return $total;
-    }
-    
-    /**
-     *
-     * @return number
-     */
-    public function shippingTotal()
-    {
-        $total = 0;
-        return $total;
-    }
-    
-    /**
-     *
-     * @return number
-     */
-    public function taxTotal()
-    {
-        $total = 0;
-        return $total;
-    }
-    
-    /**
-     * Gets the total of all the applied discounts
-     *
-     * @return number
-     */
-    public function discountTotal()
-    {
-        $discount = 0;
-        return $discount;
-    }
-    
-    /**
-     * Gets the total of all the applied credits
-     *
-     * @return number
-     */
-    public function creditTotal()
-    {
-        $credit = 0;
-        return $credit;
-    }    
-    
-    /**
-     * Gets valid shipping methods for this cart,
-     * fetching them from Listeners if requested or necessary
-     * 
-     * @return array
-     */
-    public function shippingMethods( $refresh=false )
-    {
-        if (empty($this->{'checkout.shipping_address.country'}) || empty($this->{'checkout.shipping_address.region'}) || empty($this->{'checkout.shipping_address.postal_code'}) )
-        {
-            $this->{'checkout.shipping_method'} = null;
-            $this->shipping_methods = array();
-            $this->save();
-        }
-        
-        elseif (empty($this->shipping_methods) || $refresh) 
-        {
-            $this->shipping_methods = $this->fetchShippingMethods();
-            $this->save();
-        }
-        
-        return $this->shipping_methods;
-    }
-    
-    /**
-     * Return false if not set in checkout.shipping_method
-     * Return null if set but not found in array of valid shipping methods for this cart
-     * Return \Shop\Mopdels\Prefabs\ShippingMethods object if found
-     *  
-     */
-    public function shippingMethod()
-    {
-        // is it not set in checkout?
-        if (!$this->{'checkout.shipping_method'}) 
-        {
-        	return false;
-        }
-        
-        // otherwise get its full object from the array of methods
-        foreach ($this->shippingMethods() as $method_array) 
-        {
-            if ($this->{'checkout.shipping_method'} == \Dsc\ArrayHelper::get( $method_array, 'id' )) 
-            {
-                $method = new \Shop\Models\Prefabs\ShippingMethods( $method_array );
-            	return $method;
-            }
-        }
-        
-        return null;
-    }
-    
-    /**
-     * Fetches valid shipping methods for this cart
-     * 
-     */
-    protected function fetchShippingMethods()
-    {
-        $methods = array(); // TODO Set this to an array of the enabled core shipping methods 
-        
-        $event = new \Joomla\Event\Event( 'onFetchShippingMethodsForCart' );
-        $event->addArgument('cart', $this);
-        $event->addArgument('methods', $methods);
-        \Dsc\System::instance()->getDispatcher()->triggerEvent($event);
-        
-        return $event->getArgument('methods');
-    }
-    
-    /**
-     * Gets valid payment methods for this cart,
-     * fetching them from Listeners if requested or necessary
-     *
-     * @return array
-     */
-    public function paymentMethods( $refresh=false )
-    {
-        if (empty($this->payment_methods) || $refresh)
-        {
-            $this->payment_methods = $this->fetchPaymentMethods();
-            $this->save();
-        }
-    
-        return $this->payment_methods;
-    }
-    
-    /**
-     * Return false if not set in checkout.payment_method
-     * Return null if set but not found in array of valid payment methods for this cart
-     * Return \Shop\Mopdels\Prefabs\PaymentMethods object if found
-     *
-     */
-    public function paymentMethod()
-    {
-        // is it not set in checkout?
-        if (!$this->{'checkout.payment_method'})
-        {
-            return false;
-        }
-    
-        // otherwise get its full object from the array of methods
-        foreach ($this->paymentMethods() as $method_array)
-        {
-            if ($this->{'checkout.payment_method'} == \Dsc\ArrayHelper::get( $method_array, 'id' ))
-            {
-                $method = new \Shop\Models\Prefabs\PaymentMethods( $method_array );
-                return $method;
-            }
-        }
-    
-        return null;
-    }
-    
-    /**
-     * Fetches valid payment methods for this cart
-     *
-     */
-    protected function fetchPaymentMethods()
-    {
-        $methods = array(); // TODO Set this to an array of the enabled core payment methods 
-    
-        $event = new \Joomla\Event\Event( 'onFetchPaymentMethodsForCart' );
-        $event->addArgument('cart', $this);
-        $event->addArgument('methods', $methods);
-        \Dsc\System::instance()->getDispatcher()->triggerEvent($event);
-    
-        return $event->getArgument('methods');
-    }
-
     /**
      * 
      */
@@ -704,171 +378,4 @@ class Wishlists extends \Dsc\Mongo\Collections\Nodes
         
         return parent::beforeValidate();
     }
-    
-    /**
-     * Converts a cart to an Order
-     * 
-     */
-    public function convertToOrder()
-    {
-        return \Shop\Models\Orders::fromCart( $this );
-    }
-    
-    /**
-     * Validates that the provided shipping address can be used for determining a shipping method
-     * 
-     * @return boolean
-     */
-    public function validShippingAddress()
-    {
-        if (!$this->{'checkout.shipping_address.country'}
-            || !$this->{'checkout.shipping_address.region'}
-            || !$this->{'checkout.shipping_address.postal_code'}
-        ) {
-            return false;
-        }
-        
-        return true;
-    }
-    
-    /**
-     * Gets the shipping country, default one if not set
-     */
-    public function shippingCountry()
-    {
-        if ($this->{'checkout.shipping_address.country'}) {
-            return $this->{'checkout.shipping_address.country'};
-        }
-    
-        return \Shop\Models\Settings::fetch()->{'country'};
-    }
-    
-    /**
-     *
-     */
-    public function billingSameAsShipping()
-    {
-        if (!isset($this->checkout['billing_address']['same_as_shipping'])
-        || !empty($this->{'checkout.billing_address.same_as_shipping'})
-        ) {
-            return true;
-        }
-    
-        return false;
-    }
-        
-    /**
-     * 
-     * @param string $default
-     * @return string
-     */
-    public function billingName( $default=null ) 
-    {
-        if ($this->{'checkout.billing_address.name'}) {
-            return $this->{'checkout.billing_address.name'};
-        }
-        
-        return $default;
-    }
-    
-    /**
-     *
-     * @param string $default
-     * @return string
-     */
-    public function billingLine1( $default=null )
-    {
-        if ($this->{'checkout.billing_address.line_1'}) {
-            return $this->{'checkout.billing_address.line_1'};
-        }
-    
-        return $default;
-    }
-    
-    /**
-     *
-     * @param string $default
-     * @return string
-     */
-    public function billingLine2( $default=null )
-    {
-        if ($this->{'checkout.billing_address.line_2'}) {
-            return $this->{'checkout.billing_address.line_2'};
-        }
-    
-        return $default;
-    }
-    
-    /**
-     *
-     * @param string $default
-     * @return string
-     */
-    public function billingCity( $default=null )
-    {
-        if ($this->{'checkout.billing_address.city'}) {
-            return $this->{'checkout.billing_address.city'};
-        }
-    
-        return $default;
-    }
-    
-    /**
-     *
-     * @param string $default
-     * @return string
-     */
-    public function billingRegion( $default=null )
-    {
-        if ($this->{'checkout.billing_address.region'}) {
-            return $this->{'checkout.billing_address.region'};
-        }
-    
-        return $default;
-    }
-    
-    /**
-     *
-     * @param string $default
-     * @return string
-     */
-    public function billingPostalCode( $default=null )
-    {
-        if ($this->{'checkout.billing_address.postal_code'}) {
-            return $this->{'checkout.billing_address.postal_code'};
-        }
-    
-        return $default;
-    }
-    
-    /**
-     *
-     * @param string $default
-     * @return string
-     */
-    public function billingPhone( $default=null )
-    {
-        if ($this->{'checkout.billing_address.phone_number'}) {
-            return $this->{'checkout.billing_address.phone_number'};
-        }
-    
-        return $default;
-    }
-    
-    /**
-     * Gets the billing country, default one if not set
-     *
-     * @param string $default
-     * @return string
-     */
-    public function billingCountry( $default=null )
-    {
-        if ($this->{'checkout.billing_address.country'}) {
-            return $this->{'checkout.billing_address.country'};
-        }
-    
-        return $default ? $default : \Shop\Models\Settings::fetch()->{'country'};
-    }
-    
-    
 }

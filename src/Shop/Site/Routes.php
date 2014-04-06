@@ -75,6 +75,40 @@ class Routes extends \Dsc\Routes\Group
             'action' => 'updateQuantities' 
         ) );
         
+        $this->add( '/wishlists', 'GET|POST', array(
+            'controller' => 'Wishlist',
+            'action' => 'index' 
+        ) );
+        
+        $this->add( '/wishlists/page/@page', 'GET|POST', array(
+            'controller' => 'Wishlist',
+            'action' => 'index' 
+        ) );
+        
+        $this->add( '/wishlist', 'GET', array(
+            'controller' => 'Wishlist',
+            'action' => 'primary' 
+        ) );
+        
+        $this->add( '/wishlist/@id', 'GET', array(
+            'controller' => 'Wishlist',
+            'action' => 'read' 
+        ) );
+        
+        $this->add( '/wishlist/add', 'GET|POST', array(
+            'controller' => 'Wishlist',
+            'action' => 'add' 
+        ) );
+        $this->add( '/wishlist/added/@product_id [ajax]', 'GET|POST', array(
+            'controller' => 'Wishlist',
+            'action' => 'added' 
+        ) );
+        
+        $this->add( '/wishlist/remove/@wishlistitem_hash', 'GET|POST', array(
+            'controller' => 'Wishlist',
+            'action' => 'remove' 
+        ) );
+        
         $this->add( '/checkout', 'GET', array(
             'controller' => 'Checkout',
             'action' => 'index' 

@@ -4,33 +4,80 @@ namespace Shop\Site\Controllers;
 class Wishlist extends \Dsc\Controller 
 {
     /**
-     * List a user's carts, 
-     * e.g. abandoned, closed (ordered), named (wishlists, sorta), and default (current), etc
+     * List a user's wishlists 
      * 
      */
     public function index()
     {
+        $identity = $this->getIdentity();
+        if (empty($identity->id))
+        {
+            \Dsc\System::instance()->get('session')->set('site.login.redirect', '/shop/wishlists');
+            \Base::instance()->reroute('/sign-in');
+            return;
+        }
         
+        $model = new \Shop\Models\Orders;
+        $model->emptyState()->populateState()
+            ->setState('list.limit', 10 )
+            ->setState('filter.user', (string) $identity->id );
+        $state = $model->getState();
+        
+        try {
+            $paginated = $model->paginate();
+        } catch ( \Exception $e ) {
+            // TODO Change to a normal 404 error
+            \Dsc\System::instance()->addMessage( $e->getMessage(), 'error');
+            $f3->reroute( '/' );
+            return;
+        }
+        
+        \Base::instance()->set('state', $state );
+        \Base::instance()->set('paginated', $paginated );
+        
+        $view = \Dsc\System::instance()->get('theme');
+        echo $view->render('Shop/Site/Views::wishlist/index.php');        
     }
     
     /**
-     * Display a user's cart
+     * Display a user's wishlist
      */
     public function read()
     {
-        $cart = \Shop\Models\Carts::fetch();
-        // Update product fields stored in cart
-        foreach ($cart->validateProducts() as $change) {
+        $wishlist = \Shop\Models\Wishlists::fetch();
+        // Update product fields stored in wishlist
+        foreach ($wishlist->validateProducts() as $change) {
         	\Dsc\System::addMessage($change);
         }
-        \Base::instance()->set('cart', $cart);
+        \Base::instance()->set('wishlist', $wishlist);
         
         $view = \Dsc\System::instance()->get('theme');
-        echo $view->renderTheme('Shop/Site/Views::cart/read.php');        
+        echo $view->renderTheme('Shop/Site/Views::wishlist/read.php');        
+    }
+    
+    /**
+     * Finds a user's primary wishlist and redirects to its real URL (./shop/wishlist/@id).
+     * Is really just a vanity URL.
+     */
+    public function primary() 
+    {
+        $wishlist = \Shop\Models\Wishlists::fetch();
+        \Base::instance()->reroute('/shop/wishlist/' . $wishlist->id );
+    }
+    
+    /**
+     * Checks if a product is in any of the user's wishlists
+     * and responds with a json object.  
+     * Responds whether or not the user is logged in
+     * 
+     */
+    public function added()
+    {
+        
     }
         
     /**
-     * Add an item to a cart
+     * Add an item to a wishlist
      */
     public function add()
     {
@@ -64,33 +111,33 @@ class Wishlist extends \Dsc\Controller
         // End: validation
         // -----------------------------------------------------
         
-        // get the current user's cart, either based on session_id (visitor) or user_id (logged-in)
-        $cart = \Shop\Models\Carts::fetch();
+        // get the current user's wishlist, either based on session_id (visitor) or user_id (logged-in)
+        $wishlist = \Shop\Models\Wishlists::fetch();
         
         // add the item
         try {
-            $cart->addItem( $variant_id, $product, $f3->get('POST') );
+            $wishlist->addItem( $variant_id, $product, $f3->get('POST') );
         } catch (\Exception $e) {
         	// TODO respond appropriately with failure message
         	// return;
         }
         
-        //echo \Dsc\Debug::dump( $cart );
+        //echo \Dsc\Debug::dump( $wishlist );
                 
         // TODO respond appropriately
             // ajax?  send response object
-            // otherwise redirect to cart
+            // otherwise redirect to wishlist
         
         if ($f3->get('AJAX')) {
 
         } else {
-            \Dsc\System::addMessage('Item added to cart');
-        	$f3->reroute('/shop/cart');
+            \Dsc\System::addMessage('Item added to wishlist');
+        	$f3->reroute('/shop/wishlist');
         }
     }
     
     /**
-     * Remove an item from the cart
+     * Remove an item from the wishlist
      */
     public function remove()
     {
@@ -100,8 +147,8 @@ class Wishlist extends \Dsc\Controller
         // Start: validation
         // -----------------------------------------------------
         // TODO validate the POST values
-            // min: cartitem_hash
-        $cartitem_hash = $this->inputfilter->clean( $f3->get('PARAMS.cartitem_hash'), 'cmd' );
+            // min: wishlistitem_hash
+        $wishlistitem_hash = $this->inputfilter->clean( $f3->get('PARAMS.wishlistitem_hash'), 'cmd' );
         
         // TODO if validation fails, respond appropriately
         if ($f3->get('AJAX')) {
@@ -113,65 +160,28 @@ class Wishlist extends \Dsc\Controller
         // End: validation
         // -----------------------------------------------------
         
-        // get the current user's cart, either based on session_id (visitor) or user_id (logged-in)
-        $cart = \Shop\Models\Carts::fetch();
+        // get the current user's wishlist, either based on session_id (visitor) or user_id (logged-in)
+        $wishlist = \Shop\Models\Wishlists::fetch();
         
         // remove the item
         try {
-            $cart->removeItem( $cartitem_hash );
+            $wishlist->removeItem( $wishlistitem_hash );
         } catch (\Exception $e) {
             // TODO respond appropriately with failure message
             // return;
         }
         
-        //echo \Dsc\Debug::dump( $cart );
+        //echo \Dsc\Debug::dump( $wishlist );
         
         // TODO respond appropriately
             // ajax?  send response object
-            // otherwise redirect to cart
+            // otherwise redirect to wishlist
         
         if ($f3->get('AJAX')) {
         
         } else {
-            \Dsc\System::addMessage('Item removed from cart');
-            $f3->reroute('/shop/cart');
+            \Dsc\System::addMessage('Item removed from wishlist');
+            $f3->reroute('/shop/wishlist');
         }
     }
-    
-    /**
-     * Update a cart
-     */
-    public function updateQuantities()
-    {
-        $f3 = \Base::instance();
-        
-        // get the current user's cart, either based on session_id (visitor) or user_id (logged-in)
-        $cart = \Shop\Models\Carts::fetch();
-        
-        $quantities = $this->input->get( 'quantities', array(), 'array' );
-        foreach ($cart->items as $item) 
-        {
-            if (isset($quantities[$item['hash']])) 
-            {
-                $new_quantity = (int) $quantities[$item['hash']];
-                if ($new_quantity < 0) {
-                    $cart->removeItem( $item['hash'] );
-                } else {
-                    $cart->updateItemQuantity( $item['hash'], $new_quantity );
-                }
-            }
-        }
-        
-        // TODO respond appropriately
-            // ajax?  send response object
-            // otherwise redirect to cart
-        
-        if ($f3->get('AJAX')) {
-        
-        } else {
-            \Dsc\System::addMessage('Quantities updated');
-            $f3->reroute('/shop/cart');
-        }
-        
-    }    
 }
