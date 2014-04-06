@@ -75,21 +75,25 @@ class Wishlist extends \Dsc\Controller
     {
         $f3 = \Base::instance();
     	$variant_id = $this->inputfilter->clean( $f3->get('PARAMS.variant_id'), 'alnum' );
-
+    	$result = false;
+    	
     	$identity = $this->getIdentity();
     	if (empty($identity->id))
     	{
     	    // return a false message
     	    return $this->outputJson( $this->getJsonResponse( array(
-    	    	
+    	    	'result'=>$result
     	    ) ) );
     	}
     	    	
-    	$count = (new \Shop\Models\Wishlists)->getCollection()->count(
-            array( 'variants.id' => $variant_id, 'user_id' => new \MongoId( (string) $identity->id )
-    	    )
-    	);
+    	if ($count = \Shop\Models\Wishlists::hasAddedVariant($variant_id, (string) $identity->id)) 
+    	{
+    	    $result = true;
+    	}
     	
+    	return $this->outputJson( $this->getJsonResponse( array(
+            'result'=>$result
+    	) ) );
     }
         
     /**
@@ -145,7 +149,9 @@ class Wishlist extends \Dsc\Controller
             // otherwise redirect to wishlist
         
         if ($f3->get('AJAX')) {
-
+            return $this->outputJson( $this->getJsonResponse( array(
+                'result'=>true
+            ) ) );
         } else {
             \Dsc\System::addMessage('Item added to wishlist');
         	$f3->reroute('/shop/wishlist');
