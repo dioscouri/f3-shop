@@ -66,14 +66,30 @@ class Wishlist extends \Dsc\Controller
     }
     
     /**
-     * Checks if a product is in any of the user's wishlists
+     * Checks if a variant is in any of the user's wishlists
      * and responds with a json object.  
      * Responds whether or not the user is logged in
      * 
      */
     public function added()
     {
-        
+        $f3 = \Base::instance();
+    	$variant_id = $this->inputfilter->clean( $f3->get('PARAMS.variant_id'), 'alnum' );
+
+    	$identity = $this->getIdentity();
+    	if (empty($identity->id))
+    	{
+    	    // return a false message
+    	    return $this->outputJson( $this->getJsonResponse( array(
+    	    	
+    	    ) ) );
+    	}
+    	    	
+    	$count = (new \Shop\Models\Wishlists)->getCollection()->count(
+            array( 'variants.id' => $variant_id, 'user_id' => new \MongoId( (string) $identity->id )
+    	    )
+    	);
+    	
     }
         
     /**

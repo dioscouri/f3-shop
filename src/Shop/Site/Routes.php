@@ -99,7 +99,8 @@ class Routes extends \Dsc\Routes\Group
             'controller' => 'Wishlist',
             'action' => 'add' 
         ) );
-        $this->add( '/wishlist/added/@product_id [ajax]', 'GET|POST', array(
+        
+        $this->add( '/wishlist/added/@variant_id [ajax]', 'GET', array(
             'controller' => 'Wishlist',
             'action' => 'added' 
         ) );
