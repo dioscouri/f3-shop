@@ -52,6 +52,20 @@ class Collections extends \Dsc\Mongo\Collections\Describable
         if (!empty($collection->publication_status)) 
         {
             $conditions = array_merge( $conditions, array( 'publication.status' => $collection->publication_status ) );
+            if ($collection->publication_status == 'published') 
+            {
+                $and = array(
+                                array('$or' => array(
+                                                array('publication.start.time' => null),
+                                                array('publication.start.time' => array( '$lte' => time() )  )
+                                )),
+                                array('$or' => array(
+                                                array('publication.end.time' => null),
+                                                array('publication.end.time' => array( '$gt' => time() )  )
+                                ))
+                );
+                $conditions = array_merge( $conditions, array( '$and' => $and ) );
+            }
         }
         
         if (!empty($collection->inventory_status))

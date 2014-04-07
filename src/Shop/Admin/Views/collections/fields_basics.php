@@ -42,7 +42,3 @@
 <hr />
 
 <?php echo $this->renderLayout('Shop/Admin/Views::collections/fields_basics_inventory.php'); ?>
-
-<hr />
-
-TODO: Add Rules on product age, price ranges, "sale" status, etc 
