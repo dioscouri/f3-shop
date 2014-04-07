@@ -106,27 +106,21 @@ class Wishlist extends \Dsc\Controller
         // -----------------------------------------------------
         // Start: validation
         // -----------------------------------------------------
-        // TODO validate the POST values
-            // min: variant_id
         $variant_id = $this->input->get('variant_id');            
         
-        // TODO load the product
         try {
             $product = (new \Shop\Models\Variants)->getById($variant_id);
         } catch (\Exception $e) {
-            // TODO respond appropriately with failure message
-            // return;
+            if ($f3->get('AJAX')) {
+                return $this->outputJson( $this->getJsonResponse( array(
+                    'result'=>false
+                ) ) );            
+            } else {
+                \Dsc\System::addMessage('Item not added to wishlist - Invalid product', 'error');
+                $f3->reroute('/shop/wishlist');
+                return;            
+            }
         }
-        
-        // TODO get the appropriate price using the user's groups, quantity added, and date
-        // TODO check the quantity restrictions
-        
-        // TODO if validation fails, respond appropriately
-        if ($f3->get('AJAX')) {
-        
-        } else {
-            
-        }        
         // -----------------------------------------------------
         // End: validation
         // -----------------------------------------------------
@@ -138,15 +132,17 @@ class Wishlist extends \Dsc\Controller
         try {
             $wishlist->addItem( $variant_id, $product, $f3->get('POST') );
         } catch (\Exception $e) {
-        	// TODO respond appropriately with failure message
-        	// return;
+            if ($f3->get('AJAX')) {
+                return $this->outputJson( $this->getJsonResponse( array(
+                    'result'=>false
+                ) ) );
+            } else {
+                \Dsc\System::addMessage('Item not added to wishlist', 'error');
+                \Dsc\System::addMessage($e->getMessage(), 'error');
+                $f3->reroute('/shop/wishlist');
+                return;
+            }        	
         }
-        
-        //echo \Dsc\Debug::dump( $wishlist );
-                
-        // TODO respond appropriately
-            // ajax?  send response object
-            // otherwise redirect to wishlist
         
         if ($f3->get('AJAX')) {
             return $this->outputJson( $this->getJsonResponse( array(

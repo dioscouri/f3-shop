@@ -402,6 +402,10 @@ class Wishlists extends \Dsc\Mongo\Collections\Nodes
      */
     public static function hasAddedVariant( $variant_id, $user_id )
     {
+        if (empty($user_id)) {
+        	return false;
+        }
+        
         return (new static)->collection()->count( array(
             'items.variant_id' => $variant_id,
             'user_id' => new \MongoId( (string) $user_id ) 
@@ -416,6 +420,10 @@ class Wishlists extends \Dsc\Mongo\Collections\Nodes
      */
     public static function hasAddedProduct( $product_id, $user_id )
     {
+        if (empty($user_id)) {
+            return false;
+        }
+        
         return (new static)->collection()->count( array(
             'items.product_id' => $product_id,
             'user_id' => new \MongoId( (string) $user_id )

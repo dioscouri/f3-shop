@@ -66,16 +66,6 @@
             </form>                
         </div>
     </div>
-
-    <div class="clearfix"></div>
-    
-    <div class="row">
-        <div class="col-sm-12 margin-top">
-            <a href="./shop" class="btn btn-default btn-lg custom-button pull-left">Continue Shopping</a>
-            <a href="./shop/checkout" class="btn btn-default btn-lg custom-button pull-right">Checkout</a>
-            <div class="spacer"></div>
-        </div>
-    </div>
     
 </div>
 <?php } ?>
