@@ -29,6 +29,10 @@
 
 <hr />
 
+<?php echo $this->renderLayout('Shop/Admin/Views::collections/fields_basics_publication.php'); ?>
+
+<hr />
+
 <?php echo $this->renderLayout('Shop/Admin/Views::collections/fields_basics_categories.php'); ?>
 
 <hr />
@@ -37,4 +41,8 @@
 
 <hr />
 
-Rules on inventory quantity range, product age, price ranges, "sale" status, etc 
+<?php echo $this->renderLayout('Shop/Admin/Views::collections/fields_basics_inventory.php'); ?>
+
+<hr />
+
+TODO: Add Rules on product age, price ranges, "sale" status, etc 

@@ -4,8 +4,24 @@
     
         <div class="row">
             <div class="col-xs-12 col-sm-5 col-md-5 col-lg-8">
-                <?php /* ?>
+                
                 <ul class="list-filters list-unstyled list-inline">
+                    <li>
+                        <select name="filter[publication_status]" class="form-control" onchange="this.form.submit();">
+                            <option value="">All Statuses</option>
+                            <option value="published" <?php if ($state->get('filter.publication_status') == 'published') { echo "selected='selected'"; } ?>>Published</option>
+                            <option value="unpublished" <?php if ($state->get('filter.publication_status') == 'unpublished') { echo "selected='selected'"; } ?>>Unpublished</option>
+                        </select>
+                    </li>
+                    <li>
+                        <select name="filter[inventory_status]" class="form-control" onchange="this.form.submit();">
+                            <option value="">All Stock Levels</option>
+                            <option value="in_stock" <?php if ($state->get('filter.inventory_status') == 'in_stock') { echo "selected='selected'"; } ?>>In Stock</option>
+                            <option value="low_stock" <?php if ($state->get('filter.inventory_status') == 'low_stock') { echo "selected='selected'"; } ?>>Low Stock (<20)</option>
+                            <option value="no_stock" <?php if ($state->get('filter.inventory_status') == 'no_stock') { echo "selected='selected'"; } ?>>Out of Stock</option>
+                        </select>
+                    </li>                    
+                    <?php /* ?>
                     <li>
                         <a class="btn btn-link">Advanced Filtering</a>
                     </li>                
@@ -14,9 +30,10 @@
                     </li>
                     <li>
                         <a class="btn btn-link">Quicklink Filter</a>
-                    </li>                    
+                    </li>      
+                    */ ?>              
                 </ul>    
-                */ ?>        
+                        
             </div>
             <div class="col-xs-12 col-sm-7 col-md-7 col-lg-4">
                 <div class="form-group">
@@ -79,8 +96,8 @@
         		    <th class="checkbox-column"><input type="checkbox" class="icheck-input"></th>
         		    <th class="col-md-1"></th>
         			<th data-sortable="title">Title</th>
-        			<th>Categories</th>
-        			<th>Tags</th>
+        			<th><div class="text-center">Inventory</div></th>
+        			<th><div class="text-center">Price</div></th>
         			<th data-sortable="publication.start_date">Publication</th>
         			<th class="col-md-1"></th>
         		</tr>
@@ -108,23 +125,53 @@
                     </td>
                                                 
                     <td class="">
-                        <h5>
-                        <a href="./admin/shop/product/edit/<?php echo $item->id; ?>">
-                        <?php echo $item->{'title'}; ?>
-                        </a>
-                        </h5>
+                        <div class="row">
+                            <div class="col-xs-12 col-sm-12 col-md-6">
+                                <h5>
+                                    <a href="./admin/shop/product/edit/<?php echo $item->id; ?>">
+                                    <?php echo $item->{'title'}; ?>
+                                    </a>
+                                </h5>
+                                
+                                <div>
+                                    <a href="./shop/product/<?php echo $item->slug; ?>" target="_blank">/<?php echo $item->{'slug'}; ?></a>
+                                </div>
+                                
+                                <div>
+                                    <label>SKU:</label> <?php echo $item->{'tracking.sku'}; ?>
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-sm-12 col-md-6">
+                                <div class="text-right">
+                                    <div><label>Variants:</label> <?php echo (int) $item->{'variants_count'}; ?></div>
+                                    <div><label>Attributes:</label> <?php echo (int) $item->{'attributes_count'}; ?></div>
+                                </div>
+                            </div>
+                        </div>
                         
-                        <p class="help-block">
-                        /<?php echo $item->{'slug'}; ?>
-                        </p>                    
+                        <?php if ($item->{'categories'}) { ?>
+                        <div class="row">
+                            <div class="col-xs-12 col-sm-12 col-md-12">
+                                <label>Categories:</label> <?php echo implode(", ", \Joomla\Utilities\ArrayHelper::getColumn( (array) $item->{'categories'}, 'title' ) ); ?>
+                            </div>
+                        </div>
+                        <?php } ?>
+                        
+                        <?php if ($item->{'tags'}) { ?>
+                        <div class="row">
+                            <div class="col-xs-12 col-sm-12 col-md-12">
+                                <label>Tags:</label> <?php echo implode(", ", (array) $item->{'tags'} ); ?>
+                            </div>
+                        </div>
+                        <?php } ?>
                     </td>
                     
                     <td class="">
-                    <?php echo implode(", ", \Joomla\Utilities\ArrayHelper::getColumn( (array) $item->{'categories'}, 'title' ) ); ?>
+                        <div class="text-center"><h3><?php echo (int) $item->{'inventory_count'}; ?></h3></div>
                     </td>
                     
                     <td class="">
-                    <?php echo implode(", ", (array) $item->{'tags'} ); ?>
+                        <div class="text-center"><h3><?php echo '$' . $item->price(); ?></h3></div>
                     </td>
                     
                     <td class="">

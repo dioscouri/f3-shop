@@ -31,7 +31,10 @@ class Category extends \Dsc\Controller
     	
     	try {
     	    $category = $this->model('categories')->setState('filter.slug', $slug)->getItem();
-    		$paginated = $products_model->populateState()->paginate();
+    		$paginated = $products_model->populateState()
+    		      ->setState('filter.publication_status', 'published')
+    		      ->setState('filter.inventory_status', 'in_stock')
+    		      ->paginate();
     	} catch ( \Exception $e ) {
     	    // TODO Change to a normal 404 error
     		\Dsc\System::instance()->addMessage( "Invalid Items: " . $e->getMessage(), 'error');

@@ -51,10 +51,11 @@ class Products extends \Dsc\Mongo\Collections\Content implements \MassUpdate\Ser
     public $attributes = array(); // an array of \Shop\Prefabs\Attribute records
     
     // all possible product variations based on the attributes above, each with their product override values
-    public $variants = array();          // an array of \Shop\Prefabs\Variant
+    public $variants = array();          // an array of \Shop\Prefabs\Variant objects cast as an array
     
     public $attributes_count = null;
     public $variants_count = null;
+    public $inventory_count = null;
     
     public $policies = array(
         'track_inventory'=>true,
@@ -84,6 +85,22 @@ class Products extends \Dsc\Mongo\Collections\Content implements \MassUpdate\Ser
         parent::fetchConditions();
     
         $this->setCondition('type', $this->__type );
+        
+        $filter_status_stock = $this->getState('filter.inventory_status');
+        if (strlen($filter_status_stock))
+        {
+            switch($filter_status_stock) {
+            	case "low_stock":
+            	    $this->setCondition('inventory_count', array('$lte' => 20));
+            	    break;
+            	case "no_stock":
+            	    $this->setCondition('inventory_count', array('$lte' => 0));
+            	    break;
+            	case "in_stock":
+            	    $this->setCondition('inventory_count', array('$gte' => 1));
+            	    break;
+            }
+        }
     
         return $this;
     }
@@ -124,11 +141,14 @@ class Products extends \Dsc\Mongo\Collections\Content implements \MassUpdate\Ser
                 
         if (!empty($this->category_ids))
         {
-            $category_ids = $this->category_ids;
+            $category_ids = array_filter( $this->category_ids );
             unset($this->category_ids);
     
             $categories = array();
-            if ($list = (new \Shop\Models\Categories)->setState('select.fields', array('title', 'slug'))->setState('filter.ids', $category_ids)->getList())
+            if (empty($category_ids)) {
+                $this->categories = $categories;
+            }
+            elseif ($list = (new \Shop\Models\Categories)->setState('select.fields', array('title', 'slug'))->setState('filter.ids', $category_ids)->getList())
             {
                 foreach ($list as $list_item) {
                     $cat = array(
@@ -184,6 +204,14 @@ class Products extends \Dsc\Mongo\Collections\Content implements \MassUpdate\Ser
         $this->attributes_count = count( $this->attributes );
         $this->variants_count = count( $this->variants );
         
+        $this->inventory_count = 0;
+        foreach ($this->variants as $variant) 
+        {
+            if (!empty($variant['quantity'])) {
+                $this->inventory_count += (int) $variant['quantity'];
+            }            
+        }
+        
         return parent::beforeSave();
     }
     
@@ -209,7 +237,7 @@ class Products extends \Dsc\Mongo\Collections\Content implements \MassUpdate\Ser
                 }
                 // if the variant's key is empty, build it from the attributes
                 if (empty($item['key'])) {
-                    $item['key'] = implode("-", $item['attributes']);
+                    $item['key'] = implode("-", (array) $item['attributes']);
                 }
                 if (empty($variants[$item['key']])) {
                     unset($this->variants[$key]);
@@ -268,9 +296,19 @@ class Products extends \Dsc\Mongo\Collections\Content implements \MassUpdate\Ser
             // there's only one variant, the default product, so 
             // preserve variant IDs since the attribute set hasn't changed
             $this->createVariants();             
+
             
-            $this->variants[0]['id'] = $prev_product->variants[0]['id'];
-            $this->variants[0]['key'] = $prev_product->variants[0]['key'];
+            $variant = array_merge($prev_product->variants[0], $this->variants[0]);
+            $variant['id'] = $prev_product->variants[0]['id'];
+            $variant['key'] = !empty($prev_product->variants[0]['key']) ? $prev_product->variants[0]['key'] : $variant['key'];
+            if (!empty($variant['attributes']) && !is_array($variant['attributes'])) {
+                $variant['attributes'] = json_decode( $variant['attributes'] );
+            }
+                        
+            $this->variants[0] = $variant;
+            
+            //$this->variants[0]['id'] = $prev_product->variants[0]['id'];
+            //$this->variants[0]['key'] = $prev_product->variants[0]['key'];
         }
         
         else
@@ -279,9 +317,18 @@ class Products extends \Dsc\Mongo\Collections\Content implements \MassUpdate\Ser
             $this->createVariants();
             
             array_walk($this->variants, function(&$item, $key) use($prev_product) {
-            	// if a variant with this attribute set existed, then preserve its ID
+            	// if a variant with this attribute set existed, then preserve its ID and extended properties
             	if ($prev_variant = $prev_product->variantByKey($item['key'])) {
-            		$item['id'] = $prev_variant['id'];
+            		
+            	    $variant = array_merge( $prev_variant, $item );
+            		$variant['id'] = $prev_variant['id'];
+            		$item = $variant;
+            		
+            	    //$item['id'] = $prev_variant['id'];
+            	}
+            	
+            	if (!empty($item['attributes']) && !is_array($item['attributes'])) {
+            	    $item['attributes'] = json_decode( $item['attributes'] );
             	}
             });
             
@@ -410,12 +457,20 @@ class Products extends \Dsc\Mongo\Collections\Content implements \MassUpdate\Ser
         return $result;
     }
     
+    /**
+     * 
+     */
     public function rebuildVariants()
     {
         $cast = $this->cast();
         return self::buildVariants($cast);
     }
     
+    /**
+     * 
+     * @param unknown $groups
+     * @return unknown
+     */
     public function price( $groups=array() )
     {
         $price = $this->get('prices.default');

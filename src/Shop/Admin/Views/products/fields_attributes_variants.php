@@ -47,14 +47,20 @@
                             <div class="row">
                                 <div class="col-md-3">
                                     <?php echo !empty($variant['titles']) ? implode("&nbsp;|&nbsp;", (array) $variant['titles']) : null; ?>
-                                    <input type="hidden" name="variants[<?php echo $key; ?>][id]" value="<?php echo $flash->old('variants.'.$key.'.id'); ?>" />
-                                    <input type="hidden" name="variants[<?php echo $key; ?>][key]" value="<?php echo implode("-", $flash->old('variants.'.$key.'.attributes')); ?>" />
+                                    <div class="text-muted">
+                                        <div>
+                                            <label>ID:</label>
+                                            <?php echo $flash->old('variants.'.$key.'.id') ? $flash->old('variants.'.$key.'.id') : $variant['id']; ?>
+                                        </div>
+                                    </div>
+                                    <input type="hidden" name="variants[<?php echo $key; ?>][id]" value="<?php echo $flash->old('variants.'.$key.'.id') ? $flash->old('variants.'.$key.'.id') : $variant['id']; ?>" />
+                                    <input type="hidden" name="variants[<?php echo $key; ?>][key]" value="<?php echo implode("-", (array) $flash->old('variants.'.$key.'.attributes')); ?>" />
                                     <input type="hidden" name="variants[<?php echo $key; ?>][attribute_title]" value="<?php echo implode("&nbsp;|&nbsp;", (array) $variant['titles']); ?>" />
                                     <input type="hidden" name="variants[<?php echo $key; ?>][attributes]" value="<?php echo htmlspecialchars( json_encode( $flash->old('variants.'.$key.'.attributes') ) ); ?>" />
                                 </div>
                                 <div class="col-md-9">
-                                    <div class="row">
                                     
+                                    <div class="row">
                                         <div class="col-md-7">
                                             <label><small>SKU</small></label>
                                             <input type="text" name="variants[<?php echo $key; ?>][sku]" class="form-control input-sm" value="<?php echo $flash->old('variants.'.$key.'.sku'); ?>" />
@@ -68,7 +74,6 @@
                                             <input type="text" name="variants[<?php echo $key; ?>][quantity]" class="form-control input-sm" value="<?php echo $flash->old('variants.'.$key.'.quantity'); ?>" />
                                         </div>
                                         <div class="col-md-1">
-                                            <p class="help-block"><small>&nbsp;</small></p>
                                             <a class="btn btn-link btn-sm" href="javascript:void(0);" onclick="ShopToggleVariantFields(this);">edit</a>
                                         </div>
                                                                             
@@ -78,36 +83,50 @@
                         </div>
                         
                         <div class="variant-fields">
-                            <div class="row">
-                                <div class="col-md-3">
-                                    <label><small>ID</small></label>
-                                    <p><?php echo $flash->old('variants.'.$key.'.id'); ?></p>
-                                </div>
-                                <div class="col-md-9">
-
-                                    <div class="row">
-                                        <div class="col-md-3">
-                                            <label><small>Model</small></label>
-                                            <input type="text" name="variants[<?php echo $key; ?>][model_number]" class="form-control input-sm" value="<?php echo $flash->old('variants.'.$key.'.model_number'); ?>" />
-                                        </div>
-                                        <div class="col-md-2">
-                                            <label><small>UPC</small></label>
-                                            <input type="text" name="variants[<?php echo $key; ?>][upc]" class="form-control input-sm" value="<?php echo $flash->old('variants.'.$key.'.upc'); ?>" />
-                                        </div>
-                                        <div class="col-md-2">
-                                            <label><small>Weight</small></label>
-                                            <input type="text" name="variants[<?php echo $key; ?>][weight]" class="form-control input-sm" value="<?php echo $flash->old('variants.'.$key.'.weight'); ?>" />
-                                        </div>
-                                        <div class="col-md-5">
-                                            <label><small>Image Slug</small></label>
-                                            <input type="text" name="variants[<?php echo $key; ?>][image]" class="form-control input-sm" value="<?php echo $flash->old('variants.'.$key.'.image'); ?>" />
-                                        </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-3">
+    
                                     </div>
-                                        
-                                
+                                    <div class="col-md-9">
+    
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <label><small>Model</small></label>
+                                                <input type="text" name="variants[<?php echo $key; ?>][model_number]" class="form-control input-sm" value="<?php echo $flash->old('variants.'.$key.'.model_number'); ?>" />
+                                            </div>
+                                            <div class="col-md-2">
+                                                <label><small>UPC</small></label>
+                                                <input type="text" name="variants[<?php echo $key; ?>][upc]" class="form-control input-sm" value="<?php echo $flash->old('variants.'.$key.'.upc'); ?>" />
+                                            </div>
+                                            <div class="col-md-2">
+                                                <label><small>Weight</small></label>
+                                                <input type="text" name="variants[<?php echo $key; ?>][weight]" class="form-control input-sm" value="<?php echo $flash->old('variants.'.$key.'.weight'); ?>" />
+                                            </div>
+                                            <div class="col-md-5">
+                                                <label><small>Image Slug</small></label>
+                                                <input type="text" name="variants[<?php echo $key; ?>][image]" class="form-control input-sm" value="<?php echo $flash->old('variants.'.$key.'.image'); ?>" />
+                                            </div>
+                                        </div>
+                                            
+                                    
+                                    </div>
                                 </div>
                             </div>
-                        </div>                        
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-3">
+    
+                                    </div>
+                                    <div class="col-md-9">
+                                        <div class="text-muted">
+                                            <label>Key:</label>
+                                            <?php echo $flash->old('variants.'.$key.'.attributes') ? implode("-", (array) $flash->old('variants.'.$key.'.attributes')) : $variant['key']; ?>
+                                        </div>
+                                    </div>                            
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <?php
                 }

@@ -5,6 +5,8 @@ class Collections extends \Dsc\Mongo\Collections\Describable
 {
     public $categories = array();
     public $featured_image;
+    public $publication_status = "published";
+    public $inventory_status = "in_stock";
     
     protected $__collection_name = 'shop.collections';
     protected $__type = 'shop.collections';
@@ -24,9 +26,6 @@ class Collections extends \Dsc\Mongo\Collections\Describable
         }
 
         $conditions = array();
-        
-        // TODO Add that the product must be published
-        // $conditions['publication.status'] = 'published';
         
         if (!empty($collection->categories)) 
         {
@@ -48,6 +47,26 @@ class Collections extends \Dsc\Mongo\Collections\Describable
             }
             
             $conditions = array_merge( $conditions, array( 'tags' => array( '$in' => $tags ) ) );
+        }
+        
+        if (!empty($collection->publication_status)) 
+        {
+            $conditions = array_merge( $conditions, array( 'publication.status' => $collection->publication_status ) );
+        }
+        
+        if (!empty($collection->inventory_status))
+        {
+            switch($collection->inventory_status) {
+            	case "low_stock":
+            	    $conditions = array_merge( $conditions, array( 'inventory_count' => array( '$lte' => 20 ) ) );
+            	    break;
+            	case "no_stock":
+            	    $conditions = array_merge( $conditions, array( 'inventory_count' => array( '$lte' => 0 ) ) );
+            	    break;
+            	case "in_stock":
+            	    $conditions = array_merge( $conditions, array( 'inventory_count' => array( '$gte' => 1 ) ) );
+            	    break;
+            }            
         }
         
         // allow event listeners to modify the query conditions

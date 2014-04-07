@@ -20,6 +20,8 @@
 
             <div class="">
                 <div id="categories" class="list-group">
+                    <input type="hidden" name="category_ids[]" />
+                    
                     <div id="categories-checkboxes">
                     <?php echo $this->renderLayout('Shop/Admin/Views::categories/checkboxes.php'); ?>
                     </div>
