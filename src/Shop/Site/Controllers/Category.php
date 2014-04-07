@@ -21,9 +21,8 @@ class Category extends \Dsc\Controller
     
     public function index()
     {
-    	// TODO get the slug param.  lookup the category.  Check ACL against both category.
-    	// get paginated list of blog posts associated with this category
-    	// only posts that are published as of now
+    	// TODO get the slug param.  lookup the category.  Check ACL against both category and item.
+    	// get paginated list of items associated with this category
     	
     	$f3 = \Base::instance();
     	$slug = $this->inputfilter->clean( $f3->get('PARAMS.slug'), 'cmd' );
@@ -32,7 +31,9 @@ class Category extends \Dsc\Controller
     	try {
     	    $category = $this->model('categories')->setState('filter.slug', $slug)->getItem();
     		$paginated = $products_model->populateState()
+    		      ->setState('filter.category.slug', $slug)
     		      ->setState('filter.publication_status', 'published')
+    		      ->setState('filter.published_today', true)
     		      ->setState('filter.inventory_status', 'in_stock')
     		      ->paginate();
     	} catch ( \Exception $e ) {

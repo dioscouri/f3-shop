@@ -101,6 +101,12 @@ class Products extends \Dsc\Mongo\Collections\Content implements \MassUpdate\Ser
             	    break;
             }
         }
+        
+        $filter_category_slug = $this->getState('filter.category.slug');
+        if (strlen($filter_category_slug))
+        {
+            $this->setCondition('categories.slug', $filter_category_slug );
+        }
     
         return $this;
     }
