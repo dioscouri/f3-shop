@@ -10,13 +10,13 @@
     <div class="row">
         <div class="col-sm-12">
             <form method="post">
-            <div class="table-responsive shopping-wishlist">
+            <div class="table-responsive shopping-cart">
                 <table class="table">
                     <thead>
                     <tr>
                         <th width="41%"><div class="title-wrap">Product</div></th>
                         <th width="14%"><div class="title-wrap">Unit Price</div></th>
-                        <th width="14%"><div class="title-wrap"></div></th>
+                        <th width="14%"><div class="title-wrap">Status</div></th>
                         <th width="3%"><div class="title-wrap"><i class="glyphicon glyphicon-remove"></i></div></th>
                     </tr>
                     </thead>
@@ -25,7 +25,7 @@
                     <?php foreach ($wishlist->items as $key=>$item) { ?>
                     <tr>
                         <td>
-                            <div class="wishlist-product">
+                            <div class="cart-product">
                                 <figure>
                                     <?php if (\Dsc\ArrayHelper::get($item, 'image')) { ?>
                                     <a href="./shop/product/<?php echo \Dsc\ArrayHelper::get($item, 'product.slug'); ?>">
@@ -54,7 +54,15 @@
                         </td>
                         <td><div class="price">$<?php echo \Dsc\ArrayHelper::get($item, 'price'); ?></div></td>
 
-                        <td>[add to cart]</td>
+                        <td>
+                            <div class="price text-center">
+                            <?php if (\Shop\Models\Variants::quantity(\Dsc\ArrayHelper::get($item, 'variant_id'))) { ?>
+                                <a class="btn btn-default">Add to Cart</a>
+                            <?php } else { ?>
+                                Unavailable
+                            <?php } ?>
+                            </div>
+                        </td>
                         <td><a href="./shop/wishlist/remove/<?php echo \Dsc\ArrayHelper::get($item, 'hash'); ?>" class="btn btn-default custom-button"><i class="glyphicon glyphicon-remove"></i></a></td>
                     </tr>
                     <?php } ?>

@@ -41,7 +41,7 @@ class Variants extends \Dsc\Mongo\Collection
      * 
      * @return 
      */
-    public function getById( $id )
+    public static function getById( $id )
     {
         $return = (new \Shop\Models\Products)->load( array('variants.id' => $id ) );
         
@@ -61,7 +61,7 @@ class Variants extends \Dsc\Mongo\Collection
      *
      * @return
      */
-    public function getByAttributes( $product_id, array $attributes=array() )
+    public static function getByAttributes( $product_id, array $attributes=array() )
     {
         $attributes = sort($attributes);
         
@@ -74,6 +74,30 @@ class Variants extends \Dsc\Mongo\Collection
         // TODO set the overrides?
     
         return $return;
+    }
+    
+    /**
+     * Get the available quantity of a single variant
+     * 
+     * @param unknown $variant_id
+     */
+    public static function quantity( $variant_id )
+    {
+        $quantity = 0;
+        
+        try {
+            $product = static::getById($variant_id);
+        }
+        catch(\Exception $e)
+        {
+            return $quantity;
+        }
+        
+        if ($variant = $product->variant($variant_id)) {
+            $quantity = (int) $variant['quantity'];
+        }
+        
+        return $quantity;
     }
     
     /**
