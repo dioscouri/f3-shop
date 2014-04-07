@@ -95,6 +95,11 @@ class Routes extends \Dsc\Routes\Group
             'action' => 'read' 
         ) );
         
+        $this->add( '/wishlist/@id/cart/@hash', 'GET', array(
+            'controller' => 'Wishlist',
+            'action' => 'moveToCart' 
+        ) );
+        
         $this->add( '/wishlist/add', 'GET|POST', array(
             'controller' => 'Wishlist',
             'action' => 'add' 

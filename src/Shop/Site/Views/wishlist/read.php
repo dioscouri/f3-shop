@@ -57,7 +57,7 @@
                         <td>
                             <div class="price text-center">
                             <?php if (\Shop\Models\Variants::quantity(\Dsc\ArrayHelper::get($item, 'variant_id'))) { ?>
-                                <a class="btn btn-default">Add to Cart</a>
+                                <a class="btn btn-default" href="./shop/wishlist/<?php echo $wishlist->id; ?>/cart/<?php echo \Dsc\ArrayHelper::get($item, 'hash'); ?>">Add to Cart</a>
                             <?php } else { ?>
                                 Unavailable
                             <?php } ?>

@@ -202,4 +202,79 @@ class Wishlist extends \Dsc\Controller
             $f3->reroute('/shop/wishlist');
         }
     }
+    
+    /**
+     * 
+     */
+    public function moveToCart()
+    {
+        $f3 = \Base::instance();
+        
+        $wishlist_id = $this->inputfilter->clean( $f3->get('PARAMS.id'), 'alnum' );
+        $wishlistitem_hash = $this->inputfilter->clean( $f3->get('PARAMS.hash'), 'cmd' );
+
+        $identity = \Dsc\System::instance()->get( 'auth' )->getIdentity();
+        $session_id = \Dsc\System::instance()->get( 'session' )->id();
+        $wishlist = (new \Shop\Models\Wishlists)->load( array(
+            '_id' => new \MongoId( (string) $wishlist_id )
+        ) );
+        
+        if (empty($wishlist->id)) 
+        {
+            if ($f3->get('AJAX')) {
+                return $this->outputJson( $this->getJsonResponse( array(
+                    'result'=>false,
+                    'message'=>'Invalid wishlist'
+                ) ) );
+            } else {
+                \Dsc\System::addMessage('Invalid Wishlist', 'error');
+                $f3->reroute('/shop/wishlist');
+                return;
+            }
+        }
+        
+        // Validate that this wishlist belongs to the current user
+        if ($identity->id != $wishlist->user_id && $session_id != $wishlist->session_id) 
+        {
+            if ($f3->get('AJAX')) {
+                return $this->outputJson( $this->getJsonResponse( array(
+                    'result'=>false,
+                    'message'=>'Not your wishlist'
+                ) ) );
+            } else {
+                \Dsc\System::addMessage('Not your wishlist', 'error');
+                $f3->reroute('/shop/wishlist');
+                return;
+            }        	
+        }
+        
+        $cart = \Shop\Models\Carts::fetch();
+        
+        try {
+            $wishlist->moveToCart( $wishlistitem_hash, $cart );
+        } catch (\Exception $e) {
+            if ($f3->get('AJAX')) {
+                return $this->outputJson( $this->getJsonResponse( array(
+                    'result'=>false,
+                    'message'=>'Item could not be moved to cart'
+                ) ) );
+            } else {
+                \Dsc\System::addMessage('Item could not be moved to cart', 'error');
+                \Dsc\System::addMessage($e->getMessage(), 'error');
+                $f3->reroute('/shop/wishlist/' . $wishlist->id );
+                return;
+            }
+        }
+        
+        if ($f3->get('AJAX')) {
+            return $this->outputJson( $this->getJsonResponse( array(
+                'result'=>true,
+                'message'=>'Item moved to cart'
+            ) ) );
+        } else {
+            \Dsc\System::addMessage('Item moved to cart');
+            $f3->reroute('/shop/wishlist/' . $wishlist->id );
+        }
+        
+    }
 }

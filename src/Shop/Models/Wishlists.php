@@ -429,4 +429,26 @@ class Wishlists extends \Dsc\Mongo\Collections\Nodes
             'user_id' => new \MongoId( (string) $user_id )
         ) );
     }
+    
+    /**
+     * 
+     * @param unknown $variant_id
+     * @param string $wishlist_id
+     */
+    public function moveToCart( $wishlistitem_hash, $cart )
+    {
+        $item = $this->fetchItemByHash( $wishlistitem_hash );
+        if (empty($item['id'])) {
+        	throw new \Exception( 'Invalid Wishlist Item' );
+        }
+        
+        $variant_id = $item['variant_id'];
+        $product = (new \Shop\Models\Variants)->getById($variant_id);
+        if ($cart->addItem( $variant_id, $product )) 
+        {
+        	$this->removeItem( $wishlistitem_hash );
+        }
+        
+        return $this;
+    }
 }

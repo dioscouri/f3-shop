@@ -131,7 +131,7 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
      * @param \Shop\Models\Products $product
      * @param array $post
      */
-    public function addItem( $variant_id, \Shop\Models\Products $product, array $post )
+    public function addItem( $variant_id, \Shop\Models\Products $product, array $post=array() )
     {
         $options = !empty($post['options']) ? $post['options'] : array();
         $quantity = (!empty($post['quantity']) && $post['quantity'] > 0) ? (int) $post['quantity'] : 1;
