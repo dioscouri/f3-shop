@@ -21,8 +21,7 @@ class Category extends \Dsc\Controller
     
     public function index()
     {
-    	// TODO get the slug param.  lookup the category.  Check ACL against both category and item.
-    	// get paginated list of items associated with this category
+    	// TODO Check ACL against both category and item.
     	
     	$f3 = \Base::instance();
     	$slug = $this->inputfilter->clean( $f3->get('PARAMS.slug'), 'cmd' );
@@ -30,6 +29,9 @@ class Category extends \Dsc\Controller
     	
     	try {
     	    $category = $this->model('categories')->setState('filter.slug', $slug)->getItem();
+    	    if (empty($category->id)) {
+    	    	throw new \Exception;
+    	    }
     		$paginated = $products_model->populateState()
     		      ->setState('filter.category.slug', $slug)
     		      ->setState('filter.publication_status', 'published')
@@ -37,9 +39,8 @@ class Category extends \Dsc\Controller
     		      ->setState('filter.inventory_status', 'in_stock')
     		      ->paginate();
     	} catch ( \Exception $e ) {
-    	    // TODO Change to a normal 404 error
-    		\Dsc\System::instance()->addMessage( "Invalid Items: " . $e->getMessage(), 'error');
-    		$f3->reroute( '/' );
+    		\Dsc\System::instance()->addMessage( 'Invalid category', 'error');
+    		$f3->error('404');
     		return;
     	}
     	
