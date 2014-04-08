@@ -44,15 +44,30 @@ class Order extends \Dsc\Controller
      */
     public function read()
     {
-    	$f3 = \Base::instance();
-    	$id = $this->inputfilter->clean( $f3->get('PARAMS.id'), 'alnum' );
+        $f3 = \Base::instance();
+        $id = $this->inputfilter->clean( $f3->get('PARAMS.id'), 'alnum' );
+                
+        $identity = $this->getIdentity();
+        if (empty($identity->id))
+        {
+            \Dsc\System::instance()->get('session')->set('site.login.redirect', '/shop/order/' . $id );
+            \Base::instance()->reroute('/sign-in');
+            return;
+        }
     	
     	try {
     		$item = (new \Shop\Models\Orders)->setState('filter.id', $id)->getItem();
+    		if (empty($item->id)) {
+    			throw new \Exception;
+    		}
+    		if ((string) $item->user_id != (string) $identity->id) {
+    		    throw new \Exception;
+    		}    		
     	} catch ( \Exception $e ) {
     	    // TODO Change to a normal 404 error
-    		\Dsc\System::instance()->addMessage( "Invalid Order: " . $e->getMessage(), 'error');
-    		$f3->reroute( '/' );
+    		\Dsc\System::instance()->addMessage( "Invalid Order", 'error');
+    		\Dsc\System::instance()->addMessage( $e->getMessage(), 'error');
+    		$f3->reroute( '/shop/orders' );
     		return;
     	}
     	

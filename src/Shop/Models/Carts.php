@@ -123,15 +123,8 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
     
         return $cart;
     }
-
-    /**
-     * Adds an item to the cart
-     * 
-     * @param string $variant_id
-     * @param \Shop\Models\Products $product
-     * @param array $post
-     */
-    public function addItem( $variant_id, \Shop\Models\Products $product, array $post=array() )
+    
+    public static function createItem( $variant_id, \Shop\Models\Products $product, array $post=array() ) 
     {
         $options = !empty($post['options']) ? $post['options'] : array();
         $quantity = (!empty($post['quantity']) && $post['quantity'] > 0) ? (int) $post['quantity'] : 1;
@@ -150,7 +143,7 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
         $image = \Dsc\ArrayHelper::get( $variant, 'image' );
         
         $cartitem = new \Shop\Models\Prefabs\CartItem(array(
-        	'variant_id' => (string) $variant_id,
+            'variant_id' => (string) $variant_id,
             'options' => (array) $options,
             'product' => $product->cast(),
             'product_id' => $product->id,
@@ -164,8 +157,42 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
             'model_number' => !empty($model_number) ? $model_number : $product->{'tracking.model_number'},
             'upc' => !empty($upc) ? $upc : $product->{'tracking.upc'},
             'weight' => !empty($weight) ? $weight : $product->{'shipping.weight'},
-            'image' => !empty($image) ? $image : $product->{'featured_image.slug'}                        
-        )); 
+            'image' => !empty($image) ? $image : $product->{'featured_image.slug'}
+        ));
+
+        return $cartitem;
+    }
+    
+    /**
+     * Validates that the cartitem is configured correctly for adding to cart,
+     * including quantity availability checks, quantity increment checks, etc
+     * 
+     * Throws an exception on fail, otherwise returns $this
+     * 
+     * @param \Shop\Models\Prefabs\CartItem $cartitem
+     */
+    public function validateAdd( \Shop\Models\Prefabs\CartItem $cartitem )
+    {
+        // is the quantity available?
+        $quantity = \Shop\Models\Variants::quantity( $cartitem->variant_id );
+        
+        // TODO Fire an event for any Listeners that want to stop validation
+        
+        return $this;
+    }
+
+    /**
+     * Adds an item to the cart
+     * 
+     * @param string $variant_id
+     * @param \Shop\Models\Products $product
+     * @param array $post
+     */
+    public function addItem( $variant_id, \Shop\Models\Products $product, array $post=array() )
+    {
+        $cartitem = static::createItem( $variant_id, $product, $post );
+
+        $this->validateAdd( $cartitem );
         
         // Is the item already in the cart?
             // if so, inc quantity

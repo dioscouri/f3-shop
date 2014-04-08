@@ -85,13 +85,7 @@ class Variants extends \Dsc\Mongo\Collection
     {
         $quantity = 0;
         
-        try {
-            $product = static::getById($variant_id);
-        }
-        catch(\Exception $e)
-        {
-            return $quantity;
-        }
+        $product = static::getById($variant_id);
         
         if ($variant = $product->variant($variant_id)) {
             $quantity = (int) $variant['quantity'];

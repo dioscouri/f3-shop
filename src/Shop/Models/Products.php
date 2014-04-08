@@ -484,6 +484,8 @@ class Products extends \Dsc\Mongo\Collections\Content implements \MassUpdate\Ser
         // TODO get this product's price for the user's array of groups.
         // lowest price is given priority
         
+        // TODO adjust price based on date ranges too
+        
         return $price;
     }
 

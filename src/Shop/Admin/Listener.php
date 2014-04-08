@@ -50,31 +50,43 @@ class Listener extends \Prefab
         $item->form = \Shop\Admin\Controllers\MenuItemQuickAdd::instance()->cart($event);
         $items[] = $item;
         
-        /*
-        $item = new \stdClass;
-        $item->title = 'Product Detail';
-        $item->form = \Shop\Admin\Controllers\MenuItemQuickAdd::instance()->product($event);
-        $items[] = $item;
-        */
-        
         $event->setArgument('items', $items);
     }
 	
-	public function onDisplayAdminGroupEdit( $event ) {
+    /**
+     * Adds a Shop tab to the Users\Groups editing form
+     */
+	public function onDisplayAdminGroupEdit( $event ) 
+	{
         $item = $event->getArgument('item');
         $tabs = $event->getArgument('tabs');
-        $ontent = $event->getArgument('content');
+        $content = $event->getArgument('content');
         $isNew = $event->getArgument( 'isNew' );
 		$identifier = $event->getArgument( 'identifier' );
 		
 		if( empty( $tabs ) ) {
 			$tabs = array();
 		}
+		
 		if( empty( $content ) ) {
 			$content = array();
 		}
+
+		$view = \Dsc\System::instance()->get( 'theme' );
+		$view->item = $item;
+		$prefab = (new \Shop\Models\Prefabs\UserGroupDetail);
+		if (!isset( $view->item['shop'] ))
+		{
+		    $view->item = $prefab->cast();
+		}
+		else
+		{
+		    $view->item = array_merge( $prefab->cast(), $view->item->cast() );
+		}
+		$shop_content = $view->renderLayout( 'Shop/Admin/Views::groups/tab_usergroups.php' );		
+		
 		$tabs['shop'] = 'Shop Details';
-		$content['shop'] = \Shop\Admin\Controllers\Group::instance()->fetchTabGroups( $item, $isNew, $identifier );
+		$content['shop'] = $shop_content;
 
         $event->setArgument('tabs', $tabs);
         $event->setArgument('content', $content);
