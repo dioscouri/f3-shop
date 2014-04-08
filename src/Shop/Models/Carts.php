@@ -175,8 +175,17 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
     {
         // is the quantity available?
         $quantity = \Shop\Models\Variants::quantity( $cartitem->variant_id );
+        if ($cartitem->quantity > $quantity) 
+        {
+        	throw new \Exception( 'Quantity selected is unavailable' );
+        }
         
-        // TODO Fire an event for any Listeners that want to stop validation
+        // Fire an event so that any Listeners that want to stop validation
+        // can throw an exception
+        $event = \Dsc\System::instance()->trigger( 'onShopValidateAddToCart', array(
+            'cart' => $this,
+            'cartitem' => $cartitem
+        ) );
         
         return $this;
     }
@@ -215,7 +224,16 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
             $this->items[] = $cartitem->cast();
         }        
         
-        return $this->save();
+        $this->save();
+        
+        // Fire an event so that any Listeners that want to stop validation
+        // can throw an exception
+        $event = \Dsc\System::instance()->trigger( 'afterShopAddToCart', array(
+            'cart' => $this,
+            'cartitem' => $cartitem
+        ) );
+        
+        return $this;
     }
 
     /**
