@@ -515,8 +515,9 @@ class Products extends \Dsc\Mongo\Collections\Content implements \MassUpdate\Ser
     		$attr_published_state->setAttributeCollection('publication.status')
     		->setModel( $this )
     		->setAttributeTitle( "Publication status" )
-    		->addOperation( new \Shop\Operations\Condition\PublicationStatus, 'where');
-    		    		
+    		->addOperation( new \Shop\Operations\Condition\PublicationStatus, 'where')
+    		->addOperation( new \Shop\Operations\Update\PublicationStatus, 'update');
+    		
     		$arr []= $attr_title;
     		$arr []= $attr_cat;
     		$arr []= $attr_published_state;
