@@ -7,7 +7,6 @@ class ShippingMethods extends \Dsc\Prefabs
         'id' => null,       // (string) unique identifier
         'name' => null,     // (string) human-readable name for display to customer
         'price' => null,    // $$ base price of shipping method
-        'tax' => null,      // $$ tax applied to this method
         'extra' => null,    // $$ any handling/surcharge/extra fees
         'type' => null,
         'code' => null
@@ -20,7 +19,6 @@ class ShippingMethods extends \Dsc\Prefabs
     public function total()
     {
         return $this->price 
-            + $this->tax
             + $this->extra; 
     }
 }

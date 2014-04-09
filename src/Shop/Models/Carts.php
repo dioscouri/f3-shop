@@ -589,6 +589,9 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
     public function taxTotal()
     {
         $total = 0;
+        
+        // TODO loop through the $this->getTaxes line items and sum the totals
+        
         return $total;
     }
     
@@ -747,7 +750,7 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
      *
      * @return array
      */
-    public function taxes( $refresh=false )
+    public function taxItems( $refresh=false )
     {
         if (empty($this->taxes) || $refresh)
         {
@@ -762,11 +765,11 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
      * Fetches tax line items for this cart
      *
      */
-    protected function fetchTaxes()
+    protected function fetchTaxItems()
     {
         $taxes = array(); // TODO Set this to an array of tax items decided upon by the core?
         
-        $event = \Dsc\System::instance()->trigger( 'onFetchTaxesForCart', array(
+        $event = \Dsc\System::instance()->trigger( 'onFetchTaxItemsForCart', array(
             'cart' => $this,
             'taxes' => $taxes
         ) );
