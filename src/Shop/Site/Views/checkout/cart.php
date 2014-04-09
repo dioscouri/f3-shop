@@ -59,7 +59,7 @@
                     <td><div class="price">
                         <?php if (!$shippingMethod = $cart->shippingMethod()) {
                             echo '$' . $cart->shippingEstimate();
-                            echo '<small>(est)</small>';
+                            echo ' <small>(est)</small>';
                         } else {
                         	echo '$' . $shippingMethod->total();
                         }

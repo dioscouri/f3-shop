@@ -556,9 +556,18 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
      */
     public function total()
     {
-        $total = $this->subtotal()
-            + $this->shippingEstimate()
-            + $this->taxEstimate();
+        $total = $this->subtotal();
+        
+        if ($shippingMethod = $this->shippingMethod()) 
+        {
+            $total = $total + $shippingMethod->total();
+        } 
+        else 
+        {
+            $total = $total + $this->shippingEstimate();
+        }
+        
+        $total = $total + $this->taxEstimate();
     
         return $total;
     }
@@ -663,11 +672,11 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
     protected function fetchShippingMethods()
     {
         $methods = array(); // TODO Set this to an array of the enabled core shipping methods 
-        
-        $event = new \Joomla\Event\Event( 'onFetchShippingMethodsForCart' );
-        $event->addArgument('cart', $this);
-        $event->addArgument('methods', $methods);
-        \Dsc\System::instance()->getDispatcher()->triggerEvent($event);
+
+        $event = \Dsc\System::instance()->trigger( 'onFetchShippingMethodsForCart', array(
+            'cart' => $this,
+            'methods' => $methods
+        ) );
         
         return $event->getArgument('methods');
     }
@@ -724,12 +733,45 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
     {
         $methods = array(); // TODO Set this to an array of the enabled core payment methods 
     
-        $event = new \Joomla\Event\Event( 'onFetchPaymentMethodsForCart' );
-        $event->addArgument('cart', $this);
-        $event->addArgument('methods', $methods);
-        \Dsc\System::instance()->getDispatcher()->triggerEvent($event);
+        $event = \Dsc\System::instance()->trigger( 'onFetchPaymentMethodsForCart', array(
+            'cart' => $this,
+            'methods' => $methods
+        ) );
     
         return $event->getArgument('methods');
+    }
+    
+    /**
+     * Gets tax line items for this cart,
+     * fetching them from Listeners if requested or necessary
+     *
+     * @return array
+     */
+    public function taxes( $refresh=false )
+    {
+        if (empty($this->taxes) || $refresh)
+        {
+            $this->taxes = $this->fetchTaxes();
+            $this->save();
+        }
+    
+        return $this->taxes;
+    }
+    
+    /**
+     * Fetches tax line items for this cart
+     *
+     */
+    protected function fetchTaxes()
+    {
+        $taxes = array(); // TODO Set this to an array of tax items decided upon by the core?
+        
+        $event = \Dsc\System::instance()->trigger( 'onFetchTaxesForCart', array(
+            'cart' => $this,
+            'taxes' => $taxes
+        ) );
+    
+        return $event->getArgument('taxes');
     }
 
     /**
