@@ -502,15 +502,24 @@ class Products extends \Dsc\Mongo\Collections\Content implements \MassUpdate\Ser
     		$attr_cat = new \MassUpdate\Service\Models\AttributeGroup;
     		$attr_cat->setAttributeCollection('categories')
     		->setAttributeTitle( "Product Category" )
-    		->addOperation( new \Shop\Operations\Condition\ProductCategory, 'where' );
+    		->setModel( new \Shop\Models\Categories )
+    		->addOperation( new \MassUpdate\Operations\Condition\Category, 'where', array( 'mode' => 0 ) );
     		
     		$attr_title = new \MassUpdate\Service\Models\AttributeGroup;
     		$attr_title->setAttributeCollection('title')
+    		->setModel( $this )
     		->setAttributeTitle( "Product Name" )
     		->addOperation( new \MassUpdate\Operations\Update\ChangeTo, 'update');
     		
+    		$attr_published_state = new \MassUpdate\Service\Models\AttributeGroup;
+    		$attr_published_state->setAttributeCollection('publication.status')
+    		->setModel( $this )
+    		->setAttributeTitle( "Publication status" )
+    		->addOperation( new \Shop\Operations\Condition\PublicationStatus, 'where');
+    		    		
     		$arr []= $attr_title;
     		$arr []= $attr_cat;
+    		$arr []= $attr_published_state;
     	}
     	 
     	return $arr;

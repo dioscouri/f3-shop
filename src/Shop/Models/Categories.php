@@ -1,9 +1,11 @@
 <?php 
 namespace Shop\Models;
 
-class Categories extends \Dsc\Mongo\Collections\Categories 
+class Categories extends \Dsc\Mongo\Collections\Categories implements \MassUpdate\Service\Models\MassUpdateOperations
 {
-    protected $__type = 'shop.categories';
+	use \MassUpdate\Service\Traits\Model;
+	
+	protected $__type = 'shop.categories';
 
     protected function fetchConditions()
     {
@@ -80,5 +82,41 @@ class Categories extends \Dsc\Mongo\Collections\Categories
                 array( 'multiple' => true )
         );
         */
+    }
+
+    /**
+     * This method gets list of attribute groups with operations
+     *
+     * @return	Array with attribute groups
+     */
+    public function getMassUpdateOperationGroups(){
+    	static $arr = null;
+    	if( $arr == null ){
+    
+    		$arr = array();
+    		$attr_cat = new \MassUpdate\Service\Models\AttributeGroup;
+    		$attr_cat->setAttributeCollection('ancestors.id')
+	    		->setModel( $this )
+	    		->setAttributeTitle( "Parent Categories" )
+	    		->addOperation( new \MassUpdate\Operations\Condition\Category, 'where', array( 'mode' => 0 ) );
+    		
+    		$attr_created = new \MassUpdate\Service\Models\AttributeGroup;
+    		$attr_created->setAttributeCollection( 'metadata.created.time' )
+    			->setAttributeTitle( "Category Created" )
+	    		->setModel( $this )
+    			->addOperation( new \MassUpdate\Operations\Condition\DateTimeCompare, 'where', array( 'mode' => 1 ) );
+    
+    		$attr_title = new \MassUpdate\Service\Models\AttributeGroup;
+    		$attr_title->setAttributeCollection('title')
+	    		->setAttributeTitle( "Category Name" )
+	    		->setModel( $this )
+	    		->addOperation( new \MassUpdate\Operations\Update\ModifyTo, 'update');
+    
+    		$arr []= $attr_title;
+    		$arr []= $attr_cat;
+    		$arr []= $attr_created;
+    	}
+    
+    	return $arr;
     }
 }

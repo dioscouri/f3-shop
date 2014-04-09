@@ -14,6 +14,7 @@ class MassUpdateGroup extends \MassUpdate\Service\Models\Group{
 	public function initialize($mode) {
 		$this->addModel( new \Shop\Models\Products, $mode );
 		$this->addModel( new \Shop\Models\Manufacturers, $mode );
+		$this->addModel( new \Shop\Models\Categories, $mode );
 	}
 }
 ?>
