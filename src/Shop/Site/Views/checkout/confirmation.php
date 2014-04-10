@@ -25,7 +25,13 @@
         
         <?php /* ?>
         <p>
-        [upsells]
+        [upsells of related products]
+        </p>
+        */ ?>
+        
+        <?php /* ?>
+        <p>
+        [upsells with "false urgency"]
         </p>
         */ ?>
         

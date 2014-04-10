@@ -8,7 +8,7 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
     public $session_id = null;
     public $items = array();        // array of \Shop\Models\Prefabs\CartItem objects
     
-    public $taxes = array();        // array of \Shop\Models\Prefabs\Tax objects
+    public $taxes = array();        // array of \Shop\Models\Prefabs\TaxItems objects
     public $coupons = array();      // array of \Shop\Models\Prefabs\Coupon objects
     public $discounts = array();    // array of \Shop\Models\Prefabs\Discount objects
     public $name = null;            // user-defined name for cart
@@ -223,9 +223,9 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
         if (!$exists) {
             $this->items[] = $cartitem->cast();
         }        
-        
+
         $this->save();
-        
+
         // Fire an event so that any Listeners that want to stop validation
         // can throw an exception
         $event = \Dsc\System::instance()->trigger( 'afterShopAddToCart', array(
@@ -561,13 +561,13 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
         if ($shippingMethod = $this->shippingMethod()) 
         {
             $total = $total + $shippingMethod->total();
+            $total = $total + $this->taxTotal();
         } 
         else 
         {
             $total = $total + $this->shippingEstimate();
+            $total = $total + $this->taxEstimate();
         }
-        
-        $total = $total + $this->taxEstimate();
     
         return $total;
     }
@@ -579,6 +579,12 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
     public function shippingTotal()
     {
         $total = 0;
+        
+        if ($shippingMethod = $this->shippingMethod()) 
+        {
+        	$total = $shippingMethod->total();
+        }
+        
         return $total;
     }
     
@@ -590,7 +596,14 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
     {
         $total = 0;
         
-        // TODO loop through the $this->getTaxes line items and sum the totals
+        // loop through the $this->getTaxes line items and sum the totals
+        foreach ($this->taxItems() as $taxItem) 
+        {
+        	if (!empty($taxItem['total'])) 
+        	{
+        		$total = $total + $taxItem['total'];
+        	}
+        }
         
         return $total;
     }
@@ -754,7 +767,7 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
     {
         if (empty($this->taxes) || $refresh)
         {
-            $this->taxes = $this->fetchTaxes();
+            $this->taxes = $this->fetchTaxItems();
             $this->save();
         }
     
@@ -807,6 +820,27 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
         }
         
         return parent::beforeValidate();
+    }
+    
+    /**
+     * Compare the items and shipping from the previously-saved cart.  
+     * If they've changed, clear the tax calculations. 
+     */
+    protected function beforeSave()
+    {
+        // Load the saved version of this cart using $this->id
+        if (!empty($this->id)) 
+        {
+            $cart = (new static)->load(array('_id' => new \MongoId( (string) $this->id ) ));
+            
+            // Compare items and shipping method.  If changed, empty the taxes
+            if ($cart->items != $this->items || $cart->shippingMethod() != $this->shippingMethod())
+            {
+                $this->taxes = array();
+            }
+        }
+        
+        return parent::beforeSave();
     }
     
     /**
