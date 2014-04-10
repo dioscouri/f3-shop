@@ -833,8 +833,11 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
         {
             $cart = (new static)->load(array('_id' => new \MongoId( (string) $this->id ) ));
             
-            // Compare items and shipping method.  If changed, empty the taxes
-            if ($cart->items != $this->items || $cart->shippingMethod() != $this->shippingMethod())
+            // Compare items, shipping address, and shipping method.  If changed, empty the taxes
+            if ($cart->items != $this->items 
+                || $cart->shippingMethod() != $this->shippingMethod()
+                || $cart->{'checkout.shipping_address'} != $this->{'checkout.shipping_address'}
+            )
             {
                 $this->taxes = array();
             }
