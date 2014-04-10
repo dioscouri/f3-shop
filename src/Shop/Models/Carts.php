@@ -837,6 +837,7 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
             if ($cart->items != $this->items 
                 || $cart->shippingMethod() != $this->shippingMethod()
                 || $cart->{'checkout.shipping_address'} != $this->{'checkout.shipping_address'}
+                || $cart->{'checkout.billing_address'} != $this->{'checkout.billing_address'}
             )
             {
                 $this->taxes = array();
