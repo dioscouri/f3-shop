@@ -98,7 +98,7 @@ class Categories extends \Dsc\Mongo\Collections\Categories implements \MassUpdat
     		$attr_cat->setAttributeCollection('ancestors.id')
 	    		->setModel( $this )
 	    		->setAttributeTitle( "Parent Categories" )
-	    		->addOperation( new \MassUpdate\Operations\Condition\Category, 'where', array( 'mode' => 0 ) );
+	    		->addOperation( new \MassUpdate\Operations\Condition\Category, 'where', array( 'mode' => 1 ) );
     		
     		$attr_created = new \MassUpdate\Service\Models\AttributeGroup;
     		$attr_created->setAttributeCollection( 'metadata.created.time' )
@@ -112,9 +112,16 @@ class Categories extends \Dsc\Mongo\Collections\Categories implements \MassUpdat
 	    		->setModel( $this )
 	    		->addOperation( new \MassUpdate\Operations\Update\ModifyTo, 'update');
     
+    		$attr_last_modified = new \MassUpdate\Service\Models\AttributeGroup;
+    		$attr_last_modified->setAttributeCollection('metadata.last_modified')
+	    		->setAttributeTitle( "Last Modified" )
+	    		->setModel( $this )
+	    		->addOperation( new \MassUpdate\Operations\Update\ChangeDateTime, 'update');
+    		
     		$arr []= $attr_title;
     		$arr []= $attr_cat;
     		$arr []= $attr_created;
+    		$arr []= $attr_last_modified;
     	}
     
     	return $arr;

@@ -500,10 +500,10 @@ class Products extends \Dsc\Mongo\Collections\Content implements \MassUpdate\Ser
     		
     		$arr = array();
     		$attr_cat = new \MassUpdate\Service\Models\AttributeGroup;
-    		$attr_cat->setAttributeCollection('categories')
+    		$attr_cat->setAttributeCollection('categories.id')
     		->setAttributeTitle( "Product Category" )
     		->setModel( new \Shop\Models\Categories )
-    		->addOperation( new \MassUpdate\Operations\Condition\Category, 'where', array( 'mode' => 0 ) );
+    		->addOperation( new \MassUpdate\Operations\Condition\Category, 'where', array( 'mode' => 1 ) );
     		
     		$attr_title = new \MassUpdate\Service\Models\AttributeGroup;
     		$attr_title->setAttributeCollection('title')
@@ -518,9 +518,37 @@ class Products extends \Dsc\Mongo\Collections\Content implements \MassUpdate\Ser
     		->addOperation( new \Shop\Operations\Condition\PublicationStatus, 'where')
     		->addOperation( new \Shop\Operations\Update\PublicationStatus, 'update');
     		
+    		$attr_shipping_required = new \MassUpdate\Service\Models\AttributeGroup;
+    		$attr_shipping_required->setAttributeCollection('shipping.enabled')
+    		->setModel( $this )
+    		->setAttributeTitle( "Shipping required" )
+    		->addOperation( new \MassUpdate\Operations\Condition\Boolean, 'where', array( "custom_label" => "Is Shipping required?" ))
+    		->addOperation( new \MassUpdate\Operations\Update\Boolean, 'update', array( "custom_label" => "Is Shipping required?" ));
+
+    		$attr_published_start = new \MassUpdate\Service\Models\AttributeGroup;
+    		$attr_published_start->setAttributeCollection('publication.start')
+    		->setAttributeTitle( "Published Start" )
+    		->setModel( $this )
+    		->addOperation( new \MassUpdate\Operations\Update\ChangeDateTime, 'update', 
+    									array( "metastamp" => true, 
+    											"mode" => 1,
+    											'attribute_dt' => array( 
+    													"date" => 'publication.start_date', 
+    													'time' => 'publication.start_time' )
+    										));
+    		
+    		$attr_creator = new \MassUpdate\Service\Models\AttributeGroup;
+    		$attr_creator->setAttributeCollection('metadata.creator')
+    		->setAttributeTitle( "Creator" )
+    		->setModel( $this )
+    		->addOperation( new \MassUpdate\Operations\Update\ChangeUser, 'update' );
+    		
     		$arr []= $attr_title;
     		$arr []= $attr_cat;
-    		$arr []= $attr_published_state;
+			$arr []= $attr_published_state;
+			$arr []= $attr_shipping_required;
+			$arr []= $attr_published_start;
+			$arr []= $attr_creator;
     	}
     	 
     	return $arr;
