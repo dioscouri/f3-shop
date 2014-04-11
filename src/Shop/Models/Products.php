@@ -517,7 +517,15 @@ class Products extends \Dsc\Mongo\Collections\Content implements \MassUpdate\Ser
     		$attr_title->setAttributeCollection('title')
     		->setModel( $this )
     		->setAttributeTitle( "Product Name" )
-    		->addOperation( new \MassUpdate\Operations\Update\ChangeTo, 'update');
+    		->addOperation( new \MassUpdate\Operations\Update\ChangeTo, 'update')
+    		->addOperation( new \MassUpdate\Operations\Update\ModifyTo, 'update');
+    		
+    		$attr_price = new \MassUpdate\Service\Models\AttributeGroup;
+    		$attr_price->setAttributeCollection('prices.default')
+    		->setModel( $this )
+    		->setAttributeTitle( "Product Price" )
+    		->addOperation( new \MassUpdate\Operations\Update\ChangeTo, 'update')
+    		->addOperation( new \MassUpdate\Operations\Update\IncreaseBy, 'update');
     		
     		$attr_published_state = new \MassUpdate\Service\Models\AttributeGroup;
     		$attr_published_state->setAttributeCollection('publication.status')
@@ -551,12 +559,20 @@ class Products extends \Dsc\Mongo\Collections\Content implements \MassUpdate\Ser
     		->setModel( $this )
     		->addOperation( new \MassUpdate\Operations\Update\ChangeUser, 'update' );
     		
+    		$attr_creator_id = new \MassUpdate\Service\Models\AttributeGroup;
+    		$attr_creator_id->setAttributeCollection('metadata.creator.id')
+    		->setAttributeTitle( "Creator" )
+    		->setModel( $this )
+    		->addOperation( new \MassUpdate\Operations\Condition\IsUser, 'where' );
+    		
     		$arr []= $attr_title;
+    		$arr []= $attr_price;
     		$arr []= $attr_cat;
 			$arr []= $attr_published_state;
 			$arr []= $attr_shipping_required;
 			$arr []= $attr_published_start;
 			$arr []= $attr_creator;
+			$arr []= $attr_creator_id;
     	}
     	 
     	return $arr;
