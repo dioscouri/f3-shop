@@ -8,7 +8,7 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
     public $session_id = null;
     public $items = array();        // array of \Shop\Models\Prefabs\CartItem objects
     
-    public $taxes = array();        // array of \Shop\Models\Prefabs\Tax objects
+    public $taxes = array();        // array of \Shop\Models\Prefabs\TaxItems objects
     public $coupons = array();      // array of \Shop\Models\Prefabs\Coupon objects
     public $discounts = array();    // array of \Shop\Models\Prefabs\Discount objects
     public $name = null;            // user-defined name for cart
@@ -175,8 +175,17 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
     {
         // is the quantity available?
         $quantity = \Shop\Models\Variants::quantity( $cartitem->variant_id );
+        if ($cartitem->quantity > $quantity) 
+        {
+        	throw new \Exception( 'Quantity selected is unavailable' );
+        }
         
-        // TODO Fire an event for any Listeners that want to stop validation
+        // Fire an event so that any Listeners that want to stop validation
+        // can throw an exception
+        $event = \Dsc\System::instance()->trigger( 'onShopValidateAddToCart', array(
+            'cart' => $this,
+            'cartitem' => $cartitem
+        ) );
         
         return $this;
     }
@@ -214,8 +223,17 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
         if (!$exists) {
             $this->items[] = $cartitem->cast();
         }        
+
+        $this->save();
+
+        // Fire an event so that any Listeners that want to stop validation
+        // can throw an exception
+        $event = \Dsc\System::instance()->trigger( 'afterShopAddToCart', array(
+            'cart' => $this,
+            'cartitem' => $cartitem
+        ) );
         
-        return $this->save();
+        return $this;
     }
 
     /**
@@ -538,9 +556,18 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
      */
     public function total()
     {
-        $total = $this->subtotal()
-            + $this->shippingEstimate()
-            + $this->taxEstimate();
+        $total = $this->subtotal();
+        
+        if ($shippingMethod = $this->shippingMethod()) 
+        {
+            $total = $total + $shippingMethod->total();
+            $total = $total + $this->taxTotal();
+        } 
+        else 
+        {
+            $total = $total + $this->shippingEstimate();
+            $total = $total + $this->taxEstimate();
+        }
     
         return $total;
     }
@@ -552,6 +579,12 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
     public function shippingTotal()
     {
         $total = 0;
+        
+        if ($shippingMethod = $this->shippingMethod()) 
+        {
+        	$total = $shippingMethod->total();
+        }
+        
         return $total;
     }
     
@@ -562,6 +595,16 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
     public function taxTotal()
     {
         $total = 0;
+        
+        // loop through the $this->getTaxes line items and sum the totals
+        foreach ($this->taxItems() as $taxItem) 
+        {
+        	if (!empty($taxItem['total'])) 
+        	{
+        		$total = $total + $taxItem['total'];
+        	}
+        }
+        
         return $total;
     }
     
@@ -645,11 +688,11 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
     protected function fetchShippingMethods()
     {
         $methods = array(); // TODO Set this to an array of the enabled core shipping methods 
-        
-        $event = new \Joomla\Event\Event( 'onFetchShippingMethodsForCart' );
-        $event->addArgument('cart', $this);
-        $event->addArgument('methods', $methods);
-        \Dsc\System::instance()->getDispatcher()->triggerEvent($event);
+
+        $event = \Dsc\System::instance()->trigger( 'onFetchShippingMethodsForCart', array(
+            'cart' => $this,
+            'methods' => $methods
+        ) );
         
         return $event->getArgument('methods');
     }
@@ -706,12 +749,45 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
     {
         $methods = array(); // TODO Set this to an array of the enabled core payment methods 
     
-        $event = new \Joomla\Event\Event( 'onFetchPaymentMethodsForCart' );
-        $event->addArgument('cart', $this);
-        $event->addArgument('methods', $methods);
-        \Dsc\System::instance()->getDispatcher()->triggerEvent($event);
+        $event = \Dsc\System::instance()->trigger( 'onFetchPaymentMethodsForCart', array(
+            'cart' => $this,
+            'methods' => $methods
+        ) );
     
         return $event->getArgument('methods');
+    }
+    
+    /**
+     * Gets tax line items for this cart,
+     * fetching them from Listeners if requested or necessary
+     *
+     * @return array
+     */
+    public function taxItems( $refresh=false )
+    {
+        if (empty($this->taxes) || $refresh)
+        {
+            $this->taxes = $this->fetchTaxItems();
+            $this->save();
+        }
+    
+        return $this->taxes;
+    }
+    
+    /**
+     * Fetches tax line items for this cart
+     *
+     */
+    protected function fetchTaxItems()
+    {
+        $taxes = array(); // TODO Set this to an array of tax items decided upon by the core?
+        
+        $event = \Dsc\System::instance()->trigger( 'onFetchTaxItemsForCart', array(
+            'cart' => $this,
+            'taxes' => $taxes
+        ) );
+    
+        return $event->getArgument('taxes');
     }
 
     /**
@@ -744,6 +820,31 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
         }
         
         return parent::beforeValidate();
+    }
+    
+    /**
+     * Compare the items and shipping from the previously-saved cart.  
+     * If they've changed, clear the tax calculations. 
+     */
+    protected function beforeSave()
+    {
+        // Load the saved version of this cart using $this->id
+        if (!empty($this->id)) 
+        {
+            $cart = (new static)->load(array('_id' => new \MongoId( (string) $this->id ) ));
+            
+            // Compare items, shipping address, and shipping method.  If changed, empty the taxes
+            if ($cart->items != $this->items 
+                || $cart->shippingMethod() != $this->shippingMethod()
+                || $cart->{'checkout.shipping_address'} != $this->{'checkout.shipping_address'}
+                || $cart->{'checkout.billing_address'} != $this->{'checkout.billing_address'}
+            )
+            {
+                $this->taxes = array();
+            }
+        }
+        
+        return parent::beforeSave();
     }
     
     /**

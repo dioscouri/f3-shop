@@ -84,10 +84,10 @@ class Checkout extends \Dsc\Controller
     {
         $cart = \Shop\Models\Carts::fetch();
         
-        // TODO Do the selective update, saving the data to the Cart if it validates
+        // Do the selective update, saving the data to the Cart if it validates
         $checkout = $this->input->get( 'checkout', array(), 'array' );
         $cart_checkout = array_merge( (array) $cart->{'checkout'}, $checkout );
-        $cart->checkout = $cart_checkout;
+        $cart->set('checkout', $cart_checkout);
         $cart->save();
         
         // TODO If the select data doesn't validate, return an error message while redirecting back to referring page (if http request)

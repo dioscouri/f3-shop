@@ -488,6 +488,14 @@ class Products extends \Dsc\Mongo\Collections\Content implements \MassUpdate\Ser
         
         return $price;
     }
+    
+    /**
+     * 
+     */
+    public function priceForGroup( $group )
+    {
+    	
+    }
 
     /**
      * This method gets list of attribute groups with operations

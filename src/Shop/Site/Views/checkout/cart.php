@@ -59,7 +59,7 @@
                     <td><div class="price">
                         <?php if (!$shippingMethod = $cart->shippingMethod()) {
                             echo '$' . $cart->shippingEstimate();
-                            echo '<small>(est)</small>';
+                            echo ' <small>(est)</small>';
                         } else {
                         	echo '$' . $shippingMethod->total();
                         }
@@ -68,14 +68,22 @@
                 </tr>
                 <tr>
                     <td><div class="strong">
-                            Tax <small>(est)</small>:
+                            Tax:
                         </div></td>
-                    <td><div class="price">$<?php echo $cart->taxEstimate(); ?></div></td>
+                    <td><div class="price">
+                        <?php if (!$shippingMethod = $cart->shippingMethod()) {
+                            echo '$' . $cart->taxEstimate();
+                            echo ' <small>(est)</small>';
+                        } else {
+                        	echo '$' . $cart->taxTotal();
+                        }
+                        ?>                    
+                    </div></td>
                 </tr>
             </tbody>
             <tfoot>
                 <td><div class="strong">
-                        Total <small>(est)</small>:
+                        Total<?php if (!$shippingMethod = $cart->shippingMethod()) { ?> <small>(est)</small> <?php } ?>:
                     </div></td>
                 <td><div class="price">$<?php echo $cart->total(); ?></div></td>
             </tfoot>

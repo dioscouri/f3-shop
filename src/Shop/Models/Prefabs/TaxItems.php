@@ -1,14 +1,14 @@
 <?php
 namespace Shop\Models\Prefabs;
 
-class ShippingMethods extends \Dsc\Prefabs
+class TaxItems extends \Dsc\Prefabs
 {
     protected $document = array(
         'id' => null,       // (string) unique identifier
         'name' => null,     // (string) human-readable name for display to customer
-        'price' => null,    // $$ base price of shipping method
-        'extra' => null,    // $$ any handling/surcharge/extra fees
-        'type' => null,
+        'total' => null,    // $$ total of this line item
+        'rate' => null,     // %% (if applicable) Percentage used to determine total tax amount for this line item  
+        'type' => null,     // product / shipping
         'code' => null
     );
 
@@ -18,7 +18,11 @@ class ShippingMethods extends \Dsc\Prefabs
     
     public function total()
     {
-        return $this->price 
-            + $this->extra; 
+        return $this->total; 
+    }
+    
+    public function rate()
+    {
+        return $this->rate;
     }
 }
