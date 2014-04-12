@@ -52,7 +52,10 @@ jQuery(document).ready(function(){
                 </li>
                 <li>
                     <a href="#tab-images" data-toggle="tab"> Images </a>
-                </li>                
+                </li>
+                <li>
+                    <a href="#tab-display" data-toggle="tab"> Display </a>
+                </li>
             </ul>
             
             <div class="tab-content">
@@ -81,6 +84,13 @@ jQuery(document).ready(function(){
                 <div class="tab-pane" id="tab-images">
 
                     <?php echo $this->renderLayout('Shop/Admin/Views::products/fields_images.php'); ?>
+                                        
+                </div>
+                <!-- /.tab-pane -->
+                
+                <div class="tab-pane" id="tab-display">
+        
+                    <?php echo $this->renderLayout('Shop/Admin/Views::products/fields_display.php'); ?>
                                         
                 </div>
                 <!-- /.tab-pane -->

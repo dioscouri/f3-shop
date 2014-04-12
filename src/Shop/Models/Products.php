@@ -72,6 +72,10 @@ class Products extends \Dsc\Mongo\Collections\Content implements \MassUpdate\Ser
         )
     );
     
+    public $display = array(
+    	'stickers' => array()
+    );
+    
     protected $__collection_name = 'shop.products';
     protected $__type = 'shop.products';
     protected $__config = array(
@@ -218,6 +222,18 @@ class Products extends \Dsc\Mongo\Collections\Content implements \MassUpdate\Ser
             }            
         }
         
+        if (!empty($this->{'display.stickers'}) && !is_array($this->{'display.stickers'}))
+        {
+            $this->{'display.stickers'} = trim($this->{'display.stickers'});
+            if (!empty($this->{'display.stickers'})) {
+                $this->{'display.stickers'} = \Base::instance()->split( (string) $this->{'display.stickers'} );
+            }
+        }
+        elseif(empty($this->{'display.stickers'}) && !is_array($this->{'display.stickers'}))
+        {
+            $this->{'display.stickers'} = array();
+        }
+        
         return parent::beforeSave();
     }
     
@@ -341,6 +357,25 @@ class Products extends \Dsc\Mongo\Collections\Content implements \MassUpdate\Ser
         }
         
         return parent::beforeUpdate();
+    }
+    
+    /**
+     *
+     * @param array $types
+     * @return unknown
+     */
+    public static function distinctStickers($query=array())
+    {
+        if (empty($this)) {
+            $model = new static();
+        } else {
+            $model = clone $this;
+        }
+    
+        $tags = $model->collection()->distinct("display.stickers", $query);
+        $tags = array_values( array_filter( $tags ) );
+    
+        return $tags;
     }
     
     /**
