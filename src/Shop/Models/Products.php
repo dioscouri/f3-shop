@@ -511,7 +511,8 @@ class Products extends \Dsc\Mongo\Collections\Content implements \MassUpdate\Ser
     		$attr_cat->setAttributeCollection('categories.id')
     		->setAttributeTitle( "Product Category" )
     		->setModel( new \Shop\Models\Categories )
-    		->addOperation( new \MassUpdate\Operations\Condition\Category, 'where', array( 'mode' => 1 ) );
+    		->addOperation( new \MassUpdate\Operations\Condition\Category, 'where', array( 'mode' => 1 ) )
+    		->addOperation( new \MassUpdate\Operations\Update\ChangeCategory, 'update', array( 'allow_add' => true ) );
     		
     		$attr_title = new \MassUpdate\Service\Models\AttributeGroup;
     		$attr_title->setAttributeCollection('title')

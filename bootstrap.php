@@ -12,7 +12,9 @@ class ShopBootstrap extends \Dsc\Bootstrap
             $service = \Dsc\System::instance()->get( 'massupdate' );
             if (! empty( $service ))
             {
-                $service->registerGroup( new \Shop\MassUpdateGroup() );
+            	$group = new \Shop\MassUpdateGroup();
+            	$group->setName( $this->namespace );
+                $service->registerGroup( $group );
             }
         }
         catch ( \Exception $e )
