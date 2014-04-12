@@ -17,6 +17,7 @@ class Listener extends \Prefab
                     ,json_decode(json_encode(array( 'title'=>'Products', 'route'=>'/admin/shop/products', 'icon'=>'fa fa-list' )))
                     ,json_decode(json_encode(array( 'title'=>'Collections', 'route'=>'/admin/shop/collections', 'icon'=>'fa fa-hdd' )))
             		,json_decode(json_encode(array( 'title'=>'Categories', 'route'=>'/admin/shop/categories', 'icon'=>'fa fa-folder' )))
+                    ,json_decode(json_encode(array( 'title'=>'Coupons', 'route'=>'/admin/shop/coupons', 'icon'=>'fa fa-barcode' )))
                     ,json_decode(json_encode(array( 'title'=>'Manufacturers', 'route'=>'/admin/shop/manufacturers', 'icon'=>'fa fa-barcode' )))
                     ,json_decode(json_encode(array( 'title'=>'Media Assets', 'route'=>'/admin/shop/assets', 'icon'=>'fa fa-list' )))
                     ,json_decode(json_encode(array( 'title'=>'Countries', 'route'=>'/admin/shop/countries', 'icon'=>'fa fa-list' )))

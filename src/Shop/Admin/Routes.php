@@ -62,5 +62,7 @@ class Routes extends \Dsc\Routes\Group
         
         $f3 = \Base::instance();
         $f3->route('GET /admin/shop/testing/@task', '\Shop\Admin\Controllers\Testing->@task');
+        
+        $this->addCrudGroup( 'Coupons', 'Coupon' );
     }
 }
