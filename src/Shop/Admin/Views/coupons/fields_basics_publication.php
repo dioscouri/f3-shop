@@ -1,8 +1,7 @@
 <div class="row">
     <div class="col-md-2">
         
-        <h3>Publication Status</h3>
-        <p class="help-block">Products with the selected publication status will be included in the collection.</p>
+        <h3>Publication</h3>
                 
     </div>
     <!-- /.col-md-2 -->
@@ -18,6 +17,7 @@
                 </select> 
             </div>
             
+            // TODO include date range inputs for when this coupon is active/inactive
         </div>
         <!-- /.form-group -->
 

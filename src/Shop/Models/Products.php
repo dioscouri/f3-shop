@@ -379,6 +379,25 @@ class Products extends \Dsc\Mongo\Collections\Content implements \MassUpdate\Ser
     }
     
     /**
+     *
+     * @param array $types
+     * @return unknown
+     */
+    public static function distinctTitles($query=array())
+    {
+        if (empty($this)) {
+            $model = new static();
+        } else {
+            $model = clone $this;
+        }
+    
+        $tags = $model->collection()->distinct("title", $query);
+        $tags = array_values( array_filter( $tags ) );
+    
+        return $tags;
+    }
+    
+    /**
      * Given a multi-dimensional array,
      * this will find all possible combinations of the array's elements
      *
