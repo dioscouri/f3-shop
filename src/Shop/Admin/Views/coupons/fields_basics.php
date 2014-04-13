@@ -55,7 +55,10 @@
                 </div>
                 <div class="col-md-4">
                     <label>Type</label>
-                    <input type="text" name="discount_type" placeholder="Flat Rate or Percentage" value="<?php echo $flash->old('discount_type'); ?>" class="form-control" />
+                    <select name="discount_type" class="form-control">
+                        <option value="flat-rate" <?php echo ($flash->old('discount_type') == 'flat-rate') ? "selected='selected'" : null; ?>>Flat Rate</option>
+                        <option value="percentage" <?php echo ($flash->old('discount_type') == 'percentage') ? "selected='selected'" : null; ?>>Percentage</option>
+                    </select>
                 </div>                
                 <div class="col-md-4">
                     <label>Currency</label>
@@ -67,16 +70,16 @@
         <!-- /.form-group -->
         
         <div class="form-group">
-            <label>Applied</label>
-            <input type="text" name="discount_applied" placeholder="Per Order or Per Product" value="<?php echo $flash->old('discount_applied'); ?>" class="form-control" />
-            <p class="help-block">If you have selected 'Per Product', this discount will be applied to every product in the shopper's cart.  If you want this discount to only apply to certain products, select those products below under "Target Products".</p>
-            <p class="help-block">If you have selected 'Per Order', this discount will be applied to the order's subtotal.</p> 
-        </div>
-        <!-- /.form-group -->
-        
-        <div class="form-group">
-            <label>Target Cost</label>
-            <input type="text" name="discount_target" placeholder="Product costs or Shipping costs" value="<?php echo $flash->old('discount_target'); ?>" class="form-control" />
+            <label>Applied To</label>
+            <select name="discount_applied" class="form-control">
+                <option value="order_subtotal" <?php echo ($flash->old('discount_applied') == 'order_subtotal') ? "selected='selected'" : null; ?>>Order Subtotal</option>
+                <option value="order_shipping" <?php echo ($flash->old('discount_applied') == 'order_shipping') ? "selected='selected'" : null; ?>>Order Shipping Costs</option>
+                <option value="product_subtotal" <?php echo ($flash->old('discount_applied') == 'product_subtotal') ? "selected='selected'" : null; ?>>Product Subtotal</option>
+                <option value="product_shipping" <?php echo ($flash->old('discount_applied') == 'product_shipping') ? "selected='selected'" : null; ?>>Product Shipping Costs</option>
+            </select>
+                                
+            <p class="help-block">If you have selected either of the Product options above, this discount will be applied to every product in the shopper's cart unless you select specific products below under "Target Products".</p>
+
         </div>
         <!-- /.form-group -->
         
@@ -125,13 +128,19 @@
         
         <div class="form-group">
             <label>Can be used with other discounts?</label>
-            <input type="text" name="usage_exclusive" placeholder="Yes or No (default)" value="<?php echo $flash->old('usage_exclusive'); ?>" class="form-control" />
+            <select name="usage_with_others" class="form-control">
+                <option value="0" <?php echo ($flash->old('usage_with_others') == '0') ? "selected='selected'" : null; ?>>No</option>
+                <option value="1" <?php echo ($flash->old('usage_with_others') == '1') ? "selected='selected'" : null; ?>>Yes</option>
+            </select>            
         </div>
         <!-- /.form-group -->
         
         <div class="form-group">
             <label>Automatic?</label>
-            <input type="text" name="usage_automatic" placeholder="No (normal, user-submitted) or Yes (automatically applied when rules are satisfied)" value="<?php echo $flash->old('usage_automatic'); ?>" class="form-control" />
+            <select name="usage_automatic" class="form-control">
+                <option value="0" <?php echo ($flash->old('usage_automatic') == '0') ? "selected='selected'" : null; ?>>No, normal user-submitted coupon</option>
+                <option value="1" <?php echo ($flash->old('usage_automatic') == '1') ? "selected='selected'" : null; ?>>Yes, automatically applied when rules are satisfied</option>
+            </select>            
         </div>
         <!-- /.form-group -->
         

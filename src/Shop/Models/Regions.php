@@ -19,5 +19,31 @@ class Regions extends \Dsc\Mongo\Collection
         return \Shop\Models\Regions::find(array(
         	'country_isocode_2' => $country_isocode_2
         )); 
-    } 
+    }
+
+    public static function forSelection()
+    {
+        if (empty($this)) {
+            $model = new static();
+        } else {
+            $model = clone $this;
+        }
+    
+        $cursor = $model->collection()->find();
+        $cursor->sort(array(
+            'country_isocode_2' => 1,
+            'code' => 1
+        ));
+    
+        $result = array();
+        foreach ($cursor as $doc) {
+            $array = array(
+                'id' => $doc['code'],
+                'text' => htmlspecialchars( $doc['country_isocode_2'] . ': ' . $doc['code'] . ' - ' . $doc['name'], ENT_QUOTES ),
+            );
+            $result[] = $array;
+        }
+    
+        return $result;
+    }
 }

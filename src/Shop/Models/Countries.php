@@ -15,4 +15,29 @@ class Countries extends \Dsc\Mongo\Collection
             'name' => 1 
         ) 
     );
+    
+    public static function forSelection()
+    {
+        if (empty($this)) {
+            $model = new static();
+        } else {
+            $model = clone $this;
+        }
+        
+        $cursor = $model->collection()->find(array(), array("isocode_2"=>1, "name"=>1) );
+        $cursor->sort(array(
+        	'isocode_2' => 1
+        ));
+        
+        $result = array();
+        foreach ($cursor as $doc) {
+            $array = array(
+            	'id' => $doc['isocode_2'],
+                'text' => htmlspecialchars( $doc['isocode_2'] . ' - ' . $doc['name'], ENT_QUOTES ),
+            );
+            $result[] = $array;
+        }
+        
+        return $result;
+    }
 }

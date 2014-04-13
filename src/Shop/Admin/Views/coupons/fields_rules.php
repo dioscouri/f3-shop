@@ -113,19 +113,22 @@
     <div class="col-md-10">
         <div class="form-group">
             <label>Address Type</label>
-            <input type="text" name="geo_address_type" placeholder="Shipping or Billing" value="<?php echo $flash->old('geo_address_type'); ?>" class="form-control" />
+            <select name="geo_address_type" class="form-control">
+                <option value="shipping" <?php echo ($flash->old('geo_address_type') == 'shipping') ? "selected='selected'" : null; ?>>Shipping</option>
+                <option value="billing" <?php echo ($flash->old('geo_address_type') == 'billing') ? "selected='selected'" : null; ?>>Billing</option>
+            </select>            
         </div>
         <!-- /.form-group -->    
     
         <div class="form-group">
             <label>Countries</label>
-            <input type="text" name="geo_countries[]" placeholder="US" value="<?php echo $flash->old('geo_countries'); ?>" class="form-control" />
+            <input name="geo_countries" data-multiple="true" data-data='<?php echo json_encode( \Shop\Models\Countries::forSelection() ); ?>' value="<?php echo implode(",", (array) $flash->old('geo_countries') ); ?>" type="text" class="form-control ui-select2-data" />
         </div>
         <!-- /.form-group -->
         
         <div class="form-group">
             <label>Regions</label>
-            <input type="text" name="geo_regions[]" placeholder="NY" value="<?php echo $flash->old('geo_regions'); ?>" class="form-control" />
+            <input name="geo_regions" data-multiple="true" data-data='<?php echo json_encode( \Shop\Models\Regions::forSelection() ); ?>' value="<?php echo implode(",", (array) $flash->old('geo_regions') ); ?>" type="text" class="form-control ui-select2-data" />
         </div>
         <!-- /.form-group -->
         
