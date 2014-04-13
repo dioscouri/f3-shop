@@ -47,7 +47,7 @@ jQuery(document).ready(function(){
                     <a href="#tab-basics" data-toggle="tab"> Basics </a>
                 </li>
                 <li>
-                    <a href="#tab-rules" data-toggle="tab"> Rules </a>
+                    <a href="#tab-rules" data-toggle="tab"> Rules & Eligibility </a>
                 </li>                
                 <?php if (!empty($this->event)) { foreach ((array) $this->event->getArgument('tabs') as $key => $title ) { ?>
                 <li>
