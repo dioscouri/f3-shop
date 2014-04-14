@@ -35,6 +35,10 @@
             
             <hr />
             
+            <div class="alert alert-info">
+                <p><b>URL:</b> <a href="./shop/category/<?php echo $item->slug; ?>" target="_blank">./shop/category/<?php echo $item->slug; ?></a></p>
+            </div>
+            
             <ul class="nav nav-tabs">
                 <li class="active">
                     <a href="#tab-basics" data-toggle="tab"> Basics </a>
