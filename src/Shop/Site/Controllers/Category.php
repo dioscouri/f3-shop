@@ -24,16 +24,18 @@ class Category extends \Dsc\Controller
     	// TODO Check ACL against both category and item.
     	
     	$f3 = \Base::instance();
-    	$slug = $this->inputfilter->clean( $f3->get('PARAMS.slug'), 'cmd' );
+    	$url_params = $f3->get('PARAMS');
+    	    	
+    	$path = $this->inputfilter->clean( $f3->get('PARAMS.1'), 'string' );
     	$products_model = $this->model('products');
-    	
+
     	try {
-    	    $category = $this->model('categories')->setState('filter.slug', $slug)->getItem();
+    	    $category = $this->model('categories')->setState('filter.path', $path)->getItem();
     	    if (empty($category->id)) {
     	    	throw new \Exception;
     	    }
     		$paginated = $products_model->populateState()
-    		      ->setState('filter.category.slug', $slug)
+    		      ->setState('filter.category.id', $category->id)
     		      ->setState('filter.publication_status', 'published')
     		      ->setState('filter.published_today', true)
     		      ->setState('filter.inventory_status', 'in_stock')

@@ -34,16 +34,15 @@ class Routes extends \Dsc\Routes\Group
             'controller' => 'Product',
             'action' => 'read' 
         ) );
-        
-        $this->add( '/category/@slug', 'GET', array(
+        $this->add( '/category/*', 'GET', array(
             'controller' => 'Category',
             'action' => 'index' 
         ) );
         
-        $this->add( '/category/@slug/page/@page', 'GET', array(
+        $this->add( '/category/*/page/@page', 'GET', array(
             'controller' => 'Category',
             'action' => 'index' 
-        ) );
+        ) );        
         
         $this->add( '/collection/@slug', 'GET', array(
             'controller' => 'Collection',
