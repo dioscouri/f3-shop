@@ -9,7 +9,8 @@ class ShippingMethods extends \Dsc\Prefabs
         'price' => null,    // $$ base price of shipping method
         'extra' => null,    // $$ any handling/surcharge/extra fees
         'type' => null,
-        'code' => null
+        'code' => null,
+        'note' => null      // admin-only notes                    
     );
 
     protected $default_options = array(

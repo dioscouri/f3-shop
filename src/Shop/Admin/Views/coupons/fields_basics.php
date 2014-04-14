@@ -91,7 +91,7 @@
         
         <div class="form-group">
             <label>Target Shipping Methods</label>
-            <input type="text" name="discount_target_shipping_methods" placeholder="All shipping methods that receive this discount" value="<?php echo implode(",", (array) $flash->old('discount_target_shipping_methods') ); ?>" class="form-control" />
+            <input type="text" data-data='<?php echo json_encode( \Shop\Models\ShippingMethods::forSelection() ); ?>' name="discount_target_shipping_methods" placeholder="All shipping methods that receive this discount" value="<?php echo implode(",", (array) $flash->old('discount_target_shipping_methods') ); ?>" class="form-control ui-select2-data" />
         </div>
         <!-- /.form-group -->
         
