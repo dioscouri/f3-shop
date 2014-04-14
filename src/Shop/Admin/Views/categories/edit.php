@@ -36,7 +36,7 @@
             <hr />
             
             <div class="alert alert-info">
-                <p><b>URL:</b> <a href="./shop/category<?php echo $item->path; ?>" target="_blank">./shop/category<?php echo $item->path; ?></a></p>
+                <p><b>URL:</b> <a href="./shop/category<?php echo $flash->old('path'); ?>" target="_blank">./shop/category<?php echo $flash->old('path'); ?></a></p>
             </div>
             
             <ul class="nav nav-tabs">
