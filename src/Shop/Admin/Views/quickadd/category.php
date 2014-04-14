@@ -2,7 +2,7 @@
 	<div class="form-group">
 		<label for="link-url" class="col-sm-4 control-label">Category</label>
 		<div class="col-sm-8">
-			<?php if ($__items = \Shop\Models\Collections::find()) { ?>
+			<?php if ($__items = \Shop\Models\Categories::find()) { ?>
 			<select name="details[url]" class="form-control">
 			<?php foreach ($__items as $__item) { ?>
 			    <option value="./shop/category/<?php echo $__item->slug; ?>">
