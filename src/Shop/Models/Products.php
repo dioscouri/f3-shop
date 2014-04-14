@@ -72,6 +72,10 @@ class Products extends \Dsc\Mongo\Collections\Content implements \MassUpdate\Ser
         )
     );
     
+    public $display = array(
+    	'stickers' => array()
+    );
+    
     protected $__collection_name = 'shop.products';
     protected $__type = 'shop.products';
     protected $__config = array(
@@ -218,6 +222,18 @@ class Products extends \Dsc\Mongo\Collections\Content implements \MassUpdate\Ser
             }            
         }
         
+        if (!empty($this->{'display.stickers'}) && !is_array($this->{'display.stickers'}))
+        {
+            $this->{'display.stickers'} = trim($this->{'display.stickers'});
+            if (!empty($this->{'display.stickers'})) {
+                $this->{'display.stickers'} = \Base::instance()->split( (string) $this->{'display.stickers'} );
+            }
+        }
+        elseif(empty($this->{'display.stickers'}) && !is_array($this->{'display.stickers'}))
+        {
+            $this->{'display.stickers'} = array();
+        }
+        
         return parent::beforeSave();
     }
     
@@ -341,6 +357,56 @@ class Products extends \Dsc\Mongo\Collections\Content implements \MassUpdate\Ser
         }
         
         return parent::beforeUpdate();
+    }
+    
+    /**
+     *
+     * @param array $types
+     * @return unknown
+     */
+    public static function distinctStickers($query=array())
+    {
+        if (empty($this)) {
+            $model = new static();
+        } else {
+            $model = clone $this;
+        }
+    
+        $tags = $model->collection()->distinct("display.stickers", $query);
+        $tags = array_values( array_filter( $tags ) );
+    
+        return $tags;
+    }
+    
+    /**
+     * Helper method for creating select list options
+     * 
+     * @param array $query
+     * @return multitype:multitype:string NULL
+     */
+    public static function forSelection(array $query=array())
+    {
+        if (empty($this)) {
+            $model = new static();
+        } else {
+            $model = clone $this;
+        }
+        
+        $cursor = $model->collection()->find($query, array("title"=>1) );
+        $cursor->sort(array(
+        	'title' => 1
+        ));
+        
+        $result = array();
+        foreach ($cursor as $doc) {
+            $array = array(
+            	'id' => (string) $doc['_id'],
+                'text' => htmlspecialchars( $doc['title'], ENT_QUOTES ),
+            );
+            $result[] = $array;
+        }
+        
+        return $result;
     }
     
     /**

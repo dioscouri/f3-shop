@@ -23,6 +23,10 @@ class Routes extends \Dsc\Routes\Group
         $this->addCrudGroup( 'Orders', 'Order' );
         
         $this->addCrudGroup( 'Products', 'Product' );
+        $this->add( '/products/search [ajax]', 'GET|POST', array(
+            'controller' => 'Products',
+            'action' => 'forSelection'
+        ) );        
         
         $this->addCrudGroup( 'Categories', 'Category', array(
             'datatable_links' => true,
@@ -58,9 +62,20 @@ class Routes extends \Dsc\Routes\Group
         $this->addCrudList( 'Assets' );
         
         $this->addCrudGroup( 'Countries', 'Country' );
+        $this->add( '/countries/search [ajax]', 'GET|POST', array(
+            'controller' => 'Countries',
+            'action' => 'forSelection'
+        ) );
+                
         $this->addCrudGroup( 'Regions', 'Region' );
-        
+        $this->add( '/regions/search [ajax]', 'GET|POST', array(
+            'controller' => 'Regions',
+            'action' => 'forSelection'
+        ) );
+                
         $f3 = \Base::instance();
         $f3->route('GET /admin/shop/testing/@task', '\Shop\Admin\Controllers\Testing->@task');
+        
+        $this->addCrudGroup( 'Coupons', 'Coupon' );
     }
 }
