@@ -55,7 +55,7 @@ class Category extends \Dsc\Controller
     	\Base::instance()->set('state', $state );
     	
     	\Base::instance()->set('paginated', $paginated );
-    	
+
     	$view = \Dsc\System::instance()->get('theme');
     	echo $view->render('Shop/Site/Views::category/index.php');
     }

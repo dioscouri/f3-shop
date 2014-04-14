@@ -111,6 +111,12 @@ class Products extends \Dsc\Mongo\Collections\Content implements \MassUpdate\Ser
         {
             $this->setCondition('categories.slug', $filter_category_slug );
         }
+        
+        $filter_category_id = $this->getState('filter.category.id');
+        if (strlen($filter_category_id))
+        {
+            $this->setCondition('categories.id', new \MongoId( (string) $filter_category_id ) );
+        }
     
         return $this;
     }
