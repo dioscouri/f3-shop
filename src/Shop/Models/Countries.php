@@ -15,7 +15,13 @@ class Countries extends \Dsc\Mongo\Collection
             'name' => 1 
         ) 
     );
-    
+
+    /**
+     * Helper method for creating select list options
+     *
+     * @param array $query
+     * @return multitype:multitype:string NULL
+     */
     public static function forSelection(array $query=array())
     {
         if (empty($this)) {

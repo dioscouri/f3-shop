@@ -15,9 +15,8 @@
     
         <div class="form-group">
             <label>Search</label>
-            // TODO Enable select2 selector for products, storing IDs embedded in coupon document            
             <div class="input-group">
-                <input name="products[]" value="<?php echo implode(",", (array) $flash->old('products') ); ?>" type="text" class="form-control" /> <?php // ui-select2 ?> 
+                <input id="required_products" name="required_products" value="<?php echo implode(",", (array) $flash->old('required_products') ); ?>" type="text" class="form-control" /> 
             </div>
             <!-- /.form-group -->        
             
@@ -103,6 +102,31 @@
 
 <script>
 jQuery(document).ready(function() {
+    
+    jQuery("#required_products").select2({
+        placeholder: "Search...",
+        multiple: true,
+        minimumInputLength: 1,
+        ajax: {
+            url: "./admin/shop/products/search",
+            dataType: 'json',
+            data: function (term, page) {
+                return {
+                    q: term
+                };
+            },
+            results: function (data, page) {
+                return {results: data.results};
+            }
+        }
+        <?php if ($flash->old('required_products')) { ?>
+        , initSelection : function (element, callback) {
+            var data = <?php echo json_encode( \Shop\Models\Products::forSelection( array('_id'=>array('$in'=>array_map( function($input){ return new \MongoId($input); }, $flash->old('required_products') ) ) ) ) ); ?>;
+            callback(data);            
+        }
+        <?php } ?>
+    });
+        
     jQuery("#geo_countries").select2({
         placeholder: "Search...",
         multiple: true,
@@ -119,6 +143,12 @@ jQuery(document).ready(function() {
                 return {results: data.results};
             }
         }
+        <?php if ($flash->old('geo_countries')) { ?>
+        , initSelection : function (element, callback) {
+            var data = <?php echo json_encode( \Shop\Models\Countries::forSelection( array('isocode_2'=>array('$in'=>$flash->old('geo_countries') ) ) ) ); ?>;
+            callback(data);            
+        }
+        <?php } ?>    
     });
         
     jQuery("#geo_regions").select2({
@@ -137,6 +167,12 @@ jQuery(document).ready(function() {
                 return {results: data.results};
             }
         }
+        <?php if ($flash->old('geo_regions')) { ?>
+        , initSelection : function (element, callback) {
+            var data = <?php echo json_encode( \Shop\Models\Regions::initSelection( $flash->old('geo_regions') ) ); ?>;
+            callback(data);            
+        }
+        <?php } ?>    
     });
 });
 </script>

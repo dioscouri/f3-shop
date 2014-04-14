@@ -85,13 +85,13 @@
         
         <div class="form-group">
             <label>Target Products</label>
-            <input type="text" name="discount_target_products[]" placeholder="All products that receive this discount" value="<?php echo $flash->old('discount_target_products'); ?>" class="form-control" />
+            <input id="target_products" type="text" name="discount_target_products" placeholder="All products that receive this discount" value="<?php echo implode(",", (array) $flash->old('discount_target_products') ); ?>" class="form-control" />
         </div>
         <!-- /.form-group -->
         
         <div class="form-group">
             <label>Target Shipping Methods</label>
-            <input type="text" name="discount_target_shipping_methods[]" placeholder="All shipping methods that receive this discount" value="<?php echo $flash->old('discount_target_shipping_methods'); ?>" class="form-control" />
+            <input type="text" name="discount_target_shipping_methods" placeholder="All shipping methods that receive this discount" value="<?php echo implode(",", (array) $flash->old('discount_target_shipping_methods') ); ?>" class="form-control" />
         </div>
         <!-- /.form-group -->
         
@@ -183,3 +183,33 @@
     
 </div>
 <!-- /.row -->
+
+<script>
+target_products
+jQuery(document).ready(function() {
+    
+    jQuery("#target_products").select2({
+        placeholder: "Search...",
+        multiple: true,
+        minimumInputLength: 1,
+        ajax: {
+            url: "./admin/shop/products/search",
+            dataType: 'json',
+            data: function (term, page) {
+                return {
+                    q: term
+                };
+            },
+            results: function (data, page) {
+                return {results: data.results};
+            }
+        }
+        <?php if ($flash->old('discount_target_products')) { ?>
+        , initSelection : function (element, callback) {
+            var data = <?php echo json_encode( \Shop\Models\Products::forSelection( array('_id'=>array('$in'=>array_map( function($input){ return new \MongoId($input); }, $flash->old('discount_target_products') ) ) ) ) ); ?>;
+            callback(data);            
+        }
+        <?php } ?>    
+    });
+});
+</script>

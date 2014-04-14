@@ -379,22 +379,34 @@ class Products extends \Dsc\Mongo\Collections\Content implements \MassUpdate\Ser
     }
     
     /**
-     *
-     * @param array $types
-     * @return unknown
+     * Helper method for creating select list options
+     * 
+     * @param array $query
+     * @return multitype:multitype:string NULL
      */
-    public static function distinctTitles($query=array())
+    public static function forSelection(array $query=array())
     {
         if (empty($this)) {
             $model = new static();
         } else {
             $model = clone $this;
         }
-    
-        $tags = $model->collection()->distinct("title", $query);
-        $tags = array_values( array_filter( $tags ) );
-    
-        return $tags;
+        
+        $cursor = $model->collection()->find($query, array("title"=>1) );
+        $cursor->sort(array(
+        	'title' => 1
+        ));
+        
+        $result = array();
+        foreach ($cursor as $doc) {
+            $array = array(
+            	'id' => (string) $doc['_id'],
+                'text' => htmlspecialchars( $doc['title'], ENT_QUOTES ),
+            );
+            $result[] = $array;
+        }
+        
+        return $result;
     }
     
     /**

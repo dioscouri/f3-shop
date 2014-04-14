@@ -27,7 +27,7 @@ class Regions extends \Admin\Controllers\BaseAuth
         echo $view->render('Shop/Admin/Views::regions/list.php');
     }
     
-    public function search()
+    public function forSelection()
     {
         $term = $this->input->get('q', null, 'default');
         $key =  new \MongoRegex('/'. $term .'/i');
