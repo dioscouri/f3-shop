@@ -193,18 +193,18 @@ jQuery(document).ready(function() {
         <div class="form-group">
             <?php if ((array) $groups = \Users\Models\Groups::find() ) { ?>
             <div class="max-height-200 list-group-item">
-            	<?php $current = \Joomla\Utilities\ArrayHelper::getColumn( (array) $flash->old('groups'), 'id' ); ?>
                 <?php foreach ($groups as $one) { ?>
                 <div class="checkbox">
                     <label>
-                        <input type="checkbox" name="groups[]" class="icheck-input" value="<?php echo $one->_id; ?>" <?php if (in_array($one->_id, $current)) { echo "checked='checked'"; } ?>>
+                        <input type="checkbox" name="groups[]" class="icheck-input" value="<?php echo $one->_id; ?>" <?php if (in_array($one->_id, $flash->old('groups'))) { echo "checked='checked'"; } ?>>
                         <?php echo $one->name;  ?>
                     </label>
                 </div>
                 <?php } ?> 
                 
             </div>
-            <?php } ?>                        
+            <?php } ?>
+            <input type="hidden" name="groups[]" value="" />                        
         </div>
         <!-- /.form-group -->
         

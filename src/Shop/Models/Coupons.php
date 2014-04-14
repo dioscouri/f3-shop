@@ -67,6 +67,10 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
         {
             $this->geo_regions = array();
         }
+        
+        if (!empty($this->groups) && is_array($this->groups)) {
+            $this->groups = array_values($this->groups);
+        }
     
         return parent::beforeSave();
     }
