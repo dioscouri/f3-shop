@@ -569,15 +569,25 @@ class Products extends \Dsc\Mongo\Collections\Content implements \MassUpdate\Ser
      * @return	Array with attribute groups
      */
     public function getMassUpdateOperationGroups(){
-    	static $arr = null;
-    	if( $arr == null ){
+    	if( $this->needInitializationMassUpdate() ){
     		
-    		$arr = array();
+    		$attr_keyword = new \MassUpdate\Service\Models\AttributeGroup;
+    		$attr_keyword->setAttributeCollection('keyword')
+    		->setAttributeTitle( "Keyword Search" )
+    		->setModel( $this )
+    		->addOperation( new \MassUpdate\Operations\Condition\Contains, 'where', array( "custom_label" => "Keyword", "filter" => "keyword") );
+    		
+    		
     		$attr_cat = new \MassUpdate\Service\Models\AttributeGroup;
     		$attr_cat->setAttributeCollection('categories.id')
     		->setAttributeTitle( "Product Category" )
     		->setModel( new \Shop\Models\Categories )
-    		->addOperation( new \MassUpdate\Operations\Condition\Category, 'where', array( 'mode' => 1 ) )
+    		->addOperation( new \MassUpdate\Operations\Condition\Category, 'where', array( 'mode' => 1 ) );
+    		
+    		$attr_cat_change = new \MassUpdate\Service\Models\AttributeGroup;
+    		$attr_cat_change->setAttributeCollection('categories')
+    		->setAttributeTitle( "Product Category" )
+    		->setModel( new \Shop\Models\Categories )
     		->addOperation( new \MassUpdate\Operations\Update\ChangeCategory, 'update', array( 'allow_add' => true ) );
     		
     		$attr_title = new \MassUpdate\Service\Models\AttributeGroup;
@@ -632,17 +642,18 @@ class Products extends \Dsc\Mongo\Collections\Content implements \MassUpdate\Ser
     		->setModel( $this )
     		->addOperation( new \MassUpdate\Operations\Condition\IsUser, 'where' );
     		
-    		$arr []= $attr_title;
-    		$arr []= $attr_price;
-    		$arr []= $attr_cat;
-			$arr []= $attr_published_state;
-			$arr []= $attr_shipping_required;
-			$arr []= $attr_published_start;
-			$arr []= $attr_creator;
-			$arr []= $attr_creator_id;
-    	}
-    	 
-    	return $arr;
+    		
+    		$this->addAttributeGroupMassUpdate( $attr_keyword );
+    		$this->addAttributeGroupMassUpdate( $attr_title );
+    		$this->addAttributeGroupMassUpdate( $attr_cat );
+    		$this->addAttributeGroupMassUpdate( $attr_cat_change );
+    		$this->addAttributeGroupMassUpdate( $attr_published_start );
+    		$this->addAttributeGroupMassUpdate( $attr_published_state );
+    		$this->addAttributeGroupMassUpdate( $attr_creator );
+    		$this->addAttributeGroupMassUpdate( $attr_creator_id );
+    		$this->addAttributeGroupMassUpdate( $attr_shipping_required );
+    	}    	 
+    	return $this->getAttributeGroupsMassUpdate();
     }
     
     /**

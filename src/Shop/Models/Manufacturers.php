@@ -51,17 +51,14 @@ class Manufacturers extends \Dsc\Mongo\Collections\Describable implements \MassU
      * @return	Array with attribute groups
      */
      public function getMassUpdateOperationGroups(){
-    	static $arr = null;
-		if( $arr == null ){
-			$arr = array();
+		if( $this->needInitializationMassUpdate() ){
 	    	$attr_title = new \MassUpdate\Service\Models\AttributeGroup;
 	    	$attr_title->setAttributeCollection('metadata.title')
 	    				->setAttributeTitle( "Title" )
 	    				->addOperation( new \MassUpdate\Operations\Update\ChangeTo, 'update' );
 	    	
-	    	$arr []= $attr_title;
-		}
-    	
-    	return $arr;
+    		$this->addAttributeGroupMassUpdate( $attr_title );
+    	}
+    	return $this->getAttributeGroupsMassUpdate();
     }
 }
