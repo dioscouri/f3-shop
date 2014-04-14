@@ -90,10 +90,8 @@ class Categories extends \Dsc\Mongo\Collections\Categories implements \MassUpdat
      * @return	Array with attribute groups
      */
     public function getMassUpdateOperationGroups(){
-    	static $arr = null;
-    	if( $arr == null ){
+    	if( $this->needInitializationMassUpdate() ){
     
-    		$arr = array();
     		$attr_cat = new \MassUpdate\Service\Models\AttributeGroup;
     		$attr_cat->setAttributeCollection('ancestors.id')
 	    		->setModel( $this )
@@ -118,12 +116,12 @@ class Categories extends \Dsc\Mongo\Collections\Categories implements \MassUpdat
 	    		->setModel( $this )
 	    		->addOperation( new \MassUpdate\Operations\Update\ChangeDateTime, 'update');
     		
-    		$arr []= $attr_title;
-    		$arr []= $attr_cat;
-    		$arr []= $attr_created;
-    		$arr []= $attr_last_modified;
+    		$this->addAttributeGroupMassUpdate( $attr_title );
+    		$this->addAttributeGroupMassUpdate( $attr_cat );
+    		$this->addAttributeGroupMassUpdate( $attr_created );
+    		$this->addAttributeGroupMassUpdate( $attr_last_modified );
     	}
     
-    	return $arr;
+    	return $this->getAttributeGroupsMassUpdate();
     }
 }
