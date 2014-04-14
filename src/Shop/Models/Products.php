@@ -571,6 +571,13 @@ class Products extends \Dsc\Mongo\Collections\Content implements \MassUpdate\Ser
     public function getMassUpdateOperationGroups(){
     	if( $this->needInitializationMassUpdate() ){
     		
+    		$attr_keyword = new \MassUpdate\Service\Models\AttributeGroup;
+    		$attr_keyword->setAttributeCollection('keyword')
+    		->setAttributeTitle( "Keyword Search" )
+    		->setModel( $this )
+    		->addOperation( new \MassUpdate\Operations\Condition\Contains, 'where', array( "custom_label" => "Keyword", "filter" => "keyword") );
+    		
+    		
     		$attr_cat = new \MassUpdate\Service\Models\AttributeGroup;
     		$attr_cat->setAttributeCollection('categories.id')
     		->setAttributeTitle( "Product Category" )
@@ -635,6 +642,8 @@ class Products extends \Dsc\Mongo\Collections\Content implements \MassUpdate\Ser
     		->setModel( $this )
     		->addOperation( new \MassUpdate\Operations\Condition\IsUser, 'where' );
     		
+    		
+    		$this->addAttributeGroupMassUpdate( $attr_keyword );
     		$this->addAttributeGroupMassUpdate( $attr_title );
     		$this->addAttributeGroupMassUpdate( $attr_cat );
     		$this->addAttributeGroupMassUpdate( $attr_cat_change );
