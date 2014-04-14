@@ -509,7 +509,12 @@ class Products extends \Dsc\Mongo\Collections\Content implements \MassUpdate\Ser
     		$attr_cat->setAttributeCollection('categories.id')
     		->setAttributeTitle( "Product Category" )
     		->setModel( new \Shop\Models\Categories )
-    		->addOperation( new \MassUpdate\Operations\Condition\Category, 'where', array( 'mode' => 1 ) )
+    		->addOperation( new \MassUpdate\Operations\Condition\Category, 'where', array( 'mode' => 1 ) );
+    		
+    		$attr_cat_change = new \MassUpdate\Service\Models\AttributeGroup;
+    		$attr_cat_change->setAttributeCollection('categories')
+    		->setAttributeTitle( "Product Category" )
+    		->setModel( new \Shop\Models\Categories )
     		->addOperation( new \MassUpdate\Operations\Update\ChangeCategory, 'update', array( 'allow_add' => true ) );
     		
     		$attr_title = new \MassUpdate\Service\Models\AttributeGroup;
@@ -566,6 +571,7 @@ class Products extends \Dsc\Mongo\Collections\Content implements \MassUpdate\Ser
     		
     		$this->addAttributeGroupMassUpdate( $attr_title );
     		$this->addAttributeGroupMassUpdate( $attr_cat );
+    		$this->addAttributeGroupMassUpdate( $attr_cat_change );
     		$this->addAttributeGroupMassUpdate( $attr_published_start );
     		$this->addAttributeGroupMassUpdate( $attr_published_state );
     		$this->addAttributeGroupMassUpdate( $attr_creator );
