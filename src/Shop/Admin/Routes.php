@@ -58,8 +58,17 @@ class Routes extends \Dsc\Routes\Group
         $this->addCrudList( 'Assets' );
         
         $this->addCrudGroup( 'Countries', 'Country' );
+        $this->add( '/countries/search [ajax]', 'GET|POST', array(
+                    'controller' => 'Countries',
+                    'action' => 'search'
+        ) );
+                
         $this->addCrudGroup( 'Regions', 'Region' );
-        
+        $this->add( '/regions/search [ajax]', 'GET|POST', array(
+            'controller' => 'Regions',
+            'action' => 'search'
+        ) );
+                
         $f3 = \Base::instance();
         $f3->route('GET /admin/shop/testing/@task', '\Shop\Admin\Controllers\Testing->@task');
         

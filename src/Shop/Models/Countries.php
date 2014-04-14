@@ -16,7 +16,7 @@ class Countries extends \Dsc\Mongo\Collection
         ) 
     );
     
-    public static function forSelection()
+    public static function forSelection(array $query=array())
     {
         if (empty($this)) {
             $model = new static();
@@ -24,7 +24,7 @@ class Countries extends \Dsc\Mongo\Collection
             $model = clone $this;
         }
         
-        $cursor = $model->collection()->find(array(), array("isocode_2"=>1, "name"=>1) );
+        $cursor = $model->collection()->find($query, array("isocode_2"=>1, "name"=>1) );
         $cursor->sort(array(
         	'isocode_2' => 1
         ));

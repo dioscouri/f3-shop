@@ -26,4 +26,18 @@ class Countries extends \Admin\Controllers\BaseAuth
         $view = \Dsc\System::instance()->get('theme');
         echo $view->render('Shop/Admin/Views::countries/list.php');
     }
+    
+    public function search()
+    {
+        $term = $this->input->get('q', null, 'default');
+        $key =  new \MongoRegex('/'. $term .'/i');
+        $results = \Shop\Models\Countries::forSelection(array('name'=>$key));
+    
+        $response = new \stdClass;
+        $response->more = false;
+        $response->term = $term;
+        $response->results = $results;
+    
+        return $this->outputJson($response);
+    }
 }

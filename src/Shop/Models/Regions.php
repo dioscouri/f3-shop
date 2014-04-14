@@ -21,7 +21,7 @@ class Regions extends \Dsc\Mongo\Collection
         )); 
     }
 
-    public static function forSelection()
+    public static function forSelection(array $query=array())
     {
         if (empty($this)) {
             $model = new static();
@@ -29,7 +29,7 @@ class Regions extends \Dsc\Mongo\Collection
             $model = clone $this;
         }
     
-        $cursor = $model->collection()->find();
+        $cursor = $model->collection()->find($query);
         $cursor->sort(array(
             'country_isocode_2' => 1,
             'code' => 1
