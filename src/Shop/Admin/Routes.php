@@ -23,7 +23,7 @@ class Routes extends \Dsc\Routes\Group
         $this->addCrudGroup( 'Orders', 'Order' );
         
         $this->addCrudGroup( 'Products', 'Product' );
-        $this->add( '/products/search [ajax]', 'GET|POST', array(
+        $this->add( '/products/forSelection [ajax]', 'GET|POST', array(
             'controller' => 'Products',
             'action' => 'forSelection'
         ) );        
@@ -62,13 +62,13 @@ class Routes extends \Dsc\Routes\Group
         $this->addCrudList( 'Assets' );
         
         $this->addCrudGroup( 'Countries', 'Country' );
-        $this->add( '/countries/search [ajax]', 'GET|POST', array(
+        $this->add( '/countries/forSelection [ajax]', 'GET|POST', array(
             'controller' => 'Countries',
             'action' => 'forSelection'
         ) );
                 
         $this->addCrudGroup( 'Regions', 'Region' );
-        $this->add( '/regions/search [ajax]', 'GET|POST', array(
+        $this->add( '/regions/forSelection [ajax]', 'GET|POST', array(
             'controller' => 'Regions',
             'action' => 'forSelection'
         ) );

@@ -194,7 +194,7 @@ jQuery(document).ready(function() {
         multiple: true,
         minimumInputLength: 1,
         ajax: {
-            url: "./admin/shop/products/search",
+            url: "./admin/shop/products/forSelection",
             dataType: 'json',
             data: function (term, page) {
                 return {
