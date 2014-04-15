@@ -54,9 +54,9 @@
                                         </div>
                                     </div>
                                     <input type="hidden" name="variants[<?php echo $key; ?>][id]" value="<?php echo $flash->old('variants.'.$key.'.id') ? $flash->old('variants.'.$key.'.id') : $variant['id']; ?>" />
-                                    <input type="hidden" name="variants[<?php echo $key; ?>][key]" value="<?php echo implode("-", (array) $flash->old('variants.'.$key.'.attributes')); ?>" />
+                                    <input type="hidden" name="variants[<?php echo $key; ?>][key]" value="<?php echo $flash->old('variants.'.$key.'.attributes') ? implode("-", (array) $flash->old('variants.'.$key.'.attributes')) : $variant['key']; ?>" />
                                     <input type="hidden" name="variants[<?php echo $key; ?>][attribute_title]" value="<?php echo implode("&nbsp;|&nbsp;", (array) $variant['titles']); ?>" />
-                                    <input type="hidden" name="variants[<?php echo $key; ?>][attributes]" value="<?php echo htmlspecialchars( json_encode( $flash->old('variants.'.$key.'.attributes') ) ); ?>" />
+                                    <input type="hidden" name="variants[<?php echo $key; ?>][attributes]" value="<?php echo $flash->old('variants.'.$key.'.attributes') ? htmlspecialchars( json_encode( $flash->old('variants.'.$key.'.attributes') ) ) : htmlspecialchars( json_encode( $variant['attributes'] ) ); ?>" />
                                 </div>
                                 <div class="col-md-9">
                                     

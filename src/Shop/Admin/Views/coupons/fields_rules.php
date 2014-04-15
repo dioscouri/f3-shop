@@ -104,6 +104,7 @@
 jQuery(document).ready(function() {
     
     jQuery("#required_products").select2({
+        allowClear: true, 
         placeholder: "Search...",
         multiple: true,
         minimumInputLength: 1,
@@ -128,6 +129,7 @@ jQuery(document).ready(function() {
     });
         
     jQuery("#geo_countries").select2({
+        allowClear: true, 
         placeholder: "Search...",
         multiple: true,
         minimumInputLength: 1,
@@ -152,6 +154,7 @@ jQuery(document).ready(function() {
     });
         
     jQuery("#geo_regions").select2({
+        allowClear: true, 
         placeholder: "Search...",
         multiple: true,
         minimumInputLength: 1,

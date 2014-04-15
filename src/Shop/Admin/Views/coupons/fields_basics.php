@@ -91,7 +91,7 @@
         
         <div class="form-group">
             <label>Target Shipping Methods</label>
-            <input type="text" data-data='<?php echo json_encode( \Shop\Models\ShippingMethods::forSelection() ); ?>' name="discount_target_shipping_methods" placeholder="All shipping methods that receive this discount" value="<?php echo implode(",", (array) $flash->old('discount_target_shipping_methods') ); ?>" class="form-control ui-select2-data" />
+            <input id="target_shipping_methods" type="text" name="discount_target_shipping_methods" placeholder="All shipping methods that receive this discount" value="<?php echo implode(",", (array) $flash->old('discount_target_shipping_methods') ); ?>" class="form-control" />
         </div>
         <!-- /.form-group -->
         
@@ -189,6 +189,7 @@ target_products
 jQuery(document).ready(function() {
     
     jQuery("#target_products").select2({
+        allowClear: true, 
         placeholder: "Search...",
         multiple: true,
         minimumInputLength: 1,
@@ -210,6 +211,13 @@ jQuery(document).ready(function() {
             callback(data);            
         }
         <?php } ?>    
+    });
+
+    jQuery("#target_shipping_methods").select2({
+        allowClear: true,
+        placeholder: "Search...",
+        multiple: true,
+        data: <?php echo json_encode( \Shop\Models\ShippingMethods::forSelection() ); ?>,
     });
 });
 </script>

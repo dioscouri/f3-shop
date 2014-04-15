@@ -86,6 +86,9 @@ class Product extends \Admin\Controllers\BaseAuth
         	foreach ($flashed_variants as $variant) 
         	{
         	    $key = implode("-", (array) $variant['attributes']);
+        	    if (empty($key)) {
+        	        $key = $variant['id'];
+        	    }
         		$variants[$key] = $variant;
         	}
         }

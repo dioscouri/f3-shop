@@ -181,7 +181,7 @@ class Products extends \Dsc\Mongo\Collections\Content implements \MassUpdate\Ser
         if (!empty($this->attributes) && is_array($this->attributes)) 
         {
             // Compress the attributes array to just the values, then sort them by sort order
-            $this->attributes = array_values($this->attributes);
+            $this->attributes = array_filter( array_values($this->attributes) );
             usort($this->attributes, function($a, $b) {
                 return $a['ordering'] - $b['ordering'];
             });
@@ -291,7 +291,8 @@ class Products extends \Dsc\Mongo\Collections\Content implements \MassUpdate\Ser
         
             $variant = new \Shop\Models\Prefabs\Variant(array(
                 'id' => $mongo_id,
-                'key' => $mongo_id
+                'key' => $mongo_id,
+                'quantity' => (int) $this->{'quantities.manual'}
             ));
         
             $this->variants = array( $variant->cast() );
@@ -323,14 +324,21 @@ class Products extends \Dsc\Mongo\Collections\Content implements \MassUpdate\Ser
         {
             // there's only one variant, the default product, so 
             // preserve variant IDs since the attribute set hasn't changed
+            $edited = array();
+            if (!empty($this->variants) && is_array($this->variants)) {
+                $edited = array_values( $this->variants );
+                $edited = $edited[0];
+            }            
+
             $this->createVariants();             
 
-            
-            $variant = array_merge($prev_product->variants[0], $this->variants[0]);
+            $variant = array_merge($prev_product->variants[0], $this->variants[0], $edited);
             $variant['id'] = $prev_product->variants[0]['id'];
-            $variant['key'] = !empty($prev_product->variants[0]['key']) ? $prev_product->variants[0]['key'] : $variant['key'];
+            $variant['key'] = $variant['id'];
             if (!empty($variant['attributes']) && !is_array($variant['attributes'])) {
                 $variant['attributes'] = json_decode( $variant['attributes'] );
+            } elseif (empty($variant['attributes'])) {
+                $variant['attributes'] = array();
             }
                         
             $this->variants[0] = $variant;
@@ -475,14 +483,34 @@ class Products extends \Dsc\Mongo\Collections\Content implements \MassUpdate\Ser
      */
     public static function buildVariants( $cast )
     {
-        $combos = array();
+        $result = array();
         
         if (is_object($cast) && method_exists($cast, 'cast')) {
             $cast = $cast->cast();
         }
         
-        if (!is_array($cast) || empty($cast['attributes'])) {
-            return $combos;
+        if (!is_array($cast)) {
+            return $result;
+        }
+        
+        if (empty($cast['attributes'])) 
+        {
+            // build the variants array for just the single variant
+            $mongo_id = (string) new \MongoId;
+            if (!empty($cast['variants'])) {
+                $variants = array_values( $cast['variants'] );
+                $mongo_id = !empty($variants[0]['id']) ? (string) $variants[0]['id'] : $mongo_id;
+            }            
+            
+            $result[] = array(
+                'id' => $mongo_id,
+                'key' => $mongo_id,
+                'attributes' => array(),
+                'titles' => array(),
+                'quantity' => (int) \Dsc\ArrayHelper::get( $cast, 'quantities.manual' )
+            );            
+            
+            return $result;
         }
         
         $ids = array();
@@ -505,8 +533,6 @@ class Products extends \Dsc\Mongo\Collections\Content implements \MassUpdate\Ser
         }
 
         $combos = self::getCombinations( "", $traits, 0, $combos );
-        
-        $result = array();
         foreach ( $combos as $key=>$values )
         {
             $titles = array();

@@ -17,6 +17,8 @@
     <!-- /.col-md-2 -->
                 
     <div class="col-md-10">
+        <input type="hidden" name="attributes[-1]" value="" />
+        
         <?php foreach ((array) $flash->old('attributes') as $key=>$attribute) { $options[$key] = count( $flash->old('attributes.'.$key.'.options') ); ?>
         <fieldset class="template clearfix well well-sm" data-attribute="<?php echo $key; ?>">
             <div class="clearfix">

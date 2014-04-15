@@ -15,7 +15,7 @@ class ShippingMethods extends \Dsc\Models
     {
         $methods = \Base::instance()->get('shop.shipping.methods');
         
-        //TODO loop through them and cast them as models
+        //TODO loop through them and cast them as models?
         
         return $methods;
     }
