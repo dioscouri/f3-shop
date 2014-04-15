@@ -3,6 +3,7 @@ namespace Shop\Models;
 
 class Collections extends \Dsc\Mongo\Collections\Describable 
 {
+    public $products = array();
     public $categories = array();
     public $featured_image;
     public $publication_status = "published";
@@ -26,6 +27,17 @@ class Collections extends \Dsc\Mongo\Collections\Describable
         }
 
         $conditions = array();
+        
+        if (!empty($collection->products))
+        {
+            $ids = array();
+            foreach ($collection->products as $id)
+            {
+                $ids[] = new \MongoId( (string) $id);
+            }
+             
+            $conditions = array_merge( $conditions, array( '_id' => array( '$in' => $ids ) ) );
+        }
         
         if (!empty($collection->categories)) 
         {
@@ -135,5 +147,22 @@ class Collections extends \Dsc\Mongo\Collections\Describable
         }
 
         return parent::beforeValidate();
+    }
+    
+    protected function beforeSave()
+    {
+        if (!empty($this->products) && !is_array($this->products))
+        {
+            $this->products = trim($this->products);
+            if (!empty($this->products)) {
+                $this->products = \Base::instance()->split( (string) $this->products );
+            }
+        }
+        elseif(empty($this->products) && !is_array($this->products))
+        {
+            $this->products = array();
+        }
+
+        return parent::beforeSave();
     }
 }

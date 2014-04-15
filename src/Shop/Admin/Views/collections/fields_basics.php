@@ -29,11 +29,11 @@
 
 <hr />
 
-<?php echo $this->renderLayout('Shop/Admin/Views::collections/fields_basics_publication.php'); ?>
+<?php echo $this->renderLayout('Shop/Admin/Views::collections/fields_basics_products.php'); ?>
 
 <hr />
 
-<?php echo $this->renderLayout('Shop/Admin/Views::collections/fields_basics_categories.php'); ?>
+<?php echo $this->renderLayout('Shop/Admin/Views::collections/fields_basics_inventory.php'); ?>
 
 <hr />
 
@@ -41,4 +41,8 @@
 
 <hr />
 
-<?php echo $this->renderLayout('Shop/Admin/Views::collections/fields_basics_inventory.php'); ?>
+<?php echo $this->renderLayout('Shop/Admin/Views::collections/fields_basics_publication.php'); ?>
+
+<hr />
+
+<?php echo $this->renderLayout('Shop/Admin/Views::collections/fields_basics_categories.php'); ?>

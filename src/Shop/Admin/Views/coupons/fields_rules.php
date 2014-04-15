@@ -107,7 +107,7 @@ jQuery(document).ready(function() {
         allowClear: true, 
         placeholder: "Search...",
         multiple: true,
-        minimumInputLength: 1,
+        minimumInputLength: 3,
         ajax: {
             url: "./admin/shop/products/forSelection",
             dataType: 'json',
@@ -132,7 +132,7 @@ jQuery(document).ready(function() {
         allowClear: true, 
         placeholder: "Search...",
         multiple: true,
-        minimumInputLength: 1,
+        minimumInputLength: 3,
         ajax: {
             url: "./admin/shop/countries/forSelection",
             dataType: 'json',
@@ -157,7 +157,7 @@ jQuery(document).ready(function() {
         allowClear: true, 
         placeholder: "Search...",
         multiple: true,
-        minimumInputLength: 1,
+        minimumInputLength: 3,
         ajax: {
             url: "./admin/shop/regions/forSelection",
             dataType: 'json',
