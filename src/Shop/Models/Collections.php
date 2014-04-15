@@ -98,12 +98,13 @@ class Collections extends \Dsc\Mongo\Collections\Describable
     
     protected function beforeValidate()
     {
+
         if (!empty($this->categories))
         {
             $category_ids = array();
             $categories = array();
             $current = (array) $this->categories;
-            unset($this->categories);
+            $this->set('categories', array());
             
             // convert each into an array of values if they aren't already
             foreach ($current as $category) 
@@ -114,7 +115,7 @@ class Collections extends \Dsc\Mongo\Collections\Describable
             		$category_ids[] = $category;
             	}
             }
-            
+
             if (!empty($category_ids)) 
             {
                 if ($list = (new \Shop\Models\Categories)->setState('select.fields', array('title', 'slug'))->setState('filter.ids', $category_ids)->getList())
@@ -129,7 +130,8 @@ class Collections extends \Dsc\Mongo\Collections\Describable
                     }
                 }
             }
-            $this->categories = $categories;
+           
+            $this->set('categories', $categories);
         }
 
         return parent::beforeValidate();
