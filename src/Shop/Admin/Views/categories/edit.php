@@ -112,6 +112,10 @@
                         
                     </div>
                     <!-- /.row -->
+                    
+                    <hr/>
+                    
+                    <?php echo $this->renderLayout('Shop/Admin/Views::categories/fields_basics_products.php'); ?>
                 
                 </div>
                 <!-- /.tab-pane -->

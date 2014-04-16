@@ -386,10 +386,10 @@ class Products extends \Dsc\Mongo\Collections\Content implements \MassUpdate\Ser
             $model = clone $this;
         }
     
-        $tags = $model->collection()->distinct("display.stickers", $query);
-        $tags = array_values( array_filter( $tags ) );
+        $distinct = $model->collection()->distinct("display.stickers", $query);
+        $distinct = array_values( array_filter( $distinct ) );
     
-        return $tags;
+        return $distinct;
     }
     
     /**
