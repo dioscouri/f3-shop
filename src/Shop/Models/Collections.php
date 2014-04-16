@@ -41,12 +41,12 @@ class Collections extends \Dsc\Mongo\Collections\Describable
         
         if (!empty($collection->price_minimum))
         {
-            $conditions = array_merge( $conditions, array( 'prices.default', array('$gte' => $collection->price_minimum) ) );
+            $conditions = array_merge( $conditions, array( 'prices.default' => array('$gte' => (float) $collection->price_minimum) ) );
         }
         
         if (!empty($collection->price_maximum))
         {
-            $conditions = array_merge( $conditions, array( 'prices.default', array('$lte' => $collection->price_maximum) ) );
+            $conditions = array_merge( $conditions, array( 'prices.default' => array('$lte' => (float) $collection->price_maximum) ) );
         }
         
         if (!empty($collection->categories)) 
@@ -113,7 +113,7 @@ class Collections extends \Dsc\Mongo\Collections\Describable
         ) );
         
         $conditions = $event->getArgument('conditions');
-        
+
         return $conditions;
         
     }

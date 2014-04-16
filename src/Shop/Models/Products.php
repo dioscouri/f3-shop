@@ -121,13 +121,13 @@ class Products extends \Dsc\Mongo\Collections\Content implements \MassUpdate\Ser
         $filter_price_default_min = $this->getState('filter.price.default.min');
         if (strlen($filter_price_default_min))
         {
-            $this->setCondition('prices.default', array('$gte' => $filter_price_default_min) );
+            $this->setCondition('prices.default', array('$gte' => (float) $filter_price_default_min) );
         }
         
         $filter_price_default_max = $this->getState('filter.price.default.max');
         if (strlen($filter_price_default_max))
         {
-            $this->setCondition('prices.default', array('$lte' => $filter_price_default_max) );
+            $this->setCondition('prices.default', array('$lte' => (float) $filter_price_default_max) );
         }
     
         return $this;
