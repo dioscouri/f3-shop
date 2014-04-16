@@ -27,7 +27,7 @@
                     </div>
                         
                     &nbsp;
-                    <a class="btn btn-default" href="./admin/shop/manufacturers">Cancel</a>
+                    <a class="btn btn-default" href="./admin/shop/tags">Cancel</a>
                 </div>
 
             </div>
@@ -55,7 +55,13 @@
                         <input type="text" name="title" placeholder="Title" value="<?php echo $flash->old('title'); ?>" class="form-control" />
                     </div>
                     <!-- /.form-group -->
-                
+                    
+                    <div class="form-group">
+                    <label>Products</label>
+                         <input id="products" name="__products" value="<?php echo implode(",", (array) \Shop\Models\Tags::productIds( $flash->old('title') ) ); ?>" type="text" class="form-control" />
+                    </div>
+                    <!-- /.form-group -->
+                    
                 </div>
                 <!-- /.tab-pane -->
             
@@ -67,3 +73,34 @@
 </form>
 
 </div>
+
+<script>
+jQuery(document).ready(function() {
+    
+    jQuery("#products").select2({
+        allowClear: true, 
+        placeholder: "Search...",
+        multiple: true,
+        minimumInputLength: 3,
+        ajax: {
+            url: "./admin/shop/products/forSelection",
+            dataType: 'json',
+            data: function (term, page) {
+                return {
+                    q: term
+                };
+            },
+            results: function (data, page) {
+                return {results: data.results};
+            }
+        }
+        <?php if ($flash->old('title')) { ?>
+        , initSelection : function (element, callback) {
+            var data = <?php echo json_encode( \Shop\Models\Products::forSelection( array('_id'=>array('$in'=>array_map( function($input){ return new \MongoId($input); }, (array) \Shop\Models\Tags::productIds( $flash->old('title') ) ) ) ) ) ); ?>;
+            callback(data);            
+        }
+        <?php } ?>
+    });
+
+});
+</script>

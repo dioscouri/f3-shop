@@ -19,7 +19,7 @@ class Tag extends \Admin\Controllers\BaseAuth
     protected function getItem() 
     {
         $f3 = \Base::instance();
-        $tag = $this->inputfilter->clean( $f3->get('PARAMS.id'), 'string' );
+        $tag = strtolower( $this->inputfilter->clean( $f3->get('PARAMS.id'), 'string' ) );
         $model = new \Shop\Models\Tags( array('title'=>$tag) );
 
         return $model;

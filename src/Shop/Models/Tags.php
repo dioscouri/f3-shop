@@ -128,10 +128,28 @@ class Tags extends \Dsc\Models
      * 
      * @return \Shop\Models\Tags
      */
-    public function insert()
+    public function create( $document = array(), $options = array() )
     {
-        \Dsc\System::addMessage( \Dsc\Debug::dump( 'doing insert' ) );
-        \Dsc\System::addMessage( \Dsc\Debug::dump( $this->cast() ) );
+        $this->__options = $options;
+        $this->bind( $document, $options );
+        
+        if (isset( $this->__products ))
+        {
+            $product_ids = array();
+            if (! is_array( $this->__products ))
+            {
+                $this->__products = trim( $this->__products );
+                if (! empty( $this->__products ))
+                {
+                    $product_ids = \Base::instance()->split( (string) $this->__products );
+                }
+            }
+        
+            if (! empty( $product_ids ) && is_array( $product_ids ))
+            {
+                $this->assignToProducts( $product_ids, false );
+            }
+        }
         
         return $this;
     }
@@ -141,7 +159,7 @@ class Tags extends \Dsc\Models
      */
     public function __toString()
     {
-        return $this->title;
+        return strtolower( $this->title );
     }
 
     /**
@@ -163,7 +181,7 @@ class Tags extends \Dsc\Models
                 return new \MongoId( $input );
             }, $product_ids );
             
-            $tag = $this->title;
+            $tag = strtolower( $this->title );
             
             // OK, we have an array of product MongoIDs. Now make two queries:
             // 1. Add this tag to all products whose ID is in this array
@@ -205,7 +223,7 @@ class Tags extends \Dsc\Models
      */
     public function removeFromAllProducts()
     {
-        $tag = $this->title;
+        $tag = strtolower( $this->title );
         
         $remove_result = (new \Shop\Models\Products())->collection()->update( array(
             'tags' => $tag 
