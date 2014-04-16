@@ -86,9 +86,9 @@ class Tags extends \Dsc\Models
     /**
      * Updating a tag is a matter of re-assigning it to products
      * TODO and maybe changing its title?
-     * 
-     * @param unknown $document
-     * @param unknown $options
+     *
+     * @param unknown $document            
+     * @param unknown $options            
      * @return \Shop\Models\Tags
      */
     public function update( $document = array(), $options = array() )
@@ -97,7 +97,7 @@ class Tags extends \Dsc\Models
         $this->bind( $document, $options );
         
         // handle the __products CSV, adding/removing product/tag associations where necessary
-        if (! empty( $this->__products ))
+        if (isset( $this->__products ))
         {
             $product_ids = array();
             if (! is_array( $this->__products ))
@@ -113,6 +113,11 @@ class Tags extends \Dsc\Models
             {
                 $this->assignToProducts( $product_ids );
             }
+            // remove the tag from all products
+            elseif (empty( $product_ids ))
+            {
+                $this->removeFromAllProducts();
+            }
         }
         
         return $this;
@@ -120,6 +125,7 @@ class Tags extends \Dsc\Models
 
     /**
      * TBD
+     * 
      * @return \Shop\Models\Tags
      */
     public function insert()
@@ -157,7 +163,6 @@ class Tags extends \Dsc\Models
                 return new \MongoId( $input );
             }, $product_ids );
             
-            // TODO Update this to include "path" when we make that update
             $tag = $this->title;
             
             // OK, we have an array of product MongoIDs. Now make two queries:
@@ -191,6 +196,26 @@ class Tags extends \Dsc\Models
                 ) );
             }
         }
+        
+        return $this;
+    }
+
+    /**
+     * Remove a tag from all products
+     */
+    public function removeFromAllProducts()
+    {
+        $tag = $this->title;
+        
+        $remove_result = (new \Shop\Models\Products())->collection()->update( array(
+            'tags' => $tag 
+        ), array(
+            '$pull' => array(
+                'tags' => $tag 
+            ) 
+        ), array(
+            'multiple' => true 
+        ) );
         
         return $this;
     }
