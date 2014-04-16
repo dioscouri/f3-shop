@@ -178,6 +178,13 @@ class Collections extends \Dsc\Mongo\Collections\Describable
 
         return parent::beforeValidate();
     }
+
+    protected function beforeCreate()
+    {
+        $this->slug = $this->generateSlug();
+        
+        return parent::beforeCreate();
+    }
     
     protected function beforeSave()
     {
