@@ -108,6 +108,26 @@ class Collections extends \Dsc\Mongo\Collections\Describable
         
     }
     
+    /**
+     * Gets a count of all products returned by this collection's query
+     *
+     * @param string $id
+     * @return multitype: multitype:string
+     */
+    public static function productCount( $id = null )
+    {
+        $result = 0;
+        if (empty( $id ))
+        {
+            return $result;
+        }
+        
+        $conditions = static::getProductQueryConditions($id);
+        $result = (new \Shop\Models\Products())->collection()->count( $conditions );
+    
+        return $result;
+    }
+    
     protected function beforeValidate()
     {
 

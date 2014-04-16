@@ -42,9 +42,13 @@ jQuery(document).ready(function(){
             
             <hr />
             
-            <div class="alert alert-info">
+            <div class="alert alert-warning">
                 <p><b>Note:</b> Collections will only display products that satisfy <u>all</u> of the conditions you have set.  For example, if you have checked three categories and selected two tags, only products that have <i>at least one</i> of the categories <b>AND</b> <i>at least one</i> of the tags will be displayed in the collection.</p>
             </div>
+            
+            <div class="alert alert-info">
+                <p><b>URL:</b> <a href="./shop/collection/<?php echo $flash->old('slug'); ?>" target="_blank">./shop/collection/<?php echo $flash->old('slug'); ?></a></p>
+            </div>            
             
             <ul class="nav nav-tabs">
                 <li class="active">

@@ -95,9 +95,11 @@
             <table class="table table-striped table-bordered table-hover table-highlight table-checkable">
         	<thead>
         		<tr>
-        		    <th class="checkbox-column"><input type="checkbox" class="icheck-input"></th>
+        		    <th class="col-md-1 checkbox-column"><input type="checkbox" class="icheck-input"></th>
         			<th>Title</th>
         			<th>Slug</th>
+        			<th class="col-md-1">Products</th>
+        			<th class="col-md-1"></th>
         			<th class="col-md-1"></th>
         		</tr>
         	</thead>
@@ -121,6 +123,14 @@
                         <a href="./admin/shop/collection/edit/<?php echo $item->_id; ?>">
                         <?php echo $item->slug; ?>
                         </a>
+                    </td>
+                    
+                    <td class="">
+                        <?php echo \Shop\Models\Collections::productCount( $item->_id ); ?>
+                    </td>
+                    
+                    <td>
+                        <a href="./shop/collection/<?php echo $item->get('slug'); ?>" target="_blank">Preview</a>
                     </td>
                                     
                     <td class="text-center">

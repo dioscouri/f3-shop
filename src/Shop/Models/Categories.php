@@ -126,7 +126,32 @@ class Categories extends \Dsc\Mongo\Collections\Categories implements \MassUpdat
         
         return $result;
     }
+    
+    /**
+     * Gets a count of all products assigned to this category
+     *
+     * @param string $category_id
+     * @return multitype: multitype:string
+     */
+    public static function productCount( $category_id = null )
+    {
+        $result = 0;
+        if (empty( $category_id ))
+        {
+            return $result;
+        }
+    
+        $result = (new \Shop\Models\Products())->collection()->count( array(
+            'categories.id' => new \MongoId( (string) $category_id )
+        ));
+    
+        return $result;
+    }    
 
+    /**
+     * 
+     * @return \MongoId
+     */
     protected function afterSave()
     {
         // if a CSV of product_ids has been bound to the model, update the set of products associated with this category
