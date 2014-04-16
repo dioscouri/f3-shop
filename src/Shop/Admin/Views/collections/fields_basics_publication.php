@@ -7,11 +7,11 @@
     </div>
     <!-- /.col-md-2 -->
                 
-    <div class="col-md-10 padding-10">
+    <div class="col-md-10">
 
-        <div class="form-group">
+        <div class="row">
         
-            <div class="col-md-4 padding-10">
+            <div class="col-md-4">
                 <select name="publication_status" class="form-control">
                     <option value="published" <?php if ($flash->old('publication_status') == 'published') { echo "selected='selected'"; } ?>>Published</option>
                     <option value="unpublished" <?php if ($flash->old('publication_status') == 'unpublished') { echo "selected='selected'"; } ?>>Unpublished</option>

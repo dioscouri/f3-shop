@@ -33,6 +33,10 @@
 
 <hr />
 
+<?php echo $this->renderLayout('Shop/Admin/Views::collections/fields_basics_prices.php'); ?>
+
+<hr />
+
 <?php echo $this->renderLayout('Shop/Admin/Views::collections/fields_basics_inventory.php'); ?>
 
 <hr />

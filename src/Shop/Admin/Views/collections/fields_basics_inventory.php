@@ -7,11 +7,11 @@
     </div>
     <!-- /.col-md-2 -->
                 
-    <div class="col-md-10 padding-10">
+    <div class="col-md-10">
 
-        <div class="form-group">
+        <div class="row">
         
-            <div class="col-md-4 padding-10">
+            <div class="col-md-4">
                 <select name="inventory_status" class="form-control">
                     <option value="in_stock" <?php if ($flash->old('inventory_status') == 'in_stock') { echo "selected='selected'"; } ?>>In Stock</option>
                     <option value="low_stock" <?php if ($flash->old('inventory_status') == 'low_stock') { echo "selected='selected'"; } ?>>Low Stock (<20)</option>

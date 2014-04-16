@@ -39,6 +39,16 @@ class Collections extends \Dsc\Mongo\Collections\Describable
             $conditions = array_merge( $conditions, array( '_id' => array( '$in' => $ids ) ) );
         }
         
+        if (!empty($collection->price_minimum))
+        {
+            $conditions = array_merge( $conditions, array( 'prices.default', array('$gte' => $collection->price_minimum) ) );
+        }
+        
+        if (!empty($collection->price_maximum))
+        {
+            $conditions = array_merge( $conditions, array( 'prices.default', array('$lte' => $collection->price_maximum) ) );
+        }
+        
         if (!empty($collection->categories)) 
         {
             $cats = array();

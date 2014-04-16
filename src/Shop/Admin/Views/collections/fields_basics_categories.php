@@ -7,7 +7,7 @@
     </div>
     <!-- /.col-md-2 -->
                 
-    <div class="col-md-10 padding-10">
+    <div class="col-md-10">
 
         <div id="categories-checkboxes" class="form-group">
             <?php if ($categories = \Shop\Models\Categories::find()) { ?>

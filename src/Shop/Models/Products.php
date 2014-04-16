@@ -117,6 +117,18 @@ class Products extends \Dsc\Mongo\Collections\Content implements \MassUpdate\Ser
         {
             $this->setCondition('categories.id', new \MongoId( (string) $filter_category_id ) );
         }
+        
+        $filter_price_default_min = $this->getState('filter.price.default.min');
+        if (strlen($filter_price_default_min))
+        {
+            $this->setCondition('prices.default', array('$gte' => $filter_price_default_min) );
+        }
+        
+        $filter_price_default_max = $this->getState('filter.price.default.max');
+        if (strlen($filter_price_default_max))
+        {
+            $this->setCondition('prices.default', array('$lte' => $filter_price_default_max) );
+        }
     
         return $this;
     }
@@ -238,6 +250,12 @@ class Products extends \Dsc\Mongo\Collections\Content implements \MassUpdate\Ser
         elseif(empty($this->{'display.stickers'}) && !is_array($this->{'display.stickers'}))
         {
             $this->{'display.stickers'} = array();
+        }
+        
+        $this->set( 'prices.default', (float) $this->get( 'prices.default') );
+        $this->set( 'prices.list', (float) $this->get( 'prices.list') );
+        if ($this->get( 'prices.wholesale')) {
+            $this->set( 'prices.wholesale', (float) $this->get( 'prices.wholesale') );
         }
         
         return parent::beforeSave();
