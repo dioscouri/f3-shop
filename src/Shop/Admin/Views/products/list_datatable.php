@@ -20,7 +20,13 @@
                             <option value="low_stock" <?php if ($state->get('filter.inventory_status') == 'low_stock') { echo "selected='selected'"; } ?>>Low Stock (<20)</option>
                             <option value="no_stock" <?php if ($state->get('filter.inventory_status') == 'no_stock') { echo "selected='selected'"; } ?>>Out of Stock</option>
                         </select>
-                    </li>                    
+                    </li>
+                    <li>
+                        <select name="filter[category][id]" class="form-control" onchange="this.form.submit();">
+                            <option value="">All Categories</option>
+                            <option value="__uncategorized" <?php if ($state->get('filter.category.id') == '__uncategorized') { echo "selected='selected'"; } ?>>Uncategorized</option>
+                        </select>
+                    </li>
                     <?php /* ?>
                     <li>
                         <a class="btn btn-link">Advanced Filtering</a>

@@ -115,7 +115,13 @@ class Products extends \Dsc\Mongo\Collections\Content implements \MassUpdate\Ser
         $filter_category_id = $this->getState('filter.category.id');
         if (strlen($filter_category_id))
         {
-            $this->setCondition('categories.id', new \MongoId( (string) $filter_category_id ) );
+            if ($filter_category_id == '__uncategorized') {
+            	// where no categories are assigned
+                $this->setCondition('categories', array('$size' => 0) );
+            }
+            else {
+                $this->setCondition('categories.id', new \MongoId( (string) $filter_category_id ) );
+            }            
         }
         
         $filter_price_default_min = $this->getState('filter.price.default.min');
