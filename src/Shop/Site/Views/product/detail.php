@@ -46,7 +46,7 @@
                             <div class="col-sm-8">
                                 
                                 <select name="variant_id" class="chosen-select select-variant" data-callback="Shop.selectVariant">
-                                    <?php foreach ($item->variants as $key=>$variant) { ?>
+                                    <?php foreach ($item->variantsInStock() as $key=>$variant) { ?>
                                         <option value="<?php echo $variant['id']; ?>" data-variant='<?php echo htmlspecialchars( json_encode( $variant ) ); ?>'><?php echo $variant['attribute_title'] ? $variant['attribute_title'] : $item->title; ?> </option>
                                     <?php } ?>
                                 </select>

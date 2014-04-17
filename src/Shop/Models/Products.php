@@ -258,6 +258,11 @@ class Products extends \Dsc\Mongo\Collections\Content implements \MassUpdate\Ser
             $this->set( 'prices.wholesale', (float) $this->get( 'prices.wholesale') );
         }
         
+        array_walk($this->variants, function(&$item, $key) {
+            $item['quantity'] = (int) $item['quantity'];
+            $item['price'] = (float) $item['price'];
+        });
+        
         return parent::beforeSave();
     }
     
@@ -805,5 +810,21 @@ class Products extends \Dsc\Mongo\Collections\Content implements \MassUpdate\Ser
         }
     
         return false;
+    }
+    
+    /**
+     * 
+     * @return boolean
+     */
+    public function variantsInStock()
+    {
+        if (empty($this->__variants_in_stock)) 
+        {
+            $this->__variants_in_stock = array_values( array_filter( $this->variants, function($el){
+                 $return = true; if (empty($el['quantity'])) { $return = false; }  return $return;
+            } ) );
+        }
+        
+        return $this->__variants_in_stock;
     }
 }
