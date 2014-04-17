@@ -25,6 +25,9 @@
                         <select name="filter[category][id]" class="form-control" onchange="this.form.submit();">
                             <option value="">All Categories</option>
                             <option value="__uncategorized" <?php if ($state->get('filter.category.id') == '__uncategorized') { echo "selected='selected'"; } ?>>Uncategorized</option>
+                            <?php foreach (\Shop\Models\Categories::find() as $cat) { ?>
+                            	<option value="<?php echo (string) $cat->id; ?>" <?php if ($state->get('filter.category.id') == (string) $cat->id) { echo "selected='selected'"; } ?>><?php echo @str_repeat( "&ndash;", substr_count( @$cat->path, "/" ) - 1 ) . " " . $cat->title; ?></option>
+                            <?php } ?>                            
                         </select>
                     </li>
                     <?php /* ?>
