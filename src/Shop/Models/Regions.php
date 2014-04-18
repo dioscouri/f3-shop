@@ -14,6 +14,32 @@ class Regions extends \Dsc\Mongo\Collection
         ) 
     );
     
+    protected function fetchConditions()
+    {
+    	parent::fetchConditions();
+    
+    	$filter_keyword = $this->getState('filter.keyword');
+    	if ($filter_keyword && is_string($filter_keyword))
+    	{
+    		$key =  new \MongoRegex('/'. $filter_keyword .'/i');
+    
+    		$where = array();
+    		$where[] = array('name'=>$key);
+    		$where[] = array('country_isocode_2'=>$key);
+    		$where[] = array('code'=>$key);
+    
+    		$this->setCondition('$or', $where);
+    	}
+    	
+    	$filter_country_isocode_2 = $this->getState('filter.country.isocode_2');
+    	if (strlen($filter_country_isocode_2))
+    	{
+    		$this->setCondition('country_isocode_2', $filter_country_isocode_2 );
+    	}    	
+    
+    	return $this;
+    }
+    
     public static function byCountry( $country_isocode_2 )
     {
         return \Shop\Models\Regions::find(array(

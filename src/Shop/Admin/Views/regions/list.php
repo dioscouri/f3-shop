@@ -23,19 +23,16 @@
         
         <div class="row">
             <div class="col-xs-12 col-sm-5 col-md-5 col-lg-8">
-                <?php /* ?>
                 <ul class="list-filters list-unstyled list-inline">
                     <li>
-                        <a class="btn btn-link">Advanced Filtering</a>
-                    </li>                
-                    <li>
-                        <a class="btn btn-link">Quicklink Filter</a>
-                    </li>
-                    <li>
-                        <a class="btn btn-link">Quicklink Filter</a>
-                    </li>                    
+                        <select name="filter[country][isocode_2]" class="form-control" onchange="this.form.submit();">
+                            <option value="">All Countries</option>
+                            <?php foreach (\Shop\Models\Countries::find() as $country) { ?>
+                            	<option value="<?php echo $country->isocode_2; ?>" <?php if ($state->get('filter.country.isocode_2') == (string) $country->isocode_2) { echo "selected='selected'"; } ?>><?php echo $country->name; ?></option>
+                            <?php } ?>                            
+                        </select>
+                    </li>             
                 </ul>
-                */ ?>
             </div>
             <div class="col-xs-12 col-sm-7 col-md-7 col-lg-4">
                 <div class="form-group">
@@ -95,10 +92,10 @@
             <table class="table table-striped table-bordered table-hover table-highlight table-checkable">
         	<thead>
         		<tr>
-        		    <th class="checkbox-column"><input type="checkbox" class="icheck-input"></th>
+        		    <th class="checkbox-column col-md-1"><input type="checkbox" class="icheck-input"></th>
         			<th data-sortable="name">Name</th>
-        			<th data-sortable="code">Code</th>
-        			<th data-sortable="country_isocode_2">Country ISO Code 2</th>
+        			<th data-sortable="code" class="col-md-1">Code</th>
+        			<th data-sortable="country_isocode_2" class="col-md-1">Country ISO Code 2</th>
         			<th class="col-md-1"></th>
         		</tr>
         	</thead>
