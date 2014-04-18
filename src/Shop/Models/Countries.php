@@ -15,6 +15,26 @@ class Countries extends \Dsc\Mongo\Collection
             'name' => 1 
         ) 
     );
+    
+    protected function fetchConditions()
+    {
+        parent::fetchConditions();
+    
+        $filter_keyword = $this->getState('filter.keyword');
+        if ($filter_keyword && is_string($filter_keyword))
+        {
+            $key =  new \MongoRegex('/'. $filter_keyword .'/i');
+    
+            $where = array();
+            $where[] = array('name'=>$key);
+            $where[] = array('isocode_2'=>$key);
+            $where[] = array('isocode_3'=>$key);
+    
+            $this->setCondition('$or', $where);
+        }
+    
+        return $this;
+    }
 
     /**
      * Helper method for creating select list options
