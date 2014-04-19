@@ -125,7 +125,7 @@
                     
                     <td class="">
                         <a href="./admin/shop/order/edit/<?php echo $item->_id; ?>">
-                        <?php echo $item->{'metadata.created.time'}; ?>
+                        <?php echo $item->{'metadata.created.local'}; ?>
                         </a>
                     </td>
                                     

@@ -225,4 +225,35 @@ class Orders extends \Dsc\Mongo\Collections\Nodes
     
         return $method;
     }
+    
+    /**
+     * 
+     * @return \Shop\Models\Address
+     */
+    public function shippingAddress()
+    {
+        if (empty($this->{'shipping_address'})) 
+        {
+        	return null;
+        }
+        
+        $model = new \Shop\Models\Address( $this->{'shipping_address'} );
+        
+        return $model;
+    }
+    
+    /**
+     * 
+     * @return \Shop\Models\Address
+     */
+    public function billingAddress()
+    {
+        if (empty($this->{'billing_address'})) {
+            return null;
+        }
+        
+        $model = new \Shop\Models\Address( $this->{'billing_address'} );
+    
+        return $model;
+    }
 }
