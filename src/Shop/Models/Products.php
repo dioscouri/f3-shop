@@ -404,7 +404,7 @@ class Products extends \Dsc\Mongo\Collections\Content implements \MassUpdate\Ser
     }
 
     /**
-     *
+     * Converts this to a search item, used in the search template when displaying each search result
      */
     public function toSearchItem()
     {
