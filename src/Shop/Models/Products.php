@@ -91,6 +91,28 @@ class Products extends \Dsc\Mongo\Collections\Content implements \MassUpdate\Ser
     
         $this->setCondition('type', $this->__type );
         
+        $filter_keyword = $this->getState('filter.keyword');
+        if ($filter_keyword && is_string($filter_keyword))
+        {
+            $key =  new \MongoRegex('/'. $filter_keyword .'/i');
+        
+            $where = array();
+        
+            $regex = '/^[0-9a-z]{24}$/';
+            if (preg_match($regex, (string) $filter_keyword))
+            {
+                $where[] = array('_id'=>new \MongoId((string) $filter_keyword));
+            }
+            $where[] = array('slug'=>$key);
+            $where[] = array('title'=>$key);
+            $where[] = array('copy'=>$key);
+            $where[] = array('description'=>$key);
+            $where[] = array('tracking.sku'=>$key);
+            $where[] = array('tracking.model_number'=>$key);
+        
+            $this->setCondition('$or', $where);
+        }
+        
         $filter_status_stock = $this->getState('filter.inventory_status');
         if (strlen($filter_status_stock))
         {
