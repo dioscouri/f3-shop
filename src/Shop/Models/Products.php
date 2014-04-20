@@ -3,7 +3,8 @@ namespace Shop\Models;
 
 class Products extends \Dsc\Mongo\Collections\Content implements \MassUpdate\Service\Models\MassUpdateOperations
 {
-	use \MassUpdate\Service\Traits\Model;
+	use \MassUpdate\Service\Traits\Model,
+        \Search\Traits\SearchItem;
 	
 	public $categories = array();
     public $featured_image = array();
@@ -400,6 +401,25 @@ class Products extends \Dsc\Mongo\Collections\Content implements \MassUpdate\Ser
         }
         
         return parent::beforeUpdate();
+    }
+
+    /**
+     *
+     */
+    public function toSearchItem()
+    {
+        $image = (!empty($this->{'featured_image.slug'})) ? './asset/thumb/' . $this->{'featured_image.slug'} : null;
+        
+        $item = new \Search\Models\Item(array(
+        	'url' => './shop/product/' . $this->slug,
+            'title' => $this->title,
+            'subtitle' => '',
+            'image' => $image,
+            'summary' => $this->description,
+            'datetime' => null,
+        ));
+        
+        return $item;
     }
     
     /**
