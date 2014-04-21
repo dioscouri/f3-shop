@@ -262,7 +262,9 @@ class Orders extends \Dsc\Mongo\Collections\Nodes
     }
     
     /**
-     * Trigger this on newly-completed orders to perform tasks such as:
+     * Completes an order.
+     * 
+     * Trigger this on newly-made orders to perform tasks such as:
      * Sending an email to the customer
      * Updating available product quantities 
 	 * Enabling file downloads
@@ -270,9 +272,21 @@ class Orders extends \Dsc\Mongo\Collections\Nodes
 	 * 
 	 * Trigger a Listener event to notify observers
      */
-    public function doCompletedTasks()
+    public function complete()
     {
-        // 1. Update quantities
-        // 2. Add an email to the Mailer        
+        // TODO 1. Update quantities
+        foreach ($this->items as $item) 
+        {
+        	// TODO decrease the $item->variant quantity by 1 using a direct query, then trigger an inventory recount on the product
+        }
+        
+        // TODO 2. Add an email to the Mailer
+
+        // trigger event
+        $this->__complete_event = \Dsc\System::instance()->trigger( 'onShopCompleteOrder', array(
+        	'order' => $this
+        ) )->triggerEvent($event);
+        
+        return $this;
     }
 }
