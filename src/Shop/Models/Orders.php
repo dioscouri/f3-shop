@@ -281,12 +281,33 @@ class Orders extends \Dsc\Mongo\Collections\Nodes
         }
         
         // TODO 2. Add an email to the Mailer
+        $this->sendEmailNewOrder();
 
         // trigger event
         $this->__complete_event = \Dsc\System::instance()->trigger( 'onShopCompleteOrder', array(
         	'order' => $this
         ) )->triggerEvent($event);
         
+        return $this;
+    }
+    
+    /**
+     * Send out new order emails
+     * 
+     * @param array $recipients
+     */
+    public function sendEmailNewOrder( array $recipients=array() )
+    {
+        return $this;
+    }
+    
+    /**
+     * Send out status update emails 
+     *  
+     * @param array $recipients
+     */
+    public function sendEmailStatusUpdate( array $recipients=array() )
+    {
         return $this;
     }
 }
