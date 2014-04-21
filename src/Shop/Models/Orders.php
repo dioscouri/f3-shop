@@ -270,7 +270,7 @@ class Orders extends \Dsc\Mongo\Collections\Nodes
 	 * 
 	 * Trigger a Listener event to notify observers
      */
-    public function doOrderCompletedTasks()
+    public function doCompletedTasks()
     {
         // 1. Update quantities
         // 2. Add an email to the Mailer        
