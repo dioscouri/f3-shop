@@ -35,6 +35,7 @@ class Checkout extends \Dsc\Singleton
     {
         if ($this->order()->save()) 
         {
+            $this->order()->doOrderCompletedTasks();
             $this->setOrderCompleted();
             $this->cart()->remove();            
             \Dsc\System::instance()->get('session')->set('shop.just_completed_order', true );

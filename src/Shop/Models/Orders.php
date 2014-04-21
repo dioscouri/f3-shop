@@ -167,6 +167,10 @@ class Orders extends \Dsc\Mongo\Collections\Nodes
         return $order;
     }
     
+    /**
+     * Creates a human-readable version of the order id (it's MongoID)
+     * @return unknown
+     */
     public function createNumber()
     {
         if (empty($this->id)) 
@@ -255,5 +259,20 @@ class Orders extends \Dsc\Mongo\Collections\Nodes
         $model = new \Shop\Models\Address( $this->{'billing_address'} );
     
         return $model;
+    }
+    
+    /**
+     * Trigger this on newly-completed orders to perform tasks such as:
+     * Sending an email to the customer
+     * Updating available product quantities 
+	 * Enabling file downloads
+	 * Enabling subscriptions
+	 * 
+	 * Trigger a Listener event to notify observers
+     */
+    public function doOrderCompletedTasks()
+    {
+        // 1. Update quantities
+        // 2. Add an email to the Mailer        
     }
 }
