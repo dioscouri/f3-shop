@@ -12,7 +12,7 @@
                     <legend>
                         <small>Login with the following</small>
                     </legend>
-                    <?php echo $this->renderLayout('Users/Site/Views::login/hybrid.php'); ?>
+                    <?php echo $this->renderLayout('Users/Site/Views::login/social.php'); ?>
                 </div>
             </div>    
             
