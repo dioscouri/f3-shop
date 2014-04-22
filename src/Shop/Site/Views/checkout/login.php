@@ -3,16 +3,24 @@
 
     <div class="well well-sm">
     
-        <div class="row">
-            <div class="col-xs-12 col-sm-12 col-md-12">
-                <legend>
-                    <small>Login with the following</small>
-                </legend>
-                <p>social sign-on options</p>
-            </div>
-        </div>    
-        
-        <hr/>
+        <?php 
+        if (class_exists('Hybrid_Auth')) 
+        {
+            ?>
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-12">
+                    <legend>
+                        <small>Login with the following</small>
+                    </legend>
+                    <?php echo $this->renderLayout('Users/Site/Views::login/hybrid.php'); ?>
+                </div>
+            </div>    
+            
+            <hr/>
+                
+            <?php  
+        } 
+        ?>    
         
         <div class="row">
             <div class="col-xs-12 col-sm-12 col-md-12">

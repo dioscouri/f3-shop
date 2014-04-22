@@ -374,7 +374,7 @@ class Wishlists extends \Dsc\Mongo\Collections\Nodes
             {
                 $this->set( 'metadata.creator', array(
                     'id' => $identity->id,
-                    'name' => $identity->getName() 
+                    'name' => $identity->fullName() 
                 ) );
             }
             else
