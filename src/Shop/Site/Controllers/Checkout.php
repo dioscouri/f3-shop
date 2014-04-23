@@ -283,8 +283,9 @@ class Checkout extends \Dsc\Controller
             // if $checkout_method == guest
             // store email in cart object and then continue
             // create a guest mongoid
-        	case "guest":
-        	    break;
+            // TODO Enable this
+        	//case "guest":
+        	    //break;
             
             // if $checkout_method == register
             // validate data
@@ -293,11 +294,9 @@ class Checkout extends \Dsc\Controller
     	    case "register":
     	        
     	        $email = trim( strtolower( $this->input->get( 'email_address', null, 'string' ) ) );
-    	        $pieces = explode( '@', $email ); 
     	        
     	        $data = array(
     	            'email' => $email,
-    	            'username' => $pieces[0],
     	            'new_password' => $this->input->get( 'new_password', null, 'string' ),
     	            'confirm_new_password' => $this->input->get( 'confirm_new_password', null, 'string' )
     	        );

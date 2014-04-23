@@ -12,11 +12,12 @@
                             <input type="radio" value="register" id="checkout-method-register" name="checkout_method" <?php if (!$flash->old('checkout_method') || $flash->old('checkout_method') == 'register') { echo "checked"; } ?>>
                             Register
                         </label>
-                    
+                        <?php /* ?>                    
                         <label for="checkout-method-guest" class="radio">
                             <input type="radio" value="guest" id="checkout-method-guest" name="checkout_method" <?php if ($flash->old('checkout_method') == 'guest') { echo "checked"; } ?>>
                             Checkout as a Guest
                         </label>
+                        */ ?>
                     </div>
 
                     <div class="form-group">
