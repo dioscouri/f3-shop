@@ -38,14 +38,14 @@
                         <input name="login-password" type="password" class="form-control" placeholder="Password*" />
                     </div>            
                     
-                    <div class="input-group">    
+                    <div class="form-group">    
                         <button class="btn btn-default custom-button btn-lg" type="submit">Login</button>
                         <?php \Dsc\System::instance()->get('session')->set('site.login.redirect', '/shop/checkout'); ?>
                     </div>
                     
                 </form>
                 
-                <p class="margin-top">Forgot your password?</p>
+                <p><a href="./user/forgot-password">Forgot your password?</a></p>
             </div>
         </div>
     
