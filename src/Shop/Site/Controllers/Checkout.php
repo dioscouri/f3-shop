@@ -320,7 +320,25 @@ class Checkout extends \Dsc\Controller
     	        try
     	        {
     	            // this will handle other validations, such as username uniqueness, etc
-    	            $user->save();
+    	            $settings = \Users\Models\Settings::fetch();
+    	            $registration_action = $settings->{'general.registration.action'};    	            
+    	            switch ($registration_action)
+    	            {
+    	            	case "auto_login":
+    	            	    $user->active = true;
+    	            	    $user->save();
+    	            	    break;
+    	            	case "auto_login_with_validation":
+    	            	    $user->active = false;
+    	            	    $user->save();
+    	            	    $user->sendEmailValidatingEmailAddress();
+    	            	    break;
+    	            	default:
+    	            	    $user->active = false;
+    	            	    $user->save();
+    	            	    $user->sendEmailValidatingEmailAddress();
+    	            	    break;
+    	            }    	            
     	        }
     	        catch(\Exception $e)
     	        {
