@@ -1,11 +1,17 @@
 <?php if (empty($cart->shippingMethods(true))) 
 {
-	?>
-	<div class="form-group has-error">
-	   <label class="control-label">No valid shipping methods could be found for the provided shipping address.</label>
-	   <input data-required="true" type="hidden" name="checkout[shipping_method]" value="" class="form-control" disabled />
-	</div>	
+    if ($cart->validShippingAddress()) { ?>
+    	<div class="form-group has-error">
+    	   <label class="control-label">Unfortunately, we cannot ship to your address.</label>
+    	   <input data-required="true" type="hidden" name="checkout[shipping_method]" value="" class="form-control" disabled />
+    	</div>    
+	<?php } else { ?>
+    	<div class="form-group has-error">
+    	   <label class="control-label">Please enter your address to view shipping methods.</label>
+    	   <input data-required="true" type="hidden" name="checkout[shipping_method]" value="" class="form-control" disabled />
+    	</div>	
 	<?php
+	}
 }
 else 
 {
