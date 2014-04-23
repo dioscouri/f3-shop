@@ -2,7 +2,12 @@
 namespace Shop\Site\Controllers;
 
 class Account extends \Dsc\Controller 
-{    
+{
+    public function beforeRoute()
+    {
+        $this->requireIdentity();
+    }
+    
     public function index()
     {
     	$view = \Dsc\System::instance()->get('theme');

@@ -9,13 +9,7 @@ class Wishlist extends \Dsc\Controller
      */
     public function index()
     {
-        $identity = $this->getIdentity();
-        if (empty($identity->id))
-        {
-            \Dsc\System::instance()->get('session')->set('site.login.redirect', '/shop/wishlists');
-            \Base::instance()->reroute('/sign-in');
-            return;
-        }
+        $this->requireIdentity();
         
         $model = new \Shop\Models\Orders;
         $model->emptyState()->populateState()
