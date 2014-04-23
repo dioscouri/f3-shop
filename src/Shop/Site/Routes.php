@@ -119,6 +119,11 @@ class Routes extends \Dsc\Routes\Group
             'action' => 'index' 
         ) );
         
+        $this->add( '/checkout/register', 'POST', array(
+            'controller' => 'Checkout',
+            'action' => 'register'
+        ) );
+        
         $this->add( '/checkout/payment', 'GET', array(
             'controller' => 'Checkout',
             'action' => 'payment' 

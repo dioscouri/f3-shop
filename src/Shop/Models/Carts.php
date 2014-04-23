@@ -844,6 +844,12 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
             }
         }
         
+        // if there is a user_id, delete the session_id
+        if (!empty($this->user_id)) 
+        {
+        	$this->session_id = null;
+        }
+        
         return parent::beforeSave();
     }
     

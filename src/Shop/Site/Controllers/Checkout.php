@@ -15,6 +15,9 @@ class Checkout extends \Dsc\Controller
         $identity = $this->getIdentity();
         if (empty( $identity->id ))
         {
+            $flash = \Dsc\Flash::instance();
+            \Base::instance()->set('flash', $flash );
+                        
             $view = \Dsc\System::instance()->get( 'theme' );
             echo $view->render( 'Shop/Site/Views::checkout/identity.php' );
             return;
@@ -268,5 +271,89 @@ class Checkout extends \Dsc\Controller
         $f3->reroute( $redirect );
         
         return;
+    }
+    
+    public function register()
+    {
+        $f3 = \Base::instance();
+        
+        $checkout_method = strtolower( $this->input->get( 'checkout_method', null, 'alnum' ) );
+        switch ($checkout_method) 
+        {
+            // if $checkout_method == guest
+            // store email in cart object and then continue
+            // create a guest mongoid
+        	case "guest":
+        	    break;
+            
+            // if $checkout_method == register
+            // validate data
+            // create user
+            // redirect back to checkout
+    	    case "register":
+    	        
+    	        $email = trim( strtolower( $this->input->get( 'email_address', null, 'string' ) ) );
+    	        $pieces = explode( '@', $email ); 
+    	        
+    	        $data = array(
+    	            'email' => $email,
+    	            'username' => $pieces[0],
+    	            'new_password' => $this->input->get( 'new_password', null, 'string' ),
+    	            'confirm_new_password' => $this->input->get( 'confirm_new_password', null, 'string' )
+    	        );
+    	        
+    	        $user = (new \Users\Models\Users)->bind($data);
+    	        
+    	        // Check if the email already exists and give a custom message if so
+    	        if (!empty($user->email) && $existing = $user->emailExists( $user->email ))
+    	        {
+    	            if ((empty($user->id) || $user->id != $existing->id))
+    	            {
+    	                \Dsc\System::addMessage( 'This email is already registered.', 'error' );
+    	                \Dsc\System::instance()->setUserState('shop.checkout.register.flash_filled', true);
+    	                $flash = \Dsc\Flash::instance();
+    	                $flash->store($user->cast());
+    	                $f3->reroute( '/shop/checkout' );    	        
+    	                return;
+    	            }
+    	        }
+    	        
+    	        try
+    	        {
+    	            // this will handle other validations, such as username uniqueness, etc
+    	            $user->save();
+    	        }
+    	        catch(\Exception $e)
+    	        {
+    	            \Dsc\System::addMessage( 'Could not create account.', 'error' );
+    	            \Dsc\System::addMessage( $e->getMessage(), 'error' );
+    	            \Dsc\System::instance()->setUserState('shop.checkout.register.flash_filled', true);
+    	            $flash = \Dsc\Flash::instance();
+    	            $flash->store($user->cast());
+    	            $f3->reroute('/shop/checkout');
+    	            return;
+    	        }
+    	        
+    	        // if we have reached here, then all is right with the form
+    	        $flash = \Dsc\Flash::instance();
+    	        $flash->store(array());    	  
+
+    	        // login the user, trigger Listeners
+    	        \Dsc\System::instance()->get( 'auth' )->login( $user );
+    	        
+    	        $f3->reroute( '/shop/checkout' );
+    	        
+    	        break;
+        	         
+            // if $checkout_method something else,
+            // add message?
+            // redirect back to checkout
+    	    default:
+    	        \Dsc\System::addMessage( 'Invalid Checkout Method', 'error' );
+    	        $f3->reroute( '/shop/checkout' );
+	            break;
+	             
+        }
+
     }
 }
