@@ -1,7 +1,6 @@
 <?php $item->url = './shop/product/' . $item->{'slug'}; ?>
 <?php $images = $item->images(); ?>
 
-
 <div class="container">
     <div class="row">
         <div class="col-sm-6">
@@ -82,4 +81,17 @@
     </div>
 
 </div>
+
+<script>
+jQuery(document).ready(function(){
+	var select = jQuery('select.select-variant');
+	if (select.length) {
+		var selected = select.find("option:selected");
+        var variant = jQuery.parseJSON( selected.attr('data-variant') );
+        if (variant.image) {
+        	Shop.selectVariant(variant);
+        }		
+	}
+});
+</script>
 
