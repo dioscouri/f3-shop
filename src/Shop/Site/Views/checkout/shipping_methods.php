@@ -25,7 +25,7 @@ else
 		<div class="form-field">
 			<label class="radio control-label">
 				<input data-required="true" type="radio" name="checkout[shipping_method]" value="<?php echo $method->{'id'}; ?>" <?php if (\Dsc\ArrayHelper::get( $cart, 'checkout.shipping_method' ) == $method->{'id'}) { echo 'checked'; } ?> />
-				<?php echo $method->{'name'}; ?> &mdash; <?php if (empty($method->total())) { echo "FREE"; } else { echo '$' . $method->total(); } ?>
+				<?php echo $method->{'name'}; ?> &mdash; <?php if (empty($method->total())) { echo "FREE"; } else { echo \Shop\Models\Currency::format( $method->total() ); } ?>
 			</label>
 		</div>        
         <?php		

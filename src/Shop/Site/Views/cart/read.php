@@ -53,7 +53,7 @@
                             </div>
                             
                         </td>
-                        <td><div class="price">$<?php echo \Dsc\ArrayHelper::get($item, 'price'); ?></div></td>
+                        <td><div class="price"><?php echo \Shop\Models\Currency::format( \Dsc\ArrayHelper::get($item, 'price') ); ?></div></td>
                         <td>
                             <div class="quantity">
                                 <div class="input-group">
@@ -64,7 +64,7 @@
                                 </div>
                             </div>
                         </td>
-                        <td><div class="subtotal">$<?php echo $cart->calcItemSubtotal( $item ); ?></div></td>
+                        <td><div class="subtotal"><?php echo \Shop\Models\Currency::format( $cart->calcItemSubtotal( $item ) ); ?></div></td>
                         <td><a href="./shop/cart/remove/<?php echo \Dsc\ArrayHelper::get($item, 'hash'); ?>" class="btn btn-default custom-button"><i class="glyphicon glyphicon-remove"></i></a></td>
                     </tr>
                     <?php } ?>
@@ -160,20 +160,20 @@
                         <tbody>
                         <tr>
                             <td><div class="strong">Subtotal:</div></td>
-                            <td><div class="price">$<?php echo $cart->subtotal(); ?></div></td>
+                            <td><div class="price"><?php echo \Shop\Models\Currency::format( $cart->subtotal() ); ?></div></td>
                         </tr>
                         <tr>
                             <td><div class="strong">Shipping <small>(est)</small>:</div></td>
-                            <td><div class="price">$<?php echo $cart->shippingEstimate(); ?></div></td>
+                            <td><div class="price"><?php echo \Shop\Models\Currency::format( $cart->shippingEstimate() ); ?></div></td>
                         </tr>
                         <tr>
                             <td><div class="strong">Tax <small>(est)</small>:</div></td>
-                            <td><div class="price">$<?php echo $cart->taxEstimate(); ?></div></td>
+                            <td><div class="price"><?php echo \Shop\Models\Currency::format( $cart->taxEstimate() ); ?></div></td>
                         </tr>
                         </tbody>
                         <tfoot>
                             <td><div class="strong">Total <small>(est)</small>:</div></td>
-                            <td><div class="price">$<?php echo $cart->total(); ?></div></td>
+                            <td><div class="price"><?php echo \Shop\Models\Currency::format( $cart->total() ); ?></div></td>
                         </tfoot>
                     </table>
                 </div>

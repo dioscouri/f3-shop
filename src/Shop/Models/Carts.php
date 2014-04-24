@@ -483,7 +483,7 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
     /**
      * Gets the subtotal
      * 
-     * @return number
+     * @return float
      */
     public function subtotal()
     {
@@ -498,7 +498,7 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
             $subtotal += static::calcItemSubtotal( $item );
         }
         
-        return $subtotal;
+        return (float) $subtotal;
     }
     
     /**
@@ -524,7 +524,7 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
             }
         }
         
-        return $total;        
+        return (float) $total;        
     }
     
     /**
@@ -534,7 +534,7 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
     public function shippingEstimate()
     {
         $estimate = 0;
-        return $estimate;
+        return (float) $estimate;
     }
     
     /**
@@ -544,7 +544,7 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
     public function taxEstimate()
     {
         $estimate = 0;
-        return $estimate;
+        return (float) $estimate;
     }
     
     /**
@@ -569,7 +569,7 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
             $total = $total + $this->taxEstimate();
         }
     
-        return $total;
+        return (float) $total;
     }
     
     /**
@@ -585,7 +585,7 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
         	$total = $shippingMethod->total();
         }
         
-        return $total;
+        return (float) $total;
     }
     
     /**
@@ -605,7 +605,7 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
         	}
         }
         
-        return $total;
+        return (float) $total;
     }
     
     /**
@@ -616,7 +616,7 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
     public function discountTotal()
     {
         $discount = 0;
-        return $discount;
+        return (float) $discount;
     }
     
     /**
@@ -627,7 +627,7 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
     public function creditTotal()
     {
         $credit = 0;
-        return $credit;
+        return (float) $credit;
     }    
     
     /**

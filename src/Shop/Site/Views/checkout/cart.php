@@ -30,12 +30,12 @@
                     <div>
                         <span class="quantity"><?php echo \Dsc\ArrayHelper::get($item, 'quantity'); ?></span>
                         x
-                        <span class="price">$<?php echo \Dsc\ArrayHelper::get($item, 'price'); ?></span> 
+                        <span class="price"><?php echo \Shop\Models\Currency::format( \Dsc\ArrayHelper::get($item, 'price') ); ?></span> 
                     </div>
                     
                 </td>
                 <td>
-                    <div class="subtotal">$<?php echo $cart->calcItemSubtotal( $item ); ?></div>
+                    <div class="subtotal"><?php echo \Shop\Models\Currency::format( $cart->calcItemSubtotal( $item ) ); ?></div>
                 </td>
             </tr>
         <?php } ?>
@@ -50,7 +50,7 @@
             <tbody>
                 <tr>
                     <td><div class="strong">Subtotal:</div></td>
-                    <td><div class="price">$<?php echo $cart->subtotal(); ?></div></td>
+                    <td><div class="price"><?php echo \Shop\Models\Currency::format( $cart->subtotal() ); ?></div></td>
                 </tr>
                 <tr>
                     <td><div class="strong">
@@ -58,10 +58,10 @@
                         </div></td>
                     <td><div class="price">
                         <?php if (!$shippingMethod = $cart->shippingMethod()) {
-                            echo '$' . $cart->shippingEstimate();
+                            echo \Shop\Models\Currency::format( $cart->shippingEstimate() );
                             echo ' <small>(est)</small>';
                         } else {
-                        	echo '$' . $shippingMethod->total();
+                        	echo \Shop\Models\Currency::format( $shippingMethod->total() );
                         }
                         ?>
                     </div></td>
@@ -72,10 +72,10 @@
                         </div></td>
                     <td><div class="price">
                         <?php if (!$shippingMethod = $cart->shippingMethod()) {
-                            echo '$' . $cart->taxEstimate();
+                            echo \Shop\Models\Currency::format( $cart->taxEstimate() );
                             echo ' <small>(est)</small>';
                         } else {
-                        	echo '$' . $cart->taxTotal();
+                        	echo \Shop\Models\Currency::format( $cart->taxTotal() );
                         }
                         ?>                    
                     </div></td>
@@ -85,7 +85,7 @@
                 <td><div class="strong">
                         Total<?php if (!$shippingMethod = $cart->shippingMethod()) { ?> <small>(est)</small> <?php } ?>:
                     </div></td>
-                <td><div class="price">$<?php echo $cart->total(); ?></div></td>
+                <td><div class="price"><?php echo \Shop\Models\Currency::format( $cart->total() ); ?></div></td>
             </tfoot>
         </table>
     </div>

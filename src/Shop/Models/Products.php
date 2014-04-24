@@ -435,7 +435,7 @@ class Products extends \Dsc\Mongo\Collections\Content implements \MassUpdate\Ser
         $item = new \Search\Models\Item(array(
         	'url' => './shop/product/' . $this->slug,
             'title' => $this->title,
-            'subtitle' => '',
+            'subtitle' => $this->{'tracking.sku'},
             'image' => $image,
             'summary' => $this->description,
             'datetime' => null,
