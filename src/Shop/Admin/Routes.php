@@ -59,8 +59,6 @@ class Routes extends \Dsc\Routes\Group
             'action' => 'getCheckboxes' 
         ) );
         
-        $this->addCrudList( 'Assets' );
-        
         $this->addCrudGroup( 'Countries', 'Country' );
         $this->add( '/countries/forSelection [ajax]', 'GET|POST', array(
             'controller' => 'Countries',
