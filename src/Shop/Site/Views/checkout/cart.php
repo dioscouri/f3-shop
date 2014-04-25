@@ -7,6 +7,21 @@
                     <td><div class="strong">Subtotal:</div></td>
                     <td><div class="price"><?php echo \Shop\Models\Currency::format( $cart->subtotal() ); ?></div></td>
                 </tr>
+                <?php if ($user_coupons = $cart->userCoupons()) { \Dsc\System::instance()->get( 'session' )->set( 'site.removecoupon.redirect', '/shop/checkout' ); ?>
+                    <?php foreach ($user_coupons as $coupon) { ?>
+                        <tr class="coupon">
+                            <td>
+                                <div class="row">
+                                    <div class="col-xs-8"><div class="strong">Coupon:<br/><?php echo $coupon['code']; ?></div></div>
+                                    <div class="col-xs-4"><a href="./shop/cart/removeCoupon/<?php echo $coupon['code']; ?>" class="btn btn-default custom-button"><i class="glyphicon glyphicon-remove"></i></a></div>
+                                </div>
+                            </td>
+                            <td class="col-xs-6">
+                                <div class="price">-$$$$</div>
+                            </td>                            
+                        </tr>
+                    <?php } ?>
+                <?php } ?>                
                 <tr>
                     <td><div class="strong">
                             Shipping:
@@ -45,6 +60,28 @@
         </table>
     </div>
 </div>
+
+<?php if (empty($user_coupons)) { \Dsc\System::instance()->get( 'session' )->set( 'site.addcoupon.redirect', '/shop/checkout' ); ?>
+<div class="margin-top">
+    <div class="row">
+        <div class="col-md-12">
+            <div id="coupon">
+                <form class="form" role="form" action="./shop/cart/addCoupon" method="post">
+                    <div class="form-group">
+                        <label>Have a Coupon?</label>
+                        <div class="input-group">
+                            <input type="text" name="coupon_code" class="form-control" id="inputCouponCode" placeholder="Coupon Code">
+                            <span class="input-group-btn">
+                                <button class="btn btn-default" type="submit">Add</button>
+                            </span>                  
+                        </div>                          
+                    </div>                                    
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<?php } ?>
 
 <div class="table-responsive checkout-cart margin-top">
     <table class="table">

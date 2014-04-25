@@ -173,6 +173,12 @@ class Cart extends \Dsc\Controller
     public function addCoupon()
     {
         $f3 = \Base::instance();
+
+        $redirect = '/shop/cart';
+        if ($custom_redirect = \Dsc\System::instance()->get( 'session' )->get( 'site.addcoupon.redirect' ))
+        {
+            $redirect = $custom_redirect;
+        }
         
         // -----------------------------------------------------
         // Start: validation
@@ -195,7 +201,7 @@ class Cart extends \Dsc\Controller
                 ) ) );
             } else {
                 \Dsc\System::addMessage($e->getMessage(), 'error');
-                $f3->reroute('/shop/cart');
+                $f3->reroute($redirect);
                 return;
             }
         }
@@ -218,7 +224,7 @@ class Cart extends \Dsc\Controller
             } else {
                 \Dsc\System::addMessage('Coupon not added to cart', 'error');
                 \Dsc\System::addMessage($e->getMessage(), 'error');
-                $f3->reroute('/shop/cart');
+                $f3->reroute($redirect);
                 return;
             }
         }
@@ -232,7 +238,7 @@ class Cart extends \Dsc\Controller
             ) ) );        
         } else {
             \Dsc\System::addMessage('Added coupon: ' . $coupon_code);
-            $f3->reroute('/shop/cart');
+            $f3->reroute($redirect);
         }
     }
     
@@ -242,7 +248,13 @@ class Cart extends \Dsc\Controller
     public function removeCoupon()
     {
         $f3 = \Base::instance();
-    
+        
+        $redirect = '/shop/cart';
+        if ($custom_redirect = \Dsc\System::instance()->get( 'session' )->get( 'site.removecoupon.redirect' ))
+        {
+            $redirect = $custom_redirect;
+        }
+            
         // -----------------------------------------------------
         // Start: validation
         // -----------------------------------------------------
@@ -283,7 +295,7 @@ class Cart extends \Dsc\Controller
             ) ) );
         } else {
             \Dsc\System::addMessage('Coupon removed from cart');
-            $f3->reroute('/shop/cart');
+            $f3->reroute($redirect);
         }
     }
 }
