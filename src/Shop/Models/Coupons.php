@@ -69,7 +69,16 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
         }
         
         if (!empty($this->groups) && is_array($this->groups)) {
+            $groups = array();
             $this->groups = array_values($this->groups);
+            foreach ($this->groups as $group) 
+            {
+            	if (!empty($group)) 
+            	{
+            		$groups[] = $group;
+            	}
+            }
+            $this->set('groups', $groups);
         }
     
         return parent::beforeSave();

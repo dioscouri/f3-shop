@@ -9,9 +9,15 @@ class Customer extends \Users\Models\Users
      * 
      * @return \Users\Models\Groups
      */
-    public function getGroup()
+    public static function primaryGroup( \Users\Models\Users $user )
     {
-        $group = new \Users\Models\Groups; 
+        // TODO Set this to be a default group, as configured in the Shop config?
+        $group = new \Users\Models\Groups;
+        
+        if ($groups = $user->groups()) 
+        {
+        	$group = $groups[0];
+        }
         
         return $group;
     }

@@ -199,7 +199,7 @@ jQuery(document).ready(function() {
                 <?php foreach ($groups as $one) { ?>
                 <div class="checkbox">
                     <label>
-                        <input type="checkbox" name="groups[]" class="icheck-input" value="<?php echo $one->_id; ?>" <?php if (in_array($one->_id, $flash->old('groups'))) { echo "checked='checked'"; } ?>>
+                        <input type="checkbox" name="groups[]" class="icheck-input" value="<?php echo $one->_id; ?>" <?php if (in_array($one->_id, (array) $flash->old('groups'))) { echo "checked='checked'"; } ?>>
                         <?php echo $one->name;  ?>
                     </label>
                 </div>
