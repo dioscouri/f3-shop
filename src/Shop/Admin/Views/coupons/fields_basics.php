@@ -18,7 +18,7 @@
         <div class="form-group">
             <label>Code</label>
             <input type="text" name="code" placeholder="Code" value="<?php echo $flash->old('code'); ?>" class="form-control" />
-            <p class="help-block">This is the code that customers must submit to get the discount.</p>
+            <p class="help-block">This is the code that customers must submit to get the discount. It must be unique and it is not case sensitive.</p>
         </div>
         <!-- /.form-group -->
         

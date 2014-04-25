@@ -74,6 +74,16 @@ class Routes extends \Dsc\Routes\Group
             'action' => 'updateQuantities' 
         ) );
         
+        $this->add( '/cart/addCoupon', 'POST', array(
+            'controller' => 'Cart',
+            'action' => 'addCoupon'
+        ) );        
+        
+        $this->add( '/cart/removeCoupon/@code', 'GET|POST', array(
+            'controller' => 'Cart',
+            'action' => 'removeCoupon'
+        ) );
+        
         $this->add( '/wishlists', 'GET|POST', array(
             'controller' => 'Wishlist',
             'action' => 'index' 

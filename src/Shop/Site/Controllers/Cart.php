@@ -120,7 +120,9 @@ class Cart extends \Dsc\Controller
             // otherwise redirect to cart
         
         if ($f3->get('AJAX')) {
-        
+            return $this->outputJson( $this->getJsonResponse( array(
+                'result'=>true
+            ) ) );        
         } else {
             \Dsc\System::addMessage('Item removed from cart');
             $f3->reroute('/shop/cart');
@@ -156,11 +158,132 @@ class Cart extends \Dsc\Controller
             // otherwise redirect to cart
         
         if ($f3->get('AJAX')) {
-        
+            return $this->outputJson( $this->getJsonResponse( array(
+                'result'=>true
+            ) ) );        
         } else {
             \Dsc\System::addMessage('Quantities updated');
             $f3->reroute('/shop/cart');
         }
+    }
+
+    /**
+     * 
+     */
+    public function addCoupon()
+    {
+        $f3 = \Base::instance();
         
-    }    
+        // -----------------------------------------------------
+        // Start: validation
+        // -----------------------------------------------------
+        $coupon_code = $this->input->get( 'coupon_code', null, 'string' );
+        
+        // load the product
+        try {
+            // load the coupon, and if it exists, try to add it to the cart
+            $coupon = (new \Shop\Models\Coupons)->load(array('code'=>$coupon_code));
+            if (empty($coupon->id)) 
+            {
+            	throw new \Exception('Invalid Coupon Code');
+            }
+                
+        } catch (\Exception $e) {
+            if ($f3->get('AJAX')) {
+                return $this->outputJson( $this->getJsonResponse( array(
+                    'result'=>false
+                ) ) );
+            } else {
+                \Dsc\System::addMessage($e->getMessage(), 'error');
+                $f3->reroute('/shop/cart');
+                return;
+            }
+        }
+        // -----------------------------------------------------
+        // End: validation
+        // -----------------------------------------------------
+
+        $cart = \Shop\Models\Carts::fetch();
+        
+        // -----------------------------------------------------
+        // Start: add the item
+        // -----------------------------------------------------        
+        try {
+            $cart->addCoupon( $coupon );
+        } catch (\Exception $e) {
+            if ($f3->get('AJAX')) {
+                return $this->outputJson( $this->getJsonResponse( array(
+                    'result'=>false
+                ) ) );
+            } else {
+                \Dsc\System::addMessage('Coupon not added to cart', 'error');
+                \Dsc\System::addMessage($e->getMessage(), 'error');
+                $f3->reroute('/shop/cart');
+                return;
+            }
+        }
+        // -----------------------------------------------------
+        // End: add the item
+        // -----------------------------------------------------                
+        
+        if ($f3->get('AJAX')) {
+            return $this->outputJson( $this->getJsonResponse( array(
+                'result'=>true
+            ) ) );        
+        } else {
+            \Dsc\System::addMessage('Added coupon: ' . $coupon_code);
+            $f3->reroute('/shop/cart');
+        }
+    }
+    
+    /**
+     * Remove an item from the cart
+     */
+    public function removeCoupon()
+    {
+        $f3 = \Base::instance();
+    
+        // -----------------------------------------------------
+        // Start: validation
+        // -----------------------------------------------------
+        // TODO validate the POST values
+        // min: cartitem_hash
+        $code = $this->inputfilter->clean( $f3->get('PARAMS.code'), 'string' );
+    
+        // TODO if validation fails, respond appropriately
+        if ($f3->get('AJAX')) {
+    
+        } else {
+    
+        }
+        // -----------------------------------------------------
+        // End: validation
+        // -----------------------------------------------------
+    
+        // get the current user's cart, either based on session_id (visitor) or user_id (logged-in)
+        $cart = \Shop\Models\Carts::fetch();
+    
+        // remove the item
+        try {
+            $cart->removeCoupon( $code );
+        } catch (\Exception $e) {
+            // TODO respond appropriately with failure message
+            // return;
+        }
+    
+        //echo \Dsc\Debug::dump( $cart );
+    
+        // TODO respond appropriately
+        // ajax?  send response object
+        // otherwise redirect to cart
+    
+        if ($f3->get('AJAX')) {
+            return $this->outputJson( $this->getJsonResponse( array(
+                'result'=>true
+            ) ) );
+        } else {
+            \Dsc\System::addMessage('Coupon removed from cart');
+            $f3->reroute('/shop/cart');
+        }
+    }
 }

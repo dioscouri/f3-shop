@@ -95,9 +95,9 @@
             <table class="table table-striped table-bordered table-hover table-highlight table-checkable">
         	<thead>
         		<tr>
-        		    <th class="checkbox-column"><input type="checkbox" class="icheck-input"></th>
+        		    <th class="checkbox-column col-md-1"><input type="checkbox" class="icheck-input"></th>
         			<th>Title</th>
-        			<th>Slug</th>
+        			<th class="col-md-2">Code</th>
         			<th class="col-md-1"></th>
         		</tr>
         	</thead>
@@ -119,7 +119,7 @@
                     
                     <td class="">
                         <a href="./admin/shop/coupon/edit/<?php echo $item->_id; ?>">
-                        <?php echo $item->slug; ?>
+                        <?php echo $item->code; ?>
                         </a>
                     </td>
                                     

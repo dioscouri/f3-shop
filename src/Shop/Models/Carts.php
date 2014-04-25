@@ -1018,5 +1018,83 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
         return $default ? $default : \Shop\Models\Settings::fetch()->{'country'};
     }
     
+
+    /**
+     * Adds a coupon code to the cart,
+     * performing validations first
+     *
+     * @param \Shop\Models\Coupons $coupon
+     * @return \Shop\Models\Carts
+     */
+    public function addCoupon( \Shop\Models\Coupons $coupon )
+    {
+        // TODO validate that the coupon can be added to this cart
+        // TODO push it into the coupons stack.  automatic vs user coupons can be parsed on the usage_automatic field
+        $exists = false;
+        foreach ((array) $this->coupons as $key=>$item)
+        {
+            if ($item['code'] == $coupon->code)
+            {
+                $exists = true;
+                break;
+            }
+        }
     
+        if (!$exists) {
+            $this->coupons[] = $coupon->cast();
+        }
+
+        return $this->save();
+    }
+    
+    /**
+     * Removes a coupon from the cart
+     *
+     * @param string $code
+     * @return \Shop\Models\Carts
+     */
+    public function removeCoupon( $code )
+    {
+        $exists = false;
+        foreach ($this->coupons as $key=>$item)
+        {
+            if ($item['code'] == $code)
+            {
+                $exists = true;
+                unset($this->coupons[$key]);
+    
+                break;
+            }
+        }
+    
+        if ($exists) {
+            $this->save();
+        }
+    
+        return $this;
+    }
+    
+    /**
+     * Gets the user-submitted coupons from the cart
+     * 
+     * @return multitype:
+     */
+    public function userCoupons()
+    {
+        if (empty($this->coupons)) 
+        {
+        	return array();
+        }
+
+        $coupons = array();
+        foreach ($this->coupons as $coupon)
+        {
+        	if (empty($coupon['usage_automatic'])) 
+        	{
+        	    $coupons[] = $coupon;
+        	}
+        }
+        
+        return $coupons;
+    }
 }

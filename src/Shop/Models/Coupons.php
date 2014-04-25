@@ -6,8 +6,42 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
     protected $__collection_name = 'shop.coupons';
     protected $__type = 'shop.coupons';
     
+    public function validate() 
+    {
+        // the lower-case version of the code must be unique
+        if (empty($this->code)) 
+        {
+        	$this->setError('A code is required');
+        }
+        elseif (!empty($this->code) && $existing = $this->codeExists( $this->code )) 
+        {
+            if ((empty($this->id) || $this->id != $existing->id))
+            {
+                $this->setError('This code already exists');
+            }
+        }
+        
+    	return parent::validate();
+    }
+    
+    public function codeExists( $code )
+    {
+        $code = strtolower($code);
+        
+        $clone = (new static)->load(array('code'=>$code));
+    
+        if (!empty($clone->id)) {
+            return $clone;
+        }
+    
+        return false;
+    }
+    
     protected function beforeSave()
     {
+        // convert the code to lowercase
+        $this->code = strtolower( $this->code );
+        
         if (!empty($this->discount_target_products) && !is_array($this->discount_target_products))
         {
             $this->discount_target_products = trim($this->discount_target_products);
