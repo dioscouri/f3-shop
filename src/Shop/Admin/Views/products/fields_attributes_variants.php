@@ -53,6 +53,10 @@
                                             <?php echo $flash->old('variants.'.$key.'.id') ? $flash->old('variants.'.$key.'.id') : $variant['id']; ?>
                                         </div>
                                     </div>
+                                    <div class="text-muted">
+                                        <label>Key:</label>
+                                        <?php echo $flash->old('variants.'.$key.'.attributes') ? implode("-", (array) $flash->old('variants.'.$key.'.attributes')) : $variant['key']; ?>
+                                    </div>                                    
                                     <input type="hidden" name="variants[<?php echo $key; ?>][id]" value="<?php echo $flash->old('variants.'.$key.'.id') ? $flash->old('variants.'.$key.'.id') : $variant['id']; ?>" />
                                     <input type="hidden" name="variants[<?php echo $key; ?>][key]" value="<?php echo $flash->old('variants.'.$key.'.attributes') ? implode("-", (array) $flash->old('variants.'.$key.'.attributes')) : $variant['key']; ?>" />
                                     <input type="hidden" name="variants[<?php echo $key; ?>][attribute_title]" value="<?php echo implode("&nbsp;|&nbsp;", (array) $variant['titles']); ?>" />
@@ -105,25 +109,12 @@
                                             </div>
                                             <div class="col-md-5">
                                                 <label><small>Image Slug</small></label>
-                                                <input type="text" name="variants[<?php echo $key; ?>][image]" class="form-control input-sm" value="<?php echo $flash->old('variants.'.$key.'.image'); ?>" />
+                                                <?php echo \Assets\Admin\Controllers\Assets::instance()->fetchElementImage( 'variants_'.$key.'_image', $flash->old('variants.'.$key.'.image'), array('field'=>'variants['.$key.'][image]') ); ?>
                                             </div>
                                         </div>
                                             
                                     
                                     </div>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <div class="row">
-                                    <div class="col-md-3">
-    
-                                    </div>
-                                    <div class="col-md-9">
-                                        <div class="text-muted">
-                                            <label>Key:</label>
-                                            <?php echo $flash->old('variants.'.$key.'.attributes') ? implode("-", (array) $flash->old('variants.'.$key.'.attributes')) : $variant['key']; ?>
-                                        </div>
-                                    </div>                            
                                 </div>
                             </div>
                         </div>
