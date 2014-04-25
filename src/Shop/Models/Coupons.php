@@ -3,6 +3,8 @@ namespace Shop\Models;
 
 class Coupons extends \Dsc\Mongo\Collections\Describable 
 {
+    protected $__is_validated = null;
+    
     protected $__collection_name = 'shop.coupons';
     protected $__type = 'shop.coupons';
     
@@ -41,6 +43,7 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
     {
         // convert the code to lowercase
         $this->code = strtolower( $this->code );
+        $this->discount_value = (float) $this->discount_value;
         
         if (!empty($this->discount_target_products) && !is_array($this->discount_target_products))
         {
@@ -116,5 +119,62 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
         }
     
         return parent::beforeSave();
+    }
+
+    /**
+     * Determines if this coupon is valid for a cart
+     * 
+     * @param \Shop\Models\Carts $cart
+     * @throws \Exception
+     */
+    public function cartValid( \Shop\Models\Carts $cart )
+    {
+        // sets __is_validated to a boolean, so use === in comparing later
+        $this->__is_validated = true; // YES, cart can use this coupon
+        $this->__is_validated = false; // NO, cart cannot use this coupon
+
+        // TODO Do the actual validation!
+
+        if ($this->__is_validated === false)
+        {
+            throw new \Exception('Coupon cannot be added to this cart');
+        }
+        
+        return $this->__is_validated;
+    }
+    
+    /**
+     * Calculates the value of this coupon against the data in a cart
+     * 
+     * @param \Shop\Models\Carts $cart
+     * @return number
+     */
+    public function cartValue( \Shop\Models\Carts $cart ) 
+    {
+    	$value = 0;
+    	
+    	// check if the coupon has been validated against this cart
+    	if ($this->__is_validated === null) 
+    	{
+    	    // throws an exception
+    		$this->cartValid( $cart );
+    	}
+    	
+    	// TODO depending on where this coupon's discount is applied, get it's corresponding value
+    	switch ($this->discount_applied) 
+    	{
+    		case "order_subtotal":
+    		    break;
+		    case "order_shipping":
+		        break;
+	        case "product_subtotal":
+	            break;
+            case "product_shipping":
+                break;
+    	}
+    	
+    	$value = 1;
+    	
+    	return $value;
     }
 }

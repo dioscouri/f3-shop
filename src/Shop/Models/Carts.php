@@ -1028,7 +1028,9 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
      */
     public function addCoupon( \Shop\Models\Coupons $coupon )
     {
-        // TODO validate that the coupon can be added to this cart
+        // validate that the coupon can be added to this cart
+        $coupon->cartValid( $this );
+        
         // TODO push it into the coupons stack.  automatic vs user coupons can be parsed on the usage_automatic field
         $exists = false;
         foreach ((array) $this->coupons as $key=>$item)
@@ -1041,7 +1043,9 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
         }
     
         if (!$exists) {
-            $this->coupons[] = $coupon->cast();
+            $cast = $coupon->cast();
+            $cast['amount'] = $coupon->cartValue( $this );
+            $this->coupons[] = $cast;
         }
 
         return $this->save();
@@ -1072,6 +1076,35 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
         }
     
         return $this;
+    }
+    
+    /**
+     * Calculates the value of a coupon against the data in this cart.
+     * Is a wrapper for the same method in Models\Coupons to ease getting the value from
+     * a stored cart 
+     * 
+     * @return number
+     */
+    public function calcCouponValue( $coupon )
+    {
+        $value = 0;
+        
+        if (is_object($coupon) && is_a($coupon, '\Shop\Models\Coupons') ) 
+        {
+        	// do nothing
+        }
+        elseif (is_array($coupon) || is_object($coupon)) 
+        {
+        	$coupon = new \Shop\Models\Coupons( $coupon );
+        } 
+        else 
+        {
+        	throw new \Exception('Cannot calculate value of invalid coupon');
+        }
+        
+        $value = $coupon->cartValue( $this );
+        
+        return $value;
     }
     
     /**

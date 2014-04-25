@@ -102,7 +102,7 @@
                                             </div>
                                         </td>
                                         <td class="col-xs-6">
-                                            <div class="price">-$$$$</div>
+                                            <div class="price">-<?php echo \Shop\Models\Currency::format( \Dsc\ArrayHelper::get($coupon, 'amount') ); ?></div>
                                         </td>                            
                                     </tr>
                                 <?php } ?>
