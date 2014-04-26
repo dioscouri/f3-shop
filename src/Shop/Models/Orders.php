@@ -160,7 +160,10 @@ class Orders extends \Dsc\Mongo\Collections\Nodes
         $order->billing_address = $cart->{'checkout.billing_address'};
         
         // TODO Taxes
-        // TODO Coupons
+        
+        // Coupons
+        $order->coupons = $cart->{'coupons'};
+        
         // TODO Discounts
         // TODO Credits
         
