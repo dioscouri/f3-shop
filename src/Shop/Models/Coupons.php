@@ -3,8 +3,37 @@ namespace Shop\Models;
 
 class Coupons extends \Dsc\Mongo\Collections\Describable 
 {
-    protected $__is_validated = null;
+    public $code;
+    public $discount_value; 
+    public $discount_type;
+    public $discount_currency;
+    public $discount_applied;
+    public $discount_target_products = array();
+    public $discount_target_shipping_methods = array();
+    public $usage_max;
+    public $usage_max_per_customer;
+    public $usage_with_others;
+    public $usage_automatic;
+    public $max_value;
+    public $max_value_currency;
+    public $required_products = array();
+    public $min_order_amount;
+    public $min_order_amount_currency;
+    public $geo_address_type;
+    public $geo_countries = array();
+    public $geo_regions = array();
+    public $groups = array();
+    public $publication = array(
+        'status' => 'unpublished',
+        'start_date' => null,
+        'start_time' => null,
+        'end_date' => null,
+        'end_time' => null,
+        'start' => null,
+        'end' => null
+    );    
     
+    protected $__is_validated = null;    
     protected $__collection_name = 'shop.coupons';
     protected $__type = 'shop.coupons';
     
