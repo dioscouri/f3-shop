@@ -401,17 +401,142 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
     	switch ($this->discount_applied) 
     	{
     		case "order_subtotal":
+    		    if ($this->discount_type == 'flat-rate') 
+    		    {
+    		        // TODO Take the discount_currency into account
+    		    	$value = $this->discount_value;
+    		    } 
+    		    elseif ($this->discount_type == 'percentage') 
+    		    {
+    		        $value = ($this->discount_value/100) * $cart->subtotal();
+    		    }
+    		    
+    		    // coupon value cannot be greater than order value
+    		    if ($value > $cart->subtotal())
+    		    {
+    		        $value = $cart->subtotal();
+    		    }
+    		        		    
     		    break;
 		    case "order_shipping":
+		        if ($this->discount_type == 'flat-rate')
+		        {
+		            // TODO Take the discount_currency into account
+		            $value = $this->discount_value;
+		        }
+		        elseif ($this->discount_type == 'percentage')
+		        {
+		            $value = ($this->discount_value/100) * $cart->shippingTotal();
+		        }
+		        
+		        // coupon value cannot be greater than order shipping cost
+		        if ($value > $cart->shippingTotal()) 
+		        {
+		            $value = $cart->shippingTotal();
+		        }
+		        
 		        break;
 	        case "product_subtotal":
+	            // if discount_target_products is empty, then for each product in the cart, apply the discount
+	            if (empty($this->discount_target_products)) 
+	            {
+	            	foreach ($cart->items as $cartitem) 
+	            	{
+	            	    if ($this->discount_type == 'flat-rate')
+	            	    {
+	            	        // TODO Take the discount_currency into account
+	            	        $value += $this->discount_value;
+	            	    }
+	            	    elseif ($this->discount_type == 'percentage')
+	            	    {
+	            	        $value += ($this->discount_value/100) * $cart->calcItemSubtotal( $cartitem );
+	            	    }	            		
+	            	}
+	            }
+	            // else, apply it only to the products in discount_target_products
+	            else 
+	            {
+	                foreach ($cart->items as $cartitem)
+	                {
+	                    // is this product a discount_target_product?
+	                    if (in_array((string) $cartitem['product_id'], $this->discount_target_products )) 
+	                    {
+	                        if ($this->discount_type == 'flat-rate')
+	                        {
+	                            // TODO Take the discount_currency into account
+	                            $value += $this->discount_value;
+	                        }
+	                        elseif ($this->discount_type == 'percentage')
+	                        {
+	                            $value += ($this->discount_value/100) * $cart->calcItemSubtotal( $cartitem );
+	                        }	                    	
+	                    }
+	                }
+	            } 
+
+	            // coupon value cannot be greater than order value
+	            if ($value > $cart->subtotal())
+	            {
+	                $value = $cart->subtotal();
+	            }
+	            
 	            break;
             case "product_shipping":
+
+                // if discount_target_products is empty, then this is just the same thing as an order shipping discount
+                if (empty($this->discount_target_products))
+                {
+                    if ($this->discount_type == 'flat-rate')
+                    {
+                        // TODO Take the discount_currency into account
+                        $value = $this->discount_value;
+                    }
+                    elseif ($this->discount_type == 'percentage')
+                    {
+                        $value = ($this->discount_value/100) * $cart->shippingTotal();
+                    }
+                    
+                }
+                // else, apply it only to the products in discount_target_products
+                else
+                {
+                    foreach ($cart->items as $cartitem)
+                    {
+                        // is this product a discount_target_product?
+                        if (in_array((string) $cartitem['product_id'], $this->discount_target_products ))
+                        {
+                            
+                            if ($this->discount_type == 'flat-rate')
+                            {
+                                // TODO Take the discount_currency into account
+                                $value += $this->discount_value;
+                            }
+                            elseif ($this->discount_type == 'percentage')
+                            {
+                                // trigger an event with these arguments: (cartitem, selected shipping method, and cart)
+                                // and let the Listeners determine the shipping cost for that product
+                                $event = \Dsc\System::instance()->trigger( 'onFetchShippingRateForProduct', array(
+                                    'cart' => $cart,
+                                    'cartitem' => $cartitem,
+                                    'method' => $cart->shippingMethod(),
+                                    'rate' => 0
+                                ) );
+                                $rate = $event->getArgument('rate');
+
+                                // since this is a percentage-based coupon, calculate its value based on the rate                                
+                                $value = ($this->discount_value/100) * $rate;
+                            }
+                        }
+                    }
+                }                
+                
+                // coupon value cannot be greater than order shipping cost
+                if ($value > $cart->shippingTotal())
+                {
+                    $value = $cart->shippingTotal();
+                }
                 break;
     	}
-    	
-    	// TODO remove this testing value
-    	$value = 6.54;
     	
     	if (strlen($this->max_value) && $value > $this->max_value) 
     	{

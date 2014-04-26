@@ -40,7 +40,7 @@
         <h3>Discount</h3>
         <p class="help-block">Here you define the coupon's discount, as well as where the discount is applied.</p>
         <p class="help-block">For example, if want to offer free 2-day shipping while leaving all other shipping methods at regular price, add "2-day shipping" to your list of Target Shipping Methods, set 'Applied To' to "Order Shipping Costs", and set the discount value to 100%.</p>
-        <p class="help-block">If you want to offer free sunglasses with the purchase of a t-shirt, add "sunglasses" to your Target Products, set the discount value to 100%, and add "t-shirt" to the list of Products under the "Rules" tab.</p>
+        <p class="help-block">If you want to offer free sunglasses with the purchase of a t-shirt, add "sunglasses" to your Target Products, set 'Applied To' to "Product Subtotal", set the discount value to 100%, and add "t-shirt" to the list of Required Products under the "Rules" tab.</p>
                 
     </div>
     <!-- /.col-md-2 -->

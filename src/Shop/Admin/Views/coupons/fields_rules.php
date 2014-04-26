@@ -5,7 +5,7 @@
 <div class="row">
     <div class="col-md-2">
         
-        <h3>Products</h3>
+        <h3>Required Products</h3>
         <p class="help-block">This coupon will only be applied if the shopper has one of these products in their cart.</p>
                 
     </div>
