@@ -187,7 +187,7 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
         	}
         }
         
-        // TODO using geo_address_type (shipping/billing) from the cart, check that it is in geo_countries | geo_regions (if either is set)
+        // using geo_address_type (shipping/billing) from the cart, check that it is in geo_countries | geo_regions (if either is set)
         if (!empty($this->geo_countries) || !empty($this->geo_regions)) 
         {
         	// ok, so which of the addresses should we evaluate?
@@ -231,9 +231,33 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
         }
         
         // TODO Check the usage of the coupon
+        if (strlen($this->usage_max)) {
         // usage_max = number of times TOTAL that the coupon may be used
+            // count the orders with coupon.code 
+            $total_count = (new \Shop\Models\Orders)->collection()->count(array(
+            	'coupons.code' => $this->code
+            ));
+            
+            if ((int) $this->usage_max <= (int) $total_count) {
+                throw new \Exception('Coupon cannot be used any more');
+            }
+        }
+
+        if (strlen($this->usage_max_per_customer)) {
         // usage_max_per_customer = number of times this customer may use this coupon
-        // if usage_with_others == 1 && there are other coupons in the cart, fail
+            // count the orders with coupon.code for user.id
+            $user_count = (new \Shop\Models\Orders)->collection()->count(array(
+                'coupons.code' => $this->code,
+                'user_id' => $cart->user_id
+            ));
+            
+            if ((int) $this->usage_max_per_customer <= (int) $user_count) {
+                throw new \Exception('You cannot use this coupon any more');
+            }
+        }
+        
+        // TODO if usage_with_others == 1 && there are other coupons in the cart, fail
+            // i think this is being handled already
          
         
         // if we made it this far, the cart is valid for this coupon

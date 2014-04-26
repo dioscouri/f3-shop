@@ -568,6 +568,8 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
             $total = $total + $this->shippingEstimate();
             $total = $total + $this->taxEstimate();
         }
+        
+        $total = $total - $this->discountTotal();
     
         return (float) $total;
     }
@@ -616,6 +618,12 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
     public function discountTotal()
     {
         $discount = 0;
+        
+        foreach ($this->coupons as $coupon) 
+        {
+        	$discount = $discount + $coupon['amount'];
+        }
+        
         return (float) $discount;
     }
     
