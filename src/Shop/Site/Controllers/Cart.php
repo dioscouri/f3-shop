@@ -179,6 +179,7 @@ class Cart extends \Dsc\Controller
         {
             $redirect = $custom_redirect;
         }
+        \Dsc\System::instance()->get( 'session' )->set( 'site.addcoupon.redirect', null );
         
         // -----------------------------------------------------
         // Start: validation
@@ -254,6 +255,7 @@ class Cart extends \Dsc\Controller
         {
             $redirect = $custom_redirect;
         }
+        \Dsc\System::instance()->get( 'session' )->set( 'site.removecoupon.redirect', null );
             
         // -----------------------------------------------------
         // Start: validation

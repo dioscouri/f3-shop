@@ -3,23 +3,23 @@ namespace Shop\Models;
 
 class Coupons extends \Dsc\Mongo\Collections\Describable 
 {
-    public $code;
-    public $discount_value; 
-    public $discount_type;
-    public $discount_currency;
-    public $discount_applied;
+    public $code = null;
+    public $discount_value = null; 
+    public $discount_type = null;
+    public $discount_currency = null;
+    public $discount_applied = null;
     public $discount_target_products = array();
     public $discount_target_shipping_methods = array();
-    public $usage_max;
-    public $usage_max_per_customer;
-    public $usage_with_others;
-    public $usage_automatic;
-    public $max_value;
-    public $max_value_currency;
+    public $usage_max = null;
+    public $usage_max_per_customer = null;
+    public $usage_with_others = null;
+    public $usage_automatic = null;
+    public $max_value = null;
+    public $max_value_currency = null;
     public $required_products = array();
-    public $min_order_amount;
-    public $min_order_amount_currency;
-    public $geo_address_type;
+    public $min_order_amount = null;
+    public $min_order_amount_currency = null;
+    public $geo_address_type = null;
     public $geo_countries = array();
     public $geo_regions = array();
     public $groups = array();
@@ -413,7 +413,10 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
     	// TODO remove this testing value
     	$value = 6.54;
     	
-    	// if $value > $this->max_value, $value = $this->max_value
+    	if (strlen($this->max_value) && $value > $this->max_value) 
+    	{
+    	    $value = $this->max_value;
+    	}
     	
     	return $value;
     }

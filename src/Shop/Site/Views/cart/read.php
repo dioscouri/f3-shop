@@ -92,7 +92,7 @@
                                 <td><div class="strong">Subtotal:</div></td>
                                 <td><div class="price"><?php echo \Shop\Models\Currency::format( $cart->subtotal() ); ?></div></td>
                             </tr>
-                            <?php if ($user_coupons = $cart->userCoupons()) { ?>
+                            <?php if ($user_coupons = $cart->userCoupons()) { \Dsc\System::instance()->get( 'session' )->set( 'site.removecoupon.redirect', '/shop/cart' ); ?>
                                 <?php foreach ($user_coupons as $coupon) { ?>
                                     <tr class="coupon">
                                         <td>
@@ -151,7 +151,7 @@
                 </div>
             </div>
 
-            <?php if (empty($user_coupons)) { ?>
+            <?php if (empty($user_coupons)) { \Dsc\System::instance()->get( 'session' )->set( 'site.addcoupon.redirect', '/shop/cart' ); ?>
             <div class="margin-top">
                 <div class="row">
                     <div class="col-md-12">
