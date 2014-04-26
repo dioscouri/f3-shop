@@ -1166,4 +1166,28 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
         
         return $coupons;
     }
+    
+    /**
+     * Gets the automatic coupons from the cart
+     *
+     * @return multitype:
+     */
+    public function autoCoupons()
+    {
+        if (empty($this->coupons))
+        {
+            return array();
+        }
+    
+        $coupons = array();
+        foreach ($this->coupons as $coupon)
+        {
+            if (!empty($coupon['usage_automatic']))
+            {
+                $coupons[] = $coupon;
+            }
+        }
+    
+        return $coupons;
+    }
 }

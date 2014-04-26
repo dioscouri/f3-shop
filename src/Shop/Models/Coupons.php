@@ -8,6 +8,44 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
     protected $__collection_name = 'shop.coupons';
     protected $__type = 'shop.coupons';
     
+    protected function fetchConditions()
+    {
+        parent::fetchConditions();
+        
+        $filter_published_today = $this->getState('filter.published_today');
+        if (strlen($filter_published_today))
+        {
+            // add $and conditions to the query stack
+            if (!$and = $this->getCondition('$and')) {
+                $and = array();
+            }
+        
+            $and[] = array('$or' => array(
+                array('publication.start.time' => null),
+                array('publication.start.time' => array( '$lte' => time() )  )
+            ));
+        
+            $and[] = array('$or' => array(
+                array('publication.end.time' => null),
+                array('publication.end.time' => array( '$gt' => time() )  )
+            ));
+        
+            $this->setCondition('$and', $and);
+        }
+        
+        $filter_status = $this->getState('filter.publication_status');
+        if (strlen($filter_status))
+        {
+            $this->setCondition('publication.status', $filter_status);
+        }
+        
+        $filter_code = $this->getState('filter.code');
+        if (strlen($filter_code))
+        {
+            $this->setCondition('code', $filter_code);
+        }
+    }
+    
     public function validate() 
     {
         // the lower-case version of the code must be unique
@@ -117,6 +155,27 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
             }
             $this->set('groups', $groups);
         }
+        
+        if (!empty($this->{'publication.start_date'})) {
+            $string = $this->{'publication.start_date'};
+            if (!empty($this->{'publication.start_time'})) {
+                $string .= ' ' . $this->{'publication.start_time'};
+            }
+            $this->{'publication.start'} = \Dsc\Mongo\Metastamp::getDate( trim( $string ) );
+        } else {
+            $this->{'publication.start'} = \Dsc\Mongo\Metastamp::getDate('now');
+        }
+        
+        if (empty($this->{'publication.end_date'})) {
+            unset($this->{'publication.end'});
+        }
+        elseif (!empty($this->{'publication.end_date'})) {
+            $string = $this->{'publication.end_date'};
+            if (!empty($this->{'publication.end_time'})) {
+                $string .= ' ' . $this->{'publication.end_time'};
+            }
+            $this->{'publication.end'} = \Dsc\Mongo\Metastamp::getDate( trim( $string ) );
+        }
     
         return parent::beforeSave();
     }
@@ -129,14 +188,34 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
      */
     public function cartValid( \Shop\Models\Carts $cart )
     {
-        // sets __is_validated to a boolean, so use === in comparing later
-        //$this->__is_validated = true; // YES, cart can use this coupon
-        //$this->__is_validated = false; // NO, cart cannot use this coupon
+        // Set $this->__is_validated = true if YES, cart can use this coupon
+        // throw an Exception if NO, cart cannot use this coupon
 
-        // Do the actual validation!
-        // lets do the simplest ones first.  save some processing power if they make it invalid
-        
-        // TODO is the coupon published?
+        /**
+         * is the coupon published?
+         */
+        if ($this->{'publication.status'} != 'published'
+            || ($this->{'publication.start.time'} != null && $this->{'publication.start.time'} >= time())
+            || ($this->{'publication.end.time'} != null && $this->{'publication.end.time'} <= time())
+            ) 
+        {
+            throw new \Exception('This coupon is not valid for today');
+        }
+
+        /**
+         * Only 1 user-submitted coupon per cart,
+         * and if the auto-coupon is exclusive, it can't be added with others
+         */
+        // If this is a user-submitted coupon && there are other user-submitted coupons in the cart, fail
+        if (empty($this->usage_automatic) && $cart->userCoupons()) 
+        {
+            throw new \Exception('Only one coupon allowed per cart');
+        }
+        // if this is an automatic coupon && usage_with_others == 0 && there are other automatic coupons in the cart  
+        elseif ($this->usage_automatic && empty($this->usage_with_others) && $cart->autoCoupons())
+        {
+            throw new \Exception('This coupon cannot be combined with others');
+        }
         
         // TODO take min_order_amount_currency into account once we have currencies sorted
         if ($this->min_order_amount !== null && $cart->subtotal() < $this->min_order_amount) 
@@ -144,7 +223,9 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
             throw new \Exception('Cart has not met the minimum required amount');
         }
         
-        // check that at least one of the $this->required_products is in the cart
+        /**
+         * check that at least one of the $this->required_products is in the cart
+         */
         if (!empty($this->required_products)) 
         {
             // get the IDs of all products in this cart
@@ -161,7 +242,9 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
             }
         }
          
-        // evaluate shopper groups against $this->groups
+        /**
+         * evaluate shopper groups against $this->groups
+         */
         if (!empty($this->groups)) 
         {
             $user = (new \Users\Models\Users)->setState('filter.id', $cart->user_id)->getItem();
@@ -187,7 +270,9 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
         	}
         }
         
-        // using geo_address_type (shipping/billing) from the cart, check that it is in geo_countries | geo_regions (if either is set)
+        /**
+         * using geo_address_type (shipping/billing) from the cart, check that it is in geo_countries | geo_regions (if either is set)
+         */
         if (!empty($this->geo_countries) || !empty($this->geo_regions)) 
         {
         	// ok, so which of the addresses should we evaluate?
@@ -230,7 +315,9 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
         	}
         }
         
-        // TODO Check the usage of the coupon
+        /**
+         * Check the usage of the coupon
+         */
         if (strlen($this->usage_max)) {
         // usage_max = number of times TOTAL that the coupon may be used
             // count the orders with coupon.code 
@@ -256,11 +343,9 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
             }
         }
         
-        // TODO if usage_with_others == 1 && there are other coupons in the cart, fail
-            // i think this is being handled already
-         
-        
-        // if we made it this far, the cart is valid for this coupon
+        /**
+         * if we made it this far, the cart is valid for this coupon
+         */
         $this->__is_validated = true;
         
         return $this;
