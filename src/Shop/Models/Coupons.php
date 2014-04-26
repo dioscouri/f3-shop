@@ -130,17 +130,116 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
     public function cartValid( \Shop\Models\Carts $cart )
     {
         // sets __is_validated to a boolean, so use === in comparing later
-        $this->__is_validated = true; // YES, cart can use this coupon
-        $this->__is_validated = false; // NO, cart cannot use this coupon
+        //$this->__is_validated = true; // YES, cart can use this coupon
+        //$this->__is_validated = false; // NO, cart cannot use this coupon
 
-        // TODO Do the actual validation!
-
-        if ($this->__is_validated === false)
+        // Do the actual validation!
+        // lets do the simplest ones first.  save some processing power if they make it invalid
+        
+        // TODO is the coupon published?
+        
+        // TODO take min_order_amount_currency into account once we have currencies sorted
+        if ($this->min_order_amount !== null && $cart->subtotal() < $this->min_order_amount) 
         {
-            throw new \Exception('Coupon cannot be added to this cart');
+            throw new \Exception('Cart has not met the minimum required amount');
         }
         
-        return $this->__is_validated;
+        // check that at least one of the $this->required_products is in the cart
+        if (!empty($this->required_products)) 
+        {
+            // get the IDs of all products in this cart
+            $product_ids = array();
+            foreach ($cart->items as $cartitem) 
+            {
+                $product_ids[] = (string) \Dsc\ArrayHelper::get($cartitem, 'product_id'); 
+            }
+            
+            $intersection = array_intersect($this->required_products, $product_ids);
+            if (empty($intersection)) 
+            {
+                throw new \Exception('Cart does not have any of the required products');
+            }
+        }
+         
+        // evaluate shopper groups against $this->groups
+        if (!empty($this->groups)) 
+        {
+            $user = (new \Users\Models\Users)->setState('filter.id', $cart->user_id)->getItem();
+            if (empty($cart->user_id) || empty($user->id)) {
+            	// TODO Get the default group
+                $groups = array();
+            }                
+        	elseif (!empty($user->id)) 
+        	{
+        	    $groups = $user->groups();
+        	}
+        	
+        	$group_ids = array();
+        	foreach ($groups as $group) 
+        	{
+        	    $group_ids[] = (string) $group->id;
+        	}
+        	
+        	$intersection = array_intersect($this->groups, $group_ids);
+        	if (empty($intersection))
+        	{
+        	    throw new \Exception('Customer is not in one of the required user groups');
+        	}
+        }
+        
+        // TODO using geo_address_type (shipping/billing) from the cart, check that it is in geo_countries | geo_regions (if either is set)
+        if (!empty($this->geo_countries) || !empty($this->geo_regions)) 
+        {
+        	// ok, so which of the addresses should we evaluate?
+        	switch($this->geo_address_type) 
+        	{
+        		case "billing":
+        		    $region = $cart->billingRegion();
+        		    $country = $cart->billingCountry();
+        		    break;
+    		    case "shipping":
+    		    default:
+        		    $region = $cart->shippingRegion();
+        		    $country = $cart->shippingCountry();
+    		        break;
+        	}
+        	
+        	if ((is_null($region) && !empty($this->geo_regions))
+        	    ||
+        	    (is_null($country) && !empty($this->geo_countries)))
+        	{
+        		throw new \Exception('Customer cannot use this coupon until we know your address');
+        	}
+        	
+        	if (!empty($this->geo_countries))
+        	{
+        	    // eval the country
+        	    if (!in_array($country, $this->geo_countries)) 
+        	    {
+        	        throw new \Exception('Shipping address is invalid');
+        	    }
+        	}
+        	
+        	if (!empty($this->geo_regions))
+        	{
+        	    // eval the region
+        	    if (!in_array($region, $this->geo_regions))
+        	    {
+        	        throw new \Exception('Shipping address is invalid');
+        	    }
+        	}
+        }
+        
+        // TODO Check the usage of the coupon
+        // usage_max = number of times TOTAL that the coupon may be used
+        // usage_max_per_customer = number of times this customer may use this coupon
+        // if usage_with_others == 1 && there are other coupons in the cart, fail
+         
+        
+        // if we made it this far, the cart is valid for this coupon
+        $this->__is_validated = true;
+        
+        return $this;
     }
     
     /**
@@ -160,7 +259,7 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
     		$this->cartValid( $cart );
     	}
     	
-    	// TODO depending on where this coupon's discount is applied, get it's corresponding value
+    	// TODO depending on where this coupon's discount is applied, get its corresponding value
     	switch ($this->discount_applied) 
     	{
     		case "order_subtotal":
@@ -173,7 +272,10 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
                 break;
     	}
     	
-    	$value = 1;
+    	// TODO remove this testing value
+    	$value = 6.54;
+    	
+    	// if $value > $this->max_value, $value = $this->max_value
     	
     	return $value;
     }

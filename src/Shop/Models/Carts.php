@@ -880,6 +880,26 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
     }
     
     /**
+     *
+     */
+    public function shippingAddress()
+    {
+        return $this->{'checkout.shipping_address'};
+    }
+    
+    /**
+     * Gets the shipping region
+     */
+    public function shippingRegion( $default=null )
+    {
+        if ($this->{'checkout.shipping_address.region'}) {
+            return $this->{'checkout.shipping_address.region'};
+        }
+    
+        return $default;
+    }
+    
+    /**
      * Gets the shipping country, default one if not set
      */
     public function shippingCountry()
@@ -903,6 +923,14 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
         }
     
         return false;
+    }
+    
+    /**
+     * 
+     */
+    public function billingAddress()
+    {
+        return $this->{'checkout.billing_address'};
     }
         
     /**
