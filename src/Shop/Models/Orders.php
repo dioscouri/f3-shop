@@ -280,7 +280,29 @@ class Orders extends \Dsc\Mongo\Collections\Nodes
         // TODO 1. Update quantities
         foreach ($this->items as $item) 
         {
+            $found = false;
         	// TODO decrease the $item->variant quantity by 1 using a direct query, then trigger an inventory recount on the product
+        	$product = (new \Shop\Models\Products)->setState('filter.id', $item->product_id)->getItem();
+        	if (!empty($product->id) && (string) $product->id == (string) $item['product_id']) 
+        	{
+        		foreach ($product->variants as $variant) 
+        		{
+        			if ((string) $variant['id'] == (string) $item['variant_id']) 
+        			{
+        			    $found = true;
+        				$variant['quantity'] = $variant['quantity'] - 1;
+        				break; 
+        			}
+        		}
+        		
+        		if ($found) {
+            		$product->save();
+        		}
+        	} 
+        	else 
+        	{
+        		$this->setError('Could not update variant quantities -- Invalid Product ID');
+        	}
         }
         
         // TODO 2. Add an email to the Mailer
