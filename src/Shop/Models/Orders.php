@@ -285,11 +285,13 @@ class Orders extends \Dsc\Mongo\Collections\Nodes
         
         // TODO 2. Add an email to the Mailer
         $this->sendEmailNewOrder();
+        
+        // TODO 3. Increase hit counts on coupons used in order
 
         // trigger event
         $this->__complete_event = \Dsc\System::instance()->trigger( 'onShopCompleteOrder', array(
         	'order' => $this
-        ) )->triggerEvent($event);
+        ) );
         
         return $this;
     }
