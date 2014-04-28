@@ -1,6 +1,28 @@
 <?php $item->url = './shop/product/' . $item->{'slug'}; ?>
 <?php $images = $item->images(); ?>
 
+<script>
+jQuery(document).ready(function(){
+   jQuery('.add-to-wishlist').on('click', function(ev){
+       ev.preventDefault();
+       var el = jQuery(this);
+       var variant_id = el.closest('form').find('.variant_id').val();
+       console.log('ok, variant: ' + variant_id);
+       if (variant_id) {
+	        var request = jQuery.ajax({
+	            type: 'get', 
+	            url: './shop/wishlist/add?variant_id='+variant_id
+	        }).done(function(data){
+	            var response = jQuery.parseJSON( JSON.stringify(data), false);
+	            if (response.result) {
+	                el.replaceWith("<a href='javascript:void(0);'><i class='glyphicon glyphicon-heart'></i> In your wishlist</a>");
+	            }
+	        });
+       } 
+   }); 
+});
+</script>
+
 <div class="container">
     <div class="row">
         <div class="col-sm-6">
@@ -44,7 +66,7 @@
                             <?php if (!empty($item->variants) && count($item->variants) > 1) { ?>
                             <div class="col-sm-8">
                                 
-                                <select name="variant_id" class="chosen-select select-variant" data-callback="Shop.selectVariant">
+                                <select name="variant_id" class="chosen-select select-variant variant_id" data-callback="Shop.selectVariant">
                                     <?php foreach ($item->variantsInStock() as $key=>$variant) { ?>
                                         <option value="<?php echo $variant['id']; ?>" data-variant='<?php echo htmlspecialchars( json_encode( array(
                                             'id' => $variant['id'],
@@ -56,7 +78,7 @@
                                 </select>
                             </div>
                             <?php } elseif (count($item->variants) == 1) { ?>
-                                <input type="hidden" name="variant_id" value="<?php echo $item->{'variants.0.id'}; ?>" />
+                                <input type="hidden" name="variant_id" value="<?php echo $item->{'variants.0.id'}; ?>" class="variant_id" />
                             <?php } ?> 
                         
                             <div class="col-sm-4">
@@ -72,6 +94,23 @@
                     <div class="price-line">
                         <div class="price">$<?php echo $item->price(); ?></div>
                         <button class="btn btn-default custom-button custom-button-inverted">Add to bag</button>
+                        
+                        <div class="small-buttons">
+                            <div class="add-to-wishlist-container">
+                                <?php 
+                                if (!\Shop\Models\Wishlists::hasAddedProduct($item->{'id'}, (string) $this->auth->getIdentity()->id))
+                                {
+                                    ?>
+                                    <a class='add-to-wishlist' href='javascript:void(0);'><i class='glyphicon glyphicon-heart'></i> Add to wishlist</a>
+                                    <?php
+                                } else {
+                                	?>
+                                	<a href='javascript:void(0);'><i class='glyphicon glyphicon-heart'></i> In your wishlist</a>
+                                	<?php
+                                }                                
+                                ?>                                
+                            </div>
+                        </div>
 
                     </div>
                 </form>
