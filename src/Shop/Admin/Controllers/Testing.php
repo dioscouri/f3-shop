@@ -3,6 +3,16 @@ namespace Shop\Admin\Controllers;
 
 class Testing extends \Admin\Controllers\BaseAuth
 {
+    public function newOrderEmail()
+    {
+        $order_id = $this->inputfilter->clean( '535c-efac-f02e-25ff-3a76-c42c', 'alnum' );
+        $order = (new \Shop\Models\Orders)->setState('filter.id', $order_id)->getItem();
+        $order->sendEmailNewOrder();
+        
+        $view = \Dsc\System::instance()->get( 'theme' );
+        echo $view->render( 'Shop/Admin/Views::message.php' );        
+    }
+    
     public function importCountries()
     {
         $message = null;

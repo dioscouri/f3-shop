@@ -277,11 +277,11 @@ class Orders extends \Dsc\Mongo\Collections\Nodes
      */
     public function complete()
     {
-        // TODO 1. Update quantities
+        // 1. Update quantities
         foreach ($this->items as $item) 
         {
             $found = false;
-        	// TODO decrease the $item->variant quantity by 1 using a direct query, then trigger an inventory recount on the product
+
         	$product = (new \Shop\Models\Products)->setState('filter.id', $item->product_id)->getItem();
         	if (!empty($product->id) && (string) $product->id == (string) $item['product_id']) 
         	{
@@ -325,6 +325,17 @@ class Orders extends \Dsc\Mongo\Collections\Nodes
      */
     public function sendEmailNewOrder( array $recipients=array() )
     {
+        \Base::instance()->set('order', $this);
+        \Base::instance()->set('settings', \Shop\Models\Settings::fetch());
+        
+        $html = \Dsc\System::instance()->get( 'theme' )->renderView( 'Shop/Views::emails_html/new_order.php' );
+        $text = \Dsc\System::instance()->get( 'theme' )->renderView( 'Shop/Views::emails_text/new_order.php' );
+        
+        $order_number = $this->number;
+        $subject = 'Order Confirmation #' . $order_number;
+
+        $this->__sendEmailNewOrder = \Dsc\System::instance()->get('mailer')->send($this->user_email, $subject, array($html, $text) );
+        
         return $this;
     }
     
@@ -335,6 +346,7 @@ class Orders extends \Dsc\Mongo\Collections\Nodes
      */
     public function sendEmailStatusUpdate( array $recipients=array() )
     {
+        
         return $this;
     }
 }
