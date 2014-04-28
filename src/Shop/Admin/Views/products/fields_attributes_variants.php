@@ -109,7 +109,7 @@
                                             </div>
                                             <div class="col-md-5">
                                                 <label><small>Image Slug</small></label>
-                                                <?php echo \Assets\Admin\Controllers\Assets::instance()->fetchElementImage( 'variants_'.$key.'_image', $flash->old('variants.'.$key.'.image'), array('field'=>'variants['.$key.'][image]') ); ?>
+                                                <?php echo \Assets\Admin\Controllers\Assets::instance()->fetchElementImage( 'variants_'. preg_replace('/[^\da-z]/i', '', $key) .'_image', $flash->old('variants.'.$key.'.image'), array('field'=>'variants['.$key.'][image]') ); ?>
                                             </div>
                                         </div>
                                             
