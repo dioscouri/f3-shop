@@ -38,6 +38,9 @@ class Checkout extends \Dsc\Controller
         $identity = $this->getIdentity();
         if (empty( $identity->id ))
         {
+            $flash = \Dsc\Flash::instance();
+            \Base::instance()->set('flash', $flash );
+                        
             $view = \Dsc\System::instance()->get( 'theme' );
             echo $view->render( 'Shop/Site/Views::checkout/identity.php' );
             return;

@@ -64,7 +64,7 @@
 jQuery(document).ready(function(){
     var validation = new ShopValidation('#checkout-payment-form');
     
-    jQuery('#checkout-payment-form').on('submit', function(){
+    jQuery('#checkout-payment-form').on('submit.shop', function(){
         var el = jQuery(this); 
         if (!validation.validateForm()) {
             el.data('validated', false);
