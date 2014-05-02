@@ -65,26 +65,20 @@ jQuery(document).ready(function(){
     window.checkout_payment_validation = new ShopValidation('#checkout-payment-form');
     
     jQuery('#checkout-payment-form').on('submit.shop', function(ev){
-    	console.log('main 1');
         var el = jQuery(this); 
         if (!window.checkout_payment_validation.validateForm()) {
             el.data('validated', false);
-            console.log('main 1.false');
             ev.preventDefault();
             return false;
         }
-        console.log('main 2');
         if (el.data('locked')) {
-        	console.log('main 2.false');
         	ev.preventDefault();
             return false;
         }
-        console.log('main 3');
         el.data('locked', true);
         el.data('validated', true);
         jQuery('#checkout-payment-methods').css({ opacity: 0.5 });
         el.submit();    
-        console.log('main 4');
     });
 
     if (!window.payment_methods_loaded)
