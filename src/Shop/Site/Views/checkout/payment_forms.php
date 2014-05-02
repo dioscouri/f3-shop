@@ -54,7 +54,7 @@
     </div>
 
     <div class="input-group form-group">
-        <button type="submit" class="btn btn-default custom-button btn-lg">Submit Order</button>
+        <button id="submit-order" type="submit" class="btn btn-default custom-button btn-lg">Submit Order</button>
         <?php \Dsc\System::instance()->get('session')->set('site.shop.checkout.redirect', '/shop/checkout/confirmation'); ?>
     </div>
 
@@ -62,21 +62,29 @@
 
 <script>
 jQuery(document).ready(function(){
-    var validation = new ShopValidation('#checkout-payment-form');
+    window.checkout_payment_validation = new ShopValidation('#checkout-payment-form');
     
-    jQuery('#checkout-payment-form').on('submit.shop', function(){
+    jQuery('#checkout-payment-form').on('submit.shop', function(ev){
+    	console.log('main 1');
         var el = jQuery(this); 
-        if (!validation.validateForm()) {
+        if (!window.checkout_payment_validation.validateForm()) {
             el.data('validated', false);
+            console.log('main 1.false');
+            ev.preventDefault();
             return false;
         }
+        console.log('main 2');
         if (el.data('locked')) {
+        	console.log('main 2.false');
+        	ev.preventDefault();
             return false;
         }
+        console.log('main 3');
         el.data('locked', true);
         el.data('validated', true);
         jQuery('#checkout-payment-methods').css({ opacity: 0.5 });
         el.submit();    
+        console.log('main 4');
     });
 
     if (!window.payment_methods_loaded)
