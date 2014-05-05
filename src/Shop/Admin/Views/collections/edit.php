@@ -1,4 +1,4 @@
-<script src="./ckeditor/ckeditor.js"></script>
+<script src="/ckeditor/ckeditor.js"></script>
 <script>
 jQuery(document).ready(function(){
     CKEDITOR.replaceAll( 'wysiwyg' );    
@@ -34,7 +34,7 @@ jQuery(document).ready(function(){
                     </div>
                         
                     &nbsp;
-                    <a class="btn btn-default" href="./admin/shop/collections">Cancel</a>
+                    <a class="btn btn-default" href="/admin/shop/collections">Cancel</a>
                 </div>
 
             </div>
@@ -47,7 +47,7 @@ jQuery(document).ready(function(){
             </div>
             
             <div class="alert alert-info">
-                <p><b>URL:</b> <a href="./shop/collection/<?php echo $flash->old('slug'); ?>" target="_blank">./shop/collection/<?php echo $flash->old('slug'); ?></a></p>
+                <p><b>URL:</b> <a href="/shop/collection/<?php echo $flash->old('slug'); ?>" target="_blank">/shop/collection/<?php echo $flash->old('slug'); ?></a></p>
             </div>            
             
             <ul class="nav nav-tabs">

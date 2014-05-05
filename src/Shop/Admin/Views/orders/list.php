@@ -11,7 +11,7 @@
 	<div class="col-xs-12 col-sm-5 col-md-5 col-lg-8">
         <ul id="sparks" class="list-actions list-unstyled list-inline">
             <li>
-                <a class="btn btn-default" href="./admin/shop/order/create">Add New</a>
+                <a class="btn btn-default" href="/admin/shop/order/create">Add New</a>
             </li>
         </ul>
 	</div>
@@ -58,7 +58,7 @@
                     <div class="input-group">
                         <select id="bulk-actions" name="bulk_action" class="form-control">
                             <option value="null">-Bulk Actions-</option>
-                            <option value="delete" data-action="./admin/shop/orders/delete">Delete</option>
+                            <option value="delete" data-action="/admin/shop/orders/delete">Delete</option>
                         </select>
                         <span class="input-group-btn">
                             <button class="btn btn-default bulk-actions" type="button" data-target="bulk-actions">Apply</button>
@@ -112,19 +112,19 @@
                     </td>
                     
                     <td class="">
-                        <a href="./admin/shop/order/edit/<?php echo $item->_id; ?>">
+                        <a href="/admin/shop/order/edit/<?php echo $item->_id; ?>">
                         <?php echo $item->number; ?>
                         </a>
                     </td>
                     
                     <td class="">
-                        <a href="./admin/shop/order/edit/<?php echo $item->_id; ?>">
+                        <a href="/admin/shop/order/edit/<?php echo $item->_id; ?>">
                         <?php echo $item->grand_total; ?>
                         </a>
                     </td>
                     
                     <td class="">
-                        <a href="./admin/shop/order/edit/<?php echo $item->_id; ?>">
+                        <a href="/admin/shop/order/edit/<?php echo $item->_id; ?>">
                         <?php echo $item->{'metadata.created.local'}; ?>
                         </a>
                     </td>

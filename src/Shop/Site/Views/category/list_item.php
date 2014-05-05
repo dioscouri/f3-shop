@@ -6,7 +6,7 @@
     <div class="product_thumb dsc-wrap">
         <div class="dsc-wrap product_listimage">
             <a href="<?php echo $item->_url; ?>">
-                <img src="./asset/thumb/<?php echo $item->{'details.featured_image.slug'}; ?>" title="<?php echo $item->{'metadata.title'}; ?>" alt="<?php echo $item->{'metadata.title'}; ?>">
+                <img src="/asset/thumb/<?php echo $item->{'details.featured_image.slug'}; ?>" title="<?php echo $item->{'metadata.title'}; ?>" alt="<?php echo $item->{'metadata.title'}; ?>">
             </a>
         </div>
     </div>

@@ -430,10 +430,10 @@ class Products extends \Dsc\Mongo\Collections\Content implements \MassUpdate\Ser
      */
     public function toSearchItem()
     {
-        $image = (!empty($this->{'featured_image.slug'})) ? './asset/thumb/' . $this->{'featured_image.slug'} : null;
+        $image = (!empty($this->{'featured_image.slug'})) ? '/asset/thumb/' . $this->{'featured_image.slug'} : null;
         
         $item = new \Search\Models\Item(array(
-        	'url' => './shop/product/' . $this->slug,
+        	'url' => '/shop/product/' . $this->slug,
             'title' => $this->title,
             'subtitle' => $this->{'tracking.sku'},
             'image' => $image,

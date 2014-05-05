@@ -203,7 +203,7 @@ class Checkout extends \Dsc\Controller
             	\Dsc\System::addMessage( $exception->getMessage(), 'error' );
             }
             
-            // redirect to the ./shop/checkout/payment page unless a failure redirect has been set in the session (site.shop.checkout.redirect.fail)
+            // redirect to the /shop/checkout/payment page unless a failure redirect has been set in the session (site.shop.checkout.redirect.fail)
             $redirect = '/shop/checkout/payment';
             if ($custom_redirect = \Dsc\System::instance()->get( 'session' )->get( 'site.shop.checkout.redirect.fail' ))
             {
@@ -239,7 +239,7 @@ class Checkout extends \Dsc\Controller
                     \Dsc\System::addMessage( $exception->getMessage(), 'error' );
                 }
             
-                // redirect to the ./shop/checkout/payment page unless a failure redirect has been set in the session (site.shop.checkout.redirect.fail)
+                // redirect to the /shop/checkout/payment page unless a failure redirect has been set in the session (site.shop.checkout.redirect.fail)
                 $redirect = '/shop/checkout/payment';
                 if ($custom_redirect = \Dsc\System::instance()->get( 'session' )->get( 'site.shop.checkout.redirect.fail' ))
                 {
@@ -263,7 +263,7 @@ class Checkout extends \Dsc\Controller
             \Dsc\System::addMessage( $e->getMessage(), 'warning' );
         }
         
-        // Redirect to ./shop/checkout/confirmation unless a site.shop.checkout.redirect has been set
+        // Redirect to /shop/checkout/confirmation unless a site.shop.checkout.redirect has been set
         $redirect = '/shop/checkout/confirmation';
         if ($custom_redirect = \Dsc\System::instance()->get( 'session' )->get( 'site.shop.checkout.redirect' ))
         {

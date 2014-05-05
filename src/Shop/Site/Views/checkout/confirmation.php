@@ -7,12 +7,12 @@
             <div class="col-xs-12 col-sm-12 col-md-9">
                 <h1>
                     Thank you for your order <br/> 
-                    <small>Your order number is <a href="./shop/order/<?php echo $order->id; ?>"><?php echo $order->number; ?></a>.</small>
+                    <small>Your order number is <a href="/shop/order/<?php echo $order->id; ?>"><?php echo $order->number; ?></a>.</small>
                 </h1>
             </div>
             <div class="col-xs-12 col-sm-12 col-md-3">
                 <h3 class="pull-right">
-                    <a href="./shop/order/print/<?php echo $order->id; ?>">Print receipt</a>
+                    <a href="/shop/order/print/<?php echo $order->id; ?>">Print receipt</a>
                 </h3>            
             </div>
         </div>

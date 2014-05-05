@@ -2,7 +2,7 @@
     Checkout <small>Step 2 of 2</small>
 </h2>
 
-<form action="./shop/checkout/submit" method="post" id="checkout-payment-form">
+<form action="/shop/checkout/submit" method="post" id="checkout-payment-form">
 
     <div id="checkout-shipping-summary" class="well well-sm">
         <?php if ($cart->shippingRequired() && (!$cart->shippingMethod() || !$cart->validShippingAddress())) { ?>
@@ -10,7 +10,7 @@
         <?php } ?>
         <legend>
             <small>Shipping Summary
-            <a class="pull-right" href="./shop/checkout">Edit</a>
+            <a class="pull-right" href="/shop/checkout">Edit</a>
             </small>            
         </legend>
         <?php if ($cart->{'checkout.shipping_address'}) { ?>
@@ -87,7 +87,7 @@ jQuery(document).ready(function(){
 		jQuery('#checkout-payment-methods').css({ opacity: 0.5 });
 		jQuery(this).closest('form').data('locked', true);
 		        
-		jQuery('#checkout-payment-methods-container').load('./shop/checkout/payment-methods', function ( response, status, xhr )
+		jQuery('#checkout-payment-methods-container').load('/shop/checkout/payment-methods', function ( response, status, xhr )
 		{
 		    if ( status != "error" ) {
 		        window.payment_methods_loaded = true;

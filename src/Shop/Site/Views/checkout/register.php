@@ -23,7 +23,7 @@
             
         <div class="row">
             <div class="col-xs-12 col-sm-12 col-md-12">
-                <form method="post" action="./shop/checkout/register">
+                <form method="post" action="/shop/checkout/register">
                 
                     <legend>
                         <small>

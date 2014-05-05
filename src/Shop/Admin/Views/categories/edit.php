@@ -27,7 +27,7 @@
                     </div>
                         
                     &nbsp;
-                    <a class="btn btn-default" href="./admin/shop/categories">Cancel</a>
+                    <a class="btn btn-default" href="/admin/shop/categories">Cancel</a>
                 </div>
 
             </div>
@@ -36,7 +36,7 @@
             <hr />
             
             <div class="alert alert-info">
-                <p><b>URL:</b> <a href="./shop/category<?php echo $flash->old('path'); ?>" target="_blank">./shop/category<?php echo $flash->old('path'); ?></a></p>
+                <p><b>URL:</b> <a href="/shop/category<?php echo $flash->old('path'); ?>" target="_blank">/shop/category<?php echo $flash->old('path'); ?></a></p>
             </div>
             
             <ul class="nav nav-tabs">

@@ -2,10 +2,10 @@
 
     <ol class="breadcrumb">
         <li>
-            <a href="./shop/account">My Account</a>
+            <a href="/shop/account">My Account</a>
         </li>
         <li>
-            <a href="./shop/orders">My Orders</a>
+            <a href="/shop/orders">My Orders</a>
         </li>
         <li class="active">Order Detail</li>
     </ol>
@@ -18,7 +18,7 @@
                 </div>
                 <div class="hidden-xs col-sm-6 col-md-3">
                     <div class="pull-right">
-                        <a href="./shop/order/print/<?php echo $order->id; ?>"><small>Printable version</small></a>
+                        <a href="/shop/order/print/<?php echo $order->id; ?>"><small>Printable version</small></a>
                     </div>
                 </div>
             </div>
@@ -148,7 +148,7 @@
         <div class="row">
             <div class="hidden-xs hidden-sm col-md-2">
                 <?php if (\Dsc\ArrayHelper::get($item, 'image')) { ?>
-                <img class="img-responsive" src="./asset/thumb/<?php echo \Dsc\ArrayHelper::get($item, 'image'); ?>" alt="" />
+                <img class="img-responsive" src="/asset/thumb/<?php echo \Dsc\ArrayHelper::get($item, 'image'); ?>" alt="" />
                 <?php } ?>
             </div>
             <div class="col-xs-10 col-sm-10 col-md-8">

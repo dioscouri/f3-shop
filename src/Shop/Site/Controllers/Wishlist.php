@@ -50,7 +50,7 @@ class Wishlist extends \Dsc\Controller
     }
     
     /**
-     * Finds a user's primary wishlist and redirects to its real URL (./shop/wishlist/@id).
+     * Finds a user's primary wishlist and redirects to its real URL (/shop/wishlist/@id).
      * Is really just a vanity URL.
      */
     public function primary() 

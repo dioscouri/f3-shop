@@ -2,7 +2,7 @@
     <?php if (!empty($paginated->items)) { ?>
         <ul class="list-inline">
         <?php foreach ($paginated->items as $position=>$item) { ?>
-            <?php $item->_url = './shop/product/' . $item->{'slug'}; ?>
+            <?php $item->_url = '/shop/product/' . $item->{'slug'}; ?>
             
             <li class="position-<?php echo $position; ?>">
             <?php $this->item = $item; ?> 

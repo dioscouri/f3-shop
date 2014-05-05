@@ -1,7 +1,7 @@
 
 <?php if (empty($cart->items)) { ?>
     <div class="container">
-        <h2>Your cart is empty! <a href="./shop"><small>Go Shopping</small></a></h2>
+        <h2>Your cart is empty! <a href="/shop"><small>Go Shopping</small></a></h2>
     </div>
 <?php } ?>
 
@@ -28,14 +28,14 @@
                             <div class="cart-product row">
                                 <div class="col-md-4">
                                     <?php if (\Dsc\ArrayHelper::get($item, 'image')) { ?>
-                                    <a href="./shop/product/<?php echo \Dsc\ArrayHelper::get($item, 'product.slug'); ?>">
-                                        <img src="./asset/thumb/<?php echo \Dsc\ArrayHelper::get($item, 'image'); ?>" alt="" class="img-responsive" />
+                                    <a href="/shop/product/<?php echo \Dsc\ArrayHelper::get($item, 'product.slug'); ?>">
+                                        <img src="/asset/thumb/<?php echo \Dsc\ArrayHelper::get($item, 'image'); ?>" alt="" class="img-responsive" />
                                     </a>
                                     <?php } ?>
                                 </div>
                                 <div class="col-md-8">
                                     <h4>
-                                        <a href="./shop/product/<?php echo \Dsc\ArrayHelper::get($item, 'product.slug'); ?>"><?php echo \Dsc\ArrayHelper::get($item, 'product.title'); ?></a>
+                                        <a href="/shop/product/<?php echo \Dsc\ArrayHelper::get($item, 'product.slug'); ?>"><?php echo \Dsc\ArrayHelper::get($item, 'product.title'); ?></a>
                                         <?php if (\Dsc\ArrayHelper::get($item, 'attribute_title')) { ?>
                                         <div><small><?php echo \Dsc\ArrayHelper::get($item, 'attribute_title'); ?></small></div>
                                         <?php } ?>                                            
@@ -63,7 +63,7 @@
                             </div>
                         </td>
                         <td><div class="price"><?php echo \Shop\Models\Currency::format( $cart->calcItemSubtotal( $item ) ); ?></div></td>
-                        <td class="text-center"><a href="./shop/cart/remove/<?php echo \Dsc\ArrayHelper::get($item, 'hash'); ?>" class="btn btn-default custom-button"><i class="glyphicon glyphicon-remove"></i></a></td>
+                        <td class="text-center"><a href="/shop/cart/remove/<?php echo \Dsc\ArrayHelper::get($item, 'hash'); ?>" class="btn btn-default custom-button"><i class="glyphicon glyphicon-remove"></i></a></td>
                     </tr>
                     <?php } ?>
                     
@@ -72,7 +72,7 @@
             </div>
             <div class="cart-table-actions">
         	    <div class="pull-right">
-            		<button type="submit" name="updateQuantities" onclick="this.form.action='./shop/cart/updateQuantities';" class="cart-table-update btn btn-default custom-button btn-block">
+            		<button type="submit" name="updateQuantities" onclick="this.form.action='/shop/cart/updateQuantities';" class="cart-table-update btn btn-default custom-button btn-block">
             			Update Quantities
                     </button>
                 </div>
@@ -98,7 +98,7 @@
                                         <td>
                                             <div class="row">
                                                 <div class="col-xs-8"><div class="strong">Coupon:<br/><?php echo $coupon['code']; ?></div></div>
-                                                <div class="col-xs-4"><a href="./shop/cart/removeCoupon/<?php echo $coupon['code']; ?>" class="btn btn-default custom-button"><i class="glyphicon glyphicon-remove"></i></a></div>
+                                                <div class="col-xs-4"><a href="/shop/cart/removeCoupon/<?php echo $coupon['code']; ?>" class="btn btn-default custom-button"><i class="glyphicon glyphicon-remove"></i></a></div>
                                             </div>
                                         </td>
                                         <td class="col-xs-6">
@@ -156,7 +156,7 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div id="coupon">
-                            <form class="form" role="form" action="./shop/cart/addCoupon" method="post">
+                            <form class="form" role="form" action="/shop/cart/addCoupon" method="post">
                                 <div class="form-group">
                                     <label>Have a Coupon?</label>
                                     <div class="input-group">
@@ -177,11 +177,11 @@
                     
             <div class="margin-top text-right">
                 <div class="form-group">
-                    <a href="./shop/checkout" class="btn btn-primary btn-lg custom-button">Checkout</a>
+                    <a href="/shop/checkout" class="btn btn-primary btn-lg custom-button">Checkout</a>
                 </div>
             
                 <div class="form-group">
-                    <a href="./shop" class="btn btn-link custom-button">Continue Shopping</a>
+                    <a href="/shop" class="btn btn-link custom-button">Continue Shopping</a>
                 </div>
             </div>
             

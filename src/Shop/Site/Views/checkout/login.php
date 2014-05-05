@@ -27,7 +27,7 @@
                 <legend>
                     <small>Login with your registered email address</small>
                 </legend>
-                <form action="./login" method="post" class="form" role="form">
+                <form action="/login" method="post" class="form" role="form">
         
                     <div class="input-group">
                         <span class="input-group-addon"><i class="glyphicon glyphicon-envelope"></i></span>
@@ -45,7 +45,7 @@
                     
                 </form>
                 
-                <p><a href="./user/forgot-password">Forgot your password?</a></p>
+                <p><a href="/user/forgot-password">Forgot your password?</a></p>
             </div>
         </div>
     

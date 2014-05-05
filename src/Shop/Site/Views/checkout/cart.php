@@ -13,7 +13,7 @@
                             <td>
                                 <div class="row">
                                     <div class="col-xs-8"><div class="strong">Coupon:<br/><?php echo $coupon['code']; ?></div></div>
-                                    <div class="col-xs-4"><a href="./shop/cart/removeCoupon/<?php echo $coupon['code']; ?>" class="btn btn-default custom-button"><i class="glyphicon glyphicon-remove"></i></a></div>
+                                    <div class="col-xs-4"><a href="/shop/cart/removeCoupon/<?php echo $coupon['code']; ?>" class="btn btn-default custom-button"><i class="glyphicon glyphicon-remove"></i></a></div>
                                 </div>
                             </td>
                             <td class="col-xs-6">
@@ -66,7 +66,7 @@
     <div class="row">
         <div class="col-md-12">
             <div id="coupon">
-                <form class="form" role="form" action="./shop/cart/addCoupon" method="post">
+                <form class="form" role="form" action="/shop/cart/addCoupon" method="post">
                     <div class="form-group">
                         <label>Have a Coupon?</label>
                         <div class="input-group">
@@ -96,7 +96,7 @@
                 <td class="checkout-cart-image">
                     <figure>
                         <?php if (\Dsc\ArrayHelper::get($item, 'image')) { ?>
-                        <img class="img-responsive" src="./asset/thumb/<?php echo \Dsc\ArrayHelper::get($item, 'image'); ?>" alt="" />
+                        <img class="img-responsive" src="/asset/thumb/<?php echo \Dsc\ArrayHelper::get($item, 'image'); ?>" alt="" />
                         <?php } ?>
                     </figure>
                 </td>

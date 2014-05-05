@@ -1,4 +1,4 @@
-<form class="searchForm" method="post" action="./admin/shop/products">
+<form class="searchForm" method="post" action="/admin/shop/products">
 
     <div class="no-padding">
     
@@ -65,7 +65,7 @@
                     <div class="input-group">
                         <select id="bulk-actions" name="bulk_action" class="form-control">
                             <option value="null">-Bulk Actions-</option>
-                            <option value="delete" data-action="./admin/shop/products/delete">Delete</option>
+                            <option value="delete" data-action="/admin/shop/products/delete">Delete</option>
                         </select>
                         <span class="input-group-btn">
                             <button class="btn btn-default bulk-actions" type="button" data-target="bulk-actions">Apply</button>
@@ -125,9 +125,9 @@
                         <?php if ($item->{'featured_image.slug'}) { ?>
                             <div class="thumbnail text-center">
                             	<div class="thumbnail-view">
-                            		<a class="thumbnail-view-hover ui-lightbox" href="./asset/<?php echo $item->{'featured_image.slug'}; ?>">
+                            		<a class="thumbnail-view-hover ui-lightbox" href="/asset/<?php echo $item->{'featured_image.slug'}; ?>">
                             		</a>
-                                    <img src="./asset/thumb/<?php echo $item->{'featured_image.slug'}; ?>" />
+                                    <img src="/asset/thumb/<?php echo $item->{'featured_image.slug'}; ?>" />
         				        </div>
         				    </div> <!-- /.thumbnail -->                    	
                         <?php } ?>
@@ -137,13 +137,13 @@
                         <div class="row">
                             <div class="col-xs-12 col-sm-12 col-md-6">
                                 <h5>
-                                    <a href="./admin/shop/product/edit/<?php echo $item->id; ?>">
+                                    <a href="/admin/shop/product/edit/<?php echo $item->id; ?>">
                                     <?php echo $item->{'title'}; ?>
                                     </a>
                                 </h5>
                                 
                                 <div>
-                                    <a href="./shop/product/<?php echo $item->slug; ?>" target="_blank">/<?php echo $item->{'slug'}; ?></a>
+                                    <a href="/shop/product/<?php echo $item->slug; ?>" target="_blank">/<?php echo $item->{'slug'}; ?></a>
                                 </div>
                                 
                                 <div>
@@ -190,11 +190,11 @@
                     </td>
                                     
                     <td class="text-center">
-                        <a class="btn btn-xs btn-secondary" href="./admin/shop/product/edit/<?php echo $item->id; ?>">
+                        <a class="btn btn-xs btn-secondary" href="/admin/shop/product/edit/<?php echo $item->id; ?>">
                             <i class="fa fa-pencil"></i>
                         </a>
                         &nbsp;
-                        <a class="btn btn-xs btn-danger" data-bootbox="confirm" href="./admin/shop/product/delete/<?php echo $item->id; ?>">
+                        <a class="btn btn-xs btn-danger" data-bootbox="confirm" href="/admin/shop/product/delete/<?php echo $item->id; ?>">
                             <i class="fa fa-times"></i>
                         </a>
                     </td>
