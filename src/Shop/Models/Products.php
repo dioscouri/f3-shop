@@ -642,16 +642,21 @@ class Products extends \Dsc\Mongo\Collections\Content implements \MassUpdate\Ser
     }
     
     /**
+     * User-aware price of the product,
+     * accounting for user group, date, specials, etc.
+     * Defaults to the product's default price.
      * 
-     * @param unknown $groups
+     * @param \Users\Models\Users $user
      * @return unknown
      */
-    public function price( $groups=array() )
+    public function price( \Users\Models\Users $user=null )
     {
         $price = $this->get('prices.default');
         
+        //$primaryGroup = \Shop\Models\Customer::primaryGroup( $user );
         // TODO get this product's price for the user's array of groups.
         // lowest price is given priority
+        
         
         // TODO adjust price based on date ranges too
         

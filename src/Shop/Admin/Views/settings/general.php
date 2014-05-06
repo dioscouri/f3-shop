@@ -1,7 +1,7 @@
 <h3 class="">General Settings</h3>
 <hr />
 
-<div class="form-group">
+<div class="">
     <label>Store Address</label>
     
     <div class="row">
