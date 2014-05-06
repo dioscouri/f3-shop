@@ -2,15 +2,15 @@
 
     <ol class="breadcrumb">
         <li>
-            <a href="/shop/account">My Account</a>
+            <a href="./shop/account">My Account</a>
         </li>
         <li class="active">My Orders</li>
     </ol>
 
     <?php if (empty($paginated->items)) { ?>
-        <h2>You have made no orders. <a href="/shop"><small>Go Shopping</small></a></h2>
+        <h2>You have made no orders. <a href="./shop"><small>Go Shopping</small></a></h2>
     <?php } else { ?>
-        <form action="/shop/orders" method="post">     
+        <form action="./shop/orders" method="post">     
            
         <div class="well well-sm search">
             <div class="input-group">
@@ -51,8 +51,8 @@
             <div class="panel-body">
                 <div class="row">
                     <div class="col-xs-12 col-sm-12 col-md-4">
-                        <legend><a href="/shop/order/<?php echo $order->id; ?>"><?php echo (new \DateTime($order->{'metadata.created.local'}))->format('F j, Y'); ?></a></legend>
-                        <div><label>#</label><a href="/shop/order/<?php echo $order->id; ?>"><?php echo $order->{'number'}; ?></a></div>
+                        <legend><a href="./shop/order/<?php echo $order->id; ?>"><?php echo (new \DateTime($order->{'metadata.created.local'}))->format('F j, Y'); ?></a></legend>
+                        <div><label>#</label><a href="./shop/order/<?php echo $order->id; ?>"><?php echo $order->{'number'}; ?></a></div>
                         <div><label>Total:</label> <?php echo $order->{'grand_total'}; ?></div>
                     </div>
                     <div class="col-xs-12 col-sm-12 col-md-8">
@@ -62,7 +62,7 @@
                         <div class="row">
                             <div class="hidden-xs hidden-sm col-md-2">
                                 <?php if (\Dsc\ArrayHelper::get($item, 'image')) { ?>
-                                <img class="img-responsive" src="/asset/thumb/<?php echo \Dsc\ArrayHelper::get($item, 'image'); ?>" alt="" />
+                                <img class="img-responsive" src="./asset/thumb/<?php echo \Dsc\ArrayHelper::get($item, 'image'); ?>" alt="" />
                                 <?php } ?>
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-10">

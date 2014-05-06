@@ -1,4 +1,4 @@
-<script src="/ckeditor/ckeditor.js"></script>
+<script src="./ckeditor/ckeditor.js"></script>
 <script>
 jQuery(document).ready(function(){
     CKEDITOR.replaceAll( 'wysiwyg' );    
@@ -34,7 +34,7 @@ jQuery(document).ready(function(){
                     </div>
                         
                     &nbsp;
-                    <a class="btn btn-default" href="/admin/shop/coupons">Cancel</a>
+                    <a class="btn btn-default" href="./admin/shop/coupons">Cancel</a>
                 </div>
 
             </div>

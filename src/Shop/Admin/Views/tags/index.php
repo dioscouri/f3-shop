@@ -7,7 +7,7 @@
     <div class="col-xs-12 col-sm-5 col-md-5 col-lg-5">
         <div class="row">
             <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
-                <form class="searchForm" method="post" action="/admin/shop/tags">
+                <form class="searchForm" method="post" action="./admin/shop/tags">
                     <div class="form-group">
                         <div class="input-group">
                             <input class="form-control" type="text" name="filter[keyword]" placeholder="Search..." maxlength="200" value="<?php echo $state->get('filter.keyword'); ?>"> <span class="input-group-btn"> <input class="btn btn-primary" type="submit"
@@ -20,7 +20,7 @@
                 </form>
             </div>        
             <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
-                <a class="btn btn-default" href="/admin/shop/tag/create">Add New</a>
+                <a class="btn btn-default" href="./admin/shop/tag/create">Add New</a>
             </div>
         </div>
     </div>
@@ -36,7 +36,7 @@
                 {
                     ?>
                     <li>
-                        <div class="form-group"><a href="/admin/shop/tag/edit/<?php echo $tag; ?>" class="btn btn-default" rel="tag"><?php echo $tag . " (" . (int) $tag->productCount( (string) $tag ) . ")"; ?></a></div>
+                        <div class="form-group"><a href="./admin/shop/tag/edit/<?php echo $tag; ?>" class="btn btn-default" rel="tag"><?php echo $tag . " (" . (int) $tag->productCount( (string) $tag ) . ")"; ?></a></div>
                     </li>
     				<?php
                 }

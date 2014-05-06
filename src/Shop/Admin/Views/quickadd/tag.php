@@ -1,11 +1,11 @@
-<form class="form-horizontal" action="/admin/menu/create" method="post">
+<form class="form-horizontal" action="./admin/menu/create" method="post">
 	<div class="form-group">
 		<label for="link-url" class="col-sm-4 control-label">Category</label>
 		<div class="col-sm-8">
 			<?php if (!empty($tags)) { ?>
 			<select name="details[url]" class="form-control">
 			<?php foreach ($tags as $one) { ?>
-			    <option value="/blog/tag/<?php echo $one; ?>">
+			    <option value="./blog/tag/<?php echo $one; ?>">
 			    	<?php echo $one; ?>
 			    </option>
 			<?php } ?> 

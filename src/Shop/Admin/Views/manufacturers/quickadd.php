@@ -4,7 +4,7 @@
 
     <div id="quick-form-response-container"></div>
 
-    <form id="quick-form" action="/admin/shop/manufacturer/create" class="form dsc-ajax-form" method="post" data-callback="Dsc.refreshDatatable" data-message_container="quick-form-response-container" data-refresh_list="true" data-list_container="manufacturers">
+    <form id="quick-form" action="./admin/shop/manufacturer/create" class="form dsc-ajax-form" method="post" data-callback="Dsc.refreshDatatable" data-message_container="quick-form-response-container" data-refresh_list="true" data-list_container="manufacturers">
 
         <div class="form-group">
             <input type="text" name="title" placeholder="Title" class="form-control" />

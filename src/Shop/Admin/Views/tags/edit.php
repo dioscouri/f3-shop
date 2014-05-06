@@ -27,7 +27,7 @@
                     </div>
                         
                     &nbsp;
-                    <a class="btn btn-default" href="/admin/shop/tags">Cancel</a>
+                    <a class="btn btn-default" href="./admin/shop/tags">Cancel</a>
                 </div>
 
             </div>
@@ -85,7 +85,7 @@ jQuery(document).ready(function() {
         multiple: true,
         minimumInputLength: 3,
         ajax: {
-            url: "/admin/shop/products/forSelection",
+            url: "./admin/shop/products/forSelection",
             dataType: 'json',
             data: function (term, page) {
                 return {

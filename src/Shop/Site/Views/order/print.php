@@ -18,7 +18,7 @@
 
     <div class="clearfix">
         <div class="pull-right hidden-print">
-            Return to <a href="/shop/order/<?php echo $order->id; ?>">Order Summary</a>
+            Return to <a href="./shop/order/<?php echo $order->id; ?>">Order Summary</a>
         </div>
     </div>
 
