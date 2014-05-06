@@ -140,6 +140,13 @@ class Orders extends \Dsc\Mongo\Collections\Nodes
         
         $order->user_id = $cart->user_id;
         $order->user_email = $cart->user_email;
+        if (empty($order->user_email)) {
+        	$user = (new \Users\Models\Users)->load(array('_id'=>$order->user_id));
+        	if (!empty($user->email)) {
+        		$order->user_email = $user->email;
+        	}
+        }
+        
         // $order->is_guest = $cart->isGuest(); ? or is that from the checkout object?
         // $order->ip_address = $cart->ipAddress(); ? or is that from the checkout object?
         $order->comments = $cart->{'checkout.order_comments'};
