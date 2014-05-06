@@ -39,12 +39,28 @@ class Collections extends \Dsc\Mongo\Collections\Describable
             $conditions = array_merge( $conditions, array( '_id' => array( '$in' => $ids ) ) );
         }
         
-        if (!empty($collection->price_minimum))
+        // a range search
+        if (!empty($collection->price_minimum) && !empty($collection->price_maximum))
+        {
+            $and = array(
+                array( 'prices.default' => array( '$lte' => (float) $collection->price_maximum ) ),
+                array( 'prices.default' => array( '$gte' => (float) $collection->price_minimum ) ),
+            );
+            
+            if (!empty($conditions['$and'])) {
+                $conditions['$and'] = array_merge( $conditions['$and'], $and );
+            } else {
+                $conditions['$and'] = $and;
+            }
+            
+        }
+        // everything $gt a minimum
+        elseif (!empty($collection->price_minimum) && empty($collection->price_maximum)) 
         {
             $conditions = array_merge( $conditions, array( 'prices.default' => array('$gte' => (float) $collection->price_minimum) ) );
         }
-        
-        if (!empty($collection->price_maximum))
+        // everything $lt a maximum
+        elseif (empty($collection->price_minimum) && !empty($collection->price_maximum))
         {
             $conditions = array_merge( $conditions, array( 'prices.default' => array('$lte' => (float) $collection->price_maximum) ) );
         }
@@ -86,7 +102,12 @@ class Collections extends \Dsc\Mongo\Collections\Describable
                                                 array('publication.end.time' => array( '$gt' => time() )  )
                                 ))
                 );
-                $conditions = array_merge( $conditions, array( '$and' => $and ) );
+                //$conditions = array_merge( $conditions, array( '$and' => $and ) );
+                if (!empty($conditions['$and'])) {
+                    $conditions['$and'] = array_merge( $conditions['$and'], $and );
+                } else {
+                    $conditions['$and'] = $and;
+                }                
             }
         }
         
