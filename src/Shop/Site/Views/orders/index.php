@@ -53,7 +53,7 @@
                     <div class="col-xs-12 col-sm-12 col-md-4">
                         <legend><a href="./shop/order/<?php echo $order->id; ?>"><?php echo (new \DateTime($order->{'metadata.created.local'}))->format('F j, Y'); ?></a></legend>
                         <div><label>#</label><a href="./shop/order/<?php echo $order->id; ?>"><?php echo $order->{'number'}; ?></a></div>
-                        <div><label>Total:</label> <?php echo $order->{'grand_total'}; ?></div>
+                        <div><label>Total:</label> <?php echo \Shop\Models\Currency::format( $order->{'grand_total'} ); ?></div>
                     </div>
                     <div class="col-xs-12 col-sm-12 col-md-8">
                         <legend><?php echo $order->{'status'}; ?></legend>
@@ -80,7 +80,7 @@
                                 <div>
                                     <span class="quantity"><?php echo \Dsc\ArrayHelper::get($item, 'quantity'); ?></span>
                                     x
-                                    <span class="price">$<?php echo \Dsc\ArrayHelper::get($item, 'price'); ?></span> 
+                                    <span class="price"><?php echo \Shop\Models\Currency::format( \Dsc\ArrayHelper::get($item, 'price') ); ?></span> 
                                 </div>                                
                             </div>
                         </div>        

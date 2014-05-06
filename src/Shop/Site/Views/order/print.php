@@ -27,7 +27,7 @@
         <div class="row">
             <div class="col-xs-12 col-sm-12 col-md-6">
                 <div><label>Order placed:</label> <?php echo (new \DateTime($order->{'metadata.created.local'}))->format('F j, Y'); ?></div>
-                <div><label>Order total:</label> <?php echo $order->{'grand_total'}; ?></div>
+                <div><label>Order total:</label> <?php echo \Shop\Models\Currency::format( $order->{'grand_total'} ); ?></div>
             </div>
             <div class="col-xs-12 col-sm-12 col-md-6">
                 <div><label>Order #</label><?php echo $order->{'number'}; ?></div>
@@ -64,7 +64,7 @@
             <div class="col-xs-12 col-sm-12 col-md-6">
                 <?php if ($method = $order->shippingMethod()) { ?>
                     <div>
-                        <label>Method:</label> <?php echo $method->{'name'}; ?> &mdash; $<?php echo $method->total(); ?>
+                        <label>Method:</label> <?php echo $method->{'name'}; ?> &mdash; <?php echo \Shop\Models\Currency::format( $method->total() ); ?>
                     </div>
                 <?php } ?>
             </div>
@@ -161,11 +161,11 @@
                 <div>
                     <span class="quantity"><?php echo $quantity = \Dsc\ArrayHelper::get($item, 'quantity'); ?></span>
                     x
-                    <span class="price">$<?php echo $price = \Dsc\ArrayHelper::get($item, 'price'); ?></span> 
+                    <span class="price"><?php echo \Shop\Models\Currency::format( $price = \Dsc\ArrayHelper::get($item, 'price') ); ?></span> 
                 </div>
             </div>
             <div class="col-xs-2 col-sm-2 col-md-2">
-                <div class="pull-right">$<?php echo $quantity * $price; ?></div>
+                <div class="pull-right"><?php echo \Shop\Models\Currency::format( $quantity * $price ); ?></div>
             </div>
         </div>        
         <?php } ?>
