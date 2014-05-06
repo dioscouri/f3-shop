@@ -11,8 +11,13 @@ class Customer extends \Users\Models\Users
      */
     public static function primaryGroup( \Users\Models\Users $user )
     {
-        // TODO Set this to be a default group, as configured in the Shop config?
         $group = new \Users\Models\Groups;
+        
+        // Set this to be a default group, as configured in the Shop config        
+        $settings = \Shop\Models\Settings::fetch();
+        if ($group_id = $settings->{'users.default_group'}) {
+            $group->setState('filter.id', (string) $group_id)->getItem();
+        }
         
         if ($groups = $user->groups()) 
         {
