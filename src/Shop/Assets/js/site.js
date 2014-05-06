@@ -1,7 +1,3 @@
-jQuery(document).ready(function() {
-    Shop.setupSelectVariantCallback();
-});
-
 if (typeof(Shop) === 'undefined') {
     var Shop = {};
 }
@@ -35,8 +31,8 @@ Shop.setupSelectVariantCallback = function() {
 
 Shop.selectVariant = function(variant, select) {
     // Update the product image
-    new_image = variant.image;
-    if (new_image) {
+    if (variant && variant.image) {
+    	new_image = variant.image;
         jqzoom = jQuery('.product-image a.zoom').data('jqzoom');
         if (jqzoom) {
             jqzoom.swapimage( jQuery('.zoom-thumbs #'+new_image+' a') );
@@ -46,3 +42,7 @@ Shop.selectVariant = function(variant, select) {
     }    
     
 }
+
+jQuery(document).ready(function() {
+    Shop.setupSelectVariantCallback();
+});

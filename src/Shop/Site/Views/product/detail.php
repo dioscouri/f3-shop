@@ -7,7 +7,6 @@ jQuery(document).ready(function(){
        ev.preventDefault();
        var el = jQuery(this);
        var variant_id = el.closest('form').find('.variant_id').val();
-       console.log('ok, variant: ' + variant_id);
        if (variant_id) {
 	        var request = jQuery.ajax({
 	            type: 'get', 
