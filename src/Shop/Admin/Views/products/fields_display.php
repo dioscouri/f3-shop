@@ -22,7 +22,7 @@
             <div class="portlet-content">
             
                 <div class="input-group">
-                    <input name="display[stickers]" data-tags='<?php echo json_encode( (array) \Shop\Models\Products::distinctStickers() ); ?>' value="<?php echo implode(",", (array) $flash->old('display.stickers') ); ?>" type="text" class="form-control ui-select2-tags" /> 
+                    <input name="display[stickers]" data-maximum="1" data-tags='<?php echo json_encode( (array) \Shop\Models\Products::distinctStickers() ); ?>' value="<?php echo implode(",", (array) $flash->old('display.stickers') ); ?>" type="text" class="form-control ui-select2-tags" /> 
                 </div>
                 <!-- /.form-group -->
 
