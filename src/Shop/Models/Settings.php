@@ -18,6 +18,20 @@ class Settings extends \Dsc\Mongo\Collections\Settings
             'header' => null,
             'footer' => null,
         ),
+        'email_html' => array(
+            'header' => null,
+            'footer' => null,
+        ),        
+        'email_text' => array(
+            'header' => null,
+            'footer' => null,
+        ),        
+    );
+    
+    public $order_confirmation = array(
+    	'tracking_pixels' => array(
+    	   'generic' => null
+        ),
     );
     
     public $store_address = array(
