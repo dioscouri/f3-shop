@@ -14,8 +14,8 @@ class Customer extends \Users\Models\Users
         $group = new \Users\Models\Groups;
         
         // Set this to be a default group, as configured in the Shop config        
-        $settings = \Shop\Models\Settings::fetch();
-        if ($group_id = $settings->{'users.default_group'}) {
+        $group_id = \Shop\Models\Settings::fetch()->{'users.default_group'};
+        if (!empty($group_id)) {
             $group->setState('filter.id', (string) $group_id)->getItem();
         }
         

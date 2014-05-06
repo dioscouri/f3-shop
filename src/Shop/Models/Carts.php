@@ -916,7 +916,7 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
             return $this->{'checkout.shipping_address.country'};
         }
     
-        return \Shop\Models\Settings::fetch()->{'country'};
+        return \Shop\Models\Settings::fetch()->{'store_address.country'};
     }
     
     /**

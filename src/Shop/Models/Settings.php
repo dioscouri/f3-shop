@@ -13,5 +13,13 @@ class Settings extends \Dsc\Mongo\Collections\Settings
         'required' => 0 
     );
     
-    public $country = 'US';
+    public $store_address = array(
+        'line_1' => null,
+        'line_2' => null,
+        'city' => null,
+        'region' => null,
+    	'country' => 'US',
+        'postal_code' => null,
+        'phone_number' => null,
+    );
 }
