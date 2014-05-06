@@ -308,6 +308,7 @@ class Orders extends \Dsc\Mongo\Collections\Nodes
         }
         
         // 2. Add an email to the Mailer
+        // TODO confirm that user_email is set
         if ($this->user_email) {
             $this->sendEmailNewOrder();
         }
