@@ -16,7 +16,7 @@
 </h3>
 <div>    
     <div><b>Order placed:</b> <?php echo (new \DateTime($order->{'metadata.created.local'}))->format('F j, Y'); ?></div>
-    <div><b>Order total:</b> <?php echo $order->{'grand_total'}; ?></div>
+    <div><b>Order total:</b> <?php echo \Shop\Models\Currency::format( $order->{'grand_total'} ); ?></div>
     <div><b>Order #</b><?php echo $order->{'number'}; ?></div>
     <div><b>Order status:</b> <?php echo $order->{'status'}; ?></div>
 </div>       
@@ -138,14 +138,14 @@
                     <small>
                     <span class="quantity"><?php echo $quantity = \Dsc\ArrayHelper::get($item, 'quantity'); ?></span>
                     x
-                    <span class="price">$<?php echo $price = \Dsc\ArrayHelper::get($item, 'price'); ?></span>
+                    <span class="price"><?php echo \Shop\Models\Currency::format( $price = \Dsc\ArrayHelper::get($item, 'price') ); ?></span>
                     </small> 
                 </div>
             </h4>
         </td>
         <td style="vertical-align: top; text-align: right;">
             <h4>
-                $<?php echo $quantity * $price; ?>
+                <?php echo \Shop\Models\Currency::format( $quantity * $price ); ?>
             </h4>
         </td>
     </tr>        

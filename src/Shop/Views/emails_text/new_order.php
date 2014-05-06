@@ -14,7 +14,7 @@ Thanks again!
 View a printable version here: <?php echo $print_link; ?> 
 
 Order placed: <?php echo (new \DateTime($order->{'metadata.created.local'}))->format('F j, Y'); ?> 
-Order total: <?php echo $order->{'grand_total'}; ?> 
+Order total: <?php echo \Shop\Models\Currency::format( $order->{'grand_total'} ); ?> 
 Order #<?php echo $order->{'number'}; ?> 
 Order status: <?php echo $order->{'status'}; ?> 
 
@@ -90,6 +90,6 @@ Items:
 
 <?php echo \Dsc\ArrayHelper::get($item, 'product.title'); ?> 
 <?php if (\Dsc\ArrayHelper::get($item, 'attribute_title')) { ?><?php echo \Dsc\ArrayHelper::get($item, 'attribute_title'); ?><?php } ?> 
-<?php echo $quantity = \Dsc\ArrayHelper::get($item, 'quantity'); ?> x $<?php echo $price = \Dsc\ArrayHelper::get($item, 'price'); ?>    
-Subtotal: $<?php echo $quantity * $price; ?> 
+<?php echo $quantity = \Dsc\ArrayHelper::get($item, 'quantity'); ?> x <?php echo \Shop\Models\Currency::format( $price = \Dsc\ArrayHelper::get($item, 'price') ); ?>    
+Subtotal: <?php echo \Shop\Models\Currency::format( $quantity * $price ); ?> 
 <?php } ?>
