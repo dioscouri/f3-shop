@@ -13,7 +13,7 @@
 <div class="container order-detail order-print">
 
     <div class="order-print-header form-group">
-        // TODO Include store custom print header HTML from Shop config
+        <?php echo \Shop\Models\Settings::fetch()->{'orders.printing.header'}; ?>
     </div>
 
     <div class="clearfix">
@@ -172,7 +172,7 @@
     </div>
     
     <div class="text-center">
-        // TODO Include store contact info from Shop config
+        <?php echo \Shop\Models\Settings::fetch()->{'orders.printing.footer'}; ?>
     </div>
 
 </div>

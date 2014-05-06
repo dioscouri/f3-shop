@@ -13,6 +13,13 @@ class Settings extends \Dsc\Mongo\Collections\Settings
         'required' => 0 
     );
     
+    public $orders = array(
+        'printing' => array(
+            'header' => null,
+            'footer' => null,
+        ),
+    );
+    
     public $store_address = array(
         'line_1' => null,
         'line_2' => null,

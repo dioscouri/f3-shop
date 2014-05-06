@@ -1,3 +1,10 @@
+<script src="./ckeditor/ckeditor.js"></script>
+<script>
+jQuery(document).ready(function(){
+    CKEDITOR.replaceAll( 'wysiwyg' );    
+});
+</script>
+
 <div class="well">
 
 <form id="settings-form" role="form" method="post" class="form-horizontal clearfix">
@@ -23,6 +30,9 @@
                 <li>
                     <a href="#tab-checkout" data-toggle="tab"> Checkout Settings </a>
                 </li>
+                <li>
+                    <a href="#tab-orders" data-toggle="tab"> Order Settings </a>
+                </li>                
                 <?php if (!empty($this->event)) { foreach ((array) $this->event->getArgument('tabs') as $key => $title ) { ?>
                 <li>
                     <a href="#tab-<?php echo $key; ?>" data-toggle="tab"> <?php echo $title; ?> </a>
@@ -56,6 +66,12 @@
                 <div class="tab-pane fade in" id="tab-checkout">
                 
                     <?php echo $this->renderLayout('Shop/Admin/Views::settings/checkout.php'); ?>
+
+                </div>
+                
+                <div class="tab-pane fade in" id="tab-orders">
+                
+                    <?php echo $this->renderLayout('Shop/Admin/Views::settings/orders.php'); ?>
 
                 </div>
 
