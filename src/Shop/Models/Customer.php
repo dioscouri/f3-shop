@@ -9,19 +9,25 @@ class Customer extends \Users\Models\Users
      * 
      * @return \Users\Models\Groups
      */
-    public static function primaryGroup( \Users\Models\Users $user )
+    public static function primaryGroup( \Users\Models\Users $user=null )
     {
         $group = new \Users\Models\Groups;
         
-        // Set this to be a default group, as configured in the Shop config        
-        $group_id = \Shop\Models\Settings::fetch()->{'users.default_group'};
-        if (!empty($group_id)) {
-            $group->setState('filter.id', (string) $group_id)->getItem();
+        if (!empty($user)) 
+        {
+            if ($groups = $user->groups()) 
+            {
+                $group = $groups[0];
+            }
         }
         
-        if ($groups = $user->groups()) 
+        if (empty($group->id)) 
         {
-        	$group = $groups[0];
+            // Set this to be a default group, as configured in the Shop config
+            $group_id = \Shop\Models\Settings::fetch()->{'users.default_group'};
+            if (!empty($group_id)) {
+                $group = $group->setState('filter.id', (string) $group_id)->getItem();
+            }        	
         }
         
         return $group;

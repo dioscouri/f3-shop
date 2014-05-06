@@ -48,19 +48,31 @@
                 </div>
             </div>
             <div class="form-group clearfix">
-                <div class="col-md-4">
-                    <select class="form-control" name="prices[special][<?php echo $key; ?>][shoppergroup_id]">
-                        <option value="0">Default</option>
+                <div class="col-md-3">
+                    <select class="form-control" name="prices[special][<?php echo $key; ?>][group_id]">
+                        <option value="">All Groups</option>
+                        <?php foreach ($groups = \Users\Models\Groups::find() as $group) { ?>
+                        <option value="<?php echo (string) $group->id; ?>" <?php if ($flash->old('prices.special.'.$key.'.group_id') == (string) $group->id) { echo "selected='selected'"; } ?>><?php echo $group->title; ?></option>
+                        <?php } ?>                        
                     </select>                    
                 </div>                                    
-                <div class="col-md-8">
+                <div class="col-md-6">
                     <div class="input-group">
                         <input type="text" name="prices[special][<?php echo $key; ?>][quantity_min]" value="<?php echo $flash->old('prices.special.'.$key.'.quantity_min'); ?>" class="form-control input-sm" placeholder="Min Quantity" />
                         <span class="input-group-addon">to</span>
                         <input type="text" name="prices[special][<?php echo $key; ?>][quantity_max]" value="<?php echo $flash->old('prices.special.'.$key.'.quantity_max'); ?>" class="form-control input-sm" placeholder="Max Quantity" />                            
                     </div>                        
                 </div>
-                
+                <div class="col-md-3">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <label>Priority:</label>
+                        </div>
+                        <div class="col-md-9">
+                            <input type="text" name="prices[special][<?php echo $key; ?>][ordering]" class="form-control input-sm" value="<?php echo $flash->old('prices.special.'.$key.'.ordering'); ?>" placeholder="Sort Order">
+                        </div>
+                    </div>
+                </div>
             </div>
             
         </fieldset>                        
@@ -105,13 +117,16 @@
                     </div>
                 </div>
                 <div class="form-group clearfix">
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <label>Shopper Group</label>
-                        <select class="form-control input-sm" name="prices[special][{id}][shoppergroup_id]">
-                            <option value="0">Default</option>
+                        <select class="form-control input-sm" name="prices[special][{id}][group_id]">
+                            <option value="">All Groups</option>
+                            <?php foreach ($groups = \Users\Models\Groups::find() as $group) { ?>
+                            <option value="<?php echo (string) $group->id; ?>"><?php echo $group->title; ?></option>
+                            <?php } ?>                                                    
                         </select>
                     </div>                
-                    <div class="col-md-8">
+                    <div class="col-md-6">
                         <label>Quantity Range</label>                    
                         <div class="input-group">
                             <input type="text" name="prices[special][{id}][quantity_min]" class="form-control input-sm" placeholder="Minimum Quantity" />
@@ -119,6 +134,16 @@
                             <input type="text" name="prices[special][{id}][quantity_max]" class="form-control input-sm" placeholder="Maximum Quantity" />                            
                         </div>                                                                
                     </div>
+                    <div class="col-md-3">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <label>Priority:</label>
+                            </div>
+                            <div class="col-md-9">
+                                <input type="text" name="prices[special][{id}][ordering]" class="form-control input-sm" value="" placeholder="Sort Order">
+                            </div>
+                        </div>
+                    </div>                    
                 </div>
             </fieldset>
         </template>
@@ -150,7 +175,8 @@
                     jQuery(this).timepicker("showWidget");
                 });                
             }
-    
+
+            ShopSetupDatepicker();
         });
         </script>
         

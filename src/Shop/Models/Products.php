@@ -292,6 +292,43 @@ class Products extends \Dsc\Mongo\Collections\Content implements \MassUpdate\Ser
             $item['price'] = (float) $item['price'];
         });
         
+        if (!empty($this->{'prices.special'}) && is_array($this->{'prices.special'}))
+        {
+            // Compress the array to just the values, then sort them by sort order
+            $special_prices = array_filter( array_values($this->{'prices.special'}) );
+            usort($special_prices, function($a, $b) {
+                return $a['ordering'] - $b['ordering'];
+            });
+            array_walk($special_prices, function(&$item, $key){
+                if ($item['ordering'] != ($key+1)) {
+                    $item['ordering'] = $key+1;
+                }
+                
+                if (!empty($item['start_date'])) {
+                    $string = $item['start_date'];
+                    if (!empty($item['start_time'])) {
+                        $string .= ' ' . $item['start_time'];
+                    }
+                    $item['start'] = \Dsc\Mongo\Metastamp::getDate( trim( $string ) );
+                } else {
+                    $item['start'] = \Dsc\Mongo\Metastamp::getDate('now');
+                }
+                
+                if (empty($item['end_date'])) {
+                    unset($item['end']);
+                }
+                elseif (!empty($item['end_date'])) {
+                    $string = $item['end_date'];
+                    if (!empty($item['end_time'])) {
+                        $string .= ' ' . $item['end_time'];
+                    }
+                    $item['end'] = \Dsc\Mongo\Metastamp::getDate( trim( $string ) );
+                }
+                                
+            });            
+            $this->{'prices.special'} = $special_prices;
+        }
+        
         return parent::beforeSave();
     }
     
@@ -653,22 +690,58 @@ class Products extends \Dsc\Mongo\Collections\Content implements \MassUpdate\Ser
     {
         $price = $this->get('prices.default');
         
-        //$primaryGroup = \Shop\Models\Customer::primaryGroup( $user );
-        // TODO get this product's price for the user's array of groups.
-        // lowest price is given priority
+        if (empty($user)) { 
+        	$identity = \Dsc\System::instance()->get('auth')->getIdentity();
+        	if (!empty($identity->id)) {
+        		$user = $identity;
+        	}
+        }
         
+        // Get the product price for the user's primary group
+        // primaryGroup defaults to the site-wide default user group
+        $primaryGroup = \Shop\Models\Customer::primaryGroup( $user );
+        if ($group_slug = $primaryGroup->{'slug'}) {
+            if ($this->exists('prices.'.$group_slug)) {
+            	$price = $this->get('prices.'.$group_slug);
+            }
+        }
         
-        // TODO adjust price based on date ranges too
+        // adjust price based on date ranges too
+        $now = strtotime('now');
+        $today = date('Y-m-d', $now);
+        foreach ((array) $this->{'prices.special'} as $special_price) 
+        {
+        	if (empty($special_price['group_id']) || $special_price['group_id'] == (string) $primaryGroup->id) 
+        	{
+        		if ((!empty($special_price['start']['time']) && $special_price['start']['time'] <= $now) 
+        		  && (empty($special_price['end']['time']) || $special_price['end']['time'] > $now )
+                ) {
+        			$price = $special_price['price'];
+        			break;
+        		}
+        	}
+        }
         
         return $price;
     }
     
     /**
+     * Return the product price for a specific group
      * 
+     * @param \Users\Models\Groups $group
+     * @return unknown
      */
-    public function priceForGroup( $group )
+    public function priceForGroup( \Users\Models\Groups $group )
     {
-    	
+        $price = $this->get('prices.default');
+        
+        if ($group_slug = $group->{'slug'}) {
+            if ($this->exists('prices.'.$group_slug)) {
+            	$price = $this->get('prices.'.$group_slug);
+            }
+        }
+        
+        return $price;
     }
 
     /**
