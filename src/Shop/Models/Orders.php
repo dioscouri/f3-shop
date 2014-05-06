@@ -164,7 +164,9 @@ class Orders extends \Dsc\Mongo\Collections\Nodes
         // Coupons
         $order->coupons = $cart->{'coupons'};
         
-        // TODO Discounts
+        // Discounts
+        $order->discount_total = $cart->discountTotal();
+        
         // TODO Credits
         
         return $order;
@@ -282,7 +284,7 @@ class Orders extends \Dsc\Mongo\Collections\Nodes
         {
             $found = false;
 
-        	$product = (new \Shop\Models\Products)->setState('filter.id', $item->product_id)->getItem();
+        	$product = (new \Shop\Models\Products)->setState('filter.id', $item['product_id'])->getItem();
         	if (!empty($product->id) && (string) $product->id == (string) $item['product_id']) 
         	{
         		foreach ($product->variants as $variant) 
@@ -306,7 +308,9 @@ class Orders extends \Dsc\Mongo\Collections\Nodes
         }
         
         // 2. Add an email to the Mailer
-        $this->sendEmailNewOrder();
+        if ($this->user_email) {
+            $this->sendEmailNewOrder();
+        }
         
         // TODO 3. Increase hit counts on coupons used in order
 
