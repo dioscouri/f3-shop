@@ -109,7 +109,7 @@ jQuery(document).ready(function() {
         multiple: true,
         minimumInputLength: 3,
         ajax: {
-            url: "/admin/shop/products/forSelection",
+            url: "./admin/shop/products/forSelection",
             dataType: 'json',
             data: function (term, page) {
                 return {
@@ -134,7 +134,7 @@ jQuery(document).ready(function() {
         multiple: true,
         minimumInputLength: 3,
         ajax: {
-            url: "/admin/shop/countries/forSelection",
+            url: "./admin/shop/countries/forSelection",
             dataType: 'json',
             data: function (term, page) {
                 return {
@@ -159,7 +159,7 @@ jQuery(document).ready(function() {
         multiple: true,
         minimumInputLength: 3,
         ajax: {
-            url: "/admin/shop/regions/forSelection",
+            url: "./admin/shop/regions/forSelection",
             dataType: 'json',
             data: function (term, page) {
                 return {

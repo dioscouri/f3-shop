@@ -2,7 +2,7 @@
     Checkout <small>Step 1 of 2</small>
 </h2>
 
-<form action="/shop/checkout/update" method="post" id="checkout-shipping-form">
+<form action="./shop/checkout/update" method="post" id="checkout-shipping-form">
 
     <div id="checkout-shipping-address" class="well well-sm">
         <legend>
@@ -86,7 +86,7 @@ jQuery(document).ready(function(){
         var val = el.val();
         var request = jQuery.ajax({
             type: 'get', 
-            url: '/shop/address/regions/'+val
+            url: './shop/address/regions/'+val
         }).done(function(data){
             var lr = jQuery.parseJSON( JSON.stringify(data), false);
             if (lr.result) {
@@ -154,14 +154,14 @@ jQuery(document).ready(function(){
 
     	        var request = jQuery.ajax({
     	            type: 'post', 
-    	            url: '/shop/checkout/update',
+    	            url: './shop/checkout/update',
     	            data: form_data
     	        });        
     	        
     			// Success.
     			request.done(function ()
     			{
-    				jQuery('#checkout-shipping-methods-container').load('/shop/checkout/shipping-methods', function ()
+    				jQuery('#checkout-shipping-methods-container').load('./shop/checkout/shipping-methods', function ()
     				{
     					jQuery(this).closest('form').data('locked', false);
     					jQuery('#checkout-shipping-methods').css({ opacity: '' });

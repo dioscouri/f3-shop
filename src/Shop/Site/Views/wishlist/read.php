@@ -1,7 +1,7 @@
 
 <?php if (empty($wishlist->items)) { ?>
     <div class="container">
-        <h2>Your wishlist is empty! <a href="/shop"><small>Go Shopping</small></a></h2>
+        <h2>Your wishlist is empty! <a href="./shop"><small>Go Shopping</small></a></h2>
     </div>
 <?php } ?>
 
@@ -28,14 +28,14 @@
                             <div class="cart-product">
                                 <figure>
                                     <?php if (\Dsc\ArrayHelper::get($item, 'image')) { ?>
-                                    <a href="/shop/product/<?php echo \Dsc\ArrayHelper::get($item, 'product.slug'); ?>">
-                                        <img src="/asset/thumb/<?php echo \Dsc\ArrayHelper::get($item, 'image'); ?>" alt=""/>
+                                    <a href="./shop/product/<?php echo \Dsc\ArrayHelper::get($item, 'product.slug'); ?>">
+                                        <img src="./asset/thumb/<?php echo \Dsc\ArrayHelper::get($item, 'image'); ?>" alt=""/>
                                     </a>
                                     <?php } ?>
                                 </figure>
                                 <div class="text">
                                     <h2>
-                                        <a href="/shop/product/<?php echo \Dsc\ArrayHelper::get($item, 'product.slug'); ?>"><?php echo \Dsc\ArrayHelper::get($item, 'product.title'); ?></a>
+                                        <a href="./shop/product/<?php echo \Dsc\ArrayHelper::get($item, 'product.slug'); ?>"><?php echo \Dsc\ArrayHelper::get($item, 'product.title'); ?></a>
                                         <?php if (\Dsc\ArrayHelper::get($item, 'attribute_title')) { ?>
                                         <div><small><?php echo \Dsc\ArrayHelper::get($item, 'attribute_title'); ?></small></div>
                                         <?php } ?>                                            
@@ -57,13 +57,13 @@
                         <td>
                             <div class="price text-center">
                             <?php if (\Shop\Models\Variants::quantity(\Dsc\ArrayHelper::get($item, 'variant_id'))) { ?>
-                                <a class="btn btn-default" href="/shop/wishlist/<?php echo $wishlist->id; ?>/cart/<?php echo \Dsc\ArrayHelper::get($item, 'hash'); ?>">Add to Cart</a>
+                                <a class="btn btn-default" href="./shop/wishlist/<?php echo $wishlist->id; ?>/cart/<?php echo \Dsc\ArrayHelper::get($item, 'hash'); ?>">Add to Cart</a>
                             <?php } else { ?>
                                 Unavailable
                             <?php } ?>
                             </div>
                         </td>
-                        <td><a href="/shop/wishlist/remove/<?php echo \Dsc\ArrayHelper::get($item, 'hash'); ?>" class="btn btn-default custom-button"><i class="glyphicon glyphicon-remove"></i></a></td>
+                        <td><a href="./shop/wishlist/remove/<?php echo \Dsc\ArrayHelper::get($item, 'hash'); ?>" class="btn btn-default custom-button"><i class="glyphicon glyphicon-remove"></i></a></td>
                     </tr>
                     <?php } ?>
                     

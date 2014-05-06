@@ -8,14 +8,14 @@
                     <legend>
                         Orders
                         <div class="pull-right">
-                            <a href="/shop/orders"><small>Browse</small></a>
+                            <a href="./shop/orders"><small>Browse</small></a>
                         </div>                    
                     </legend>
                     <p class="help-block"><small>View and print recent orders</small></p>
                 </div>
                 <div class="col-xs-12 col-sm-12 col-md-8">
                     <div>
-                        <form action="/shop/orders" method="post">
+                        <form action="./shop/orders" method="post">
                         
                             <div class="input-group">
                                 <input class="form-control" type="text" name="filter[keyword]" placeholder="Search..." maxlength="200" value=""> 

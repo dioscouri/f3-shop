@@ -36,7 +36,7 @@
 
                             var request = jQuery.ajax({
                                 type: 'post', 
-                                url: '/admin/shop/categories/checkboxes',
+                                url: './admin/shop/categories/checkboxes',
                                 data: form_data
                             }).done(function(data){
                                 var lr = jQuery.parseJSON( JSON.stringify(data), false);
@@ -54,7 +54,7 @@
                         <div id="addCategoryForm" class="collapse">
                             <div class="panel-body">
                                 
-                                <div id="quick-form" action="/admin/shop/category/create" data-callback="Dsc.refreshCategories" data-message_container="quick-form-response-container">
+                                <div id="quick-form" action="./admin/shop/category/create" data-callback="Dsc.refreshCategories" data-message_container="quick-form-response-container">
                                 
                                 <div id="quick-form-response-container"></div>
                                 

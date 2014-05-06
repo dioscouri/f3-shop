@@ -2,7 +2,7 @@
 Dsc.refreshDatatable = function() {
     var request = jQuery.ajax({
         type: 'get', 
-        url: '/admin/shop/manufacturers'
+        url: './admin/shop/manufacturers'
     }).done(function(data){
         var lr = jQuery.parseJSON( JSON.stringify(data), false);
         if (lr.result) {

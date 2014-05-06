@@ -1,4 +1,4 @@
-<?php $item->url = '/shop/product/' . $item->{'slug'}; ?>
+<?php $item->url = './shop/product/' . $item->{'slug'}; ?>
 <?php $images = $item->images(); ?>
 
 <script>
@@ -11,7 +11,7 @@ jQuery(document).ready(function(){
        if (variant_id) {
 	        var request = jQuery.ajax({
 	            type: 'get', 
-	            url: '/shop/wishlist/add?variant_id='+variant_id
+	            url: './shop/wishlist/add?variant_id='+variant_id
 	        }).done(function(data){
 	            var response = jQuery.parseJSON( JSON.stringify(data), false);
 	            if (response.result) {
@@ -31,8 +31,8 @@ jQuery(document).ready(function(){
                 <ul class="zoom-thumbs">
                     <?php foreach ($images as $key=>$image) { ?>
                     <li id="<?php echo $image; ?>">
-                        <a rel="{gallery: 'zoom-gallery', smallimage: '/asset/thumb/<?php echo $image; ?>', largeimage: '/asset/<?php echo $image; ?>'}" href="javascript:void(0);">
-                            <img src="/asset/thumb/<?php echo $image; ?>" title="<?php echo htmlspecialchars_decode( $item->title ); ?>"> 
+                        <a rel="{gallery: 'zoom-gallery', smallimage: './asset/thumb/<?php echo $image; ?>', largeimage: './asset/<?php echo $image; ?>'}" href="javascript:void(0);">
+                            <img src="./asset/thumb/<?php echo $image; ?>" title="<?php echo htmlspecialchars_decode( $item->title ); ?>"> 
                         </a>                        
                     </li>
                     <?php } ?>
@@ -41,8 +41,8 @@ jQuery(document).ready(function(){
             </div>
             
             <div class="product-image product-image-big">
-                <a class="zoom" rel="zoom-gallery" href="/asset/<?php echo $item->{'featured_image.slug'}; ?>" title="<?php echo htmlspecialchars_decode( $item->title ); ?>" data-large-url="/asset/<?php echo $item->{'featured_image.slug'}; ?>">
-    	            <img class="zoomable" src="/asset/thumb/<?php echo $item->{'featured_image.slug'}; ?>" title="<?php echo htmlspecialchars_decode( $item->title ); ?>" />
+                <a class="zoom" rel="zoom-gallery" href="./asset/<?php echo $item->{'featured_image.slug'}; ?>" title="<?php echo htmlspecialchars_decode( $item->title ); ?>" data-large-url="./asset/<?php echo $item->{'featured_image.slug'}; ?>">
+    	            <img class="zoomable" src="./asset/thumb/<?php echo $item->{'featured_image.slug'}; ?>" title="<?php echo htmlspecialchars_decode( $item->title ); ?>" />
                 </a>
             </div>
                             
@@ -58,7 +58,7 @@ jQuery(document).ready(function(){
                 <div class="description">
                     <?php echo $item->{'copy'}; ?>
                 </div>
-                <form action="/shop/cart/add" method="post">
+                <form action="./shop/cart/add" method="post">
                     <div id="validation-cart-add" class="validation-message"></div>
                     
                     <div class="buttons">
