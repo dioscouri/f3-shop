@@ -85,6 +85,57 @@ class Products extends \Dsc\Mongo\Collections\Content implements \MassUpdate\Ser
         ),
     );
     
+    /**
+     * Method to auto-populate the model state.
+     *
+     */
+    public function populateState()
+    {
+        parent::populateState();
+        
+        $system = \Dsc\System::instance();
+        $input = $system->get('input');
+        
+        $default = null;
+        $old_state = $system->getUserState($this->context() . '.sort_by');
+        $cur_state = (!is_null($old_state)) ? $old_state : $default;
+        $sort_by = $input->get('sort_by', $default, 'string');
+        if ($sort_by && $cur_state != $sort_by)
+        {
+            $pieces = explode('-', $sort_by);
+        } else {
+            $pieces = explode('-', $cur_state);
+        }
+        $this->setState('sort_by', implode('-', $pieces));
+        
+        switch($pieces[0]) 
+        {
+        	case "price":
+        	    if (!empty($pieces[1]) && $pieces[1] == 'desc') {
+        	        $dir = -1;
+        	    }
+        	    else {
+        	        $dir = 1;
+        	    }
+        	    $this->setState('list.sort', array( 'prices.default' => $dir ) );
+        	    $this->setState('list.order', 'price');
+        	    break;
+        	case "title":
+        	default:
+        	    if (!empty($pieces[1]) && $pieces[1] == 'desc') {
+        	        $dir = -1;
+        	    }
+        	    else {
+        	        $dir = 1;
+        	    }
+        	    $this->setState('list.sort', array( 'title' => $dir ) );
+        	    $this->setState('list.order', 'title');
+        	    break;
+        }
+        
+        return $this;
+    }
+    
     protected function fetchConditions()
     {
         parent::fetchConditions();

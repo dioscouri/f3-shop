@@ -18,6 +18,7 @@
         <div class="form-group">
             <label>Slug</label>
             <input type="text" name="slug" placeholder="Slug" value="<?php echo $flash->old('slug'); ?>" class="form-control" />
+            <p class="help-block">This determines the product's URL<?php if ($flash->old('slug')) { ?>, which is currently <a target="_blank" href="./shop/product/<?php echo $flash->old('slug'); ?>">/shop/product/<?php echo $flash->old('slug'); ?></a><?php } ?>
         </div>
         <!-- /.form-group -->
         
