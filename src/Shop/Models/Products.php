@@ -96,6 +96,21 @@ class Products extends \Dsc\Mongo\Collections\Content implements \MassUpdate\Ser
         $system = \Dsc\System::instance();
         $input = $system->get('input');
         
+        /**
+         * Set which price field to use 
+         */
+        $price_field = 'prices.default';
+        $user = \Dsc\System::instance()->get('auth')->getIdentity();
+        $primaryGroup = \Shop\Models\Customer::primaryGroup( $user );
+        if ($group_slug = $primaryGroup->{'slug'}) {
+            if ($this->exists('prices.'.$group_slug)) {
+                $price_field = 'prices.'.$group_slug;
+            }
+        }
+        
+        /**
+         * Handle the sort_by value, which users use to sort the list of products
+         */
         $default = null;
         $old_state = $system->getUserState($this->context() . '.sort_by');
         $cur_state = (!is_null($old_state)) ? $old_state : $default;
@@ -106,7 +121,9 @@ class Products extends \Dsc\Mongo\Collections\Content implements \MassUpdate\Ser
         } else {
             $pieces = explode('-', $cur_state);
         }
-        $this->setState('sort_by', implode('-', $pieces));
+        $sort_by = implode('-', $pieces);
+        $this->setState('sort_by', $sort_by);
+        $system->setUserState($this->context() . '.sort_by', $sort_by);
         
         switch($pieces[0]) 
         {
@@ -117,7 +134,7 @@ class Products extends \Dsc\Mongo\Collections\Content implements \MassUpdate\Ser
         	    else {
         	        $dir = 1;
         	    }
-        	    $this->setState('list.sort', array( 'prices.default' => $dir ) );
+        	    $this->setState('list.sort', array( $price_field => $dir ) );
         	    $this->setState('list.order', 'price');
         	    break;
         	case "title":

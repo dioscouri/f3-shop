@@ -84,7 +84,26 @@ class Collections extends \Dsc\Mongo\Collections\Describable
                 $tags[] = $tag;
             }
             
-            $conditions = array_merge( $conditions, array( 'tags' => array( '$in' => $tags ) ) );
+            if (!empty($conditions['tags'])) 
+            {
+                if (is_array($conditions['tags'])) {
+                    if (!empty($conditions['tags']['$in'])) {
+                    	foreach ($conditions['tags']['$in'] as $tag) {
+                    		if (!in_array($tag, $tags)) {
+                    			$tags[] = $tag;
+                    		}
+                    	}
+                    }
+                } 
+                else {
+                	$tags[] = $conditions['tags'];
+                }
+                
+                $conditions['tags'] = array( '$in' => $tags );
+                
+            } else {
+                $conditions['tags'] = array( '$in' => $tags );
+            }            
         }
         
         if (!empty($collection->publication_status)) 

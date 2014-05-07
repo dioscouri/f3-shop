@@ -34,22 +34,22 @@ class Routes extends \Dsc\Routes\Group
             'controller' => 'Product',
             'action' => 'read' 
         ) );
-        $this->add( '/category/*', 'GET', array(
+        $this->add( '/category/*', 'GET|POST', array(
             'controller' => 'Category',
             'action' => 'index' 
         ) );
         
-        $this->add( '/category/*/page/@page', 'GET', array(
+        $this->add( '/category/*/page/@page', 'GET|POST', array(
             'controller' => 'Category',
             'action' => 'index' 
         ) );        
         
-        $this->add( '/collection/@slug', 'GET', array(
+        $this->add( '/collection/@slug', 'GET|POST', array(
             'controller' => 'Collection',
             'action' => 'index' 
         ) );
         
-        $this->add( '/collection/@slug/page/@page', 'GET', array(
+        $this->add( '/collection/@slug/page/@page', 'GET|POST', array(
             'controller' => 'Collection',
             'action' => 'index' 
         ) );

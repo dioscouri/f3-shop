@@ -26,7 +26,9 @@ class Category extends \Dsc\Controller
     	$f3 = \Base::instance();
     	$url_params = $f3->get('PARAMS');
     	    	
-    	$path = $this->inputfilter->clean( $f3->get('PARAMS.1'), 'string' );
+    	$param = $this->inputfilter->clean( $f3->get('PARAMS.1'), 'string' );
+    	$pieces = explode('?', $param);
+    	$path = $pieces[0];
     	$products_model = $this->model('products');
 
     	try {
@@ -42,7 +44,8 @@ class Category extends \Dsc\Controller
     		      ->paginate();
     	} catch ( \Exception $e ) {
     		\Dsc\System::instance()->addMessage( 'Invalid category', 'error');
-    		$f3->error('404');
+    		\Dsc\System::instance()->addMessage( $path, 'error');
+    		$f3->reroute( '/shop' ); // $f3->error('404');
     		return;
     	}
     	

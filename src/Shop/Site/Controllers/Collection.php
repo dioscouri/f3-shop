@@ -17,17 +17,41 @@ class Collection extends \Dsc\Controller
     	
     	$f3 = \Base::instance();
     	$slug = $this->inputfilter->clean( $f3->get('PARAMS.slug'), 'cmd' );
-    	$model = $this->getModel()->populateState()
-            ->setState('filter.category.slug', $slug);
+    	$model = $this->getModel()->populateState();
     	
     	try {
     	    $collection = (new \Shop\Models\Collections)->setState('filter.slug', $slug)->getItem();
     	    $conditions = \Shop\Models\Collections::getProductQueryConditions($collection->id);
+    	    
+    	    if ($filter_tags = (array) $model->getState('filter.tags')) 
+    	    {
+    	        if ($tags = array_filter( array_values( $filter_tags ) )) 
+    	        {
+    	            if (!empty($conditions['tags']))
+    	            {
+    	                // Add this to an $and clause
+    	                if (empty($conditions['$and']))
+    	                {
+    	                    $conditions['$and'] = array();
+    	                }
+    	                $conditions['$and'][] = array('tags' => array( '$in' => $tags ) );
+    	                 
+    	            }
+    	            // we're only filtering by this set of tags
+    	            else
+    	            {
+    	                $conditions['tags'] = array( '$in' => $tags );
+    	            }
+    	        }
+    	    }
     		$paginated = $model->setParam('conditions', $conditions)->paginate();
-    	} catch ( \Exception $e ) {
+    		
+    	} 
+    	catch ( \Exception $e ) 
+    	{
     	    // TODO Change to a normal 404 error
     		\Dsc\System::instance()->addMessage( "Invalid Items: " . (string) $e, 'error');
-    		$f3->reroute( '/' );
+    		$f3->reroute( '/shop' );
     		return;
     	}
     	

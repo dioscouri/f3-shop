@@ -146,7 +146,26 @@ class Categories extends \Dsc\Mongo\Collections\Categories implements \MassUpdat
         ));
     
         return $result;
-    }    
+    }
+
+    /**
+     * 
+     */
+    public function distinctAttributeOptions($query=array()) 
+    {
+        $category_id = $this->id;
+        
+        $query = $query + array(
+            'categories.id' => new \MongoId( (string) $category_id )
+        );
+        
+        $distinct = array();
+        
+        $distinct = (new \Shop\Models\Products)->collection()->distinct("attributes.options.value", $query);
+        $distinct = array_values( array_filter( $distinct ) );
+        
+        return $distinct;    	
+    }
 
     /**
      * 
