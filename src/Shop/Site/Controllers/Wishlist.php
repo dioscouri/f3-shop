@@ -38,6 +38,8 @@ class Wishlist extends \Dsc\Controller
      */
     public function read()
     {
+    	$this->requireIdentity();
+    	
         $wishlist = \Shop\Models\Wishlists::fetch();
         // Update product fields stored in wishlist
         foreach ($wishlist->validateProducts() as $change) {

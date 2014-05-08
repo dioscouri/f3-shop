@@ -1,12 +1,20 @@
+<div class="container">
+
+	<ol class="breadcrumb">
+        <li>
+            <a href="./shop/account">My Account</a>
+        </li>
+        <li class="active">My Wishlist</li>
+    </ol>
 
 <?php if (empty($wishlist->items)) { ?>
-    <div class="container">
+    
         <h2>Your wishlist is empty! <a href="./shop"><small>Go Shopping</small></a></h2>
-    </div>
+
 <?php } ?>
 
 <?php if (!empty($wishlist->items)) { ?>
-<div class="container">
+
     <div class="row">
         <div class="col-sm-12">
             <form method="post">
@@ -75,5 +83,6 @@
         </div>
     </div>
     
-</div>
 <?php } ?>
+
+</div>
