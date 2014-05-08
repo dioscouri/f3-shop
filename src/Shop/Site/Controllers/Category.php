@@ -50,8 +50,7 @@ class Category extends \Dsc\Controller
     	}
 
     	// push the current query_params into the state history
-    	$this->session->trackState( get_class( $products_model ), $products_model->getParam() );
-    	$this->session->clearUrls();
+    	$this->session->trackState( get_class( $products_model ), $products_model->getParam() )->clearUrls();
     	foreach ($category->ancestors() as $ancestor) {
     		$this->session->trackUrl( $ancestor->title, '/shop/category' . $ancestor->path );
     	}

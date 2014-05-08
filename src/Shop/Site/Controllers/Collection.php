@@ -56,9 +56,7 @@ class Collection extends \Dsc\Controller
     	}
     	
     	// push the current query_params into the state history
-    	$this->session->trackState( get_class( $model ), $model->getParam() );
-    	$this->session->clearUrls();
-    	$this->session->trackUrl( $collection->{'title'} );
+    	$this->session->trackState( get_class( $model ), $model->getParam() )->clearUrls()->trackUrl( $collection->{'title'} );
     	
     	$state = $model->getState();
     	\Base::instance()->set('state', $state );
