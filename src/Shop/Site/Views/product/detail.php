@@ -27,11 +27,11 @@ jQuery(document).ready(function(){
         <li>
             <a href="./shop">Shop</a>
         </li>
-        <?php foreach (array_reverse( $this->session->lastUrls() ) as $lastUrl) { ?>
+        <?php if (!empty($surrounding)) { foreach (array_reverse( $this->session->lastUrls() ) as $lastUrl) { ?>
         <li>
             <a href=".<?php echo $lastUrl['url']; ?>"><?php echo $lastUrl['title']; ?></a>
         </li>        
-        <?php } ?>
+        <?php } } ?>
         <li class="active"><?php echo $item->title; ?></li>
     </ol>
 </div>
