@@ -55,14 +55,18 @@ class Collection extends \Dsc\Controller
     		return;
     	}
     	
-    	\Base::instance()->set('collection', $collection );
-    	
-    	\Base::instance()->set('pagetitle', $collection->{'title'});
-    	\Base::instance()->set('subtitle', '');
+    	// push the current query_params into the state history
+    	$this->session->trackState( get_class( $model ), $model->getParam() );
+    	$this->session->clearUrls();
+    	$this->session->trackUrl( $collection->{'title'} );
     	
     	$state = $model->getState();
     	\Base::instance()->set('state', $state );
     	\Base::instance()->set('paginated', $paginated );
+    	 
+    	\Base::instance()->set('collection', $collection );    	
+    	\Base::instance()->set('pagetitle', $collection->{'title'});
+    	\Base::instance()->set('subtitle', '');    	
     	
     	$view = \Dsc\System::instance()->get('theme');
     	echo $view->render('Shop/Site/Views::collection/index.php');

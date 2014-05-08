@@ -33,6 +33,15 @@ class Product extends \Dsc\Controller
     		return;
     	}
     	
+    	// get the previous query_params for the products model from the state history
+    	$model = $this->model('products');
+    	if ($params = $this->session->lastState( get_class( $model ) )) 
+    	{
+    	    $surrounding = $model->surrounding($item->id, $params);
+    	    \Base::instance()->set('surrounding', $surrounding );
+    	}
+    	\Base::instance()->set('lastUrl', $this->session->lastUrl() );
+    	
     	\Base::instance()->set('item', $item );
     	
     	$view = \Dsc\System::instance()->get('theme');

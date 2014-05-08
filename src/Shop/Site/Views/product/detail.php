@@ -23,6 +23,38 @@ jQuery(document).ready(function(){
 </script>
 
 <div class="container">
+    <ol class="breadcrumb">
+        <li>
+            <a href="./shop">Shop</a>
+        </li>
+        <?php foreach (array_reverse( $this->session->lastUrls() ) as $lastUrl) { ?>
+        <li>
+            <a href=".<?php echo $lastUrl['url']; ?>"><?php echo $lastUrl['title']; ?></a>
+        </li>        
+        <?php } ?>
+        <li class="active"><?php echo $item->title; ?></li>
+    </ol>
+</div>
+
+<?php /* Only do this if we have the Listing URL, prev, or next */ ?>
+<?php if (!empty($surrounding['prev']) || !empty($surrounding['next'])) { ?>
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="pull-right">
+            	<?php if (!empty($surrounding['prev'])) { ?>
+                <a class="btn btn-link" href="./shop/product/<?php echo $surrounding['prev']->slug; ?>"><i class="fa fa-chevron-left"></i> Prev</a>
+                <?php } ?>
+                <?php if (!empty($surrounding['next'])) { ?>
+                <a class="btn btn-link" href="./shop/product/<?php echo $surrounding['next']->slug; ?>">Next <i class="fa fa-chevron-right"></i></a>
+                <?php } ?>
+            </div>
+        </div>        
+    </div>
+</div>
+<?php } ?>
+
+<div class="container">
     <div class="row">
         <div class="col-sm-6">
             <div class="product-slider-small">

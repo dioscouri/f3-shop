@@ -48,16 +48,22 @@ class Category extends \Dsc\Controller
     		$f3->reroute( '/shop' ); // $f3->error('404');
     		return;
     	}
-    	
-    	\Base::instance()->set('category', $category );
-    	
-    	\Base::instance()->set('pagetitle', $category->{'title'});
-    	\Base::instance()->set('subtitle', '');
-    	
+
+    	// push the current query_params into the state history
+    	$this->session->trackState( get_class( $products_model ), $products_model->getParam() );
+    	$this->session->clearUrls();
+    	foreach ($category->ancestors() as $ancestor) {
+    		$this->session->trackUrl( $ancestor->title, '/shop/category' . $ancestor->path );
+    	}
+    	$this->session->trackUrl( $category->{'title'} );
+
     	$state = $products_model->getState();
     	\Base::instance()->set('state', $state );
-    	
     	\Base::instance()->set('paginated', $paginated );
+    	
+    	\Base::instance()->set('category', $category );
+    	\Base::instance()->set('pagetitle', $category->{'title'});
+    	\Base::instance()->set('subtitle', '');
 
     	$view = \Dsc\System::instance()->get('theme');
     	echo $view->render('Shop/Site/Views::category/index.php');
