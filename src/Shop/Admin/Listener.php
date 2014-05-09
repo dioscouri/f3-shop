@@ -5,28 +5,37 @@ class Listener extends \Prefab
 {
     public function onSystemRebuildMenu( $event )
     {
-        if ($mapper = $event->getArgument('mapper')) 
-        {
-            $mapper->reset();
-            $mapper->priority = 20;
-            $mapper->title = 'Shop';
-            $mapper->route = '';
-            $mapper->icon = 'fa fa-ticket';
-            $mapper->children = array(
-                     json_decode(json_encode(array( 'title'=>'Orders', 'route'=>'/admin/shop/orders', 'icon'=>'fa fa-money' )))
-                    ,json_decode(json_encode(array( 'title'=>'Products', 'route'=>'/admin/shop/products', 'icon'=>'fa fa-list' )))
-                    ,json_decode(json_encode(array( 'title'=>'Collections', 'route'=>'/admin/shop/collections', 'icon'=>'fa fa-hdd' )))
-            		,json_decode(json_encode(array( 'title'=>'Categories', 'route'=>'/admin/shop/categories', 'icon'=>'fa fa-folder' )))
-                    ,json_decode(json_encode(array( 'title'=>'Coupons', 'route'=>'/admin/shop/coupons', 'icon'=>'fa fa-barcode' )))
-                    ,json_decode(json_encode(array( 'title'=>'Manufacturers', 'route'=>'/admin/shop/manufacturers', 'icon'=>'fa fa-barcode' )))
-                    ,json_decode(json_encode(array( 'title'=>'Media Assets', 'route'=>'/admin/assets?filter[type]=shop.assets', 'icon'=>'fa fa-list' )))
-                    ,json_decode(json_encode(array( 'title'=>'Tags', 'route'=>'/admin/shop/tags', 'icon'=>'fa fa-tag' )))
-                    ,json_decode(json_encode(array( 'title'=>'Countries', 'route'=>'/admin/shop/countries', 'icon'=>'fa fa-list' )))
-                    ,json_decode(json_encode(array( 'title'=>'Regions', 'route'=>'/admin/shop/regions', 'icon'=>'fa fa-list' )))
-                    ,json_decode(json_encode(array( 'title'=>'Settings', 'route'=>'/admin/shop/settings', 'icon'=>'fa fa-cogs' )))
-            );
-            $mapper->base = '/admin/shop';
-            $mapper->save();
+		if ($model = $event->getArgument('model'))
+		{
+			$root = $event->getArgument( 'root' );
+			$shop = clone $model;
+        		 
+			$shop->insert(
+					array(
+						'type'	=> 'admin.nav',
+						'priority' => 20,
+						'title'	=> 'Shop',
+						'icon'	=> 'fa fa-ticket',
+        				'is_root' => false,
+						'tree'	=> $root,
+						'base' => '/admin/shop/',
+					)
+				);
+        	
+			$children = array(
+                    array( 'title'=>'Orders', 'route'=>'/admin/shop/orders', 'icon'=>'fa fa-money' ),
+                    array( 'title'=>'Products', 'route'=>'/admin/shop/products', 'icon'=>'fa fa-list' ),
+                    array( 'title'=>'Collections', 'route'=>'/admin/shop/collections', 'icon'=>'fa fa-hdd' ),
+            		array( 'title'=>'Categories', 'route'=>'/admin/shop/categories', 'icon'=>'fa fa-folder' ),
+                    array( 'title'=>'Coupons', 'route'=>'/admin/shop/coupons', 'icon'=>'fa fa-barcode' ),
+                    array( 'title'=>'Manufacturers', 'route'=>'/admin/shop/manufacturers', 'icon'=>'fa fa-barcode' ),
+                    array( 'title'=>'Media Assets', 'route'=>'/admin/assets?filter[type]=shop.assets', 'icon'=>'fa fa-list' ),
+                    array( 'title'=>'Tags', 'route'=>'/admin/shop/tags', 'icon'=>'fa fa-tag' ),
+                    array( 'title'=>'Countries', 'route'=>'/admin/shop/countries', 'icon'=>'fa fa-list' ),
+                    array( 'title'=>'Regions', 'route'=>'/admin/shop/regions', 'icon'=>'fa fa-list' ),
+                    array( 'title'=>'Settings', 'route'=>'/admin/shop/settings', 'icon'=>'fa fa-cogs' ),
+			);
+       		$shop->addChildrenItems( $children, $root, $model );
             
             \Dsc\System::instance()->addMessage('Shop added its admin menu items.');
         }
