@@ -34,7 +34,7 @@ jQuery(document).ready(function(){
                     </div>
                         
                     &nbsp;
-                    <a class="btn btn-default" href="./admin/shop/regions">Cancel</a>
+                    <a class="btn btn-default" href="./admin/shop/orders">Cancel</a>
                 </div>
 
             </div>
