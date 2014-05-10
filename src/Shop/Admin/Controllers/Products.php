@@ -3,12 +3,22 @@ namespace Shop\Admin\Controllers;
 
 class Products extends \Admin\Controllers\BaseAuth 
 {
-    public function index()
+	use \Dsc\Traits\Controllers\AdminList;
+	
+	protected $list_route = '/admin/shop/products';
+	
+	protected function getModel()
+	{
+		$model = new \Shop\Models\Products;
+		return $model;
+	}
+	
+	public function index()
     {
         \Base::instance()->set('pagetitle', 'Products');
         \Base::instance()->set('subtitle', '');
         
-        $model = new \Shop\Models\Products;
+        $model = $this->getModel();
         $state = $model->populateState()->getState();
         \Base::instance()->set('state', $state );
         
