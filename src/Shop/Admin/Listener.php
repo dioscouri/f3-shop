@@ -35,7 +35,7 @@ class Listener extends \Prefab
                     array( 'title'=>'Regions', 'route'=>'/admin/shop/regions', 'icon'=>'fa fa-list' ),
                     array( 'title'=>'Settings', 'route'=>'/admin/shop/settings', 'icon'=>'fa fa-cogs' ),
 			);
-       		$shop->addChildrenItems( $children, $root, $model );
+       		$shop->addChildrenItems( $children, $root );
             
             \Dsc\System::instance()->addMessage('Shop added its admin menu items.');
         }
