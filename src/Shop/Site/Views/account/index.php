@@ -45,7 +45,7 @@
                             <h4>Account Settings</h4>
                             <ul class="list-unstyled">
                                 <li>Change email</li>
-                                <li>Change password</li>
+                                <li><a href="./user/change-password">Change password</a></li>
                             </ul>
                         </div>
                         <div class="col-xs-12 col-sm-12 col-md-6">
