@@ -1,5 +1,8 @@
 <div class="container">
-    <h1>Your Account</h1>
+    <h2>
+        <small>Hello, <?php echo $this->auth->getIdentity()->username; ?><br/></small>
+        Your Account
+    </h2>
     
     <div class="panel panel-default">
         <div class="panel-body">
@@ -44,7 +47,7 @@
                         <div class="col-xs-12 col-sm-12 col-md-6">
                             <h4>Account Settings</h4>
                             <ul class="list-unstyled">
-                                <li>Change email</li>
+                                <li><a href="./user/change-email">Change email</a></li>
                                 <li><a href="./user/change-password">Change password</a></li>
                             </ul>
                         </div>
