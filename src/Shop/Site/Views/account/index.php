@@ -64,4 +64,34 @@
         </div>
     </div>
     
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-4">
+                    <legend>Personalization</legend>
+                </div>
+                <div class="col-xs-12 col-sm-12 col-md-8">
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-12 col-md-6">
+                            <h4>Social</h4>
+                            <ul class="list-unstyled">
+                                <li>Linked Social Profiles</li>
+                            </ul>                        
+                            <h4>Lists</h4>
+                            <ul class="list-unstyled">
+                                <li><a href="./shop/wishlist">Wishlist</a></li>
+                            </ul>
+                        </div>
+                        <div class="col-xs-12 col-sm-12 col-md-6">
+                            <h4>Newsletters</h4>
+                            <ul class="list-unstyled">
+                                <li>Manage subscriptions</li>
+                            </ul>
+                        </div>
+                    </div>                
+                </div>
+            </div>
+        </div>
+    </div>
+    
 </div>
