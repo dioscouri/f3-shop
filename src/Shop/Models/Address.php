@@ -98,29 +98,33 @@ class Address extends \Dsc\Mongo\Collections\Nodes
         return parent::validate();
     }
     
-    public function __toString()
+    public function asString($glue='<br/>')
     {
         $strings = array();
-        
+    
         if (!empty($this->name)) {
-        	$strings[] = $this->name;
+            $strings[] = $this->name;
         }
-        
+    
         if (!empty($this->line_1)) {
             $strings[] = $this->line_1;
         }
-        
+    
         if (!empty($this->line_2)) {
             $strings[] = $this->line_2;
         }
-        
+    
         $strings[] = trim($this->city . ' ' . $this->region . ' ' . $this->postal_code);
-        
+    
         if (!empty($this->country)) {
             $strings[] = $this->country;
         }
-        
-        return implode('<br/>', $strings);
-        
+    
+        return implode($glue, $strings);
+    }
+    
+    public function __toString()
+    {
+        return $this->asString();
     }
 }

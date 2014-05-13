@@ -51,4 +51,22 @@ class CustomerAddresses extends \Shop\Models\Address
         
         return parent::validate();
     }
+    
+    /**
+     * Get the current user's addresses
+     *
+     * @return array \Shop\Models\CustomerAddresses
+     */
+    public static function fetch()
+    {
+        $identity = \Dsc\System::instance()->get('auth')->getIdentity();
+        if (empty($identity->id))
+        {
+            return array();
+        }
+        
+        $items = (new static)->setState('filter.user', (string) $identity->id )->getItems();
+    
+        return $items;
+    }
 }
