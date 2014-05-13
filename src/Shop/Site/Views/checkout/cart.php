@@ -38,16 +38,20 @@
                 </tr>
                 <tr>
                     <td><div class="strong">
+                            <span data-toggle="tooltip" data-placement="top" title="Taxable amount: <?php echo \Shop\Models\Currency::format( $cart->taxableTotal() ); ?>">
                             Tax:
+                            </span>
                         </div></td>
                     <td><div class="price">
+                        <span data-toggle="tooltip" data-placement="top" title="Taxable amount: <?php echo \Shop\Models\Currency::format( $cart->taxableTotal() ); ?>">
                         <?php if (!$shippingMethod = $cart->shippingMethod()) {
                             echo \Shop\Models\Currency::format( $cart->taxEstimate() );
                             echo ' <small>(est)</small>';
                         } else {
                         	echo \Shop\Models\Currency::format( $cart->taxTotal() );
                         }
-                        ?>                    
+                        ?>
+                        </span>                    
                     </div></td>
                 </tr>
             </tbody>
@@ -129,3 +133,8 @@
     </table>
 </div>
 
+<script>
+jQuery(document).ready(function(){
+	jQuery('[data-toggle="tooltip"]').tooltip();
+});
+</script>
