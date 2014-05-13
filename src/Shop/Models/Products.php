@@ -1,10 +1,9 @@
 <?php 
 namespace Shop\Models;
 
-class Products extends \Dsc\Mongo\Collections\Content implements \MassUpdate\Service\Models\MassUpdateOperations
+class Products extends \Dsc\Mongo\Collections\Content
 {
-	use \MassUpdate\Service\Traits\Model,
-        \Search\Traits\SearchItem;
+	use \Search\Traits\SearchItem;
 	
 	public $categories = array();
     public $featured_image = array();
@@ -810,99 +809,6 @@ class Products extends \Dsc\Mongo\Collections\Content implements \MassUpdate\Ser
         }
         
         return $price;
-    }
-
-    /**
-     * This method gets list of attribute groups with operations
-     *
-     * @return	Array with attribute groups
-     */
-    public function getMassUpdateOperationGroups(){
-    	if( $this->needInitializationMassUpdate() ){
-    		
-    		$attr_keyword = new \MassUpdate\Service\Models\AttributeGroup;
-    		$attr_keyword->setAttributeCollection('keyword')
-    		->setAttributeTitle( "Keyword Search" )
-    		->setModel( $this )
-    		->addOperation( new \MassUpdate\Operations\Condition\Contains, 'where', array( "custom_label" => "Keyword", "filter" => "keyword") );
-    		
-    		
-    		$attr_cat = new \MassUpdate\Service\Models\AttributeGroup;
-    		$attr_cat->setAttributeCollection('categories.id')
-    		->setAttributeTitle( "Product Category" )
-    		->setModel( new \Shop\Models\Categories )
-    		->addOperation( new \MassUpdate\Operations\Condition\Category, 'where', array( 'mode' => 1 ) );
-    		
-    		$attr_cat_change = new \MassUpdate\Service\Models\AttributeGroup;
-    		$attr_cat_change->setAttributeCollection('categories')
-    		->setAttributeTitle( "Product Category" )
-    		->setModel( new \Shop\Models\Categories )
-    		->addOperation( new \MassUpdate\Operations\Update\ChangeCategory, 'update', array( 'allow_add' => true ) );
-    		
-    		$attr_title = new \MassUpdate\Service\Models\AttributeGroup;
-    		$attr_title->setAttributeCollection('title')
-    		->setModel( $this )
-    		->setAttributeTitle( "Product Name" )
-    		->addOperation( new \MassUpdate\Operations\Update\ChangeTo, 'update')
-    		->addOperation( new \MassUpdate\Operations\Update\ModifyTo, 'update');
-    		
-    		$attr_price = new \MassUpdate\Service\Models\AttributeGroup;
-    		$attr_price->setAttributeCollection('prices.default')
-    		->setModel( $this )
-    		->setAttributeTitle( "Product Price" )
-    		->addOperation( new \MassUpdate\Operations\Update\ChangeTo, 'update')
-    		->addOperation( new \MassUpdate\Operations\Update\IncreaseBy, 'update');
-    		
-    		$attr_published_state = new \MassUpdate\Service\Models\AttributeGroup;
-    		$attr_published_state->setAttributeCollection('publication.status')
-    		->setModel( $this )
-    		->setAttributeTitle( "Publication status" )
-    		->addOperation( new \Shop\Operations\Condition\PublicationStatus, 'where')
-    		->addOperation( new \Shop\Operations\Update\PublicationStatus, 'update');
-    		
-    		$attr_shipping_required = new \MassUpdate\Service\Models\AttributeGroup;
-    		$attr_shipping_required->setAttributeCollection('shipping.enabled')
-    		->setModel( $this )
-    		->setAttributeTitle( "Shipping required" )
-    		->addOperation( new \MassUpdate\Operations\Condition\Boolean, 'where', array( "custom_label" => "Is Shipping required?" ))
-    		->addOperation( new \MassUpdate\Operations\Update\Boolean, 'update', array( "custom_label" => "Is Shipping required?" ));
-
-    		$attr_published_start = new \MassUpdate\Service\Models\AttributeGroup;
-    		$attr_published_start->setAttributeCollection('publication.start')
-    		->setAttributeTitle( "Published Start" )
-    		->setModel( $this )
-    		->addOperation( new \MassUpdate\Operations\Update\ChangeDateTime, 'update', 
-    									array( "metastamp" => true, 
-    											"mode" => 1,
-    											'attribute_dt' => array( 
-    													"date" => 'publication.start_date', 
-    													'time' => 'publication.start_time' )
-    										));
-    		
-    		$attr_creator = new \MassUpdate\Service\Models\AttributeGroup;
-    		$attr_creator->setAttributeCollection('metadata.creator')
-    		->setAttributeTitle( "Creator" )
-    		->setModel( $this )
-    		->addOperation( new \MassUpdate\Operations\Update\ChangeUser, 'update' );
-    		
-    		$attr_creator_id = new \MassUpdate\Service\Models\AttributeGroup;
-    		$attr_creator_id->setAttributeCollection('metadata.creator.id')
-    		->setAttributeTitle( "Creator" )
-    		->setModel( $this )
-    		->addOperation( new \MassUpdate\Operations\Condition\IsUser, 'where' );
-    		
-    		
-    		$this->addAttributeGroupMassUpdate( $attr_keyword );
-    		$this->addAttributeGroupMassUpdate( $attr_title );
-    		$this->addAttributeGroupMassUpdate( $attr_cat );
-    		$this->addAttributeGroupMassUpdate( $attr_cat_change );
-    		$this->addAttributeGroupMassUpdate( $attr_published_start );
-    		$this->addAttributeGroupMassUpdate( $attr_published_state );
-    		$this->addAttributeGroupMassUpdate( $attr_creator );
-    		$this->addAttributeGroupMassUpdate( $attr_creator_id );
-    		$this->addAttributeGroupMassUpdate( $attr_shipping_required );
-    	}    	 
-    	return $this->getAttributeGroupsMassUpdate();
     }
     
     /**

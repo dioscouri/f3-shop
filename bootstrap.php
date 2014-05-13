@@ -4,24 +4,6 @@ class ShopBootstrap extends \Dsc\Bootstrap
     protected $dir = __DIR__;
     protected $namespace = 'Shop';
 
-    protected function runAdmin()
-    {
-        parent::runAdmin();
-        try
-        {
-            $service = \Dsc\System::instance()->get( 'massupdate' );
-            if (! empty( $service ))
-            {
-            	$group = new \Shop\MassUpdateGroup();
-            	$group->setName( $this->namespace );
-                $service->registerGroup( $group );
-            }
-        }
-        catch ( \Exception $e )
-        {
-        }
-    }
-
     protected function preSite()
     {
         \Search\Factory::registerSource( new \Search\Models\Source( array(
