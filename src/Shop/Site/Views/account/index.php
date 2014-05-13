@@ -54,8 +54,8 @@
                         <div class="col-xs-12 col-sm-12 col-md-6">
                             <h4>Address Book</h4>
                             <ul class="list-unstyled">
-                                <li>Manage existing addresses</li>
-                                <li>Add new address</li>
+                                <li><a href="./shop/account/addresses">Manage existing addresses</a></li>
+                                <li><a href="./shop/account/addresses/create">Add new address</a></li>
                             </ul>
                         </div>
                     </div>                
@@ -75,7 +75,7 @@
                         <div class="col-xs-12 col-sm-12 col-md-6">
                             <h4>Social</h4>
                             <ul class="list-unstyled">
-                                <li>Linked Social Profiles</li>
+                                <li><a href="./user/social-profiles">Linked Social Profiles</a></li>
                             </ul>                        
                             <h4>Lists</h4>
                             <ul class="list-unstyled">

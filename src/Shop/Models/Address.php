@@ -1,7 +1,7 @@
 <?php
 namespace Shop\Models;
 
-class Address extends \Dsc\Mongo\Collections\Describable
+class Address extends \Dsc\Mongo\Collections\Nodes
 {
     public $name = null;     // full name of the customer
     public $line_1 = null;    // Line 1
@@ -43,5 +43,84 @@ class Address extends \Dsc\Mongo\Collections\Describable
         }
     
         return $model;
+    }
+    
+    /**
+     * 
+     */
+    protected function beforeSave()
+    {
+        if (!is_a($this, '\Shop\Models\CustomerAddresses')) 
+        {
+            $this->setError('Addresses can only be saved as CustomerAddresses');
+        }
+        
+        if (empty($this->user_id))
+        {
+            $this->setError('Addresses must have an associated customer');
+        }
+    
+        return parent::beforeSave();
+    }
+    
+    public function validate()
+    {
+        if (empty($this->name))
+        {
+            $this->setError('Addresses must have an addressee');
+        }
+    
+        if (empty($this->line_1))
+        {
+            $this->setError('Addresses must have the first street line');
+        }
+    
+        if (empty($this->city))
+        {
+            $this->setError('Addresses must have a city');
+        }
+    
+        if (empty($this->region))
+        {
+            $this->setError('Addresses must have a region/state');
+        }
+    
+        if (empty($this->country))
+        {
+            $this->setError('Addresses must have a country');
+        }
+    
+        if (empty($this->postal_code))
+        {
+            $this->setError('Addresses must have a postal code');
+        }
+    
+        return parent::validate();
+    }
+    
+    public function __toString()
+    {
+        $strings = array();
+        
+        if (!empty($this->name)) {
+        	$strings[] = $this->name;
+        }
+        
+        if (!empty($this->line_1)) {
+            $strings[] = $this->line_1;
+        }
+        
+        if (!empty($this->line_2)) {
+            $strings[] = $this->line_2;
+        }
+        
+        $strings[] = trim($this->city . ' ' . $this->region . ' ' . $this->postal_code);
+        
+        if (!empty($this->country)) {
+            $strings[] = $this->country;
+        }
+        
+        return implode('<br/>', $strings);
+        
     }
 }
