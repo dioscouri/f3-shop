@@ -2,8 +2,14 @@
 class ShopBootstrap extends \Dsc\Bootstrap
 {
     protected $dir = __DIR__;
-    protected $namespace = 'Shop';
-
+    protected $namespace = 'Shop';    
+    
+    protected function preAdmin(){
+    	parent::preAdmin();
+    	
+    	\Dsc\Apps::registerPath( $this->dir . "/src/Shop/MassUpdate", 'massupdate' );
+    }
+    
     protected function preSite()
     {
         \Search\Factory::registerSource( new \Search\Models\Source( array(
