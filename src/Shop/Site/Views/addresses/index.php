@@ -39,7 +39,11 @@
             
             <div class="panel panel-default">
                 <div class="panel-heading clearfix">
-                    <a class="btn btn-default btn-sm pull-right" href="./shop/account/addresses/edit/<?php echo $item->id; ?>">Edit</a>
+                    <a class="btn btn-default btn-sm" href="./shop/account/addresses/edit/<?php echo $item->id; ?>">Edit</a>
+                    
+                    <a class="btn btn-xs btn-danger pull-right" data-bootbox="confirm" href="./shop/account/addresses/delete/<?php echo $item->id; ?>">
+                        <i class="fa fa-times"></i>
+                    </a>                                        
                 </div>
                 <div class="panel-body">
                     <p><?php echo $item; ?></p>
