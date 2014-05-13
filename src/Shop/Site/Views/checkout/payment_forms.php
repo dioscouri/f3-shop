@@ -54,7 +54,11 @@
     </div>
 
     <div class="input-group form-group">
-        <button id="submit-order" type="submit" class="btn btn-default custom-button btn-lg">Submit Order</button>
+        <button id="submit-order" type="submit" class="btn btn-default custom-button btn-lg pull-left">Submit Order</button>
+        <div class="working pull-left hidden">
+        	<img src="./minify/Shop/Assets/images/working.gif" alt="Working" />
+        	Working ... Please wait
+        </div>
         <?php \Dsc\System::instance()->get('session')->set('site.shop.checkout.redirect', '/shop/checkout/confirmation'); ?>
     </div>
 
@@ -98,5 +102,17 @@ jQuery(document).ready(function(){
 		});
 
     }
+
+	var submit_order = jQuery('button#submit-order');
+	if (submit_order.size()) {
+		submit_order.on('click', function(e){
+			cnsole.log('asdf');
+				alert('asdf');
+			$this = jQuery( e.eventTarget );
+			// display working image
+			$this.addClass('hidden').next('div.working').removeClass('hidden');
+		});
+	}	
+    
 });
 </script>
