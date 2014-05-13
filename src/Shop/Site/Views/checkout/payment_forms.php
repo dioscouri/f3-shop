@@ -106,9 +106,7 @@ jQuery(document).ready(function(){
 	var submit_order = jQuery('button#submit-order');
 	if (submit_order.size()) {
 		submit_order.on('click', function(e){
-			cnsole.log('asdf');
-				alert('asdf');
-			$this = jQuery( e.eventTarget );
+			$this = jQuery( e.target );
 			// display working image
 			$this.addClass('hidden').next('div.working').removeClass('hidden');
 		});
