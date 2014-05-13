@@ -6,7 +6,7 @@
 <?php } ?>
 
 <?php if (!empty($cart->items)) { ?>
-<div class="container">
+<div class="container cart-container">
     <div class="row">
         <div class="col-md-7">
             <form method="post">
@@ -124,16 +124,18 @@
                             </tr>
                             <tr>
                                 <td><div class="strong">
-                                        Tax:
+                                        <span data-toggle="tooltip" data-placement="top" title="Taxable amount: <?php echo \Shop\Models\Currency::format( $cart->taxableTotal() ); ?>">Tax:</span>
                                     </div></td>
                                 <td><div class="price">
+                                    <span data-toggle="tooltip" data-placement="top" title="Taxable amount: <?php echo \Shop\Models\Currency::format( $cart->taxableTotal() ); ?>">
                                     <?php if (!$shippingMethod = $cart->shippingMethod()) {
                                         echo \Shop\Models\Currency::format( $cart->taxEstimate() );
                                         echo ' <small>(est)</small>';
                                     } else {
                                     	echo \Shop\Models\Currency::format( $cart->taxTotal() );
                                     }
-                                    ?>                    
+                                    ?>    
+                                    </span>                
                                 </div></td>
                             </tr>
 
@@ -190,3 +192,9 @@
     
 </div>
 <?php } ?>
+
+<script>
+jQuery(document).ready(function(){
+	jQuery('[data-toggle="tooltip"]').tooltip();
+});
+</script>

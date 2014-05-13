@@ -636,7 +636,34 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
     {
         $credit = 0;
         return (float) $credit;
-    }    
+    }
+
+    /**
+     * Gets the total amount that tax can be applied to
+     * 
+     * @return number
+     */
+    public function taxableTotal()
+    {
+        $total = 0;
+        foreach ($this->items as $item)
+        {
+            // is the item taxable?
+            if ($taxable = \Dsc\ArrayHelper::get( $item, 'product.taxes.enabled' ))
+            {
+                $total = $total + \Dsc\ArrayHelper::get( $item, 'price' );
+            }
+        }        
+        
+        if ($shippingMethod = $this->shippingMethod())
+        {
+            $total = $total + $shippingMethod->total();
+        }
+        
+        $total = $total - $this->discountTotal();
+        
+        return (float) $total;
+    }
     
     /**
      * Gets valid shipping methods for this cart,
