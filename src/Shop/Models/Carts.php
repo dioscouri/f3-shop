@@ -868,8 +868,9 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
         {
             $cart = (new static)->load(array('_id' => new \MongoId( (string) $this->id ) ));
             
-            // Compare items, shipping address, and shipping method.  If changed, empty the taxes
+            // Compare items, coupons, shipping address, and shipping method.  If changed, empty the taxes
             if ($cart->items != $this->items 
+                || $cart->coupons != $this->coupons
                 || $cart->shippingMethod() != $this->shippingMethod()
                 || $cart->{'checkout.shipping_address'} != $this->{'checkout.shipping_address'}
                 || $cart->{'checkout.billing_address'} != $this->{'checkout.billing_address'}
@@ -1105,7 +1106,8 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
             }
         }
     
-        if (!$exists) {
+        if (!$exists) 
+        {
             $cast = $coupon->cast();
             $cast['amount'] = $coupon->cartValue( $this );
             $this->coupons[] = $cast;
