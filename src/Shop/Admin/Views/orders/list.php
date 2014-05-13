@@ -11,7 +11,7 @@
 	<div class="col-xs-12 col-sm-5 col-md-5 col-lg-8">
         <ul id="sparks" class="list-actions list-unstyled list-inline">
             <li>
-                <a class="btn btn-default" href="./admin/shop/order/create">Add New</a>
+                <a class="btn btn-default" href="./admin/shop/order/edit/create">Add New</a>
             </li>
         </ul>
 	</div>
@@ -23,19 +23,6 @@
         
         <div class="row">
             <div class="col-xs-12 col-sm-5 col-md-5 col-lg-8">
-                <?php /* ?>
-                <ul class="list-filters list-unstyled list-inline">
-                    <li>
-                        <a class="btn btn-link">Advanced Filtering</a>
-                    </li>                
-                    <li>
-                        <a class="btn btn-link">Quicklink Filter</a>
-                    </li>
-                    <li>
-                        <a class="btn btn-link">Quicklink Filter</a>
-                    </li>                    
-                </ul>
-                */ ?>
             </div>
             <div class="col-xs-12 col-sm-7 col-md-7 col-lg-4">
                 <div class="form-group">
@@ -89,61 +76,58 @@
         
         <input type="hidden" name="list[order]" value="<?php echo $state->get('list.order'); ?>" />
         <input type="hidden" name="list[direction]" value="<?php echo $state->get('list.direction'); ?>" />
-        
-        <div class="table-responsive datatable dt-wrapper dataTables_wrapper">
             
-            <table class="table table-striped table-bordered table-hover table-highlight table-checkable">
-        	<thead>
-        		<tr>
-        		    <th class="checkbox-column"><input type="checkbox" class="icheck-input"></th>
-        			<th data-sortable="billing_address.name">Customer</th>
-        			<th data-sortable="grand_total">Total</th>
-        			<th data-sortable="metadata.created.time">Date</th>
-        		</tr>
-        	</thead>
-        	<tbody>    
-        
             <?php if (!empty($paginated->items)) { ?>
             
-            <?php foreach($paginated->items as $item) { ?>
-                <tr>
-                    <td class="checkbox-column">
-                        <input type="checkbox" class="icheck-input" name="ids[]" value="<?php echo $item->_id; ?>">
-                    </td>
+            <?php foreach($paginated->items as $order) { ?>
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-12 col-md-4">
+                            <legend><a href="./admin/shop/order/edit/<?php echo $order->id; ?>"><?php echo (new \DateTime($order->{'metadata.created.local'}))->format('F j, Y'); ?></a></legend>
+                            <div><label>#</label><a href="./admin/shop/order/edit/<?php echo $order->id; ?>"><?php echo $order->{'number'}; ?></a></div>
+                            <div><label>Total:</label> <?php echo \Shop\Models\Currency::format( $order->{'grand_total'} ); ?></div>
+                        </div>
+                        <div class="col-xs-12 col-sm-12 col-md-8">
+                            <legend><?php echo $order->{'status'}; ?></legend>
+                            
+                            <?php foreach ($order->items as $item) { ?>
+                            <div class="row">
+                                <div class="hidden-xs hidden-sm col-md-2">
+                                    <?php if (\Dsc\ArrayHelper::get($item, 'image')) { ?>
+                                    <img class="img-responsive" src="./asset/thumb/<?php echo \Dsc\ArrayHelper::get($item, 'image'); ?>" alt="" />
+                                    <?php } ?>
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-10">
+                                    <div class="title">
+                                        <?php echo \Dsc\ArrayHelper::get($item, 'product.title'); ?>
+                                        <?php if (\Dsc\ArrayHelper::get($item, 'attribute_title')) { ?>
+                                        <div>
+                                            <small><?php echo \Dsc\ArrayHelper::get($item, 'attribute_title'); ?></small>
+                                        </div>
+                                        <?php } ?>                        
+                                    </div>
+                                    <div class="details">
                     
-                    <td class="">
-                        <a href="./admin/shop/order/edit/<?php echo $item->_id; ?>">
-                        <?php echo $item->number; ?>
-                        </a>
-                    </td>
-                    
-                    <td class="">
-                        <a href="./admin/shop/order/edit/<?php echo $item->_id; ?>">
-                        <?php echo $item->grand_total; ?>
-                        </a>
-                    </td>
-                    
-                    <td class="">
-                        <a href="./admin/shop/order/edit/<?php echo $item->_id; ?>">
-                        <?php echo $item->{'metadata.created.local'}; ?>
-                        </a>
-                    </td>
-                                    
-                </tr>
+                                    </div>
+                                    <div>
+                                        <span class="quantity"><?php echo \Dsc\ArrayHelper::get($item, 'quantity'); ?></span>
+                                        x
+                                        <span class="price"><?php echo \Shop\Models\Currency::format( \Dsc\ArrayHelper::get($item, 'price') ); ?></span> 
+                                    </div>                                
+                                </div>
+                            </div>        
+                            <?php } ?>
+                                                    
+                        </div>
+                    </div>
+                </div>
+            </div>
             <?php } ?>
             
             <?php } else { ?>
-                <tr>
-                <td colspan="100">
-                    <div class="">No items found.</div>
-                </td>
-                </tr>
+                <div class="">No items found.</div>
             <?php } ?>
-        
-            </tbody>
-            </table>
-            
-        </div>
         
         <div class="dt-row dt-bottom-row">
             <div class="row">

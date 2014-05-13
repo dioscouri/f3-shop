@@ -1,7 +1,7 @@
 <?php
 namespace Shop\Models;
 
-class Address extends \Dsc\Models
+class Address extends \Dsc\Mongo\Collections\Describable
 {
     public $name = null;     // full name of the customer
     public $line_1 = null;    // Line 1

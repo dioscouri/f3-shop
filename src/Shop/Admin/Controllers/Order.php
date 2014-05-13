@@ -5,14 +5,14 @@ class Order extends \Admin\Controllers\BaseAuth
 {
     use \Dsc\Traits\Controllers\CrudItemCollection;
 
-    protected $list_route = '/admin/shop/regions';
-    protected $create_item_route = '/admin/shop/region/create';
-    protected $get_item_route = '/admin/shop/region/read/{id}';    
-    protected $edit_item_route = '/admin/shop/region/edit/{id}';
+    protected $list_route = '/admin/shop/orders';
+    protected $create_item_route = '/admin/shop/order/create';
+    protected $get_item_route = '/admin/shop/order/read/{id}';    
+    protected $edit_item_route = '/admin/shop/order/edit/{id}';
     
     protected function getModel() 
     {
-        $model = new \Shop\Models\Regions;
+        $model = new \Shop\Models\Orders;
         return $model; 
     }
     
@@ -38,24 +38,24 @@ class Order extends \Admin\Controllers\BaseAuth
     {
         $f3 = \Base::instance();
 
-        $model = new \Shop\Models\Regions;
+        $model = new \Shop\Models\Orders;
         
         $view = \Dsc\System::instance()->get('theme');
-        $view->event = $view->trigger( 'onDisplayShopRegionsEdit', array( 'item' => $this->getItem(), 'tabs' => array(), 'content' => array() ) );
-        echo $view->render('Shop/Admin/Views::regions/create.php');        
+        $view->event = $view->trigger( 'onDisplayShopOrdersEdit', array( 'item' => $this->getItem(), 'tabs' => array(), 'content' => array() ) );
+        echo $view->render('Shop/Admin/Views::orders/create.php');        
     }
     
     protected function displayEdit()
     {
         $f3 = \Base::instance();
 
-        $model = new \Shop\Models\Regions;
+        $model = new \Shop\Models\Orders;
         
         $flash = \Dsc\Flash::instance();
         
         $view = \Dsc\System::instance()->get('theme');
-        $view->event = $view->trigger( 'onDisplayShopRegionsEdit', array( 'item' => $this->getItem(), 'tabs' => array(), 'content' => array() ) );        
-        echo $view->render('Shop/Admin/Views::regions/edit.php');
+        $view->event = $view->trigger( 'onDisplayShopOrdersEdit', array( 'item' => $this->getItem(), 'tabs' => array(), 'content' => array() ) );        
+        echo $view->render('Shop/Admin/Views::orders/edit.php');
     }
     
     /**
