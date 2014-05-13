@@ -1,7 +1,7 @@
 <?php 
 namespace Shop\Models;
 
-class Manufacturers extends \Dsc\Mongo\Collections\Describable implements \MassUpdate\Service\Models\MassUpdateOperations
+class Manufacturers extends \Dsc\Mongo\Collections\Describable
 {
     protected $__collection_name = 'shop.manufacturers';
     protected $__type = 'shop.manufacturers';
@@ -10,8 +10,6 @@ class Manufacturers extends \Dsc\Mongo\Collections\Describable implements \MassU
             'title' => 1
         ),
     );
-
-    use \MassUpdate\Service\Traits\Model;
     
     protected function beforeUpdate()
     {
@@ -43,22 +41,5 @@ class Manufacturers extends \Dsc\Mongo\Collections\Describable implements \MassU
             }
         }
         */
-    }
-
-    /**
-     * This method gets list of attribute groups with operations
-     * 
-     * @return	Array with attribute groups
-     */
-     public function getMassUpdateOperationGroups(){
-		if( $this->needInitializationMassUpdate() ){
-	    	$attr_title = new \MassUpdate\Service\Models\AttributeGroup;
-	    	$attr_title->setAttributeCollection('metadata.title')
-	    				->setAttributeTitle( "Title" )
-	    				->addOperation( new \MassUpdate\Operations\Update\ChangeTo, 'update' );
-	    	
-    		$this->addAttributeGroupMassUpdate( $attr_title );
-    	}
-    	return $this->getAttributeGroupsMassUpdate();
     }
 }
