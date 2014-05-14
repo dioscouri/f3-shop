@@ -82,7 +82,7 @@ class Address extends \Dsc\Controller
     
     protected function displayRead() {}
     
-    /*
+    
     protected function canCreate(array $data)
     {
         $f3 = \Base::instance();
@@ -191,7 +191,6 @@ class Address extends \Dsc\Controller
         
         return true;
     }
-    */
     
     /**
      * List a user's addresses
