@@ -11,6 +11,7 @@
                             <option value="">All Statuses</option>
                             <option value="published" <?php if ($state->get('filter.publication_status') == 'published') { echo "selected='selected'"; } ?>>Published</option>
                             <option value="unpublished" <?php if ($state->get('filter.publication_status') == 'unpublished') { echo "selected='selected'"; } ?>>Unpublished</option>
+                            <option value="inactive" <?php if ($state->get('filter.publication_status') == 'inactive') { echo "selected='selected'"; } ?>>Inactive</option>
                         </select>
                     </li>
                     <li>

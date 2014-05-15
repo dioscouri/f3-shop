@@ -25,11 +25,18 @@ class Product extends \Dsc\Controller
     	$slug = $this->inputfilter->clean( $f3->get('PARAMS.slug'), 'cmd' );
     	
     	try {
-    		$item = $this->model('products')->setState('filter.slug', $slug)->getItem();
+    		$item = $this->model('products')
+    		->setState('filter.slug', $slug)
+    		->setState('filter.publication_status', 'published')
+    		->setState('filter.published_today', true)
+    		->setState('filter.inventory_status', 'in_stock')    		
+    		->getItem();
+    		if (empty($item->id)) {
+    			throw new \Exception;
+    		}
     	} catch ( \Exception $e ) {
-    	    // TODO Change to a normal 404 error
-    		\Dsc\System::instance()->addMessage( "Invalid Item: " . $e->getMessage(), 'error');
-    		$f3->reroute( '/' );
+    		\Dsc\System::instance()->addMessage( "Invalid Item", 'error');
+    		$f3->reroute( '/shop' );
     		return;
     	}
     	

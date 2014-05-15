@@ -26,6 +26,7 @@
                     <select name="publication[status]" class="form-control">
                         <option value="published" <?php if ($flash->old('publication.status') == 'published') { echo "selected='selected'"; } ?>>Published</option>
                         <option value="unpublished" <?php if ($flash->old('publication.status') == 'unpublished') { echo "selected='selected'"; } ?>>Unpublished</option>
+                        <option value="inactive" <?php if ($flash->old('publication.status') == 'inactive') { echo "selected='selected'"; } ?>>Inactive</option>
                     </select>
                 
                 </div>
