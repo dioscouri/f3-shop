@@ -10,6 +10,7 @@ namespace Shop\Models;
  */
 class Variants extends \Dsc\Mongo\Collection 
 {
+    public $enabled = 1;
     public $attributes = array();  // array of \Shop\Models\Prefabs\Attribute (string) ids
     public $sku = null;
     public $price = null;          // alternative base price.  FINAL price override for this variant.  given priority over attribute price_changes.

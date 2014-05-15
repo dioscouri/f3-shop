@@ -428,12 +428,13 @@ class Products extends \Dsc\Mongo\Collections\Content
                 } else {
                     // if the variant's attribute titles is empty, add it
                     if (empty($item['attribute_titles'])) {
-                        $item['attribute_titles'] = $variants[$item['key']]['titles'];
+                        $item['attribute_titles'] = $variants[$item['key']]['attribute_titles'];
                     }
                     // if the variant's attribute title is empty, build it automatically
                     if (empty($item['attribute_title'])) {
                         $item['attribute_title'] = implode("&nbsp;|&nbsp;", (array) $item['attribute_titles']);
                     }
+                    $item = $item + $variants[$item['key']];
                 }
             });
         
@@ -677,13 +678,15 @@ class Products extends \Dsc\Mongo\Collections\Content
                 $mongo_id = !empty($variants[0]['id']) ? (string) $variants[0]['id'] : $mongo_id;
             }            
             
-            $result[] = array(
+            $variant = new \Shop\Models\Prefabs\Variant(array(
                 'id' => $mongo_id,
                 'key' => $mongo_id,
                 'attributes' => array(),
-                'titles' => array(),
+                'attribute_titles' => array(),
                 'quantity' => (int) \Dsc\ArrayHelper::get( $cast, 'quantities.manual' )
-            );            
+            ));  
+                      
+            $result[] = $variant->cast();
             
             return $result;
         }
@@ -725,12 +728,20 @@ class Products extends \Dsc\Mongo\Collections\Content
             */
             $mongo_id = (string) new \MongoId;
             
+            /*
             $result[$sorted_key] = array(
                 'id' => $mongo_id,
                 'key' => $sorted_key,
             	'attributes' => $combos[$key],
                 'titles' => $titles
             );
+            */
+            $result[$sorted_key] = (new \Shop\Models\Prefabs\Variant(array(
+                'id' => $mongo_id,
+                'key' => $sorted_key,
+            	'attributes' => $combos[$key],
+                'attribute_titles' => $titles
+            )))->cast();            
         }
         
         return $result;
@@ -921,7 +932,7 @@ class Products extends \Dsc\Mongo\Collections\Content
         if (empty($this->__variants_in_stock)) 
         {
             $this->__variants_in_stock = array_values( array_filter( $this->variants, function($el){
-                 $return = true; if (empty($el['quantity'])) { $return = false; }  return $return;
+                 $return = true; if (empty($el['quantity']) || empty($el['enabled'])) { $return = false; }  return $return;
             } ) );
         }
         

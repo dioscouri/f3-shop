@@ -46,7 +46,7 @@
                         <div class="form-group">
                             <div class="row">
                                 <div class="col-md-3">
-                                    <?php echo !empty($variant['titles']) ? implode("&nbsp;|&nbsp;", (array) $variant['titles']) : null; ?>
+                                    <?php echo !empty($variant['attribute_titles']) ? implode("&nbsp;|&nbsp;", (array) $variant['attribute_titles']) : null; ?>
                                     <div class="text-muted">
                                         <div>
                                             <label>ID:</label>
@@ -59,13 +59,24 @@
                                     </div>                                    
                                     <input type="hidden" name="variants[<?php echo $key; ?>][id]" value="<?php echo $flash->old('variants.'.$key.'.id') ? $flash->old('variants.'.$key.'.id') : $variant['id']; ?>" />
                                     <input type="hidden" name="variants[<?php echo $key; ?>][key]" value="<?php echo $flash->old('variants.'.$key.'.attributes') ? implode("-", (array) $flash->old('variants.'.$key.'.attributes')) : $variant['key']; ?>" />
-                                    <input type="hidden" name="variants[<?php echo $key; ?>][attribute_title]" value="<?php echo implode("&nbsp;|&nbsp;", (array) $variant['titles']); ?>" />
+                                    <input type="hidden" name="variants[<?php echo $key; ?>][attribute_title]" value="<?php echo implode("&nbsp;|&nbsp;", (array) $variant['attribute_titles']); ?>" />
                                     <input type="hidden" name="variants[<?php echo $key; ?>][attributes]" value="<?php echo $flash->old('variants.'.$key.'.attributes') ? htmlspecialchars( json_encode( $flash->old('variants.'.$key.'.attributes') ) ) : htmlspecialchars( json_encode( $variant['attributes'] ) ); ?>" />
                                 </div>
                                 <div class="col-md-9">
                                     
                                     <div class="row">
-                                        <div class="col-md-7">
+                                        <div class="col-md-2">
+                                            <label><small>Enabled</small></label>
+                                            <div class="form-group">
+                                                <label class="radio-inline">
+                                                    <input type="radio" name="variants[<?php echo $key; ?>][enabled]" value="1" <?php if ($flash->old('variants.'.$key.'.enabled')) { echo 'checked'; } ?>> Yes
+                                                </label>
+                                                <label class="radio-inline">
+                                                    <input type="radio" name="variants[<?php echo $key; ?>][enabled]" value="0" <?php if (!$flash->old('variants.'.$key.'.enabled')) { echo 'checked'; } ?>> No
+                                                </label>
+                                            </div>
+                                        </div>                                    
+                                        <div class="col-md-5">
                                             <label><small>SKU</small></label>
                                             <input type="text" name="variants[<?php echo $key; ?>][sku]" class="form-control input-sm" value="<?php echo $flash->old('variants.'.$key.'.sku'); ?>" />
                                         </div>

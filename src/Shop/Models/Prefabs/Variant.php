@@ -10,6 +10,7 @@ class Variant extends \Dsc\Prefabs
     protected $document = array(
         'id'=>null,             // (string) MongoId
         'key'=>null,            // alphabetized, hyphenated string of each attribute's MongoId
+        'enabled'=>1,
         'attribute_title'=>null,          // human-readable string; pipe-concatenated string with title of each attribute 
         'attribute_titles'=>array(),      // array of each attribute's title
         'attributes'=>array(),  // array of \Shop\Models\Prefabs\Attribute (string) ids, sorted
