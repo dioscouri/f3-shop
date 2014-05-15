@@ -60,7 +60,7 @@
                             </div>
                             
                         </td>
-                        <td><div class="price">$<?php echo \Dsc\ArrayHelper::get($item, 'price'); ?></div></td>
+                        <td><div class="price"><?php echo \Shop\Models\Currency::format( \Dsc\ArrayHelper::get($item, 'price') ); ?></div></td>
 
                         <td>
                             <div class="price text-center">
