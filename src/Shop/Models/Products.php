@@ -357,6 +357,9 @@ class Products extends \Dsc\Mongo\Collections\Content
         array_walk($this->variants, function(&$item, $key) {
             $item['quantity'] = (int) $item['quantity'];
             $item['price'] = (float) $item['price'];
+            if (empty($item['quantity'])) {
+            	$item['enabled'] = 0;
+            }
         });
         
         if (!empty($this->{'prices.special'}) && is_array($this->{'prices.special'}))
@@ -411,34 +414,20 @@ class Products extends \Dsc\Mongo\Collections\Content
         if (!empty($this->variants) && is_array($this->variants))
         {
             $variants = $this->rebuildVariants();
-        
-            array_walk($this->variants, function(&$item, $key) use($variants) {
-                if (empty($item['id'])) {
-                    $item['id'] = (string) new \MongoId;
-                }
-                if (!empty($item['attributes']) && !is_array($item['attributes'])) {
-                    $item['attributes'] = json_decode( $item['attributes'] );
-                }
-                // if the variant's key is empty, build it from the attributes
-                if (empty($item['key'])) {
-                    $item['key'] = implode("-", (array) $item['attributes']);
-                }
-                if (empty($variants[$item['key']])) {
-                    unset($this->variants[$key]);
-                } else {
-                    // if the variant's attribute titles is empty, add it
-                    if (empty($item['attribute_titles'])) {
-                        $item['attribute_titles'] = $variants[$item['key']]['attribute_titles'];
-                    }
-                    // if the variant's attribute title is empty, build it automatically
-                    if (empty($item['attribute_title'])) {
-                        $item['attribute_title'] = implode("&nbsp;|&nbsp;", (array) $item['attribute_titles']);
-                    }
-                    $item = $item + $variants[$item['key']];
+            
+            $prev = $this->variants;
+            array_walk($variants, function(&$item, $key) use($prev) {
+                // find the previous version of this variant, if possible
+                foreach ($prev as $p) {
+                	if ($p['key'] == $key) {
+                		$item = array_merge($item, $p);
+                		break;
+                	}
                 }
             });
-        
-            $this->variants = \Dsc\ArrayHelper::sortArrays(array_values( $this->variants ), 'attribute_title');
+            unset($prev);
+            
+            $this->variants = \Dsc\ArrayHelper::sortArrays(array_values( $variants ), 'attribute_title');
         }
         
         if (empty($this->attributes))
@@ -508,7 +497,7 @@ class Products extends \Dsc\Mongo\Collections\Content
         {
             // preserve variant IDs since the attribute set hasn't changed
             $this->createVariants();
-            
+
             array_walk($this->variants, function(&$item, $key) use($prev_product) {
             	// if a variant with this attribute set existed, then preserve its ID and extended properties
             	if ($prev_variant = $prev_product->variantByKey($item['key'])) {
