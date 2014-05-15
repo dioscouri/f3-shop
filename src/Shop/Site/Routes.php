@@ -269,5 +269,20 @@ class Routes extends \Dsc\Routes\Group
             'controller' => 'Account',
             'action' => 'index' 
         ) );
+        
+        $this->add( '/account/addresses', 'GET|POST', array(
+            'controller' => 'Address',
+            'action' => 'index'
+        ) );
+
+        $this->add( '/account/addresses/page/@page', 'GET', array(
+            'controller' => 'Address',
+            'action' => 'index'
+        ) );
+        
+        $this->addCrudItem('Address', array(
+            'namespace' => '\Shop\Site\Controllers',
+            'url_prefix' => '/account/addresses'
+        ));
     }
 }

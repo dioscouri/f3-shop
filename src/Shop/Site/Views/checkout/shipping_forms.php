@@ -9,20 +9,43 @@
             <small>Shipping Address</small>
         </legend>
         <?php if ($cart->shippingRequired()) { ?>        
-
-            <?php /* TODO If account has stored addresses, display a select list and when one is selected, prefill the form fields */ ?>
+            
+            <?php if ($existing_addresses = \Shop\Models\CustomerAddresses::fetch()) { ?>
+            <div class="form-group">
+                <label>Use an existing address or provide a new one below.</label>
+                <select name="checkout[shipping_address][id]" class="form-control" id="select-address">
+                    <option id="new-address" value="">-- New Address --</option>
+                <?php foreach ($existing_addresses as $address) { ?>
+                    <option <?php if ($cart->{'checkout.shipping_address.id'} == (string) $address->id) { echo "selected"; } ?>
+                        value="<?php echo $address->id; ?>" 
+                        data-name="<?php echo htmlspecialchars( $address->name ); ?>"
+                        data-line_1="<?php echo htmlspecialchars( $address->line_1 ); ?>"
+                        data-line_2="<?php echo htmlspecialchars( $address->line_2 ); ?>"
+                        data-city="<?php echo htmlspecialchars( $address->city ); ?>"
+                        data-region="<?php echo htmlspecialchars( $address->region ); ?>"
+                        data-country="<?php echo htmlspecialchars( $address->country ); ?>"
+                        data-postal_code="<?php echo htmlspecialchars( $address->postal_code ); ?>"
+                        data-phone_number="<?php echo htmlspecialchars( $address->phone_number ); ?>"
+                    >
+                        <?php echo $address->asString(', '); ?>
+                    </option>
+                <?php } ?>
+                </select>
+                <hr/>
+            </div>
+            <?php } ?>
             
             <div class="form-group">
-                <input type="text" class="form-control name" data-required="true" name="checkout[shipping_address][name]" value="<?php echo $cart->{'checkout.shipping_address.name'}; ?>" placeholder="Full Name" autocomplete="name">
+                <input id="name" type="text" class="form-control name" data-required="true" name="checkout[shipping_address][name]" value="<?php echo $cart->{'checkout.shipping_address.name'}; ?>" placeholder="Full Name" autocomplete="name">
             </div>
             <div class="form-group">
-                <input type="text" class="form-control address" data-required="true" name="checkout[shipping_address][line_1]" value="<?php echo $cart->{'checkout.shipping_address.line_1'}; ?>" placeholder="Address Line 1" autocomplete="address-line1">
+                <input id="line_1" type="text" class="form-control address" data-required="true" name="checkout[shipping_address][line_1]" value="<?php echo $cart->{'checkout.shipping_address.line_1'}; ?>" placeholder="Address Line 1" autocomplete="address-line1">
             </div>
             <div class="form-group">
-                <input type="text" class="form-control address" name="checkout[shipping_address][line_2]" value="<?php echo $cart->{'checkout.shipping_address.line_2'}; ?>" placeholder="Address Line 2" autocomplete="address-line2">
+                <input id="line_2" type="text" class="form-control address" name="checkout[shipping_address][line_2]" value="<?php echo $cart->{'checkout.shipping_address.line_2'}; ?>" placeholder="Address Line 2" autocomplete="address-line2">
             </div>
             <div class="form-group">
-                <input type="text" class="form-control city" data-required="true" name="checkout[shipping_address][city]" value="<?php echo $cart->{'checkout.shipping_address.city'}; ?>" placeholder="City" autocomplete="locality">
+                <input id="city" type="text" class="form-control city" data-required="true" name="checkout[shipping_address][city]" value="<?php echo $cart->{'checkout.shipping_address.city'}; ?>" placeholder="City" autocomplete="locality">
             </div>
             <div class="row">
                 <div class="form-group col-xs-12 col-sm-12 col-md-6">
@@ -42,10 +65,10 @@
             </div>            
             <div class="row">
                 <div class="form-group col-xs-12 col-sm-12 col-md-4">
-                    <input type="text" class="form-control postal-code" data-required="true" name="checkout[shipping_address][postal_code]" value="<?php echo $cart->{'checkout.shipping_address.postal_code'}; ?>" placeholder="Postal Code" autocomplete="postal-code" >
+                    <input id="postal_code" type="text" class="form-control postal-code" data-required="true" name="checkout[shipping_address][postal_code]" value="<?php echo $cart->{'checkout.shipping_address.postal_code'}; ?>" placeholder="Postal Code" autocomplete="postal-code" >
                 </div>
                 <div class="form-group col-xs-12 col-sm-12 col-md-8">
-                    <input type="text" class="form-control phone" data-required="true" name="checkout[shipping_address][phone_number]" value="<?php echo $cart->{'checkout.shipping_address.phone_number'}; ?>" placeholder="Phone Number" autocomplete="tel">
+                    <input id="phone_number" type="text" class="form-control phone" data-required="true" name="checkout[shipping_address][phone_number]" value="<?php echo $cart->{'checkout.shipping_address.phone_number'}; ?>" placeholder="Phone Number" autocomplete="tel">
                 </div>            
             </div>
             
@@ -107,6 +130,36 @@ jQuery(document).ready(function(){
             return false;
         }
         el.submit();    
+    });
+
+    jQuery('#select-address').on('change', function(){
+    	var el = jQuery(this);
+        var val = el.val();
+        
+        if (el.children(":selected").attr('id') == 'new-address') {
+            // empty all fields
+            jQuery('#shipping-country').val( '<?php echo $cart->shippingCountry(); ?>' );
+            jQuery('#name').val( '' );
+            jQuery('#line_1').val( '' );
+            jQuery('#line_2').val( '' );
+            jQuery('#city').val( '' );
+            jQuery('#postal_code').val( '' );
+            jQuery('#phone_number').val( '' );
+            jQuery('#shipping-region').val( '' );
+            
+        } else {
+            // populate all fields
+            var selected = el.children(":selected");
+            jQuery('#shipping-country').val( selected.attr('data-country') );
+            jQuery('#name').val( selected.attr('data-name') );
+            jQuery('#line_1').val( selected.attr('data-line_1') );
+            jQuery('#line_2').val( selected.attr('data-line_2') );
+            jQuery('#city').val( selected.attr('data-city') );
+            jQuery('#postal_code').val( selected.attr('data-postal_code') );
+            jQuery('#phone_number').val( selected.attr('data-phone_number') );
+            jQuery('#shipping-region').val( selected.attr('data-region') );
+        }
+                
     });
 
     if (!window.shipping_methods_loaded)
