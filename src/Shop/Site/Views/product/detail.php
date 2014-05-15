@@ -1,9 +1,22 @@
 <?php $item->url = './shop/product/' . $item->{'slug'}; ?>
 <?php $images = $item->images(); ?>
-
+<?php $variantsInStock = $item->variantsInStock(); ?>
+<?php $variant_1 = current( $variantsInStock ); ?>
+<?php $wishlist_state = \Shop\Models\Wishlists::hasAddedVariant($variant_1['id'], (string) $this->auth->getIdentity()->id) ? 'false' : 'true'; ?>
 <script>
+
+Shop.toggleWishlist = function(state) {
+	var new_html = '';
+	if( state == true ){ // enable adding to wishilist
+		new_html = "<a class='add-to-wishlist' href='javascript:void(0);'><i class='glyphicon glyphicon-heart'></i> Add to wishlist</a>";
+	} else {
+		new_html = "<a href='javascript:void(0);'><i class='glyphicon glyphicon-heart'></i> In your wishlist</a>";
+	}
+	jQuery( '.add-to-wishlist-container' ).html( new_html );
+}
+
 jQuery(document).ready(function(){
-   jQuery('.add-to-wishlist').on('click', function(ev){
+   jQuery('.product-details').on('click', '.add-to-wishlist', function(ev){
        ev.preventDefault();
        var el = jQuery(this);
        var variant_id = el.closest('form').find('.variant_id').val();
@@ -14,11 +27,19 @@ jQuery(document).ready(function(){
 	        }).done(function(data){
 	            var response = jQuery.parseJSON( JSON.stringify(data), false);
 	            if (response.result) {
+					jQuery( 'select[name="variant_id"] option[value="'+variant_id+'"]' ).attr( 'data-wishlist', "0" );
 	                el.replaceWith("<a href='javascript:void(0);'><i class='glyphicon glyphicon-heart'></i> In your wishlist</a>");
 	            }
 	        });
        } 
-   }); 
+   });
+
+   jQuery('select[name="variant_id"]').on('change', function(e) {
+		   	wishlist_state = jQuery( e.target ).find("option:selected").attr('data-wishlist') == '1';
+			Shop.toggleWishlist(wishlist_state);
+	   });
+
+   Shop.toggleWishlist(<?php echo $wishlist_state; ?>);
 });
 </script>
 
@@ -98,13 +119,16 @@ jQuery(document).ready(function(){
                             <div class="col-sm-8">
                                 
                                 <select name="variant_id" class="chosen-select select-variant variant_id" data-callback="Shop.selectVariant">
-                                    <?php foreach ($item->variantsInStock() as $key=>$variant) { ?>
+                                    <?php foreach ($variantsInStock as $key=>$variant) {
+                                    	$wishlist_state = \Shop\Models\Wishlists::hasAddedVariant($variant['id'], (string) $this->auth->getIdentity()->id) ? '0' : '1';
+                                    	?>
                                         <option value="<?php echo $variant['id']; ?>" data-variant='<?php echo htmlspecialchars( json_encode( array(
                                             'id' => $variant['id'],
                                             'key' => $variant['key'],
                                         	'image' => $variant['image'],
                                             'quantity' => $variant['quantity'],
-                                        ) ) ); ?>'><?php echo $variant['attribute_title'] ? $variant['attribute_title'] : $item->title; ?> </option>
+                                        ) ) ); ?>'
+                                        	data-wishlist="<?php echo $wishlist_state; ?>"><?php echo $variant['attribute_title'] ? $variant['attribute_title'] : $item->title; ?> </option>
                                     <?php } ?>
                                 </select>
                             </div>
@@ -128,18 +152,6 @@ jQuery(document).ready(function(){
                         
                         <div class="small-buttons">
                             <div class="add-to-wishlist-container">
-                                <?php 
-                                if (!\Shop\Models\Wishlists::hasAddedProduct($item->{'id'}, (string) $this->auth->getIdentity()->id))
-                                {
-                                    ?>
-                                    <a class='add-to-wishlist' href='javascript:void(0);'><i class='glyphicon glyphicon-heart'></i> Add to wishlist</a>
-                                    <?php
-                                } else {
-                                	?>
-                                	<a href='javascript:void(0);'><i class='glyphicon glyphicon-heart'></i> In your wishlist</a>
-                                	<?php
-                                }                                
-                                ?>                                
                             </div>
                         </div>
 
