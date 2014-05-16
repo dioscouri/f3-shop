@@ -57,6 +57,8 @@ class Wishlist extends \Dsc\Controller
      */
     public function primary() 
     {
+        $this->requireIdentity();
+        
         $wishlist = \Shop\Models\Wishlists::fetch();
         \Base::instance()->reroute('/shop/wishlist/' . $wishlist->id );
     }
