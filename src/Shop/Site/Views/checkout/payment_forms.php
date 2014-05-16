@@ -1,5 +1,9 @@
-<h2>
+<h2 class="clearfix">
     Checkout <small>Step 2 of 2</small>
+    <span class="pull-right">
+    <small><i class="fa fa-chevron-left"></i></small>
+    <a href="./shop/checkout"><small>Back to Step 1</small></a>
+    </span>
 </h2>
 
 <form action="./shop/checkout/submit" method="post" id="checkout-payment-form">
@@ -10,7 +14,7 @@
         <?php } ?>
         <legend>
             <small>Shipping Summary
-            <a class="pull-right" href="./shop/checkout">Edit</a>
+            <a class="pull-right" href="./shop/checkout">Edit Shipping Info</a>
             </small>            
         </legend>
         <?php if ($cart->{'checkout.shipping_address'}) { ?>

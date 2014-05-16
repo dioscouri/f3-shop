@@ -183,7 +183,7 @@
                 </div>
             
                 <div class="form-group">
-                    <a href="./shop" class="btn btn-link custom-button">Continue Shopping</a>
+                    <a href="./shop" class="cart-table-update btn btn-default custom-button">Continue Shopping</a>
                 </div>
             </div>
             
