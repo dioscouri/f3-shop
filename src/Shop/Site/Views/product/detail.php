@@ -138,10 +138,10 @@ jQuery(document).ready(function(){
                         
                             <div class="col-sm-4">
                                 <div class="input-group">
-                                    <input type="text" class="form-control" value="1" placeholder="Quantity" name="quantity" />
-                                    <span class="input-group-addon">
-                                        #
-                                    </span>
+                                    <input type="text" class="form-control" value="1" placeholder="Quantity" name="quantity" id="quantity" />
+                                    <span class="input-group-btn">
+                                        <button onclick="jQuery('#quantity').val(parseInt(jQuery('#quantity').val())+1);" class="btn btn-default" type="button"><i class="glyphicon glyphicon-plus"></i></button>
+                                    </span>                                    
                                 </div>
                             </div>
                         </div>
