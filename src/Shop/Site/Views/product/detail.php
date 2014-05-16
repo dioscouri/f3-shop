@@ -115,7 +115,7 @@ jQuery(document).ready(function(){
                     
                     <div class="buttons">
                         <div class="row">
-                            <?php if (!empty($item->variants) && count($item->variants) > 1) { ?>
+                            <?php if (!empty($item->variantsInStock()) && count($item->variantsInStock()) > 1) { ?>
                             <div class="col-sm-8">
                                 
                                 <select name="variant_id" class="chosen-select select-variant variant_id" data-callback="Shop.selectVariant">
@@ -132,8 +132,8 @@ jQuery(document).ready(function(){
                                     <?php } ?>
                                 </select>
                             </div>
-                            <?php } elseif (count($item->variants) == 1) { ?>
-                                <input type="hidden" name="variant_id" value="<?php echo $item->{'variants.0.id'}; ?>" class="variant_id" />
+                            <?php } elseif (count($item->variantsInStock()) == 1) { ?>
+                                <input type="hidden" name="variant_id" value="<?php echo $item->variantsInStock()[0]['id']; ?>" class="variant_id" />
                             <?php } ?> 
                         
                             <div class="col-sm-4">
@@ -147,6 +147,10 @@ jQuery(document).ready(function(){
                         </div>
                     </div>
                     <div class="price-line">
+                        <?php if (((int) $item->get('prices.list') > 0) && $item->get('prices.list') != $item->price() ) { ?>
+                            <span class="list-price price"><strike>$<?php echo $item->get('prices.list'); ?></strike></span>
+                        <?php } ?>
+                        &nbsp;
                         <div class="price">$<?php echo $item->price(); ?></div>
                         <button class="btn btn-default custom-button custom-button-inverted">Add to bag</button>
                         

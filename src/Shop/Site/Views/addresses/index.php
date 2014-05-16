@@ -37,7 +37,7 @@
         
         <?php if ($n == 0 || ($n % 4 == 0)) { ?><div class="row"><?php } ?>
         
-        <div id="<?php echo $n%4; ?>" class="col-xs-6 col-sm-6 col-md-3 category-article category-grid">
+        <div class="col-xs-6 col-sm-6 col-md-3 category-article category-grid">
             
             <div class="panel panel-default">
                 <div class="panel-heading clearfix">

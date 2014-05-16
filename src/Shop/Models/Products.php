@@ -533,6 +533,8 @@ class Products extends \Dsc\Mongo\Collections\Content
             'image' => $image,
             'summary' => $this->description,
             'datetime' => null,
+            'price' => $this->price(),
+            'prices' => $this->{'prices'},
         ));
         
         return $item;
@@ -825,7 +827,7 @@ class Products extends \Dsc\Mongo\Collections\Content
             $featured_image = array( $this->featured_image['slug'] );
         }
          
-        $variant_images = \Dsc\ArrayHelper::where($this->variants, function($key, $variant) {
+        $variant_images = \Dsc\ArrayHelper::where($this->variantsInStock(), function($key, $variant) {
             if (!empty($variant['enabled']) && !empty($variant['quantity']) && !empty($variant['image'])) {
                 return $variant['image'];
             }
