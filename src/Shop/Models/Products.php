@@ -826,7 +826,7 @@ class Products extends \Dsc\Mongo\Collections\Content
         }
          
         $variant_images = \Dsc\ArrayHelper::where($this->variants, function($key, $variant) {
-            if (!empty($variant['image'])) {
+            if (!empty($variant['enabled']) && !empty($variant['quantity']) && !empty($variant['image'])) {
                 return $variant['image'];
             }
         });
