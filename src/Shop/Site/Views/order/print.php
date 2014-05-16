@@ -26,14 +26,41 @@
         
         <div class="row">
             <div class="col-xs-12 col-sm-12 col-md-6">
-                <div><label>Order placed:</label> <?php echo (new \DateTime($order->{'metadata.created.local'}))->format('F j, Y'); ?></div>
-                <div><label>Order total:</label> <?php echo \Shop\Models\Currency::format( $order->{'grand_total'} ); ?></div>
+                <div><label>Order #</label><?php echo $order->{'number'}; ?></div>
+                <div><label>Date:</label> <?php echo (new \DateTime($order->{'metadata.created.local'}))->format('F j, Y'); ?></div>
+                <div><label>Status:</label> <?php echo $order->{'status'}; ?></div>
             </div>
             <div class="col-xs-12 col-sm-12 col-md-6">
-                <div><label>Order #</label><?php echo $order->{'number'}; ?></div>
-                <div><label>Order status:</label> <?php echo $order->{'status'}; ?></div>
+                <div>
+                    <label class="strong">Subtotal:</label>
+                    <span class="price"><?php echo \Shop\Models\Currency::format( $order->sub_total ); ?></span>
+                </div>
+                <?php if ($order->discount_total > 0) { ?>
+                <div>
+                    <label class="strong">Discount:</label>
+                    <span class="price"><?php echo \Shop\Models\Currency::format( $order->discount_total ); ?></span>
+                </div>
+                <?php } ?>                
+                <?php if ($order->shipping_total > 0) { ?>
+                <div>
+                    <label class="strong">Shipping:</label>
+                    <span class="price"><?php echo \Shop\Models\Currency::format( $order->shipping_total ); ?></span>
+                </div>
+                <?php } ?>
+                <?php if ($order->tax_total > 0) { ?>
+                <div>
+                    <label class="strong">Tax:</label>
+                    <span class="price"><?php echo \Shop\Models\Currency::format( $order->tax_total ); ?></span>
+                </div>
+                <?php } ?>
+                                
+                <div>
+                    <label class="strong">Total:</label>
+                    <span class="price"><?php echo \Shop\Models\Currency::format( $order->grand_total ); ?></span>
+                </div>
             </div>
         </div>        
+        
     </div>
     
     <div class="form-group">
