@@ -31,11 +31,13 @@
         <p>No addresses found.</p>
     <?php } ?>
     
-    <?php $n=0; foreach ($paginated->items as $item) { ?>
-        <?php if ($n == 4) { $n = 0; ?></div><?php } ?>
-        <?php if ($n == 0) { ?><div class="row"><?php } ?>
+    <?php $n=0; $count = count($paginated->items); ?>
+    
+    <?php foreach ($paginated->items as $item) { ?>
         
-        <div class="col-xs-6 col-sm-6 col-md-3 category-article category-grid">
+        <?php if ($n == 0 || ($n % 4 == 0)) { ?><div class="row"><?php } ?>
+        
+        <div id="<?php echo $n%4; ?>" class="col-xs-6 col-sm-6 col-md-3 category-article category-grid">
             
             <div class="panel panel-default">
                 <div class="panel-heading clearfix">
@@ -51,8 +53,10 @@
                 </div>
             </div>
     
-        </div>        
+        </div>
         
-    <?php $n++; } ?>
+        <?php $n++; if (($n % 4 == 0) || $n==$count) { ?></div><?php } ?>
+        
+    <?php } ?>
 
 </div>
