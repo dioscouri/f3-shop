@@ -86,4 +86,9 @@ class ShippingMethods extends \Dsc\Models
     
         return $result;
     }
+    
+    public function total()
+    {
+        return $this->price + $this->extra;
+    }
 }

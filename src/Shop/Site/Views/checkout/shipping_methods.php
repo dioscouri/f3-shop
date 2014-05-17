@@ -20,7 +20,7 @@ else
     <?php
 	foreach ($cart->shippingMethods() as $method_array) 
     {
-        $method = new \Shop\Models\Prefabs\ShippingMethods( $method_array );
+        $method = new \Shop\Models\ShippingMethods( $method_array );
         ?>
 		<div class="form-field">
 			<label class="radio control-label">

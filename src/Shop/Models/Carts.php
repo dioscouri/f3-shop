@@ -692,7 +692,7 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
     /**
      * Return false if not set in checkout.shipping_method
      * Return null if set but not found in array of valid shipping methods for this cart
-     * Return \Shop\Mopdels\Prefabs\ShippingMethods object if found
+     * Return \Shop\Mopdels\ShippingMethods object if found
      *  
      */
     public function shippingMethod()
@@ -708,7 +708,7 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
         {
             if ($this->{'checkout.shipping_method'} == \Dsc\ArrayHelper::get( $method_array, 'id' )) 
             {
-                $method = new \Shop\Models\Prefabs\ShippingMethods( $method_array );
+                $method = new \Shop\Models\ShippingMethods( $method_array );
             	return $method;
             }
         }

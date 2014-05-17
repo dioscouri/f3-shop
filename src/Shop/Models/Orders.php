@@ -211,7 +211,7 @@ class Orders extends \Dsc\Mongo\Collections\Nodes
     }
     
     /**
-     * Return \Shop\Mopdels\Prefabs\ShippingMethods object if found
+     * Return \Shop\Mopdels\ShippingMethods object if found
      *
      */
     public function shippingMethod()
@@ -221,7 +221,7 @@ class Orders extends \Dsc\Mongo\Collections\Nodes
             return false;
         }
     
-        $method = new \Shop\Models\Prefabs\ShippingMethods( $this->{'shipping_method'} );
+        $method = new \Shop\Models\ShippingMethods( $this->{'shipping_method'} );
         
         return $method;
     }
