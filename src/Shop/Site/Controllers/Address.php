@@ -51,7 +51,7 @@ class Address extends \Dsc\Controller
             $flash->store( $this->getModel()->cast() );
         }
     
-        $this->app->set('meta.title', 'Create Address');
+        $this->app->set('meta.title', 'New Address');
         
         $view = \Dsc\System::instance()->get('theme');
         echo $view->render('Shop/Site/Views::addresses/create.php');
@@ -224,7 +224,7 @@ class Address extends \Dsc\Controller
             return;
         }
     
-        $this->app->set('meta.title', 'My Addresses');
+        $this->app->set('meta.title', 'Address Book');
         
         \Base::instance()->set('state', $state );
         \Base::instance()->set('paginated', $paginated );

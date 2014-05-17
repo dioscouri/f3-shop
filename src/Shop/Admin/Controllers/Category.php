@@ -47,6 +47,9 @@ class Category extends \Admin\Controllers\BaseAuth
         
         $view = \Dsc\System::instance()->get('theme');
         $view->event = $view->trigger( 'onDisplayShopCategoriesEdit', array( 'item' => $this->getItem(), 'tabs' => array(), 'content' => array() ) );
+        
+        $this->app->set('meta.title', 'Create Category | Shop');
+        
         echo $view->render('Shop/Admin/Views::categories/create.php');        
     }
     
@@ -65,6 +68,9 @@ class Category extends \Admin\Controllers\BaseAuth
         
         $view = \Dsc\System::instance()->get('theme');
         $view->event = $view->trigger( 'onDisplayShopCategoriesEdit', array( 'item' => $this->getItem(), 'tabs' => array(), 'content' => array() ) );
+        
+        $this->app->set('meta.title', 'Edit Category | Shop');
+        
         echo $view->render('Shop/Admin/Views::categories/edit.php');
     }
     

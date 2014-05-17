@@ -28,7 +28,8 @@ class Tag extends \Admin\Controllers\BaseAuth
     protected function displayCreate() 
     {
         $f3 = \Base::instance();
-        $f3->set('pagetitle', 'Create Tag');
+        
+        $this->app->set('meta.title', 'Create Tag | Shop');
         
         $view = \Dsc\System::instance()->get('theme');
         $view->event = $view->trigger( 'onDisplayShopTagsEdit', array( 'item' => $this->getItem(), 'tabs' => array(), 'content' => array() ) );
@@ -38,7 +39,8 @@ class Tag extends \Admin\Controllers\BaseAuth
     protected function displayEdit()
     {
         $f3 = \Base::instance();
-        $f3->set('pagetitle', 'Edit Tag');
+        
+        $this->app->set('meta.title', 'Edit Tag | Shop');
         
         $view = \Dsc\System::instance()->get('theme');
         $view->event = $view->trigger( 'onDisplayShopTagsEdit', array( 'item' => $this->getItem(), 'tabs' => array(), 'content' => array() ) );

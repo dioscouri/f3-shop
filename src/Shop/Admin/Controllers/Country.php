@@ -37,9 +37,10 @@ class Country extends \Admin\Controllers\BaseAuth
     protected function displayCreate() 
     {
         $f3 = \Base::instance();
-        $f3->set('pagetitle', 'Edit Country');
 
         $model = new \Shop\Models\Countries;
+        
+        $this->app->set('meta.title', 'Create Country | Shop');
         
         $view = \Dsc\System::instance()->get('theme');
         $view->event = $view->trigger( 'onDisplayShopCountriesEdit', array( 'item' => $this->getItem(), 'tabs' => array(), 'content' => array() ) );
@@ -49,11 +50,12 @@ class Country extends \Admin\Controllers\BaseAuth
     protected function displayEdit()
     {
         $f3 = \Base::instance();
-        $f3->set('pagetitle', 'Edit Country');
 
         $model = new \Shop\Models\Countries;
         
         $flash = \Dsc\Flash::instance();
+
+        $this->app->set('meta.title', 'Edit Country | Shop');
         
         $view = \Dsc\System::instance()->get('theme');
         $view->event = $view->trigger( 'onDisplayShopCountriesEdit', array( 'item' => $this->getItem(), 'tabs' => array(), 'content' => array() ) );        

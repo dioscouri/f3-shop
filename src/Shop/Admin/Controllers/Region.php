@@ -40,6 +40,8 @@ class Region extends \Admin\Controllers\BaseAuth
 
         $model = new \Shop\Models\Regions;
         
+        $this->app->set('meta.title', 'Create Region | Shop');
+        
         $view = \Dsc\System::instance()->get('theme');
         $view->event = $view->trigger( 'onDisplayShopRegionsEdit', array( 'item' => $this->getItem(), 'tabs' => array(), 'content' => array() ) );
         echo $view->render('Shop/Admin/Views::regions/create.php');        
@@ -52,6 +54,8 @@ class Region extends \Admin\Controllers\BaseAuth
         $model = new \Shop\Models\Regions;
         
         $flash = \Dsc\Flash::instance();
+        
+        $this->app->set('meta.title', 'Edit Region | Shop');
         
         $view = \Dsc\System::instance()->get('theme');
         $view->event = $view->trigger( 'onDisplayShopRegionsEdit', array( 'item' => $this->getItem(), 'tabs' => array(), 'content' => array() ) );        

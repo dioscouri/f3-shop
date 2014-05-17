@@ -23,6 +23,8 @@ class Countries extends \Admin\Controllers\BaseAuth
         $paginated = $model->paginate();
         \Base::instance()->set('paginated', $paginated );
         
+        $this->app->set('meta.title', 'Countries | Shop');
+        
         $view = \Dsc\System::instance()->get('theme');
         echo $view->render('Shop/Admin/Views::countries/list.php');
     }

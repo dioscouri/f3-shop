@@ -37,13 +37,14 @@ class Manufacturer extends \Admin\Controllers\BaseAuth
     protected function displayCreate() 
     {
         $f3 = \Base::instance();
-        $f3->set('pagetitle', 'Edit Manufacturer');
 
         $model = $this->getModel();
         $all = $model->emptyState()->getList();
         \Base::instance()->set('all', $all );
         
         \Base::instance()->set('selected', null );
+        
+        $this->app->set('meta.title', 'Create Manufacturer | Shop');
         
         $view = \Dsc\System::instance()->get('theme');
         $view->event = $view->trigger( 'onDisplayShopManufacturersEdit', array( 'item' => $this->getItem(), 'tabs' => array(), 'content' => array() ) );
@@ -53,7 +54,6 @@ class Manufacturer extends \Admin\Controllers\BaseAuth
     protected function displayEdit()
     {
         $f3 = \Base::instance();
-        $f3->set('pagetitle', 'Edit Manufacturer');
 
         $model = $this->getModel();
         $manufacturers = $model->emptyState()->getList();
@@ -62,6 +62,8 @@ class Manufacturer extends \Admin\Controllers\BaseAuth
         $flash = \Dsc\Flash::instance();
         $selected = $flash->old('parent');
         \Base::instance()->set('selected', $selected );
+        
+        $this->app->set('meta.title', 'Edit Manufacturer | Shop');
         
         $view = \Dsc\System::instance()->get('theme');
         $view->event = $view->trigger( 'onDisplayShopManufacturersEdit', array( 'item' => $this->getItem(), 'tabs' => array(), 'content' => array() ) );

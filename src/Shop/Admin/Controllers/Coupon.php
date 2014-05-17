@@ -37,9 +37,10 @@ class Coupon extends \Admin\Controllers\BaseAuth
     protected function displayCreate() 
     {
         $f3 = \Base::instance();
-        $f3->set('pagetitle', 'Edit Coupon');
 
         $model = new \Shop\Models\Coupons;
+        
+        $this->app->set('meta.title', 'Create Coupon | Shop');
         
         $view = \Dsc\System::instance()->get('theme');
         $view->event = $view->trigger( 'onDisplayShopCouponsEdit', array( 'item' => $this->getItem(), 'tabs' => array(), 'content' => array() ) );
@@ -49,11 +50,12 @@ class Coupon extends \Admin\Controllers\BaseAuth
     protected function displayEdit()
     {
         $f3 = \Base::instance();
-        $f3->set('pagetitle', 'Edit Coupon');
 
         $model = new \Shop\Models\Coupons;
         
         $flash = \Dsc\Flash::instance();
+
+        $this->app->set('meta.title', 'Edit Coupon | Shop');
         
         $view = \Dsc\System::instance()->get('theme');
         $view->event = $view->trigger( 'onDisplayShopCouponsEdit', array( 'item' => $this->getItem(), 'tabs' => array(), 'content' => array() ) );        

@@ -23,6 +23,8 @@ class Orders extends \Admin\Controllers\BaseAuth
         $paginated = $model->paginate();
         \Base::instance()->set('paginated', $paginated );
         
+        $this->app->set('meta.title', 'Orders | Shop');
+        
         $view = \Dsc\System::instance()->get('theme');
         echo $view->render('Shop/Admin/Views::orders/list.php');
     }

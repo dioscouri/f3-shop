@@ -40,6 +40,8 @@ class Order extends \Admin\Controllers\BaseAuth
 
         $model = new \Shop\Models\Orders;
         
+        $this->app->set('meta.title', 'Create Order | Shop');
+        
         $view = \Dsc\System::instance()->get('theme');
         $view->event = $view->trigger( 'onDisplayShopOrdersEdit', array( 'item' => $this->getItem(), 'tabs' => array(), 'content' => array() ) );
         echo $view->render('Shop/Admin/Views::orders/create.php');        
@@ -52,6 +54,8 @@ class Order extends \Admin\Controllers\BaseAuth
         $model = new \Shop\Models\Orders;
         
         $flash = \Dsc\Flash::instance();
+        
+        $this->app->set('meta.title', 'Edit Order | Shop');
         
         $view = \Dsc\System::instance()->get('theme');
         $view->event = $view->trigger( 'onDisplayShopOrdersEdit', array( 'item' => $this->getItem(), 'tabs' => array(), 'content' => array() ) );        

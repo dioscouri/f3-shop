@@ -37,26 +37,30 @@ class Collection extends \Admin\Controllers\BaseAuth
     protected function displayCreate() 
     {
         $f3 = \Base::instance();
-        $f3->set('pagetitle', 'Edit Collection');
 
         $model = new \Shop\Models\Collections;
         
         $view = \Dsc\System::instance()->get('theme');
         $view->event = $view->trigger( 'onDisplayShopCollectionsEdit', array( 'item' => $this->getItem(), 'tabs' => array(), 'content' => array() ) );
+        
+        $this->app->set('meta.title', 'Create Collection | Shop');
+        
         echo $view->render('Shop/Admin/Views::collections/create.php');        
     }
     
     protected function displayEdit()
     {
         $f3 = \Base::instance();
-        $f3->set('pagetitle', 'Edit Collection');
 
         $model = new \Shop\Models\Collections;
         
         $flash = \Dsc\Flash::instance();
         
         $view = \Dsc\System::instance()->get('theme');
-        $view->event = $view->trigger( 'onDisplayShopCollectionsEdit', array( 'item' => $this->getItem(), 'tabs' => array(), 'content' => array() ) );        
+        $view->event = $view->trigger( 'onDisplayShopCollectionsEdit', array( 'item' => $this->getItem(), 'tabs' => array(), 'content' => array() ) );
+
+        $this->app->set('meta.title', 'Edit Collection | Shop');
+        
         echo $view->render('Shop/Admin/Views::collections/edit.php');
     }
     

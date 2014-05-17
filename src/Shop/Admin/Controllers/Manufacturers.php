@@ -15,9 +15,6 @@ class Manufacturers extends \Admin\Controllers\BaseAuth
     
     public function index()
     {
-        \Base::instance()->set('pagetitle', 'Manufacturers');
-        \Base::instance()->set('subtitle', '');
-        
         $model = $this->getModel();
         
         $state = $model->emptyState()->populateState()->getState();
@@ -27,6 +24,8 @@ class Manufacturers extends \Admin\Controllers\BaseAuth
         \Base::instance()->set('paginated', $paginated );
         
         \Base::instance()->set('selected', 'null' );
+        
+        $this->app->set('meta.title', 'Manufacturers | Shop');
         
         $view = \Dsc\System::instance()->get('theme');
         echo $view->render('Shop/Admin/Views::manufacturers/list.php');

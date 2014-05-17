@@ -37,7 +37,6 @@ class Product extends \Admin\Controllers\BaseAuth
     protected function displayCreate() 
     {
         $f3 = \Base::instance();
-        $f3->set('pagetitle', 'Create Product');
         
         $model = new \Shop\Models\Categories;
         $categories = $model->getList();
@@ -69,6 +68,8 @@ class Product extends \Admin\Controllers\BaseAuth
         $all_tags = $this->getModel()->getTags();
         \Base::instance()->set('all_tags', $all_tags );
         
+        $this->app->set('meta.title', 'Create Product | Shop');
+        
         $view = \Dsc\System::instance()->get('theme');
         $view->event = $view->trigger( 'onDisplayShopProductsEdit', array( 'item' => $this->getItem(), 'tabs' => array(), 'content' => array() ) );
         
@@ -78,7 +79,6 @@ class Product extends \Admin\Controllers\BaseAuth
     protected function displayEdit()
     {
         $f3 = \Base::instance();
-        $f3->set('pagetitle', 'Edit Product');
 
         $flash = \Dsc\Flash::instance();
         $variants = array();
@@ -102,6 +102,8 @@ class Product extends \Admin\Controllers\BaseAuth
         
         $all_tags = $this->getModel()->getTags();
         \Base::instance()->set('all_tags', $all_tags );
+        
+        $this->app->set('meta.title', 'Edit Product | Shop');
         
         $view = \Dsc\System::instance()->get('theme');
         $view->event = $view->trigger( 'onDisplayShopProductsEdit', array( 'item' => $this->getItem(), 'tabs' => array(), 'content' => array() ) );

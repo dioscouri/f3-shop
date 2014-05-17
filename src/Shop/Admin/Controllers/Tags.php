@@ -5,9 +5,6 @@ class Tags extends \Admin\Controllers\BaseAuth
 {
     public function index()
     {
-        \Base::instance()->set('pagetitle', 'Tags');
-        \Base::instance()->set('subtitle', '');
-        
         if ($tags = \Shop\Models\Products::getTags()) {
         	sort($tags);
         } else {
@@ -32,6 +29,8 @@ class Tags extends \Admin\Controllers\BaseAuth
         
         \Base::instance()->set('state', $state );
         \Base::instance()->set('tags', $tags );
+
+        $this->app->set('meta.title', 'Tags | Shop');
         
         $view = \Dsc\System::instance()->get('theme');
         echo $view->render('Shop/Admin/Views::tags/index.php');
