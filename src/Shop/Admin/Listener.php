@@ -138,12 +138,14 @@ class Listener extends \Prefab
                         'title' => 'Settings',
                         'route' => '/admin/shop/settings',
                         'icon' => 'fa fa-cogs'
-                    ),                    
+                    ),
+                    /*                    
                     array(
                         'title' => 'Shipping',
                         'route' => '/admin/shop/shipping-methods',
                         'icon' => 'fa fa-truck'
                     )
+                    */
                 );
                 
                 $settings_item->addChildren($settings_children);
