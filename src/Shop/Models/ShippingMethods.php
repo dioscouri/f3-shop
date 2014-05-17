@@ -67,11 +67,7 @@ class ShippingMethods extends \Dsc\Models
      */
     public static function forSelection(array $query=array())
     {
-        if (empty($this)) {
-            $model = new static();
-        } else {
-            $model = clone $this;
-        }
+        $model = new static;
     
         $items = $model->find( $query );
     
@@ -87,6 +83,11 @@ class ShippingMethods extends \Dsc\Models
         return $result;
     }
     
+    /**
+     * Gets the total cost of this shipping method
+     * 
+     * @return number
+     */
     public function total()
     {
         return $this->price + $this->extra;

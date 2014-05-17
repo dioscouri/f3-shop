@@ -14,7 +14,7 @@ else
     <?php
 	foreach ($cart->paymentMethods() as $method_array) 
     {
-        $method = new \Shop\Models\Prefabs\PaymentMethods( $method_array );
+        $method = new \Shop\Models\PaymentMethods( $method_array );
         ?>
 		<div class="form-field">
 			<label class="radio control-label">
