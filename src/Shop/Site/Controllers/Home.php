@@ -38,12 +38,12 @@ class Home extends \Dsc\Controller
     		return;
     	}
     	
-    	$this->app->set('meta.title', 'Shop');
-    	
     	$state = $products_model->getState();
     	\Base::instance()->set('state', $state );
     	
     	\Base::instance()->set('paginated', $paginated );
+    	
+    	$this->app->set('meta.title', 'Shop');
     	
     	$view = \Dsc\System::instance()->get('theme');
     	echo $view->render('Shop/Site/Views::home/index.php');
