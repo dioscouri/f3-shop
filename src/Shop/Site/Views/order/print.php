@@ -96,18 +96,6 @@
                         </div>
                     <?php } ?>
                 
-                    <?php foreach ($order->shipments as $shipment) { ?>
-                        <div class="row">
-                            <div class="col-xs-12 col-sm-12 col-md-6">
-                                <div>Shipping Vendor (UPS/USPS/Fedex/etc)</div>
-                                <div>Tracking number + link</div>
-                                <div>Address</div>
-                            </div>
-                            <div class="col-xs-12 col-sm-12 col-md-6">
-                                <div>Items in shipment</div>
-                            </div>
-                        </div>
-                    <?php } ?>
                 </div>
     
             </div>
@@ -146,6 +134,7 @@
                         </div>
         
                         <div class="col-xs-12 col-sm-12 col-md-6">
+                            <div class="order-totals">
                             <div>
                                 <label class="strong">Subtotal:</label>
                                 <span class="price"><?php echo \Shop\Models\Currency::format( $order->sub_total ); ?></span>
@@ -171,6 +160,7 @@
                             <div>
                                 <label class="strong">Total:</label>
                                 <span class="price"><?php echo \Shop\Models\Currency::format( $order->grand_total ); ?></span>
+                            </div>
                             </div>
                         </div>
                     </div>

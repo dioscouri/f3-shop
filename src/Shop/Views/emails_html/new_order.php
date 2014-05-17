@@ -10,15 +10,28 @@
 
 <h3>
     Summary
-    <div>
-        <small><a href="<?php echo $print_link; ?>"><small>Printable version</small></a></small>
-    </div>
 </h3>
 <div>    
-    <div><b>Order placed:</b> <?php echo (new \DateTime($order->{'metadata.created.local'}))->format('F j, Y'); ?></div>
-    <div><b>Order total:</b> <?php echo \Shop\Models\Currency::format( $order->{'grand_total'} ); ?></div>
-    <div><b>Order #</b><?php echo $order->{'number'}; ?></div>
-    <div><b>Order status:</b> <?php echo $order->{'status'}; ?></div>
+    <div>
+        <label>Order #</label>
+        <span class="order-number">
+            <?php echo $order->{'number'}; ?>
+        </span>
+    </div>
+    <div>
+        <label>Date:</label>
+        <span>
+            <?php echo (new \DateTime($order->{'metadata.created.local'}))->format('F j, Y'); ?>
+        </span>
+    </div>
+    <div>
+        <label class="strong">Total:</label>
+        <span class="price"><?php echo \Shop\Models\Currency::format( $order->grand_total ); ?></span>
+    </div>
+    <div>
+        <label>Status:</label>
+        <span><?php echo $order->{'status'}; ?></span>
+    </div>                        
 </div>       
 
 <hr/>
@@ -51,15 +64,6 @@
     </div>
 <?php } ?>
 
-    <?php foreach ($order->shipments as $key=>$shipment) { ?>
-    <div>
-        <h4>Shipment <?php echo $key+1; ?></h4>
-        <div>Shipping Vendor (UPS/USPS/Fedex/etc)</div>
-        <div>Tracking number + link</div>
-        <div>Address</div>
-        <div>Items in shipment</div>
-    </div>
-    <?php } ?>
 </div>
 <?php } ?>
 
@@ -70,6 +74,11 @@
 </h3>
 
 <div>
+    <?php if ($method = $order->paymentMethod()) { ?>
+        <div>
+            <label>Method:</label> <?php echo $method->{'name'}; ?>
+        </div>
+    <?php } ?>
     <?php if ($order->{'billing_address'}) { ?>
         <address>
             <?php echo $order->{'billing_address.name'}; ?><br/>
@@ -85,21 +94,36 @@
         <?php } ?>
     
     <?php } ?>
-
-    <?php if ($method = $order->paymentMethod()) { ?>
-        <div>
-            <b>Method:</b> <?php echo $method->{'name'}; ?>
-        </div>
-    <?php } ?>
     
-    <?php foreach ($order->payments as $key=>$payment) { ?>
-    <div>
-        <h4>Payment <?php echo $key+1; ?></h4>
-        <div>Payment method(s) (if CC, last 4)</div>
-        <div>Address (if different from primary)</div>
-        <div>Amount paid via payment method</div>
+    <div class="order-totals">
+        <div>
+            <label class="strong">Subtotal:</label>
+            <span class="price"><?php echo \Shop\Models\Currency::format( $order->sub_total ); ?></span>
+        </div>
+        <?php if ($order->discount_total > 0) { ?>
+        <div>
+            <label class="strong">Discount:</label>
+            <span class="price"><?php echo \Shop\Models\Currency::format( $order->discount_total ); ?></span>
+        </div>
+        <?php } ?>                
+        <?php if ($order->shipping_total > 0) { ?>
+        <div>
+            <label class="strong">Shipping:</label>
+            <span class="price"><?php echo \Shop\Models\Currency::format( $order->shipping_total ); ?></span>
+        </div>
+        <?php } ?>
+        <?php if ($order->tax_total > 0) { ?>
+        <div>
+            <label class="strong">Tax:</label>
+            <span class="price"><?php echo \Shop\Models\Currency::format( $order->tax_total ); ?></span>
+        </div>
+        <?php } ?>
+        <div>
+            <label class="strong">Total:</label>
+            <span class="price"><?php echo \Shop\Models\Currency::format( $order->grand_total ); ?></span>
+        </div>
     </div>
-    <?php } ?>    
+    
 </div>
 
 <hr/>

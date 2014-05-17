@@ -41,19 +41,15 @@ Phone: <?php echo $order->{'shipping_address.phone_number'}; ?>
 Method: <?php echo $method->{'name'}; ?> - $<?php echo $method->total(); ?> 
 <?php } ?>
 
-<?php foreach ($order->shipments as $key=>$shipment) { ?>
---- 
-Shipment <?php echo $key+1; ?> 
-Shipping Vendor (UPS/USPS/Fedex/etc) 
-Tracking number + link 
-Address 
-Items in shipment
-<?php } ?>
 <?php } ?>
 
 -------------
 
 Payment Information:
+
+<?php if ($method = $order->paymentMethod()) { ?>
+Method: <?php echo $method->{'name'}; ?> 
+<?php } ?>
 
 <?php if ($order->{'billing_address'}) { ?>
 
@@ -69,17 +65,19 @@ Phone: <?php echo $order->{'billing_address.phone_number'}; ?>
 
 <?php } ?>
 
-<?php if ($method = $order->paymentMethod()) { ?>
-Method: <?php echo $method->{'name'}; ?> 
-<?php } ?>
-    
-<?php foreach ($order->payments as $key=>$payment) { ?>
 ---
-Payment <?php echo $key+1; ?> 
-Payment method(s) (if CC, last 4) 
-Address (if different from primary) 
-Amount paid via payment method 
-<?php } ?>    
+
+Subtotal: <?php echo \Shop\Models\Currency::format( $order->sub_total ); ?> 
+<?php if ($order->discount_total > 0) { ?>
+Discount: <?php echo \Shop\Models\Currency::format( $order->discount_total ); ?> 
+<?php } ?>                
+<?php if ($order->shipping_total > 0) { ?>
+Shipping: <?php echo \Shop\Models\Currency::format( $order->shipping_total ); ?> 
+<?php } ?>
+<?php if ($order->tax_total > 0) { ?>
+Tax: <?php echo \Shop\Models\Currency::format( $order->tax_total ); ?> 
+<?php } ?>
+Total: <?php echo \Shop\Models\Currency::format( $order->grand_total ); ?> 
 
 -------------
 
