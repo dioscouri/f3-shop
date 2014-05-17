@@ -23,33 +23,18 @@ class Listener extends \Prefab
             
             $children = array(
                 array(
+                    'title' => 'Catalog',
+                    'route' => 'javascript:void(0);',
+                    'icon' => 'fa fa-cubes'
+                ),                
+                array(
                     'title' => 'Orders',
                     'route' => '/admin/shop/orders',
                     'icon' => 'fa fa-money'
                 ),
                 array(
-                    'title' => 'Products',
-                    'route' => '/admin/shop/products',
-                    'icon' => 'fa fa-list'
-                ),
-                array(
-                    'title' => 'Collections',
-                    'route' => '/admin/shop/collections',
-                    'icon' => 'fa fa-hdd'
-                ),
-                array(
-                    'title' => 'Categories',
-                    'route' => '/admin/shop/categories',
-                    'icon' => 'fa fa-folder'
-                ),
-                array(
                     'title' => 'Coupons',
                     'route' => '/admin/shop/coupons',
-                    'icon' => 'fa fa-barcode'
-                ),
-                array(
-                    'title' => 'Manufacturers',
-                    'route' => '/admin/shop/manufacturers',
                     'icon' => 'fa fa-barcode'
                 ),
                 array(
@@ -58,38 +43,102 @@ class Listener extends \Prefab
                     'icon' => 'fa fa-list'
                 ),
                 array(
-                    'title' => 'Tags',
-                    'route' => '/admin/shop/tags',
-                    'icon' => 'fa fa-tag'
-                ),
+                    'title' => 'Localization',
+                    'route' => 'javascript:void(0);',
+                    'icon' => 'fa fa-flag-o'
+                ),                
                 array(
-                    'title' => 'Countries',
-                    'route' => '/admin/shop/countries',
-                    'icon' => 'fa fa-list'
-                ),
-                array(
-                    'title' => 'Regions',
-                    'route' => '/admin/shop/regions',
-                    'icon' => 'fa fa-list'
-                ),
-                array(
-                    'title' => 'Settings',
-                    'route' => '/admin/shop/settings',
+                    'title' => 'Configuration',
+                    'route' => 'javascript:void(0);',
                     'icon' => 'fa fa-cogs'
-                )
+                ),                
             );
             $shop->addChildren($children, $root);
             
-            // Find the Shop's Settings menu item
+            // Find the Catalog Menu Item
+            $catalog_item = (new \Admin\Models\Nav\Primary())->load(array(
+                'type' => 'admin.nav',
+                'parent' => $shop->id,
+                'title' => 'Catalog'
+            ));
+            
+            // add its children
+            if (!empty($catalog_item->id))
+            {
+                $catalog_children = array(
+                    array(
+                        'title' => 'Products',
+                        'route' => '/admin/shop/products',
+                        'icon' => 'fa fa-list'
+                    ),
+                    array(
+                        'title' => 'Collections',
+                        'route' => '/admin/shop/collections',
+                        'icon' => 'fa fa-hdd-o'
+                    ),
+                    array(
+                        'title' => 'Categories',
+                        'route' => '/admin/shop/categories',
+                        'icon' => 'fa fa-folder'
+                    ),
+                    array(
+                        'title' => 'Tags',
+                        'route' => '/admin/shop/tags',
+                        'icon' => 'fa fa-tag'
+                    ),
+                    array(
+                        'title' => 'Manufacturers',
+                        'route' => '/admin/shop/manufacturers',
+                        'icon' => 'fa fa-barcode'
+                    ),
+                    
+                );
+            
+                $catalog_item->addChildren($catalog_children);
+            }
+            
+            // Find the Localization Menu Item 
+            $locale_item = (new \Admin\Models\Nav\Primary())->load(array(
+                'type' => 'admin.nav',
+                'parent' => $shop->id,
+                'title' => 'Localization'
+            ));
+            
+            // add its children
+            if (!empty($locale_item->id))
+            {
+                $locale_children = array(
+                    array(
+                        'title' => 'Countries',
+                        'route' => '/admin/shop/countries',
+                        'icon' => 'fa fa-list'
+                    ),
+                    array(
+                        'title' => 'Regions',
+                        'route' => '/admin/shop/regions',
+                        'icon' => 'fa fa-list'
+                    ),
+                );
+            
+                $locale_item->addChildren($locale_children);
+            }
+                        
+            // Find the Shop's Configuration menu item
             $settings_item = (new \Admin\Models\Nav\Primary())->load(array(
                 'type' => 'admin.nav',
                 'parent' => $shop->id,
-                'route' => '/admin/shop/settings'
+                'title' => 'Configuration'
             ));
             
+            // add its children
             if (!empty($settings_item->id))
             {
                 $settings_children = array(
+                    array(
+                        'title' => 'Settings',
+                        'route' => '/admin/shop/settings',
+                        'icon' => 'fa fa-cogs'
+                    ),                    
                     array(
                         'title' => 'Shipping',
                         'route' => '/admin/shop/shipping-methods',
