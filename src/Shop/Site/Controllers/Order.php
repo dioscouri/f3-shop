@@ -35,6 +35,8 @@ class Order extends \Dsc\Controller
         \Base::instance()->set('state', $state );
         \Base::instance()->set('paginated', $paginated );
         
+        $this->app->set('meta.title', 'My Orders');
+        
     	$view = \Dsc\System::instance()->get('theme');
     	echo $view->render('Shop/Site/Views::orders/index.php');
     }
@@ -74,10 +76,13 @@ class Order extends \Dsc\Controller
     	\Base::instance()->set('order', $item );
     	
     	if ($f3->get('print')) {
+    	    $this->app->set('meta.title', 'Print | Order Detail');
     	    $view = \Dsc\System::instance()->get('theme');
     	    echo $view->renderView('Shop/Site/Views::order/print.php');
     	    return;    		
     	}
+    	
+    	$this->app->set('meta.title', 'Order Detail');
     	
     	$view = \Dsc\System::instance()->get('theme');
     	echo $view->render('Shop/Site/Views::order/detail.php');

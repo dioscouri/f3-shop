@@ -15,6 +15,8 @@ class Cart extends \Dsc\Controller
         }
         \Base::instance()->set('cart', $cart);
         
+        $this->app->set('meta.title', 'Shopping Cart');
+        
         $view = \Dsc\System::instance()->get('theme');
         echo $view->renderTheme('Shop/Site/Views::cart/read.php');        
     }

@@ -51,6 +51,8 @@ class Address extends \Dsc\Controller
             $flash->store( $this->getModel()->cast() );
         }
     
+        $this->app->set('meta.title', 'Create Address');
+        
         $view = \Dsc\System::instance()->get('theme');
         echo $view->render('Shop/Site/Views::addresses/create.php');
     }
@@ -64,6 +66,8 @@ class Address extends \Dsc\Controller
             \Base::instance()->reroute('/sign-in');
             return;
         }
+        
+        $this->app->set('meta.title', 'Edit Address');
     
         $view = \Dsc\System::instance()->get('theme');
         echo $view->render('Shop/Site/Views::addresses/edit.php');
@@ -220,6 +224,8 @@ class Address extends \Dsc\Controller
             return;
         }
     
+        $this->app->set('meta.title', 'My Addresses');
+        
         \Base::instance()->set('state', $state );
         \Base::instance()->set('paginated', $paginated );
     

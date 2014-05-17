@@ -29,6 +29,8 @@ class Wishlist extends \Dsc\Controller
         \Base::instance()->set('state', $state );
         \Base::instance()->set('paginated', $paginated );
         
+        $this->app->set('meta.title', 'My Wishlists');
+        
         $view = \Dsc\System::instance()->get('theme');
         echo $view->render('Shop/Site/Views::wishlist/index.php');        
     }
@@ -41,11 +43,14 @@ class Wishlist extends \Dsc\Controller
     	$this->requireIdentity();
     	
         $wishlist = \Shop\Models\Wishlists::fetch();
+        
         // Update product fields stored in wishlist
         foreach ($wishlist->validateProducts() as $change) {
         	\Dsc\System::addMessage($change);
         }
         \Base::instance()->set('wishlist', $wishlist);
+        
+        $this->app->set('meta.title', 'My Wishlist');
         
         $view = \Dsc\System::instance()->get('theme');
         echo $view->renderTheme('Shop/Site/Views::wishlist/read.php');        

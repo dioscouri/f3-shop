@@ -38,8 +38,7 @@ class Home extends \Dsc\Controller
     		return;
     	}
     	
-    	\Base::instance()->set('pagetitle', '');
-    	\Base::instance()->set('subtitle', '');
+    	$this->app->set('meta.title', 'Shop');
     	
     	$state = $products_model->getState();
     	\Base::instance()->set('state', $state );

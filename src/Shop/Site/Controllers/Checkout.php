@@ -23,6 +23,8 @@ class Checkout extends \Dsc\Controller
             return;
         }
         
+        $this->app->set('meta.title', 'Shipping | Checkout');
+        
         $view = \Dsc\System::instance()->get( 'theme' );
         echo $view->render( 'Shop/Site/Views::checkout/index.php' );
     }
@@ -45,6 +47,8 @@ class Checkout extends \Dsc\Controller
             echo $view->render( 'Shop/Site/Views::checkout/identity.php' );
             return;
         }
+        
+        $this->app->set('meta.title', 'Payment | Checkout');
         
         $view = \Dsc\System::instance()->get( 'theme' );
         echo $view->render( 'Shop/Site/Views::checkout/payment.php' );
@@ -71,6 +75,8 @@ class Checkout extends \Dsc\Controller
                 \Base::instance()->set('order', $order);
             }
         }
+        
+        $this->app->set('meta.title', 'Confirmation | Checkout');
         
         $view = \Dsc\System::instance()->get( 'theme' );
         echo $view->render( 'Shop/Site/Views::checkout/confirmation.php' );
