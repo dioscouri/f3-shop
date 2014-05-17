@@ -32,9 +32,9 @@ class Orders extends \Dsc\Mongo\Collections\Nodes
     
     // Payment Fields
     public $financial_status = \Shop\Constants\OrderFinancialStatus::pending;
-    public $payment_method = null;
+    public $payment_method = null;          // a PaymentMethod model cast as an array
     public $billing_address = array();
-    public $payments = array();
+    public $payments = array();             // an array of Payment models cast as arrays
     
     // Lists
     public $items = array();            
@@ -227,7 +227,7 @@ class Orders extends \Dsc\Mongo\Collections\Nodes
     }
     
     /**
-     * Return \Shop\Mopdels\Prefabs\PaymentMethods object if found
+     * Return \Shop\Mopdels\PaymentMethods object if found
      *
      */
     public function paymentMethod()
@@ -237,7 +237,7 @@ class Orders extends \Dsc\Mongo\Collections\Nodes
             return false;
         }
     
-        $method = new \Shop\Models\Prefabs\PaymentMethods( $this->{'payment_method'} );
+        $method = new \Shop\Models\PaymentMethods( $this->{'payment_method'} );
     
         return $method;
     }
