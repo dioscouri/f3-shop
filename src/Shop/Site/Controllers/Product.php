@@ -52,7 +52,7 @@ class Product extends \Dsc\Controller
     	}
     	
     	\Base::instance()->set('item', $item );
-    	$this->app->set('meta.title', $item->{'title'});
+    	$this->app->set('meta.title', $item->{'title'} . ' | Shop');
     	
     	$view = \Dsc\System::instance()->get('theme');
     	echo $view->render('Shop/Site/Views::product/detail.php');

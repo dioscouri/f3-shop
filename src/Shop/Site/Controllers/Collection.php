@@ -63,7 +63,7 @@ class Collection extends \Dsc\Controller
     	\Base::instance()->set('paginated', $paginated );
     	 
     	\Base::instance()->set('collection', $collection );    	
-    	$this->app->set('meta.title', $collection->{'title'});
+    	$this->app->set('meta.title', $collection->{'title'} . ' | Shop');
     	
     	$view = \Dsc\System::instance()->get('theme');
     	echo $view->render('Shop/Site/Views::collection/index.php');

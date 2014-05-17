@@ -61,7 +61,7 @@ class Category extends \Dsc\Controller
     	\Base::instance()->set('paginated', $paginated );
     	
     	\Base::instance()->set('category', $category );
-    	$this->app->set('meta.title', $category->{'title'});
+    	$this->app->set('meta.title', $category->{'title'} . ' | Shop');
 
     	$view = \Dsc\System::instance()->get('theme');
     	echo $view->render('Shop/Site/Views::category/index.php');
