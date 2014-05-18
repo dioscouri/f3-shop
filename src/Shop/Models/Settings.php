@@ -29,6 +29,9 @@ class Settings extends \Dsc\Mongo\Collections\Settings
     );
     
     public $order_confirmation = array(
+        'gtm' => array(
+    	   'enabled' => 0,
+        ),        
     	'tracking_pixels' => array(
     	   'generic' => null
         ),

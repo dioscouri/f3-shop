@@ -17,11 +17,18 @@
             </div>
         </div>
         
-        <?php /* ?>
-        <p>
-        [tracking pixels]
-        </p>
-        */ ?>
+        <?php 
+        $this->order = $order;
+        $settings = \Shop\Models\Settings::fetch();
+        ?>
+
+        <?php /* ?> [tracking pixels] */ ?>
+        <?php
+        if ($settings->{'order_confirmation.gtm.enabled'} == 1) 
+        {
+        	echo $this->renderView('Shop/Site/Views::checkout/tracking_gtm.php');
+        } 
+        ?>
         
         <?php /* ?>
         <p>

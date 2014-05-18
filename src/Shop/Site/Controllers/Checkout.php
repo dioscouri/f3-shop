@@ -76,7 +76,7 @@ class Checkout extends \Dsc\Controller
             }
         }
         
-        $this->app->set('meta.title', 'Confirmation | Checkout');
+        $this->app->set('meta.title', 'Order Confirmation | Checkout');
         
         $view = \Dsc\System::instance()->get( 'theme' );
         echo $view->render( 'Shop/Site/Views::checkout/confirmation.php' );

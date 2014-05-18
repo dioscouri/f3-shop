@@ -42,7 +42,7 @@
                         <div>
                             <label>Date:</label>
                             <span>
-                                <?php echo (new \DateTime($order->{'metadata.created.local'}))->format('F j, Y'); ?>
+                                <?php echo (new \DateTime($order->{'metadata.created.local'}))->format('F j, Y g:ia'); ?>
                             </span>
                         </div>
                         <div>

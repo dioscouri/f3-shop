@@ -26,7 +26,7 @@
                 
                 <div class="row">
                     <div class="col-xs-12 col-sm-12 col-md-6">
-                        <div><label>Order placed:</label> <?php echo (new \DateTime($item->{'metadata.created.local'}))->format('F j, Y'); ?></div>
+                        <div><label>Order placed:</label> <?php echo (new \DateTime($item->{'metadata.created.local'}))->format('F j, Y g:ia'); ?></div>
                         <div><label>Order total:</label> <?php echo \Shop\Models\Currency::format( $item->{'grand_total'} ); ?></div>
                     </div>
                     <div class="col-xs-12 col-sm-12 col-md-6">
