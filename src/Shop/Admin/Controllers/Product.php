@@ -20,11 +20,13 @@ class Product extends \Admin\Controllers\BaseAuth
     {
         $f3 = \Base::instance();
         $id = $this->inputfilter->clean( $f3->get('PARAMS.id'), 'alnum' );
-        $model = $this->getModel()
-            ->setState('filter.id', $id);
+        
+        if (empty($id)) {
+        	return $this->getModel();
+        }
 
         try {
-            $item = $model->getItem();
+            $item = $this->getModel()->setState('filter.id', $id)->getItem();
         } catch ( \Exception $e ) {
             \Dsc\System::instance()->addMessage( "Invalid Item: " . $e->getMessage(), 'error');
             $f3->reroute( $this->list_route );
