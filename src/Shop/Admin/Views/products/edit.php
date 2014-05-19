@@ -41,7 +41,7 @@ jQuery(document).ready(function(){
             <a href="#tab-basics" data-toggle="tab"> Basics </a>
         </li>
         <li>
-            <a href="#tab-pricinginventory" data-toggle="tab"> Pricing & Inventory </a>
+            <a href="#tab-pricinginventory" data-toggle="tab"> Pricing, Policies & Inventory </a>
         </li>
         <li>
             <a href="#tab-variants" data-toggle="tab"> Variants </a>

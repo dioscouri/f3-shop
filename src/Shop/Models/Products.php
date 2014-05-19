@@ -71,6 +71,9 @@ class Products extends \Dsc\Mongo\Collections\Content
             'min'=>1,
             'max'=>10,
             'increment'=>1
+        ),
+        'variant_pricing'=>array(
+            'enabled'=>false,
         )
     );
     
@@ -156,6 +159,13 @@ class Products extends \Dsc\Mongo\Collections\Content
     
     protected function fetchConditions()
     {
+        if ($this->getState('is.search') === true) 
+        {
+            $this->setState('filter.publication_status', 'published');
+            $this->setState('filter.published_today', true);
+            $this->setState('filter.inventory_status', 'in_stock');
+        }
+                
         parent::fetchConditions();
     
         $this->setCondition('type', $this->__type );
@@ -193,7 +203,18 @@ class Products extends \Dsc\Mongo\Collections\Content
             	    $this->setCondition('inventory_count', array('$lte' => 0));
             	    break;
             	case "in_stock":
-            	    $this->setCondition('inventory_count', array('$gte' => 1));
+            	    $this->setCondition('$and',
+                	    array( '$or' =>  
+                    	    array(
+                                array('$and' => array(
+                                    array('inventory_count' => array('$gte' => 1)),
+                                    array('policies.track_inventory' => array( '$in' => array( '1', true ) ) ),
+                                )),
+                                array('policies.track_inventory' => array( '$in' => array( '0', false ) ) ),
+                    	    )
+                    	),
+                    	'append'
+                    );           	        
             	    break;
             }
         }
@@ -355,6 +376,8 @@ class Products extends \Dsc\Mongo\Collections\Content
         if ($this->get( 'prices.wholesale')) {
             $this->set( 'prices.wholesale', (float) $this->get( 'prices.wholesale') );
         }
+        
+        $this->set( 'policies.track_inventory', (bool) $this->get( 'policies.track_inventory') );
         
         array_walk($this->variants, function(&$item, $key) {
             $item['quantity'] = (int) $item['quantity'];
@@ -828,7 +851,7 @@ class Products extends \Dsc\Mongo\Collections\Content
      * @param \Users\Models\Users $user
      * @return unknown
      */
-    public function price( \Users\Models\Users $user=null )
+    public function price( $variant_id=null, \Users\Models\Users $user=null )
     {
         $price = $this->get('prices.default');
         
@@ -846,6 +869,11 @@ class Products extends \Dsc\Mongo\Collections\Content
             if ($this->exists('prices.'.$group_slug)) {
             	$price = $this->get('prices.'.$group_slug);
             }
+        }
+        
+        if (!empty($variant_id) && $this->{'policies.variant_pricing.enabled'} && $variant = $this->variant($variant_id)) 
+        {
+        	$price = $variant['price'];
         }
         
         // adjust price based on date ranges too
@@ -996,7 +1024,15 @@ class Products extends \Dsc\Mongo\Collections\Content
         if (empty($this->__variants_in_stock)) 
         {
             $this->__variants_in_stock = array_values( array_filter( $this->variants, function($el){
-                 $return = true; if (empty($el['quantity']) || empty($el['enabled'])) { $return = false; }  return $return;
+                 $return = true; 
+                 if (empty($el['enabled'])) 
+                 { 
+                     $return = false; 
+                 }
+                 elseif (empty($el['quantity']) && $this->{'policies.track_inventory'}) {
+                     $return = false;
+                 }  
+                 return $return;
             } ) );
         }
         

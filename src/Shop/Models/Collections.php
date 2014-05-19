@@ -183,7 +183,7 @@ class Collections extends \Dsc\Mongo\Collections\Describable
                         )
                     )
                 );
-                // $conditions = array_merge( $conditions, array( '$and' => $and ) );
+
                 if (!empty($conditions['$and']))
                 {
                     $conditions['$and'] = array_merge($conditions['$and'], $and);

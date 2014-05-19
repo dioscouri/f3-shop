@@ -26,5 +26,28 @@
         </div>
         <!-- /.form-group -->
         
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">        
+                    <label>Use Variant Pricing</label>
+                    <div class="input-group">
+                        <label class="radio-inline">
+                            <input type="radio" name="policies[variant_pricing][enabled]" value="1" <?php if ($flash->old('policies.variant_pricing.enabled')) { echo 'checked'; } ?>> Yes
+                        </label>
+                        <label class="radio-inline">
+                            <input type="radio" name="policies[variant_pricing][enabled]" value="0" <?php if (!$flash->old('policies.variant_pricing.enabled')) { echo 'checked'; } ?>> No
+                        </label>
+                    </div>
+                    <p class="help-block">If enabled, the prices you specify for each variant will be given priority over the prices above.  However, Special Pricing (below) will be given final priority.</p>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="form-group">        
+
+                </div>
+            </div>
+        </div>
+        
     </div>
 </div>    

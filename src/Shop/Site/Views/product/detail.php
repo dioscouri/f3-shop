@@ -77,8 +77,9 @@ jQuery(document).ready(function(){
 
 <div class="container">
     <div class="row">
+        <?php if (count($images)) { ?> 
         <div class="col-sm-6">
-            <div class="product-slider-small">
+            <div class="product-slider-small hidden-xs">
                 <?php if (count($images) > 1) { ?>       
                 <ul class="zoom-thumbs">
                     <?php foreach ($images as $key=>$image) { ?>
@@ -92,24 +93,34 @@ jQuery(document).ready(function(){
                 <?php } ?>
             </div>
             
+            <?php if ($item->{'featured_image.slug'}) { ?>
             <div class="product-image product-image-big">
                 <a class="zoom" rel="zoom-gallery" href="./asset/<?php echo $item->{'featured_image.slug'}; ?>" title="<?php echo htmlspecialchars_decode( $item->title ); ?>" data-large-url="./asset/<?php echo $item->{'featured_image.slug'}; ?>">
     	            <img class="zoomable" src="./asset/thumb/<?php echo $item->{'featured_image.slug'}; ?>" title="<?php echo htmlspecialchars_decode( $item->title ); ?>" />
                 </a>
             </div>
+            <?php } ?>
                             
         </div>
+        <?php } ?>
+        
         <div class="col-sm-6">
             <div class="product-details">
                 <h1><?php echo $item->{'title'}; ?></h1>
 
                 <hr />
+                <?php if ($item->{'tracking.sku'}) { ?>
                 <div class="details">
                     <span class="detail-line"><strong>Product Code:</strong> <?php echo $item->{'tracking.sku'}; ?></span>
                 </div>
+                <?php } ?>
+                
+                <?php if ($item->{'copy'}) { ?>
                 <div class="description">
                     <?php echo $item->{'copy'}; ?>
                 </div>
+                <?php } ?>
+                
                 <form action="./shop/cart/add" method="post">
                     <div id="validation-cart-add" class="validation-message"></div>
                     
@@ -127,6 +138,7 @@ jQuery(document).ready(function(){
                                             'key' => $variant['key'],
                                         	'image' => $variant['image'],
                                             'quantity' => $variant['quantity'],
+                                            'price' => \Shop\Models\Currency::format( $item->price( $variant['id'] ) ),
                                         ) ) ); ?>'
                                         	data-wishlist="<?php echo $wishlist_state; ?>"><?php echo $variant['attribute_title'] ? $variant['attribute_title'] : $item->title; ?> </option>
                                     <?php } ?>
@@ -148,10 +160,12 @@ jQuery(document).ready(function(){
                     </div>
                     <div class="price-line">
                         <?php if (((int) $item->get('prices.list') > 0) && $item->get('prices.list') != $item->price() ) { ?>
-                            <span class="list-price price"><strike>$<?php echo $item->get('prices.list'); ?></strike></span>
+                            <span class="list-price price"><strike><?php echo \Shop\Models\Currency::format( $item->{'prices.list'} ); ?></strike></span>
                         <?php } ?>
                         &nbsp;
-                        <div class="price">$<?php echo $item->price(); ?></div>
+                        <div class="price">
+                            <?php echo \Shop\Models\Currency::format( $item->price() ); ?>
+                        </div>
                         <button class="btn btn-default custom-button custom-button-inverted">Add to bag</button>
                         
                         <div class="small-buttons">

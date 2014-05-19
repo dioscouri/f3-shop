@@ -35,4 +35,8 @@
 
 <hr />
 
+<?php echo $this->renderLayout('Shop/Admin/Views::products/fields_pricinginventory_pricing.php'); ?>
+
+<hr />
+
 <?php echo $this->renderLayout('Shop/Admin/Views::products/fields_pricinginventory_policies.php'); ?>

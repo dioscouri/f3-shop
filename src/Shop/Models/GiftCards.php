@@ -93,6 +93,7 @@ class GiftCards extends \Shop\Models\Products
         }
         
         $this->set('policies.track_inventory', false);
+        $this->set('policies.variant_pricing.enabled', true);
         
         $this->variants = \Dsc\ArrayHelper::sortArrays(array_values( $this->variants ), 'ordering');
     }

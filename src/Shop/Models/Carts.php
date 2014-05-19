@@ -173,11 +173,16 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
      */
     public function validateAdd( \Shop\Models\Prefabs\CartItem $cartitem )
     {
-        // is the quantity available?
-        $quantity = \Shop\Models\Variants::quantity( $cartitem->variant_id );
-        if ($cartitem->quantity > $quantity) 
+        // does the product track inventory?
+        if (\Dsc\ArrayHelper::get($cartitem->product, 'policies.track_inventory')) 
         {
-        	throw new \Exception( 'Quantity selected is unavailable' );
+            // is the quantity available?
+            $quantity = \Shop\Models\Variants::quantity( $cartitem->variant_id );
+            if ($cartitem->quantity > $quantity)
+            {
+                throw new \Exception( 'Quantity selected is unavailable' );
+            }
+            
         }
         
         // Fire an event so that any Listeners that want to stop validation

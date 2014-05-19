@@ -39,7 +39,12 @@ Shop.selectVariant = function(variant, select) {
         } else {
             jQuery('.product-image img').attr('src', './asset/thumb/'+new_image );
         }        
-    }    
+    }
+    
+    // update the product price
+    if (variant && variant.price) {
+    	jQuery('.price').text(variant.price);
+    }
     
 }
 
