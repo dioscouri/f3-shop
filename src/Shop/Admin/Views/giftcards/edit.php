@@ -28,7 +28,7 @@ jQuery(document).ready(function(){
                 </ul>
             </div>                          
             &nbsp;
-            <a class="btn btn-default" href="./admin/shop/products">Cancel</a>
+            <a class="btn btn-default" href="./admin/shop/giftcards">Cancel</a>
         </div>
 
     </div>
@@ -41,10 +41,10 @@ jQuery(document).ready(function(){
             <a href="#tab-basics" data-toggle="tab"> Basics </a>
         </li>
         <li>
-            <a href="#tab-pricinginventory" data-toggle="tab"> Pricing & Inventory </a>
+            <a href="#tab-pricinginventory" data-toggle="tab"> Tracking </a>
         </li>
         <li>
-            <a href="#tab-variants" data-toggle="tab"> Variants </a>
+            <a href="#tab-denominations" data-toggle="tab"> Variants </a>
         </li>
         <li>
             <a href="#tab-images" data-toggle="tab"> Images </a>
@@ -67,20 +67,20 @@ jQuery(document).ready(function(){
         
         </div>
         <!-- /.tab-pane -->
-        
+
         <div class="tab-pane" id="tab-pricinginventory">
 
-            <?php echo $this->renderLayout('Shop/Admin/Views::products/fields_pricinginventory.php'); ?>
+            <?php echo $this->renderLayout('Shop/Admin/Views::giftcards/fields_pricinginventory.php'); ?>
                                 
         </div>
         <!-- /.tab-pane -->
         
-        <div class="tab-pane" id="tab-variants">
+        <div class="tab-pane" id="tab-denominations">
 
-            <?php echo $this->renderLayout('Shop/Admin/Views::products/fields_attributes.php'); ?>
+            <?php echo $this->renderLayout('Shop/Admin/Views::giftcards/fields_denominations.php'); ?>
                                 
         </div>
-        <!-- /.tab-pane -->                
+        <!-- /.tab-pane -->           
         
         <div class="tab-pane" id="tab-images">
 

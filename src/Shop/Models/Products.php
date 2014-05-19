@@ -5,6 +5,8 @@ class Products extends \Dsc\Mongo\Collections\Content
 {
 	use \Search\Traits\SearchItem;
 	
+	public $product_type = null;
+	
 	public $categories = array();
     public $featured_image = array();
     public $images = array();       // array of f3-asset slugs
@@ -357,7 +359,7 @@ class Products extends \Dsc\Mongo\Collections\Content
         array_walk($this->variants, function(&$item, $key) {
             $item['quantity'] = (int) $item['quantity'];
             $item['price'] = (float) $item['price'];
-            if (empty($item['quantity'])) {
+            if (empty($item['quantity']) && !empty($this->{'policies.track_inventory'})) {
             	$item['enabled'] = 0;
             }
         });
@@ -404,8 +406,9 @@ class Products extends \Dsc\Mongo\Collections\Content
     
     protected function beforeCreate()
     {
+        \Dsc\System::addMessage( \Dsc\Debug::dump( $this->cast() ));        
         $this->createVariants();
-        
+        \Dsc\System::addMessage( \Dsc\Debug::dump( $this->cast() ));
         return parent::beforeCreate();
     }
     
@@ -414,8 +417,7 @@ class Products extends \Dsc\Mongo\Collections\Content
         if (!empty($this->variants) && is_array($this->variants))
         {
             $variants = $this->rebuildVariants();
-            
-            $prev = $this->variants;
+            $prev = array_values( array_filter( $this->variants ) );
             array_walk($variants, function(&$item, $key) use($prev) {
                 // find the previous version of this variant, if possible
                 foreach ($prev as $p) {
@@ -517,6 +519,77 @@ class Products extends \Dsc\Mongo\Collections\Content
         }
         
         return parent::beforeUpdate();
+    }
+    
+    /**
+     * Fetches an item from the collection using set conditions
+     *
+     * @return Ambigous <NULL, \Dsc\Mongo\Collection>
+     */
+    protected function fetchItem()
+    {
+        $this->__cursor = $this->collection()->find($this->conditions(), $this->fields());
+    
+        if ($this->getParam('sort')) {
+            $this->__cursor->sort($this->getParam('sort'));
+        }
+        $this->__cursor->limit(1);
+        $this->__cursor->skip(0);
+    
+        $item = null;
+        if ($this->__cursor->hasNext()) {
+            $item = (new static( $this->__cursor->getNext() ))->convert();
+        }
+    
+        return $item;
+    }
+    
+    /**
+     * Fetches multiple items from a collection using set conditions
+     *
+     * @return multitype:\Dsc\Mongo\Collection
+     */
+    protected function fetchItems()
+    {
+        $this->__cursor = $this->collection()->find($this->conditions(), $this->fields());
+    
+        if ($this->getParam('sort')) {
+            $this->__cursor->sort($this->getParam('sort'));
+        }
+        if ($this->getParam('limit')) {
+            $this->__cursor->limit($this->getParam('limit'));
+        }
+        if ($this->getParam('skip')) {
+            $this->__cursor->skip($this->getParam('skip'));
+        }
+    
+        $items = array();
+        foreach ($this->__cursor as $doc) {
+            $item = (new static( $doc ))->convert();
+            $items[] = $item;
+        }
+    
+        return $items;
+    }
+    
+    public function convert()
+    {
+        if (empty($this->product_type)) {
+        	return $this;
+        }
+        
+        switch($this->product_type) 
+        {
+            case "giftcard":
+        	case "giftcards":
+        	    $model = new \Shop\Models\GiftCards($this);  
+        	    break;
+        	default:
+        	    return $this;
+        	    break;
+        }
+        
+        return $model;
     }
 
     /**

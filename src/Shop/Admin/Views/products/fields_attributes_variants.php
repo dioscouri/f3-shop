@@ -20,16 +20,7 @@
                         <div class="col-md-3">
                             Attribute Set
                         </div>
-                        <div class="col-md-3">
-                            
-                        </div>
-                        <div class="col-md-2">
-                            
-                        </div>
-                        <div class="col-md-2">
-                            
-                        </div>
-                        <div class="col-md-2">
+                        <div class="col-md-9">
                             
                         </div>
                     </div>                

@@ -91,7 +91,11 @@ class Listener extends \Prefab
                         'route' => '/admin/shop/manufacturers',
                         'icon' => 'fa fa-barcode'
                     ),
-                    
+                    array(
+                        'title' => 'Gift Cards',
+                        'route' => '/admin/shop/giftcards',
+                        'icon' => 'fa fa-gift'
+                    ),                    
                 );
             
                 $catalog_item->addChildren($catalog_children);

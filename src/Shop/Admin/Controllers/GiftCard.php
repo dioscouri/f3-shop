@@ -1,39 +1,17 @@
 <?php 
 namespace Shop\Admin\Controllers;
 
-class Product extends \Admin\Controllers\BaseAuth 
+class GiftCard extends \Shop\Admin\Controllers\Product 
 {
-    use \Dsc\Traits\Controllers\CrudItemCollection;
-
-    protected $list_route = '/admin/shop/products';
-    protected $create_item_route = '/admin/shop/product/create';
-    protected $get_item_route = '/admin/shop/product/read/{id}';    
-    protected $edit_item_route = '/admin/shop/product/edit/{id}';
+    protected $list_route = '/admin/shop/giftcards';
+    protected $create_item_route = '/admin/shop/giftcard/create';
+    protected $get_item_route = '/admin/shop/giftcard/read/{id}';    
+    protected $edit_item_route = '/admin/shop/giftcard/edit/{id}';
     
     protected function getModel() 
     {
-        $model = new \Shop\Models\Products;
+        $model = new \Shop\Models\GiftCards;
         return $model; 
-    }
-    
-    protected function getItem() 
-    {
-        $f3 = \Base::instance();
-        $id = $this->inputfilter->clean( $f3->get('PARAMS.id'), 'alnum' );
-        
-        if (empty($id)) {
-        	return $this->getModel();
-        }
-
-        try {
-            $item = $this->getModel()->setState('filter.id', $id)->getItem();
-        } catch ( \Exception $e ) {
-            \Dsc\System::instance()->addMessage( "Invalid Item: " . $e->getMessage(), 'error');
-            $f3->reroute( $this->list_route );
-            return;
-        }
-
-        return $item;
     }
     
     protected function displayCreate() 
@@ -72,29 +50,18 @@ class Product extends \Admin\Controllers\BaseAuth
         $all_tags = $this->getModel()->getTags();
         \Base::instance()->set('all_tags', $all_tags );
         
-        $this->app->set('meta.title', 'Create Product | Shop');
+        $this->app->set('meta.title', 'Create Gift Card | Shop');
         
         $view = \Dsc\System::instance()->get('theme');
         $view->event = $view->trigger( 'onDisplayShopProductsEdit', array( 'item' => $item, 'tabs' => array(), 'content' => array() ) );
         
-        switch( $item->product_type ) 
-        {
-        	case "giftcard":
-        	case "giftcards":
-        	    echo $view->render('Shop\Admin\Views::giftcards/create.php');
-        	    break;
-        	default:
-        	    echo $view->render('Shop\Admin\Views::products/create.php');
-        	    break;
-        }
+        echo $view->render('Shop\Admin\Views::giftcards/create.php');
     }
     
     protected function displayEdit()
     {
         $f3 = \Base::instance();
 
-        $item = $this->getItem();
-        
         $flash = \Dsc\Flash::instance();
         $variants = array();
         if ($flashed_variants = $flash->old('variants')) {
@@ -118,34 +85,11 @@ class Product extends \Admin\Controllers\BaseAuth
         $all_tags = $this->getModel()->getTags();
         \Base::instance()->set('all_tags', $all_tags );
         
-        $this->app->set('meta.title', 'Edit Product | Shop');
+        $this->app->set('meta.title', 'Edit Gift Card | Shop');
         
         $view = \Dsc\System::instance()->get('theme');
-        $view->event = $view->trigger( 'onDisplayShopProductsEdit', array( 'item' => $item, 'tabs' => array(), 'content' => array() ) );
+        $view->event = $view->trigger( 'onDisplayShopProductsEdit', array( 'item' => $this->getItem(), 'tabs' => array(), 'content' => array() ) );
         
-        switch( $item->product_type )
-        {
-        	case "giftcard":
-        	case "giftcards":
-        	    echo $view->render('Shop\Admin\Views::giftcards/edit.php');
-        	    break;
-        	default:
-        	    echo $view->render('Shop\Admin\Views::products/edit.php');
-        	    break;
-        }
-        
+        echo $view->render('Shop\Admin\Views::giftcards/edit.php');
     }
-    
-    /**
-     * This controller doesn't allow reading, only editing, so redirect to the edit method
-     */
-    protected function doRead(array $data, $key=null) 
-    {
-        $f3 = \Base::instance();
-        $id = $this->getItem()->get( $this->getItemKey() );
-        $route = str_replace('{id}', $id, $this->edit_item_route );
-        $f3->reroute( $route );
-    }
-    
-    protected function displayRead() {}
 }

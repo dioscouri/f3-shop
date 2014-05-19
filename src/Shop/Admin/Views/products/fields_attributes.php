@@ -7,7 +7,7 @@
     <div class="col-md-2">
         
         <h3>Attributes</h3>
-        <p><span class="help-block">Some helpful text</span></p>
+        <p><span class="help-block">An attribute is a category of variation, e.g. 'Color', 'Size', or 'Sleeve Length'.  Each Attribute will in turn have Options, e.g. 'Red', 'Green', or 'Blue'.</span></p>
                 
         <div class="form-group">
             <a class="btn btn-warning" id="add-attribute">Add Attribute</a>
@@ -248,62 +248,3 @@
     
 </div>
 <!-- /.row -->
-
-<?php /* ?>
-<hr />
-
-<div class="row">
-    <div class="col-md-2">
-        
-        <h3>Rebuild</h3>
-        <p class="help-block">Some helpful WARNING text</p>
-                
-    </div>
-    <!-- /.col-md-2 -->
-                
-    <div class="col-md-10">
-
-        <?php if (!$flash->old('_id')) { ?>
-            <div class="form-group clearfix">
-                <div class="col-md-4">        
-                    <label>Automatically build Variants</label>
-                    <div class="form-group">
-                    <label class="radio-inline">
-                        <input type="radio" name="variants[build]" value="1" checked> Yes
-                    </label>
-                    <label class="radio-inline">
-                        <input type="radio" name="variants[build]" value="0"> No
-                    </label>
-                    </div>
-                </div>
-                
-                <div class="col-md-8">
-                    <div class="alert alert-warning"><b>Warning!</b> Something could happen!</div>
-                </div>        
-            </div>
-            <!-- /.form-group -->
-        <?php } else { ?>
-            <div class="form-group clearfix">
-                <div class="col-md-4">        
-                    <label>Rebuild Variants</label>
-                    <div class="form-group">
-                    <label class="radio-inline">
-                        <input type="radio" name="variants[build]" value="1"> Yes
-                    </label>
-                    <label class="radio-inline">
-                        <input type="radio" name="variants[build]" value="0" checked> No
-                    </label>
-                    </div>
-                </div>
-                
-                <div class="col-md-8">
-                    <div class="alert alert-warning"><b>Warning!</b> Something could happen!</div>
-                </div>        
-            </div>    
-            <!-- /.form-group -->    
-        <?php } ?>
-        
-    </div>
-    
-</div>
-*/ ?>
