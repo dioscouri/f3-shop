@@ -34,12 +34,12 @@ class Listener extends \Prefab
                 ),
                 array(
                     'title' => 'Coupons',
-                    'route' => '/admin/shop/coupons',
+                    'route' => './admin/shop/coupons',
                     'icon' => 'fa fa-barcode'
                 ),
                 array(
                     'title' => 'Media Assets',
-                    'route' => '/admin/assets?filter[type]=shop.assets',
+                    'route' => './admin/assets?filter[type]=shop.assets',
                     'icon' => 'fa fa-list'
                 ),
                 array(
@@ -68,32 +68,32 @@ class Listener extends \Prefab
                 $catalog_children = array(
                     array(
                         'title' => 'Products',
-                        'route' => '/admin/shop/products',
+                        'route' => './admin/shop/products',
                         'icon' => 'fa fa-list'
                     ),
                     array(
                         'title' => 'Collections',
-                        'route' => '/admin/shop/collections',
+                        'route' => './admin/shop/collections',
                         'icon' => 'fa fa-hdd-o'
                     ),
                     array(
                         'title' => 'Categories',
-                        'route' => '/admin/shop/categories',
+                        'route' => './admin/shop/categories',
                         'icon' => 'fa fa-folder'
                     ),
                     array(
                         'title' => 'Tags',
-                        'route' => '/admin/shop/tags',
+                        'route' => './admin/shop/tags',
                         'icon' => 'fa fa-tag'
                     ),
                     array(
                         'title' => 'Manufacturers',
-                        'route' => '/admin/shop/manufacturers',
+                        'route' => './admin/shop/manufacturers',
                         'icon' => 'fa fa-barcode'
                     ),
                     array(
                         'title' => 'Gift Cards',
-                        'route' => '/admin/shop/giftcards',
+                        'route' => './admin/shop/giftcards',
                         'icon' => 'fa fa-gift'
                     ),                    
                 );
@@ -114,12 +114,12 @@ class Listener extends \Prefab
                 $orders_children = array(
                     array(
                         'title' => 'Manage',
-                        'route' => '/admin/shop/orders',
+                        'route' => './admin/shop/orders',
                         'icon' => 'fa fa-money'
                     ),
                     array(
                         'title' => 'Gift Cards',
-                        'route' => '/admin/shop/orders/giftcards',
+                        'route' => './admin/shop/orders/giftcards',
                         'icon' => 'fa fa-gift'
                     ),                    
                 );
@@ -141,12 +141,12 @@ class Listener extends \Prefab
                 $locale_children = array(
                     array(
                         'title' => 'Countries',
-                        'route' => '/admin/shop/countries',
+                        'route' => './admin/shop/countries',
                         'icon' => 'fa fa-list'
                     ),
                     array(
                         'title' => 'Regions',
-                        'route' => '/admin/shop/regions',
+                        'route' => './admin/shop/regions',
                         'icon' => 'fa fa-list'
                     ),
                 );
@@ -167,7 +167,7 @@ class Listener extends \Prefab
                 $settings_children = array(
                     array(
                         'title' => 'Settings',
-                        'route' => '/admin/shop/settings',
+                        'route' => './admin/shop/settings',
                         'icon' => 'fa fa-cogs'
                     ),
                     /*                    
