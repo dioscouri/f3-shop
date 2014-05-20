@@ -138,6 +138,22 @@
                                     </span>                
                                 </div></td>
                             </tr>
+                            <?php if ($giftcards = $cart->giftcards) { \Dsc\System::instance()->get( 'session' )->set( 'site.removegiftcard.redirect', '/shop/cart' ); ?>
+                                <?php foreach ($giftcards as $giftcard) { ?>
+                                    <tr class="giftcard">
+                                        <td>
+                                            <div class="row">
+                                                <div class="col-xs-8"><div class="strong">Gift Card</div></div>
+                                                <div class="col-xs-4"><a href="./shop/cart/removeGiftCard/<?php echo $giftcard['code']; ?>" class="btn btn-default custom-button"><i class="glyphicon glyphicon-remove"></i></a></div>
+                                            </div>
+                                            <small><?php echo $giftcard['code']; ?></small>
+                                        </td>
+                                        <td class="col-xs-6">
+                                            <div class="price">-<?php echo \Shop\Models\Currency::format( \Dsc\ArrayHelper::get($giftcard, 'amount') ); ?></div>
+                                        </td>                            
+                                    </tr>
+                                <?php } ?>
+                            <?php } ?>                            
 
                             </tbody>
                             
@@ -160,9 +176,8 @@
                         <div id="coupon">
                             <form class="form" role="form" action="./shop/cart/addCoupon" method="post">
                                 <div class="form-group">
-                                    <label>Have a Coupon?</label>
                                     <div class="input-group">
-                                        <input type="text" name="coupon_code" class="form-control" id="inputCouponCode" placeholder="Coupon Code">
+                                        <input type="text" name="coupon_code" class="form-control" id="inputCouponCode" placeholder="Have a Coupon?">
                                         <span class="input-group-btn">
                                             <button class="btn btn-default" type="submit">Add</button>
                                         </span>                  
@@ -174,8 +189,31 @@
                 </div>
             </div>
             <?php } ?>
-
+            
             <div class="clearfix"></div>
+
+            <?php if (empty($giftcards)) { \Dsc\System::instance()->get( 'session' )->set( 'site.addgiftcard.redirect', '/shop/cart' ); ?>
+            <div class="margin-top">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div id="coupon">
+                            <form class="form" role="form" action="./shop/cart/addGiftCard" method="post">
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <input type="text" name="giftcard_code" class="form-control" id="inputGiftCardCode" placeholder="Have a Gift Card?">
+                                        <span class="input-group-btn">
+                                            <button class="btn btn-default" type="submit">Add</button>
+                                        </span>                  
+                                    </div>                          
+                                </div>                                    
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="clearfix"></div>            
+            <?php } ?>
                     
             <div class="margin-top text-right">
                 <div class="form-group">

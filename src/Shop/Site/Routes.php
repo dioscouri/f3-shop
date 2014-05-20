@@ -84,6 +84,16 @@ class Routes extends \Dsc\Routes\Group
             'action' => 'removeCoupon'
         ) );
         
+        $this->add( '/cart/addGiftCard', 'POST', array(
+            'controller' => 'Cart',
+            'action' => 'addGiftCard'
+        ) );
+        
+        $this->add( '/cart/removeGiftCard/@code', 'GET|POST', array(
+            'controller' => 'Cart',
+            'action' => 'removeGiftCard'
+        ) );
+        
         $this->add( '/wishlists', 'GET|POST', array(
             'controller' => 'Wishlist',
             'action' => 'index' 

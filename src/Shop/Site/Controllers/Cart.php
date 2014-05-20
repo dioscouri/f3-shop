@@ -302,4 +302,137 @@ class Cart extends \Dsc\Controller
             $f3->reroute($redirect);
         }
     }
+    
+    /**
+     *
+     */
+    public function addGiftCard()
+    {
+        $f3 = \Base::instance();
+    
+        $redirect = '/shop/cart';
+        if ($custom_redirect = \Dsc\System::instance()->get( 'session' )->get( 'site.addgiftcard.redirect' ))
+        {
+            $redirect = $custom_redirect;
+        }
+        \Dsc\System::instance()->get( 'session' )->set( 'site.addgiftcard.redirect', null );
+    
+        // -----------------------------------------------------
+        // Start: validation
+        // -----------------------------------------------------
+        $giftcard_code = $this->input->get( 'giftcard_code', null, 'alnum' );
+    
+        try {
+            // load the giftcard, and if it exists, try to add it to the cart
+            $giftcard = (new \Shop\Models\OrderedGiftCards)->load(array('_id'=>new \MongoId($giftcard_code)));
+            if (empty($giftcard->id))
+            {
+                throw new \Exception('Invalid Gift Card Code');
+            }
+    
+        } catch (\Exception $e) {
+            if ($f3->get('AJAX')) {
+                return $this->outputJson( $this->getJsonResponse( array(
+                    'result'=>false
+                ) ) );
+            } else {
+                \Dsc\System::addMessage($e->getMessage(), 'error');
+                $f3->reroute($redirect);
+                return;
+            }
+        }
+        // -----------------------------------------------------
+        // End: validation
+        // -----------------------------------------------------
+    
+        $cart = \Shop\Models\Carts::fetch();
+    
+        // -----------------------------------------------------
+        // Start: add the item
+        // -----------------------------------------------------
+        try {
+            $cart->addGiftcard( $giftcard );
+        } catch (\Exception $e) {
+            if ($f3->get('AJAX')) {
+                return $this->outputJson( $this->getJsonResponse( array(
+                    'result'=>false
+                ) ) );
+            } else {
+                \Dsc\System::addMessage('Gift card not added to cart', 'error');
+                \Dsc\System::addMessage($e->getMessage(), 'error');
+                $f3->reroute($redirect);
+                return;
+            }
+        }
+        // -----------------------------------------------------
+        // End: add the item
+        // -----------------------------------------------------
+    
+        if ($f3->get('AJAX')) {
+            return $this->outputJson( $this->getJsonResponse( array(
+                'result'=>true
+            ) ) );
+        } else {
+            \Dsc\System::addMessage('Added Gift Card');
+            $f3->reroute($redirect);
+        }
+    }
+    
+    /**
+     * Remove an item from the cart
+     */
+    public function removeGiftCard()
+    {
+        $f3 = \Base::instance();
+    
+        $redirect = '/shop/cart';
+        if ($custom_redirect = \Dsc\System::instance()->get( 'session' )->get( 'site.removegiftcard.redirect' ))
+        {
+            $redirect = $custom_redirect;
+        }
+        \Dsc\System::instance()->get( 'session' )->set( 'site.removegiftcard.redirect', null );
+    
+        // -----------------------------------------------------
+        // Start: validation
+        // -----------------------------------------------------
+        // TODO validate the POST values
+        // min: cartitem_hash
+        $code = $this->inputfilter->clean( $f3->get('PARAMS.code'), 'alnum' );
+    
+        // TODO if validation fails, respond appropriately
+        if ($f3->get('AJAX')) {
+    
+        } else {
+    
+        }
+        // -----------------------------------------------------
+        // End: validation
+        // -----------------------------------------------------
+    
+        // get the current user's cart, either based on session_id (visitor) or user_id (logged-in)
+        $cart = \Shop\Models\Carts::fetch();
+    
+        // remove the item
+        try {
+            $cart->removeGiftCard( $code );
+        } catch (\Exception $e) {
+            // TODO respond appropriately with failure message
+            // return;
+        }
+    
+        //echo \Dsc\Debug::dump( $cart );
+    
+        // TODO respond appropriately
+        // ajax?  send response object
+        // otherwise redirect to cart
+    
+        if ($f3->get('AJAX')) {
+            return $this->outputJson( $this->getJsonResponse( array(
+                'result'=>true
+            ) ) );
+        } else {
+            \Dsc\System::addMessage('Gift card removed from cart');
+            $f3->reroute($redirect);
+        }
+    }
 }

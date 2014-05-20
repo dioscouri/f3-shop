@@ -14,6 +14,7 @@ class Orders extends \Dsc\Mongo\Collections\Taggable
     public $shipping_tax = null;
     public $discount_total = null;
     public $credit_total = null;
+    public $giftcard_total = null;
 
     public $user_id = null;
     public $user_email = null;
@@ -127,7 +128,13 @@ class Orders extends \Dsc\Mongo\Collections\Taggable
      */
     public static function fromCart( \Shop\Models\Carts $cart )
     {
-        $order = new static;
+        $cart_array = $cart->cast();
+        unset($cart_array['_id']);
+        unset($cart_array['type']);
+        unset($cart_array['metadata']);
+        unset($cart_array['name']);
+        
+        $order = new static($cart_array);
         
         $order->number = $order->createNumber();
         
@@ -137,9 +144,8 @@ class Orders extends \Dsc\Mongo\Collections\Taggable
         $order->shipping_total = $cart->shippingTotal();
         $order->discount_total = $cart->discountTotal();
         $order->credit_total = $cart->creditTotal();
+        $order->giftcard_total = $cart->giftCardTotal();
         
-        $order->user_id = $cart->user_id;
-        $order->user_email = $cart->user_email;
         if (empty($order->user_email)) {
         	$user = (new \Users\Models\Users)->load(array('_id'=>$order->user_id));
         	if (!empty($user->email)) {
@@ -150,10 +156,6 @@ class Orders extends \Dsc\Mongo\Collections\Taggable
         // $order->is_guest = $cart->isGuest(); ? or is that from the checkout object?
         // $order->ip_address = $cart->ipAddress(); ? or is that from the checkout object?
         $order->comments = $cart->{'checkout.order_comments'};
-        // $order->currency = $cart->currency; // TODO support multiple currencies
-        
-        // Items
-        $order->items = $cart->items;
         
         // Shipping fields
         $order->shipping_required = $cart->shippingRequired();
@@ -165,14 +167,6 @@ class Orders extends \Dsc\Mongo\Collections\Taggable
         
         // TODO Payment/Billing fields
         $order->billing_address = $cart->{'checkout.billing_address'};
-        
-        // TODO Taxes
-        
-        // Coupons
-        $order->coupons = $cart->{'coupons'};
-        
-        // Discounts
-        $order->discount_total = $cart->discountTotal();
         
         // TODO Credits
         
