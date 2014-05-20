@@ -73,6 +73,12 @@ class Routes extends \Dsc\Routes\Group
         $this->addCrudGroup('Tags', 'Tag');
         
         $this->addCrudGroup('GiftCards', 'GiftCard');
+            
+        $this->addCrudGroup('OrderedGiftCards', 'OrderedGiftCards', array(
+        	'url_prefix' => '/orders/giftcards'
+        ), array(
+            'url_prefix' => '/orders/giftcard'
+        ));
         
         $f3->route('GET /admin/shop/uniqueid', function(){
         	echo (string) new \MongoId;

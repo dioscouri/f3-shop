@@ -1,7 +1,7 @@
 <?php
 namespace Shop\Models;
 
-class Orders extends \Dsc\Mongo\Collections\Nodes
+class Orders extends \Dsc\Mongo\Collections\Taggable
 {
     public $number = null;
     public $status = \Shop\Constants\OrderStatus::open;
