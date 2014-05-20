@@ -182,7 +182,6 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
             {
                 throw new \Exception( 'Quantity selected is unavailable' );
             }
-            
         }
         
         // Fire an event so that any Listeners that want to stop validation

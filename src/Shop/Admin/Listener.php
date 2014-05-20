@@ -26,11 +26,11 @@ class Listener extends \Prefab
                     'title' => 'Catalog',
                     'route' => 'javascript:void(0);',
                     'icon' => 'fa fa-cubes'
-                ),                
+                ),
                 array(
                     'title' => 'Orders',
-                    'route' => '/admin/shop/orders',
-                    'icon' => 'fa fa-money'
+                    'route' => 'javascript:void(0);',
+                    'icon' => 'fa fa-inbox'
                 ),
                 array(
                     'title' => 'Coupons',
@@ -100,6 +100,29 @@ class Listener extends \Prefab
             
                 $catalog_item->addChildren($catalog_children);
             }
+            
+            // Find the Orders Item
+            $orders_item = (new \Admin\Models\Nav\Primary())->load(array(
+                'type' => 'admin.nav',
+                'parent' => $shop->id,
+                'title' => 'Orders'
+            ));
+            
+            // add its children
+            if (!empty($orders_item->id))
+            {
+                $orders_children = array(
+                    array(
+                        'title' => 'Manage',
+                        'route' => '/admin/shop/orders',
+                        'icon' => 'fa fa-money'
+                    ),
+                    
+                );
+                
+                $orders_item->addChildren($orders_children);
+            }
+            
             
             // Find the Localization Menu Item 
             $locale_item = (new \Admin\Models\Nav\Primary())->load(array(

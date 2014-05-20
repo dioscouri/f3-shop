@@ -226,16 +226,16 @@ class Checkout extends \Dsc\Controller
         
         // If checkout is not completed, do the standard checkout process
         // If checkout was completed by a Listener during the beforeShopCheckout process, skip the standard checkout process and go to the afterShopCheckout event
-        if (!$checkout->orderCompleted()) 
+        if (!$checkout->orderAccepted()) 
         {
             // the standard checkout process
             try {
-                $checkout->completeOrder();
+                $checkout->acceptOrder();
             } catch (\Exception $e) {
                 $checkout->setError( $e->getMessage() );
             }
             
-            if (!$checkout->orderCompleted() || !empty($checkout->getErrors()))
+            if (!$checkout->orderAccepted() || !empty($checkout->getErrors()))
             {
                 \Dsc\System::addMessage( 'Checkout could not be completed.  Please try again or contact us if you have further difficulty.', 'error' );
                 

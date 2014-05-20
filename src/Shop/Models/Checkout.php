@@ -1,9 +1,16 @@
 <?php
 namespace Shop\Models;
 
+/**
+ * Process a checkout and mark it as completed if successful.
+ * Processing a checkout means creating an order object.  
+ * 
+ * @author Rafael Diaz-Tushman
+ *
+ */
 class Checkout extends \Dsc\Singleton
 {
-    protected $__orderCompleted = false;
+    protected $__orderAccepted = false;
     protected $__cart = null;             // \Shop\Models\Carts object
     protected $__paymentData = array();
     protected $__order = null;             // \Shop\Models\Carts object
@@ -31,12 +38,12 @@ class Checkout extends \Dsc\Singleton
         return $this;
     }
     
-    public function completeOrder()
+    public function acceptOrder()
     {
         if ($this->order()->save()) 
         {
-            $this->order()->complete();
-            $this->setOrderCompleted();
+            $this->order()->accept();
+            $this->setOrderAccepted();
             $this->cart()->remove();            
             \Dsc\System::instance()->get('session')->set('shop.just_completed_order', true );
             \Dsc\System::instance()->get('session')->set('shop.just_completed_order_id', (string) $this->__order->id );
@@ -64,19 +71,19 @@ class Checkout extends \Dsc\Singleton
      * 
      * @return boolean
      */
-    public function orderCompleted()
+    public function orderAccepted()
     {
-        return true === $this->__orderCompleted;
+        return true === $this->__orderAccepted;
     }
     
     /**
      * Mark the checkout as complete, which means the order has been created for the cart+payment
      */
-    public function setOrderCompleted()
+    public function setOrderAccepted()
     {
         // TODO before and after Events?
         
-        $this->__orderCompleted = true;
+        $this->__orderAccepted = true;
         
         return $this;
     }

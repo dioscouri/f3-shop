@@ -278,13 +278,16 @@ class Orders extends \Dsc\Mongo\Collections\Nodes
      * 
      * Trigger this on newly-made orders to perform tasks such as:
      * Sending an email to the customer
-     * Updating available product quantities 
+     * Updating available product quantities.
+     * 
+     * This does NOT do the following:
 	 * Enabling file downloads
 	 * Enabling subscriptions
+	 * as those would be triggered upon order fulfillment == $this->fulfill()
 	 * 
 	 * Trigger a Listener event to notify observers
      */
-    public function complete()
+    public function accept()
     {
         // 1. Update quantities
         foreach ($this->items as $item) 
@@ -326,6 +329,23 @@ class Orders extends \Dsc\Mongo\Collections\Nodes
         $this->__complete_event = \Dsc\System::instance()->trigger( 'onShopCompleteOrder', array(
         	'order' => $this
         ) );
+        
+        return $this;
+    }
+    
+    /**
+     * Fulfilling an order is the act of delivering the product to the customer
+     * and marking the order as closed.
+     * Even digital products (subscriptions, downloads, gift cards) are delivered upon fulfillment
+     *    
+     * @return \Shop\Models\Orders
+     */
+    public function fulfill()
+    {
+        // TODO send shipment notification emails
+        // TODO send gift certificate emails
+        // TODO trigger the onShopFulfillOrder event
+        // TODO Close the order and mark it as fulfilled
         
         return $this;
     }
