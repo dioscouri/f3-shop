@@ -74,7 +74,7 @@ class Routes extends \Dsc\Routes\Group
         
         $this->addCrudGroup('GiftCards', 'GiftCard');
             
-        $this->addCrudGroup('OrderedGiftCards', 'OrderedGiftCards', array(
+        $this->addCrudGroup('OrderedGiftCards', 'OrderedGiftCard', array(
         	'url_prefix' => '/orders/giftcards'
         ), array(
             'url_prefix' => '/orders/giftcard'
@@ -83,6 +83,11 @@ class Routes extends \Dsc\Routes\Group
         $f3->route('GET /admin/shop/uniqueid', function(){
         	echo (string) new \MongoId;
         });
+        
+        $this->add('/customers/forSelection [ajax]', 'GET|POST', array(
+            'controller' => 'Customers',
+            'action' => 'forSelection'
+        ));
         
     }
 }

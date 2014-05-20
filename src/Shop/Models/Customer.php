@@ -32,4 +32,31 @@ class Customer extends \Users\Models\Users
         
         return $group;
     }
+    
+    /**
+     * Helper method for creating select list options
+     *
+     * @param array $query
+     * @return multitype:multitype:string NULL
+     */
+    public static function forSelection(array $query=array(), $id_field='_id' )
+    {
+        $model = new static;
+    
+        $cursor = $model->collection()->find($query, array("last_name"=>1, "first_name"=>1, "email"=>1) );
+        $cursor->sort(array(
+            "last_name"=>1, "first_name"=>1
+        ));
+    
+        $result = array();
+        foreach ($cursor as $doc) {
+            $array = array(
+                'id' => (string) $doc[$id_field],
+                'text' => htmlspecialchars( trim( $doc['first_name'] . ' ' . $doc['last_name'] . ': ' . $doc['email'] ), ENT_QUOTES ),
+            );
+            $result[] = $array;
+        }
+    
+        return $result;
+    }
 }

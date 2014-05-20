@@ -4,14 +4,14 @@
 			<i class="fa fa-table fa-fw "></i> 
 				Orders 
 			<span> > 
-				List
+				Gift Cards
 			</span>
 		</h1>
 	</div>
 	<div class="col-xs-12 col-sm-5 col-md-5 col-lg-8">
         <ul id="sparks" class="list-actions list-unstyled list-inline">
             <li>
-                <a class="btn btn-default" href="./admin/shop/order/create">Add New</a>
+                <a class="btn btn-default" href="./admin/shop/orders/giftcard/create">Add New</a>
             </li>
         </ul>
 	</div>
@@ -45,7 +45,7 @@
                     <div class="input-group">
                         <select id="bulk-actions" name="bulk_action" class="form-control">
                             <option value="null">-Bulk Actions-</option>
-                            <option value="delete" data-action="./admin/shop/orders/delete">Delete</option>
+                            <option value="delete" data-action="./admin/shop/orders/giftcard/delete">Delete</option>
                         </select>
                         <span class="input-group-btn">
                             <button class="btn btn-default bulk-actions" type="button" data-target="bulk-actions">Apply</button>
@@ -79,46 +79,40 @@
             
             <?php if (!empty($paginated->items)) { ?>
             
-            <?php foreach($paginated->items as $order) { ?>
+            <?php foreach($paginated->items as $item) { ?>
             <div class="panel panel-default">
                 <div class="panel-body">
                     <div class="row">
-                        <div class="col-xs-12 col-sm-12 col-md-4">
-                            <legend><a href="./admin/shop/order/edit/<?php echo $order->id; ?>"><?php echo (new \DateTime($order->{'metadata.created.local'}))->format('F j, Y'); ?></a></legend>
-                            <div><label>#</label><a href="./admin/shop/order/edit/<?php echo $order->id; ?>"><?php echo $order->{'number'}; ?></a></div>
-                            <div><label>Total:</label> <?php echo \Shop\Models\Currency::format( $order->{'grand_total'} ); ?></div>
+                        <div class="col-xs-2 col-md-1">
+                            <input type="checkbox" class="icheck-input" name="ids[]" value="<?php echo $item->id; ?>">
                         </div>
-                        <div class="col-xs-12 col-sm-12 col-md-8">
-                            <legend><?php echo $order->{'status'}; ?></legend>
-                            
-                            <?php foreach ($order->items as $item) { ?>
-                            <div class="row">
-                                <div class="hidden-xs hidden-sm col-md-2">
-                                    <?php if (\Dsc\ArrayHelper::get($item, 'image')) { ?>
-                                    <img class="img-responsive" src="./asset/thumb/<?php echo \Dsc\ArrayHelper::get($item, 'image'); ?>" alt="" />
-                                    <?php } ?>
-                                </div>
-                                <div class="col-xs-12 col-sm-12 col-md-10">
-                                    <div class="title">
-                                        <?php echo \Dsc\ArrayHelper::get($item, 'product.title'); ?>
-                                        <?php if (\Dsc\ArrayHelper::get($item, 'attribute_title')) { ?>
-                                        <div>
-                                            <small><?php echo \Dsc\ArrayHelper::get($item, 'attribute_title'); ?></small>
-                                        </div>
-                                        <?php } ?>                        
-                                    </div>
-                                    <div class="details">
-                    
-                                    </div>
-                                    <div>
-                                        <span class="quantity"><?php echo \Dsc\ArrayHelper::get($item, 'quantity'); ?></span>
-                                        x
-                                        <span class="price"><?php echo \Shop\Models\Currency::format( \Dsc\ArrayHelper::get($item, 'price') ); ?></span> 
-                                    </div>                                
-                                </div>
-                            </div>        
-                            <?php } ?>
-                                                    
+                        <div class="col-xs-10 col-md-4">
+                            <h4>
+                                <a href="./admin/shop/orders/giftcard/edit/<?php echo $item->id; ?>">
+                                    <?php echo $item->code; ?>
+                                </a>
+                            </h4>
+                            <div>
+                                <label>Issued:</label>
+                                <a href="./admin/shop/orders/giftcard/edit/<?php echo $item->id; ?>">
+                                    <?php echo date( 'Y-m-d', $item->{'metadata.created.time'} ); ?>
+                                </a>
+                            </div>
+                          
+                        </div>
+                        <div class="col-xs-10 col-xs-offset-2 col-md-6 col-md-offset-0">
+                            <div>
+                                <label>Initial Value:</label> <?php echo $item->{'initial_value'}; ?> 
+                            </div>
+
+                            <div>
+                                <label>Balance:</label> <span class='label label-default'><?php echo $item->balance; ?></span>
+                            </div>
+                        </div>
+                        <div class="hidden-xs hidden-sm col-md-1">
+    	                    <a class="btn btn-xs btn-danger" data-bootbox="confirm" href="./admin/shop/orders/giftcard/delete/<?php echo $item->id; ?>">
+    	                        <i class="fa fa-times"></i>
+    	                    </a>                        
                         </div>
                     </div>
                 </div>
