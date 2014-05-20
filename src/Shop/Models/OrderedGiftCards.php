@@ -104,4 +104,65 @@ class OrderedGiftCards extends \Dsc\Mongo\Collections\Nodes
     
         return $number;
     }
+    
+    /**
+     * 
+     * @return number
+     */
+    public function balance()
+    {
+        return (float) $this->balance;
+    }
+    
+    /**
+     * Determines if this coupon is valid for a cart
+     *
+     * @param \Shop\Models\Carts $cart
+     * @throws \Exception
+     */
+    public function cartValid( \Shop\Models\Carts $cart )
+    {
+        // Does the cart already have a gift card used?
+        if (!empty($cart->giftcards)) 
+        {
+            throw new \Exception('Only one gift card allowed per cart');
+        }        
+        
+    	// Does the cart have a total > 0?
+    	if ($cart->total() <= (float) 0) 
+    	{
+    	    throw new \Exception('Cart total must be greater than 0 to use a gift card');
+    	}
+    	
+    	// Does the card have available balance?
+    	if ($this->balance() <= (float) 0) 
+    	{
+    	    throw new \Exception('This gift card does not have an available balance');
+    	}
+    	
+        /**
+         * if we made it this far, the cart is valid for this card
+         */
+        $this->__is_validated = true;
+        
+        return $this;
+    }
+    
+    /**
+     * Calculates the value of this card against the data in a cart
+     *
+     * @param \Shop\Models\Carts $cart
+     * @return number
+     */
+    public function cartValue( \Shop\Models\Carts $cart )
+    {
+        $value = $this->balance();
+        
+        if ($cart->total() < $value) 
+        {
+        	$value = $cart->total();
+        }
+        
+        return $value;
+    }
 }

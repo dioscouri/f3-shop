@@ -11,6 +11,8 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
     public $taxes = array();        // array of \Shop\Models\Prefabs\TaxItems objects
     public $coupons = array();      // array of \Shop\Models\Prefabs\Coupon objects
     public $discounts = array();    // array of \Shop\Models\Prefabs\Discount objects
+    public $giftcards = array();    // array of \Shop\Models\OrderedGiftCards cast as arrays
+    
     public $name = null;            // user-defined name for cart
     
     public $checkout = array(       // array of values used during checkout
@@ -573,7 +575,7 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
             $total = $total + $this->taxEstimate();
         }
         
-        $total = $total - $this->discountTotal();
+        $total = $total - $this->discountTotal() - $this->giftCardTotal();
     
         return (float) $total;
     }
@@ -629,6 +631,23 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
         }
         
         return (float) $discount;
+    }
+    
+    /**
+     * Gets the total of all the applied gift cards
+     *
+     * @return number
+     */
+    public function giftCardTotal()
+    {
+        $total = 0;
+    
+        foreach ($this->giftcards as $item)
+        {
+            $total = $total + $item['amount'];
+        }
+    
+        return (float) $total;
     }
     
     /**
@@ -875,6 +894,7 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
             // Compare items, coupons, shipping address, and shipping method.  If changed, empty the taxes
             if ($cart->items != $this->items 
                 || $cart->coupons != $this->coupons
+                || $cart->giftcards != $this->giftcards
                 || $cart->shippingMethod() != $this->shippingMethod()
                 || $cart->{'checkout.shipping_address'} != $this->{'checkout.shipping_address'}
                 || $cart->{'checkout.billing_address'} != $this->{'checkout.billing_address'}
@@ -1222,5 +1242,64 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
         }
     
         return $coupons;
+    }
+    
+    /**
+     * Adds a gift card to the cart,
+     * performing validations first
+     *
+     * @param \Shop\Models\OrderedGiftCards $giftcard
+     * @return \Shop\Models\Carts
+     */
+    public function addGiftCard( \Shop\Models\OrderedGiftCards $giftcard )
+    {
+        $giftcard->cartValid( $this );
+    
+        $exists = false;
+        foreach ((array) $this->giftcards as $key=>$item)
+        {
+            if ($item['code'] == $giftcard->code)
+            {
+                $exists = true;
+                break;
+            }
+        }
+    
+        if (!$exists)
+        {
+            $cast = $giftcard->cast();
+            $cast['amount'] = $giftcard->cartValue( $this );
+            $this->giftcards[] = $cast;
+        }
+    
+        return $this->save();
+    }
+    
+
+    /**
+     * Removes a gift card from the cart
+     *
+     * @param string $code
+     * @return \Shop\Models\Carts
+     */
+    public function removeGiftCard( $code )
+    {
+        $exists = false;
+        foreach ($this->giftcards as $key=>$item)
+        {
+            if ($item['_id'] == $code)
+            {
+                $exists = true;
+                unset($this->giftcards[$key]);
+    
+                break;
+            }
+        }
+    
+        if ($exists) {
+            $this->save();
+        }
+    
+        return $this;
     }
 }
