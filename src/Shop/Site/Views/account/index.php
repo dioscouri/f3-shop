@@ -47,7 +47,8 @@
                         <div class="col-xs-12 col-sm-12 col-md-6">
                             <h4>Account Settings</h4>
                             <ul class="list-unstyled">
-                                <li><a href="./user/change-email">Change email</a></li>
+                                <li><a href="./user/change-basic">Change basic information</a></li>
+                            	<li><a href="./user/change-email">Change email</a></li>
                                 <li><a href="./user/change-password">Change password</a></li>
                             </ul>
                         </div>
