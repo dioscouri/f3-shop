@@ -118,6 +118,12 @@
             <span class="price"><?php echo \Shop\Models\Currency::format( $order->tax_total ); ?></span>
         </div>
         <?php } ?>
+        <?php if ($order->giftcard_total > 0) { ?>
+        <div>
+            <label class="strong">Giftcard:</label>
+            <span class="price">-<?php echo \Shop\Models\Currency::format( $order->giftcard_total ); ?></span>
+        </div>
+        <?php } ?>        
         <div>
             <label class="strong">Total:</label>
             <span class="price"><?php echo \Shop\Models\Currency::format( $order->grand_total ); ?></span>

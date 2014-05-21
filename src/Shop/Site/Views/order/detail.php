@@ -144,7 +144,7 @@
                         <?php if ($order->discount_total > 0) { ?>
                         <div>
                             <label class="strong">Discount:</label>
-                            <span class="price"><?php echo \Shop\Models\Currency::format( $order->discount_total ); ?></span>
+                            <span class="price">-<?php echo \Shop\Models\Currency::format( $order->discount_total ); ?></span>
                         </div>
                         <?php } ?>                
                         <?php if ($order->shipping_total > 0) { ?>
@@ -157,6 +157,12 @@
                         <div>
                             <label class="strong">Tax:</label>
                             <span class="price"><?php echo \Shop\Models\Currency::format( $order->tax_total ); ?></span>
+                        </div>
+                        <?php } ?>
+                        <?php if ($order->giftcard_total > 0) { ?>
+                        <div>
+                            <label class="strong">Giftcard:</label>
+                            <span class="price">-<?php echo \Shop\Models\Currency::format( $order->giftcard_total ); ?></span>
                         </div>
                         <?php } ?>
                         <div>

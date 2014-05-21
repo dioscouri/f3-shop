@@ -69,13 +69,16 @@ Phone: <?php echo $order->{'billing_address.phone_number'}; ?>
 
 Subtotal: <?php echo \Shop\Models\Currency::format( $order->sub_total ); ?> 
 <?php if ($order->discount_total > 0) { ?>
-Discount: <?php echo \Shop\Models\Currency::format( $order->discount_total ); ?> 
+Discount: -<?php echo \Shop\Models\Currency::format( $order->discount_total ); ?> 
 <?php } ?>                
 <?php if ($order->shipping_total > 0) { ?>
 Shipping: <?php echo \Shop\Models\Currency::format( $order->shipping_total ); ?> 
 <?php } ?>
 <?php if ($order->tax_total > 0) { ?>
 Tax: <?php echo \Shop\Models\Currency::format( $order->tax_total ); ?> 
+<?php } ?>
+<?php if ($order->giftcard_total > 0) { ?>
+Giftcard: -<?php echo \Shop\Models\Currency::format( $order->giftcard_total ); ?> 
 <?php } ?>
 Total: <?php echo \Shop\Models\Currency::format( $order->grand_total ); ?> 
 

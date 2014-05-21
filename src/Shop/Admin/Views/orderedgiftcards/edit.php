@@ -1,88 +1,80 @@
-<script src="./ckeditor/ckeditor.js"></script>
-<script>
-jQuery(document).ready(function(){
-    CKEDITOR.replaceAll( 'wysiwyg' );    
-});
-</script>
-
-<div class="well">
-
-<form id="detail-form" class="form" method="post">
-    <div class="row">
-        <div class="col-md-12">
-            
-            <div class="clearfix">
-
-                <div class="pull-right">
-                    <div class="btn-group">
-                        <button type="submit" class="btn btn-primary">Save</button>
-                        <input id="primarySubmit" type="hidden" value="save_edit" name="submitType" />
-                        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
-                            <span class="caret"></span>
-                        </button>
-                        <ul class="dropdown-menu" role="menu">
-                            <li>
-                                <a onclick="document.getElementById('primarySubmit').value='save_new'; document.getElementById('detail-form').submit();" href="javascript:void(0);">Save & Create Another</a>
-                            </li>
-                            <li>
-                                <a onclick="document.getElementById('primarySubmit').value='save_as'; document.getElementById('detail-form').submit();" href="javascript:void(0);">Save As</a>
-                            </li>
-                            <li>
-                                <a onclick="document.getElementById('primarySubmit').value='save_close'; document.getElementById('detail-form').submit();" href="javascript:void(0);">Save & Close</a>
-                            </li>
-                        </ul>
-                    </div>
-                        
-                    &nbsp;
-                    <a class="btn btn-default" href="./admin/shop/coupons">Cancel</a>
-                </div>
-
-            </div>
-            <!-- /.form-group -->
-            
-            <hr />
-            
-            <ul class="nav nav-tabs">
-                <li class="active">
-                    <a href="#tab-basics" data-toggle="tab"> Basics </a>
-                </li>
-                <li>
-                    <a href="#tab-rules" data-toggle="tab"> Rules & Eligibility </a>
-                </li>                
-                <?php if (!empty($this->event)) { foreach ((array) $this->event->getArgument('tabs') as $key => $title ) { ?>
-                <li>
-                    <a href="#tab-<?php echo $key; ?>" data-toggle="tab"> <?php echo $title; ?> </a>
-                </li>
-                <?php } } ?>                
-            </ul>
-            
-            <div class="tab-content padding-10">
-
-                <div class="tab-pane active" id="tab-basics">
-                
-                    <?php echo $this->renderLayout('Shop/Admin/Views::coupons/fields_basics.php'); ?>
-                
-                </div>
-                <!-- /.tab-pane -->
-                
-                <div class="tab-pane" id="tab-rules">
-                
-                    <?php echo $this->renderLayout('Shop/Admin/Views::coupons/fields_rules.php'); ?>
-                
-                </div>
-                <!-- /.tab-pane -->
-                
-                <?php if (!empty($this->event)) { foreach ((array) $this->event->getArgument('content') as $key => $content ) { ?>
-                <div class="tab-pane" id="tab-<?php echo $key; ?>">
-                    <?php echo $content; ?>
-                </div>
-                <?php } } ?>
-            
-            </div>
-
-        </div>
-        
+<div class="clearfix">
+    <div class="pull-right">
+        <a class="btn btn-default" href="./admin/shop/orders/giftcards">Close</a>
     </div>
-</form>
+</div>
+<!-- /.form-group -->
 
+<hr />
+
+<div class="row">
+    <div class="col-md-9">
+        <div class="well">
+        
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="well well-sm well-light text-center"><h5><small>Code</small><br/><?php echo $item->code; ?></h5></div>
+                </div>
+                <div class="col-md-4">
+                    <div class="well well-sm well-light text-center"><h5><small>Initial Value</small><br/><?php echo \Shop\Models\Currency::format( $item->initial_value ); ?></h5></div>
+                </div>
+                <div class="col-md-4">
+                    <div class="well well-sm bg-color-darken txt-color-white text-center"><h5><small>Balance</small><br/><?php echo \Shop\Models\Currency::format( $item->balance() ); ?></h5></div>
+                </div>
+            </div>
+            
+            <hr/>
+            
+            <div class="row">
+                <div class="col-md-2">
+                    
+                    <h3>History</h3>
+                    <p class="help-block">The activity log for this gift card.</p>
+                            
+                </div>
+                <!-- /.col-md-2 -->
+                            
+                <div class="col-md-10">
+                    
+                    <ul class="list-group">
+                    <?php foreach ($item->history as $history) { ?>
+                        <li class="list-group-item">
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <?php echo \Dsc\ArrayHelper::get( $history, 'created.local' ); ?>
+                                </div>
+                                <div class="col-md-10">
+                                    <?php $dump = $history; unset( $dump['created'] ); ?>
+                                    <?php echo \Dsc\Debug::dump( $dump ); ?>
+                                </div>
+                            </div>
+                        </li>
+                    <?php } ?>
+                        <li class="list-group-item">
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <?php echo date( 'Y-m-d', $item->{'metadata.created.time'} ); ?>
+                                </div>
+                                <div class="col-md-10">
+                                    Issued
+                                </div>
+                            </div>
+                        </li>                    
+                    </ul>
+                    
+                </div>
+                <!-- /.col-md-10 -->
+                
+            </div>        
+        
+        </div>        
+    </div>
+    
+    <div class="col-md-3">
+        <h5>Actions to perform on this Gift Card</h5>
+        <ul class="list-group">
+            <li class="list-group-item">Resend gift card to purchaser</li>
+        </ul>
+    </div>
+    
 </div>

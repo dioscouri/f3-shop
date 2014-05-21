@@ -6,7 +6,8 @@ class OrderedGiftCards extends \Dsc\Mongo\Collections\Nodes
     public $code;
     public $initial_value;
     public $balance;
-    
+    public $history = array();
+   
     protected $__collection_name = 'shop.orders.giftcards';
     protected $__type = 'shop.orders.giftcards';
     protected $__config = array(
@@ -164,5 +165,33 @@ class OrderedGiftCards extends \Dsc\Mongo\Collections\Nodes
         }
         
         return $value;
+    }
+    
+    /**
+     * 
+     * @param unknown $amount
+     * @param \Shop\Models\Orders $order
+     */
+    public function redeemForOrder( $amount, \Shop\Models\Orders $order ) 
+    {
+    	// Deduct the amount from the balance
+    	$balance_before = $this->balance();
+    	$this->balance = $this->balance() - (float) $amount;
+
+    	// Add the entry to the gift card's internal history log
+    	$this->history[] = array(
+    		'created' => \Dsc\Mongo\Metastamp::getDate('now'),
+    	    'subject' => (string) $order->user_email,
+    	    'subject_id' => (string) $order->user_id, 
+    	    'verb' => 'redeemed',
+    	    'object' => (string) $order->id,
+    	    'amount' => $amount,
+    	    'balance_before' => $balance_before,
+    	    'balance_after' => $this->balance(),
+    	);
+    	
+    	// TODO Track this in f3-activity
+    	
+    	return $this->save();
     }
 }

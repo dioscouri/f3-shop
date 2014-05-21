@@ -273,6 +273,7 @@ class Orders extends \Dsc\Mongo\Collections\Taggable
      * Trigger this on newly-made orders to perform tasks such as:
      * Sending an email to the customer
      * Updating available product quantities.
+     * Deduct giftcard.amount from any giftcards
      * 
      * This does NOT do the following:
 	 * Enabling file downloads
@@ -318,11 +319,42 @@ class Orders extends \Dsc\Mongo\Collections\Taggable
         }
         
         // TODO 3. Increase hit counts on coupons used in order
+        
+        // 4. Decrease value of any used gift certificates
+        $this->redeemGiftCards();
 
         // trigger event
         $this->__complete_event = \Dsc\System::instance()->trigger( 'onShopCompleteOrder', array(
         	'order' => $this
         ) );
+        
+        return $this;
+    }
+    
+    /**
+     * Redeems any gift cards used in this order
+     * 
+     * @return \Shop\Models\Orders
+     */
+    public function redeemGiftCards()
+    {
+        if (empty($this->giftcards)) 
+        {
+        	return $this;
+        }
+        
+        foreach ($this->giftcards as $giftcard_array)
+        {
+            if (!empty($giftcard_array['amount']))
+            {
+                try {
+                    $giftcard = (new \Shop\Models\OrderedGiftCards)->load(array('_id'=>new \MongoId( (string) $giftcard_array['_id'])))->redeemForOrder( $giftcard_array['amount'], $this );
+                } 
+                catch(\Exception $e) {
+                	$this->log( 'Failed to redeem gift card #' . (string) $giftcard_array['code'] . ' for order #' . $this->id . '.  Message: ' . $e->getMessage(), 'ERROR', 'ShopModelsOrders::redeemGiftCard'  );
+                }                
+            }
+        }    
         
         return $this;
     }

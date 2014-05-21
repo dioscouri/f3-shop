@@ -102,11 +102,11 @@
                         </div>
                         <div class="col-xs-10 col-xs-offset-2 col-md-6 col-md-offset-0">
                             <div>
-                                <label>Initial Value:</label> <?php echo $item->{'initial_value'}; ?> 
+                                <label>Initial Value:</label> <?php echo \Shop\Models\Currency::format( $item->{'initial_value'} ); ?> 
                             </div>
 
                             <div>
-                                <label>Balance:</label> <span class='label label-default'><?php echo $item->balance; ?></span>
+                                <label>Balance:</label> <span class='label label-default'><?php echo \Shop\Models\Currency::format( $item->balance() ); ?></span>
                             </div>
                         </div>
                         <div class="hidden-xs hidden-sm col-md-1">
