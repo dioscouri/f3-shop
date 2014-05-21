@@ -181,20 +181,21 @@
                 <div class="form-group">
                     <legend>
                         <div class="row">
-                            <div class="col-xs-10 col-sm-10 col-md-10">
+                            <div class="col-xs-6 col-sm-6 col-md-6">
                                 <small>Items</small>
                             </div>
-                            <div class="col-xs-2 col-sm-2 col-md-2">
-                                <div class="pull-right">
-                                    <small>Price</small>
-                                </div>
+                            <div class="col-xs-3 col-sm-3 col-md-3">
+                                <small>Price</small>
+                            </div>
+                            <div class="col-xs-3 col-sm-3 col-md-3">
+                                <small>Status</small>
                             </div>
                         </div>
                     </legend>        
                 
                     <?php foreach ($order->items as $item) { ?>
                         <div class="row">
-                            <div class="col-xs-10 col-sm-10 col-md-10">
+                            <div class="col-xs-6 col-sm-6 col-md-6">
                                 <div class="title">
                                 <?php echo \Dsc\ArrayHelper::get($item, 'product.title'); ?>
                                 <?php if (\Dsc\ArrayHelper::get($item, 'attribute_title')) { ?>
@@ -208,9 +209,30 @@
                                     <span class="quantity"><?php echo $quantity = \Dsc\ArrayHelper::get($item, 'quantity'); ?></span> x <span class="price"><?php echo \Shop\Models\Currency::format( $price = \Dsc\ArrayHelper::get($item, 'price') ); ?></span>
                                 </div>
                             </div>
-                            <div class="col-xs-2 col-sm-2 col-md-2">
-                                <div class="pull-right"><?php echo \Shop\Models\Currency::format( $quantity * $price ); ?></div>
+                            <div class="col-xs-3 col-sm-3 col-md-3">
+                                <?php echo \Shop\Models\Currency::format( $quantity * $price ); ?>
                             </div>
+                            <div class="col-xs-3 col-sm-3 col-md-3">
+        
+                                <?php switch(\Dsc\ArrayHelper::get($item, 'fulfillment_status')) {
+                                	case \Shop\Constants\OrderFulfillmentStatus::fulfilled:
+                                	    $label_class = 'label-default';
+                                	    break;
+                            	    case \Shop\Constants\OrderFulfillmentStatus::partial:
+                            	        $label_class = 'label-warning';
+                            	        break;
+                                	case \Shop\Constants\OrderFulfillmentStatus::unfulfilled:
+                                	default:
+                                	    $label_class = 'label-success';
+                                	    break;
+                                
+                                } ?>
+                                
+                                <span class="label <?php echo $label_class; ?>">
+                                <?php echo \Dsc\ArrayHelper::get($item, 'fulfillment_status', 'n/a'); ?>
+                                </span>
+                                                            
+                            </div>                            
                         </div>        
                     <?php } ?>
                 </div>

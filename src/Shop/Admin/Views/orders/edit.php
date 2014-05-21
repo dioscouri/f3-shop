@@ -1,6 +1,6 @@
 <div class="clearfix">
     <div class="pull-right">
-        <a class="btn btn-default" href="./admin/shop/orders">Close</a>
+        <a class="btn btn-default" href="./admin/shop/orders">Return to List</a>
     </div>
 </div>
 <!-- /.form-group -->
@@ -45,9 +45,80 @@
                     </div>
                     <div class="col-xs-12 col-sm-12 col-md-6">
                         <div>
-                            <label>Status:</label>
-                            <span><?php echo $item->{'status'}; ?></span>
+                            <label>Order Status:</label>
+                            
+                            <?php switch($item->{'status'}) {
+                            	case \Shop\Constants\OrderStatus::cancelled:
+                            	    $label_class = 'label-danger';
+                            	    break;
+                        	    case \Shop\Constants\OrderStatus::closed:
+                        	        $label_class = 'label-default';
+                        	        break;
+                            	case \Shop\Constants\OrderStatus::open:
+                            	default:
+                            	    $label_class = 'label-success';
+                            	    break;
+                            
+                            } ?>
+                            
+                            <span class="label <?php echo $label_class; ?>">
+                            <?php echo $item->{'status'}; ?>
+                            </span>
+                                                       
                         </div>
+                        <div>
+                            <label>Fulfillment Status:</label>
+                            
+                            <?php switch($item->{'fulfillment_status'}) {
+                            	case \Shop\Constants\OrderFulfillmentStatus::fulfilled:
+                            	    $label_class = 'label-default';
+                            	    break;
+                        	    case \Shop\Constants\OrderFulfillmentStatus::partial:
+                        	        $label_class = 'label-warning';
+                        	        break;
+                            	case \Shop\Constants\OrderFulfillmentStatus::unfulfilled:
+                            	default:
+                            	    $label_class = 'label-success';
+                            	    break;
+                            
+                            } ?>
+                            
+                            <span class="label <?php echo $label_class; ?>">
+                            <?php echo $item->{'fulfillment_status'}; ?>
+                            </span>
+                                                       
+                        </div>
+                        <div>
+                            <label>Payment Status:</label>
+                            
+                            <?php switch($item->{'financial_status'}) {
+                            	case \Shop\Constants\OrderFinancialStatus::voided:
+                            	    $label_class = 'label-danger';
+                            	    break;
+                            	     
+                            	case \Shop\Constants\OrderFinancialStatus::refunded:
+                            	case \Shop\Constants\OrderFinancialStatus::partially_refunded:
+                            	    $label_class = 'label-info';
+                            	    break;
+                            	     
+                            	case \Shop\Constants\OrderFinancialStatus::partially_paid:
+                            	case \Shop\Constants\OrderFinancialStatus::authorized:
+                            	case \Shop\Constants\OrderFinancialStatus::pending:
+                            	    $label_class = 'label-warning';
+                            	    break;
+                            	case \Shop\Constants\OrderFinancialStatus::paid:
+                            	default:
+                            	    $label_class = 'label-default';
+                            	    break;
+                            
+                            } ?>
+                            
+                            <span class="label <?php echo $label_class; ?>">
+                            <?php echo $item->{'financial_status'}; ?>
+                            </span>
+                                                       
+                        </div>
+                        
                     </div>
                 </div>
               
@@ -162,59 +233,141 @@
             <div class="form-group">
                 <legend>
                     <div class="row">
-                        <div class="col-xs-10 col-sm-10 col-md-10">
+                        <div class="col-xs-6 col-sm-6 col-md-6">
                             <small>Items</small>
                         </div>
-                        <div class="col-xs-2 col-sm-2 col-md-2">
-                            <div class="pull-right">
-                                <small>Price</small>
-                            </div>
+                        <div class="col-xs-3 col-sm-3 col-md-3">
+                            <small>Price</small>
                         </div>
+                        <div class="col-xs-3 col-sm-3 col-md-3">
+                            <small>Status</small>
+                        </div>                        
                     </div>
                 </legend>        
                 
                 <?php foreach ($item->items as $orderitem) { ?>
                 <div class="row">
-                    <div class="hidden-xs hidden-sm col-md-2">
-                        <?php if (\Dsc\ArrayHelper::get($orderitem, 'image')) { ?>
-                        <img class="img-responsive" src="./asset/thumb/<?php echo \Dsc\ArrayHelper::get($orderitem, 'image'); ?>" alt="" />
-                        <?php } ?>
-                    </div>
-                    <div class="col-xs-10 col-sm-10 col-md-8">
-                        <h4>
-                            <?php echo \Dsc\ArrayHelper::get($orderitem, 'product.title'); ?>
-                            <?php if (\Dsc\ArrayHelper::get($orderitem, 'attribute_title')) { ?>
-                            <div>
-                                <small><?php echo \Dsc\ArrayHelper::get($orderitem, 'attribute_title'); ?></small>
+                    <div class="col-xs-6 col-sm-6 col-md-6">
+                        <div class="row">
+                        
+                            <?php if (\Dsc\ArrayHelper::get($orderitem, 'image')) { ?>
+                            <div class="hidden-xs hidden-sm col-md-2">
+                                <img class="img-responsive" src="./asset/thumb/<?php echo \Dsc\ArrayHelper::get($orderitem, 'image'); ?>" alt="" />
                             </div>
-                            <?php } ?>                        
-                        </h4>
-                        <div class="details">
-        
-                        </div>
-                        <div>
-                            <span class="quantity"><?php echo $quantity = \Dsc\ArrayHelper::get($orderitem, 'quantity'); ?></span>
-                            x
-                            <span class="price"><?php echo \Shop\Models\Currency::format( $price = \Dsc\ArrayHelper::get($orderitem, 'price') ); ?></span> 
+                            <?php } ?>
+                            <div class="col-xs-12 col-sm-12 col-md-10">
+                                <h4>
+                                    <?php echo \Dsc\ArrayHelper::get($orderitem, 'product.title'); ?>
+                                    <?php if (\Dsc\ArrayHelper::get($orderitem, 'attribute_title')) { ?>
+                                    <div>
+                                        <small><?php echo \Dsc\ArrayHelper::get($orderitem, 'attribute_title'); ?></small>
+                                    </div>
+                                    <?php } ?>                        
+                                </h4>
+                                <div class="details">
+                
+                                </div>
+                                <div>
+                                    <span class="quantity"><?php echo $quantity = \Dsc\ArrayHelper::get($orderitem, 'quantity'); ?></span>
+                                    x
+                                    <span class="price"><?php echo \Shop\Models\Currency::format( $price = \Dsc\ArrayHelper::get($orderitem, 'price') ); ?></span> 
+                                </div>
+                            </div>                        
+                        
                         </div>
                     </div>
-                    <div class="col-xs-2 col-sm-2 col-md-2">
-                        <div class="pull-right"><?php echo \Shop\Models\Currency::format( $quantity * $price ); ?></div>
+                    <div class="col-xs-3 col-sm-3 col-md-3">
+                        <?php echo \Shop\Models\Currency::format( $quantity * $price ); ?>
                     </div>
+                    <div class="col-xs-3 col-sm-3 col-md-3">
+
+                        <?php switch(\Dsc\ArrayHelper::get($orderitem, 'fulfillment_status')) {
+                        	case \Shop\Constants\OrderFulfillmentStatus::fulfilled:
+                        	    $label_class = 'label-default';
+                        	    break;
+                    	    case \Shop\Constants\OrderFulfillmentStatus::partial:
+                    	        $label_class = 'label-warning';
+                    	        break;
+                        	case \Shop\Constants\OrderFulfillmentStatus::unfulfilled:
+                        	default:
+                        	    $label_class = 'label-success';
+                        	    break;
+                        
+                        } ?>
+                        
+                        <span class="label <?php echo $label_class; ?>">
+                        <?php echo \Dsc\ArrayHelper::get($orderitem, 'fulfillment_status', 'n/a'); ?>
+                        </span>
+                                                    
+                    </div>                        
+
                 </div>        
                 <?php } ?>
             </div>
         </div>
         
+        <div class="well">
+            <div class="row">
+                <div class="col-md-2">
+                    
+                    <h3>History</h3>
+                    <p class="help-block">The activity log for this order.</p>
+                            
+                </div>
+                <!-- /.col-md-2 -->
+                            
+                <div class="col-md-10">
+                    
+                    <ul class="list-group">
+                    <?php foreach ($item->history as $history) { ?>
+                        <li class="list-group-item">
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <?php echo \Dsc\ArrayHelper::get( $history, 'created.local' ); ?>
+                                </div>
+                                <div class="col-md-10">
+                                    <?php $dump = $history; unset( $dump['created'] ); ?>
+                                    <?php echo \Dsc\Debug::dump( $dump ); ?>
+                                </div>
+                            </div>
+                        </li>
+                    <?php } ?>
+                        <li class="list-group-item">
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <?php echo (new \DateTime($item->{'metadata.created.local'}))->format('F j, Y g:ia'); ?>
+                                </div>
+                                <div class="col-md-10">
+                                    Created
+                                </div>
+                            </div>
+                        </li>                    
+                    </ul>
+                    
+                </div>
+                <!-- /.col-md-10 -->
+                
+            </div>        
+        </div>
+        
     </div>
     <div class="col-md-3">
-        <h5>Actions to perform on this order</h5>
         <ul class="list-group">
-            <li class="list-group-item">Cras justo odio</li>
-            <li class="list-group-item">Dapibus ac facilisis in</li>
-            <li class="list-group-item">Morbi leo risus</li>
-            <li class="list-group-item">Porta ac consectetur ac</li>
-            <li class="list-group-item">Vestibulum at eros</li>
+            <li class="list-group-item">
+                <a class="btn btn-success" href="./admin/shop/order/fulfill/<?php echo $item->id; ?>">Fulfill order and mark it as closed</a>
+            </li>
+            <li class="list-group-item">
+                <a class="btn btn-info" href="./admin/shop/order/fulfill-giftcards/<?php echo $item->id; ?>">Fulfill Gift Cards and leave order open</a>
+            </li>            
+            <li class="list-group-item">
+                <a class="btn btn-warning" href="./admin/shop/order/close/<?php echo $item->id; ?>">Close order without fulfilling it</a>
+            </li>
+            <li class="list-group-item">
+                <a class="btn btn-danger" href="./admin/shop/order/cancel/<?php echo $item->id; ?>">Cancel Order</a>
+            </li>
+            <li class="list-group-item">
+                <a class="btn btn-default" href="./admin/shop/order/open/<?php echo $item->id; ?>">Reopen</a>
+            </li>            
         </ul>
     </div>
 </div>

@@ -17,6 +17,31 @@ class Routes extends \Dsc\Routes\Group
         
         $this->addCrudGroup('Orders', 'Order');
         
+        $this->add('/order/fulfill/@id', 'GET', array(
+            'controller' => 'Order',
+            'action' => 'fulfill'
+        ));
+        
+        $this->add('/order/close/@id', 'GET', array(
+            'controller' => 'Order',
+            'action' => 'close'
+        ));
+        
+        $this->add('/order/cancel/@id', 'GET', array(
+            'controller' => 'Order',
+            'action' => 'cancel'
+        ));
+        
+        $this->add('/order/open/@id', 'GET', array(
+            'controller' => 'Order',
+            'action' => 'open'
+        ));
+        
+        $this->add('/order/fulfill-giftcards/@id', 'GET', array(
+            'controller' => 'Order',
+            'action' => 'fulfillGiftCards'
+        ));
+        
         $this->addCrudGroup('Products', 'Product');
         $this->add('/products/forSelection [ajax]', 'GET|POST', array(
             'controller' => 'Products',

@@ -18,6 +18,13 @@ class Orders extends \Admin\Controllers\BaseAuth
         $model = $this->getModel();
         
         $state = $model->emptyState()->populateState()->getState();
+        
+        if (!$state->exists('filter.status')) {
+            $open = \Shop\Constants\OrderStatus::open;
+            $model->setState('filter.status', $open);
+            $state->set('filter.status', $open);
+        }
+        
         \Base::instance()->set('state', $state );
         
         $paginated = $model->paginate();

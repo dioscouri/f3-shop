@@ -94,8 +94,13 @@ class OrderedGiftCards extends \Dsc\Mongo\Collections\Nodes
         if (!empty($this->__email_recipient)) 
         {
         	// TODO Send this code via email
-        	\Dsc\System::addMessage( 'Would send a gift card via email to ' . $this->__email_recipient );
-        	// $this->sendEmailNewGiftCard( array( $this->__email_recipient ) );
+        	//\Dsc\System::addMessage( 'Would send a gift card via email to ' . $this->__email_recipient );
+        	try {
+        	   $this->sendEmailNewGiftCard( array( $this->__email_recipient ) );
+        	} 
+        	catch (\Exception $e) {
+        		
+        	}
         }
         
         parent::afterSave();

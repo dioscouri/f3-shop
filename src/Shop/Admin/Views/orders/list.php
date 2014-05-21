@@ -23,6 +23,26 @@
         
         <div class="row">
             <div class="col-xs-12 col-sm-5 col-md-5 col-lg-8">
+            
+                <ul class="list-filters list-unstyled list-inline">
+                    <li>
+                        <select name="filter[status]" class="form-control" onchange="this.form.submit();">
+                            <option value="">All Statuses</option>
+                            <?php foreach (\Shop\Constants\OrderStatus::fetch() as $status) { ?>
+                                <option <?php if($state->get('filter.status') == $status) { echo 'selected'; } ?> value="<?php echo $status; ?>"><?php echo $status; ?></option>
+                            <?php } ?>
+                        </select>
+                    </li>                
+                    <li>
+                        <select name="filter[fulfillment_status]" class="form-control" onchange="this.form.submit();">
+                            <option value="">All Fulfillment Statuses</option>
+                             <?php foreach (\Shop\Constants\OrderFulfillmentStatus::fetch() as $status) { ?>
+                                <option <?php if($state->get('filter.fulfillment_status') == $status) { echo 'selected'; } ?> value="<?php echo $status; ?>"><?php echo $status; ?></option>
+                            <?php } ?>
+                        </select>
+                    </li>                
+				</ul>
+				           
             </div>
             <div class="col-xs-12 col-sm-7 col-md-7 col-lg-4">
                 <div class="form-group">
@@ -84,20 +104,43 @@
                 <div class="panel-body">
                     <div class="row">
                         <div class="col-xs-12 col-sm-12 col-md-4">
-                            <legend><a href="./admin/shop/order/edit/<?php echo $order->id; ?>"><?php echo (new \DateTime($order->{'metadata.created.local'}))->format('F j, Y'); ?></a></legend>
+                            <legend>
+                                <a href="./admin/shop/order/edit/<?php echo $order->id; ?>"><?php echo (new \DateTime($order->{'metadata.created.local'}))->format('F j, Y'); ?></a>
+                                
+                                <?php switch($order->{'status'}) {
+                                	case \Shop\Constants\OrderStatus::cancelled:
+                                	    $label_class = 'label-danger';
+                                	    break;
+                            	    case \Shop\Constants\OrderStatus::closed:
+                            	        $label_class = 'label-default';
+                            	        break;
+                                	case \Shop\Constants\OrderStatus::open:
+                                	default:
+                                	    $label_class = 'label-success';
+                                	    break;
+                                
+                                } ?>
+                                
+                                <span class="pull-right label <?php echo $label_class; ?>">
+                                <?php echo $order->{'status'}; ?>
+                                </span>
+                                                                
+                            </legend>
                             <div><label>#</label><a href="./admin/shop/order/edit/<?php echo $order->id; ?>"><?php echo $order->{'number'}; ?></a></div>
                             <div><label>Total:</label> <?php echo \Shop\Models\Currency::format( $order->{'grand_total'} ); ?></div>
                         </div>
                         <div class="col-xs-12 col-sm-12 col-md-8">
-                            <legend><?php echo $order->{'status'}; ?></legend>
+                            <legend>
+                                <?php echo $order->customerName(); ?>
+                            </legend>
                             
                             <?php foreach ($order->items as $item) { ?>
                             <div class="row">
+                                <?php if (\Dsc\ArrayHelper::get($item, 'image')) { ?>
                                 <div class="hidden-xs hidden-sm col-md-2">
-                                    <?php if (\Dsc\ArrayHelper::get($item, 'image')) { ?>
                                     <img class="img-responsive" src="./asset/thumb/<?php echo \Dsc\ArrayHelper::get($item, 'image'); ?>" alt="" />
-                                    <?php } ?>
                                 </div>
+                                <?php } ?>
                                 <div class="col-xs-12 col-sm-12 col-md-10">
                                     <div class="title">
                                         <?php echo \Dsc\ArrayHelper::get($item, 'product.title'); ?>

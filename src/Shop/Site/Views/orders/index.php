@@ -51,20 +51,43 @@
             <div class="panel-body">
                 <div class="row">
                     <div class="col-xs-12 col-sm-12 col-md-4">
-                        <legend><a href="./shop/order/<?php echo $order->id; ?>"><?php echo (new \DateTime($order->{'metadata.created.local'}))->format('F j, Y'); ?></a></legend>
-                        <div><label>#</label><a href="./shop/order/<?php echo $order->id; ?>"><?php echo $order->{'number'}; ?></a></div>
+                        <legend>
+                            <a href="./shop/order/<?php echo $order->id; ?>"><?php echo (new \DateTime($order->{'metadata.created.local'}))->format('F j, Y'); ?></a>
+                            
+                            <?php switch($order->{'status'}) {
+                            	case \Shop\Constants\OrderStatus::cancelled:
+                            	    $label_class = 'label-danger';
+                            	    break;
+                        	    case \Shop\Constants\OrderStatus::closed:
+                        	        $label_class = 'label-default';
+                        	        break;
+                            	case \Shop\Constants\OrderStatus::open:
+                            	default:
+                            	    $label_class = 'label-success';
+                            	    break;
+                            
+                            } ?>
+                            
+                            <span class="pull-right label <?php echo $label_class; ?>">
+                            <?php echo $order->{'status'}; ?>
+                            </span>
+                                                        
+                        </legend>
+                        <div></div>
                         <div><label>Total:</label> <?php echo \Shop\Models\Currency::format( $order->{'grand_total'} ); ?></div>
                     </div>
                     <div class="col-xs-12 col-sm-12 col-md-8">
-                        <legend><?php echo $order->{'status'}; ?></legend>
+                        <legend>
+                            <label>#</label><a href="./shop/order/<?php echo $order->id; ?>"><?php echo $order->{'number'}; ?></a>                                                    
+                        </legend>
                         
                         <?php foreach ($order->items as $item) { ?>
                         <div class="row">
+                            <?php if (\Dsc\ArrayHelper::get($item, 'image')) { ?>
                             <div class="hidden-xs hidden-sm col-md-2">
-                                <?php if (\Dsc\ArrayHelper::get($item, 'image')) { ?>
                                 <img class="img-responsive" src="./asset/thumb/<?php echo \Dsc\ArrayHelper::get($item, 'image'); ?>" alt="" />
-                                <?php } ?>
                             </div>
+                            <?php } ?>
                             <div class="col-xs-12 col-sm-12 col-md-10">
                                 <div class="title">
                                     <?php echo \Dsc\ArrayHelper::get($item, 'product.title'); ?>

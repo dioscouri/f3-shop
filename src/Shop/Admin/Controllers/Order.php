@@ -81,4 +81,159 @@ class Order extends \Admin\Controllers\BaseAuth
         
         return $this;
     }
+    
+    public function fulfill()
+    {
+        $data = \Base::instance()->get('REQUEST');
+        if (!$this->canUpdate($data, $this->getItemKey())) {
+            throw new \Exception('Not allowed to update record');
+        }
+    
+        try {
+            $item = $this->getItem();
+            if (empty($item->id)) {
+                throw new \Exception;
+            }
+            $item->fulfill();
+        }
+        catch(\Exception $e) {
+            \Dsc\System::instance()->addMessage('Fulfillment failed with the following errors:', 'error');
+            \Dsc\System::instance()->addMessage($e->getMessage(), 'error');
+            if (\Base::instance()->get('DEBUG')) {
+                \Dsc\System::instance()->addMessage($e->getTraceAsString(), 'error');
+            }
+        }
+    
+        $f3 = \Base::instance();
+        $id = $this->inputfilter->clean( $f3->get('PARAMS.id'), 'alnum' );
+    
+        $custom_redirect = \Dsc\System::instance()->get( 'session' )->get( 'order.fulfill.redirect' );
+        $redirect = $custom_redirect ? $custom_redirect : '/admin/shop/order/edit/' . $id;
+        \Dsc\System::instance()->get( 'session' )->set( 'order.fulfill.redirect', null );
+        $f3->reroute( $redirect );
+    }
+    
+    public function fulfillGiftCards()
+    {
+        $data = \Base::instance()->get('REQUEST');
+        if (!$this->canUpdate($data, $this->getItemKey())) {
+            throw new \Exception('Not allowed to update record');
+        }
+        
+        try {
+            $item = $this->getItem();
+            if (empty($item->id)) {
+            	throw new \Exception;
+            }
+            $item->fulfillGiftCards();
+        } 
+        catch(\Exception $e) {
+            \Dsc\System::instance()->addMessage('Fulfillment failed with the following errors:', 'error');
+            \Dsc\System::instance()->addMessage($e->getMessage(), 'error');
+            if (\Base::instance()->get('DEBUG')) {
+                \Dsc\System::instance()->addMessage($e->getTraceAsString(), 'error');
+            }
+        }
+        
+        $f3 = \Base::instance();
+        $id = $this->inputfilter->clean( $f3->get('PARAMS.id'), 'alnum' );
+        
+        $custom_redirect = \Dsc\System::instance()->get( 'session' )->get( 'order.fulfill.redirect' );
+        $redirect = $custom_redirect ? $custom_redirect : '/admin/shop/order/edit/' . $id;
+        \Dsc\System::instance()->get( 'session' )->set( 'order.fulfill.redirect', null );
+        $f3->reroute( $redirect );
+    }
+    
+    public function close()
+    {
+        $data = \Base::instance()->get('REQUEST');
+        if (!$this->canUpdate($data, $this->getItemKey())) {
+            throw new \Exception('Not allowed to update record');
+        }
+    
+        try {
+            $item = $this->getItem();
+            if (empty($item->id)) {
+                throw new \Exception;
+            }
+            $item->close();
+        }
+        catch(\Exception $e) {
+            \Dsc\System::instance()->addMessage('Fulfillment failed with the following errors:', 'error');
+            \Dsc\System::instance()->addMessage($e->getMessage(), 'error');
+            if (\Base::instance()->get('DEBUG')) {
+                \Dsc\System::instance()->addMessage($e->getTraceAsString(), 'error');
+            }
+        }
+    
+        $f3 = \Base::instance();
+        $id = $this->inputfilter->clean( $f3->get('PARAMS.id'), 'alnum' );
+    
+        $custom_redirect = \Dsc\System::instance()->get( 'session' )->get( 'order.fulfill.redirect' );
+        $redirect = $custom_redirect ? $custom_redirect : '/admin/shop/order/edit/' . $id;
+        \Dsc\System::instance()->get( 'session' )->set( 'order.fulfill.redirect', null );
+        $f3->reroute( $redirect );
+    }
+    
+    public function cancel()
+    {
+        $data = \Base::instance()->get('REQUEST');
+        if (!$this->canUpdate($data, $this->getItemKey())) {
+            throw new \Exception('Not allowed to update record');
+        }
+    
+        try {
+            $item = $this->getItem();
+            if (empty($item->id)) {
+                throw new \Exception;
+            }
+            $item->cancel();
+        }
+        catch(\Exception $e) {
+            \Dsc\System::instance()->addMessage('Fulfillment failed with the following errors:', 'error');
+            \Dsc\System::instance()->addMessage($e->getMessage(), 'error');
+            if (\Base::instance()->get('DEBUG')) {
+                \Dsc\System::instance()->addMessage($e->getTraceAsString(), 'error');
+            }
+        }
+    
+        $f3 = \Base::instance();
+        $id = $this->inputfilter->clean( $f3->get('PARAMS.id'), 'alnum' );
+    
+        $custom_redirect = \Dsc\System::instance()->get( 'session' )->get( 'order.fulfill.redirect' );
+        $redirect = $custom_redirect ? $custom_redirect : '/admin/shop/order/edit/' . $id;
+        \Dsc\System::instance()->get( 'session' )->set( 'order.fulfill.redirect', null );
+        $f3->reroute( $redirect );
+    }
+    
+    public function open()
+    {
+        $data = \Base::instance()->get('REQUEST');
+        if (!$this->canUpdate($data, $this->getItemKey())) {
+            throw new \Exception('Not allowed to update record');
+        }
+    
+        try {
+            $item = $this->getItem();
+            if (empty($item->id)) {
+                throw new \Exception;
+            }
+            $item->open();
+        }
+        catch(\Exception $e) {
+            \Dsc\System::instance()->addMessage('Fulfillment failed with the following errors:', 'error');
+            \Dsc\System::instance()->addMessage($e->getMessage(), 'error');
+            if (\Base::instance()->get('DEBUG')) {
+                \Dsc\System::instance()->addMessage($e->getTraceAsString(), 'error');
+            }
+        }
+    
+        $f3 = \Base::instance();
+        $id = $this->inputfilter->clean( $f3->get('PARAMS.id'), 'alnum' );
+    
+        $custom_redirect = \Dsc\System::instance()->get( 'session' )->get( 'order.fulfill.redirect' );
+        $redirect = $custom_redirect ? $custom_redirect : '/admin/shop/order/edit/' . $id;
+        \Dsc\System::instance()->get( 'session' )->set( 'order.fulfill.redirect', null );
+        $f3->reroute( $redirect );
+    }
 }

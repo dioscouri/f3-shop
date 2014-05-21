@@ -10,4 +10,10 @@ class OrderFinancialStatus
     const partially_refunded = "partially_refunded";
     const refunded = "refunded";
     const voided = "voided";
+    
+    public static function fetch()
+    {
+        $refl = new \ReflectionClass( get_called_class() );
+        return (array) $refl->getConstants();
+    }
 }

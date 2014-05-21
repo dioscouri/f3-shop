@@ -16,6 +16,8 @@ class Orders extends \Dsc\Mongo\Collections\Taggable
     public $credit_total = null;
     public $giftcard_total = null;
 
+    public $customer = array();     // Users\Models\Users cast as an array
+    public $customer_name = null;
     public $user_id = null;
     public $user_email = null;
     public $is_guest = null;
@@ -82,6 +84,24 @@ class Orders extends \Dsc\Mongo\Collections\Taggable
             $this->setCondition('user_id', new \MongoId((string) $filter_user));
         }
         
+        $filter_status = $this->getState('filter.status');
+        if (strlen($filter_status))
+        {
+            $this->setCondition('status', $filter_status);
+        }
+        
+        $filter_fulfillment_status = $this->getState('filter.fulfillment_status');
+        if (strlen($filter_fulfillment_status))
+        {
+            $this->setCondition('fulfillment_status', $filter_fulfillment_status);
+        }
+        
+        $filter_financial_status = $this->getState('filter.financial_status');
+        if (strlen($filter_financial_status))
+        {
+            $this->setCondition('financial_status', $filter_financial_status);
+        }
+                
         return $this;
     }
 
@@ -122,6 +142,41 @@ class Orders extends \Dsc\Mongo\Collections\Taggable
         return parent::beforeValidate();
     }
     
+    protected function beforeSave()
+    {
+        // if all the items are fulfilled, the order is fulfilled
+        if ($this->status == \Shop\Constants\OrderStatus::open
+            && $this->fulfillment_status != \Shop\Constants\OrderFulfillmentStatus::fulfilled
+        ) 
+        {
+            $all_fulfilled = true;
+            foreach ($this->items as $item)
+            {
+                if (\Dsc\ArrayHelper::get( $item, 'fulfillment_status' ) != \Shop\Constants\OrderFulfillmentStatus::fulfilled) 
+                {
+                    $all_fulfilled = false;
+                }
+            }        	
+        }
+        
+        return parent::beforeSave();
+    }
+    
+    public function customerName()
+    {
+        $name = $this->customer_name;
+        if (empty($name)) {
+            $user = (new \Users\Models\Users)->load(array('_id'=>$this->user_id));
+            $name = $user->fullName();
+        }
+        
+        if (empty($name)) {
+            $name = $this->user_email;
+        }
+        
+        return $name;
+    }
+    
     /**
      * Creates an order from a cart object
      * 
@@ -148,9 +203,12 @@ class Orders extends \Dsc\Mongo\Collections\Taggable
         $order->discount_total = $cart->discountTotal();
         $order->credit_total = $cart->creditTotal();
         $order->giftcard_total = $cart->giftCardTotal();
+
+        $user = (new \Users\Models\Users)->load(array('_id'=>$order->user_id));
+        $order->customer = $user->cast();
+        $order->customer_name = $user->fullName();
         
         if (empty($order->user_email)) {
-        	$user = (new \Users\Models\Users)->load(array('_id'=>$order->user_id));
         	if (!empty($user->email)) {
         		$order->user_email = $user->email;
         	}
@@ -370,6 +428,18 @@ class Orders extends \Dsc\Mongo\Collections\Taggable
      */
     public function fulfill()
     {
+        // send gift certificate emails [optional]
+        $this->fulfillGiftCards();
+
+        $this->history[] = array(
+            'created' => \Dsc\Mongo\Metastamp::getDate('now'),
+            'verb' => 'fulfilled'
+        );
+        $this->history[] = array(
+            'created' => \Dsc\Mongo\Metastamp::getDate('now'),
+            'verb' => 'closed'
+        );
+        
         // Close the order and mark it as fulfilled
         $this->fulfillment_status = \Shop\Constants\OrderFulfillmentStatus::fulfilled;
         $this->status = \Shop\Constants\OrderStatus::closed;
@@ -377,14 +447,70 @@ class Orders extends \Dsc\Mongo\Collections\Taggable
                 
         // TODO send shipment notification emails [optional]
         
-        // TODO send gift certificate emails [optional]
-        $this->fulfillGiftCards();
-        
         // trigger the onShopFulfillOrder event
         $this->__fulfill_event = \Dsc\System::instance()->trigger( 'onShopFulfillOrder', array(
             'order' => $this
         ) );
         
+        return $this;
+    }
+    
+    /**
+     *
+     * @return \Shop\Models\Orders
+     */
+    public function open()
+    {
+        $this->history[] = array(
+            'created' => \Dsc\Mongo\Metastamp::getDate('now'),
+            'verb' => 'open'
+        );
+                
+        $this->status = \Shop\Constants\OrderStatus::open;
+        $this->save();
+    
+        // TODO send status update notification emails [optional]
+    
+        return $this;
+    }
+    
+    /**
+     * 
+     * @return \Shop\Models\Orders
+     */
+    public function close()
+    {
+        $this->history[] = array(
+            'created' => \Dsc\Mongo\Metastamp::getDate('now'),
+            'verb' => 'closed'
+        );
+                
+        $this->status = \Shop\Constants\OrderStatus::closed;
+        $this->save();
+    
+        // TODO send status update notification emails [optional]
+    
+        return $this;
+    }
+    
+    /**
+     *
+     * @return \Shop\Models\Orders
+     */
+    public function cancel()
+    {
+        $this->history[] = array(
+            'created' => \Dsc\Mongo\Metastamp::getDate('now'),
+            'verb' => 'cancelled'
+        );
+         
+        // TODO Track this in f3-activity
+        
+        $this->status = \Shop\Constants\OrderStatus::cancelled;
+        $this->save();
+    
+        // TODO send status update notification emails [optional]
+    
         return $this;
     }
     
@@ -410,7 +536,7 @@ class Orders extends \Dsc\Mongo\Collections\Taggable
             	    if (\Dsc\ArrayHelper::get( $item, 'fulfillment_status' ) != \Shop\Constants\OrderFulfillmentStatus::fulfilled) 
             	    {
             	    	// Fulfill it and mark the order item as fulfilled
-            	    	$orderedGiftCard = new \Shop\Models\OrderedGiftCard;
+            	    	$orderedGiftCard = new \Shop\Models\OrderedGiftCards;
             	    	$orderedGiftCard->initial_value = \Dsc\ArrayHelper::get( $item, 'price' );
             	    	$orderedGiftCard->order_item = $item;
             	    	$orderedGiftCard->__email_recipient = $this->user_email;
@@ -430,10 +556,13 @@ class Orders extends \Dsc\Mongo\Collections\Taggable
         // if anything changed, save the order and note the changes
         if (!empty($giftcards_fulfilled)) 
         {
+            $this->fulfillment_status = \Shop\Constants\OrderFulfillmentStatus::partial;
+            
             $string = null;
             foreach ($giftcards_fulfilled as $giftcard_fulfilled) {
             	$string .= $giftcard_fulfilled->id . ', ';
             }
+            
             // log this in the order's internal history
             $this->history[] = array(
                 'created' => \Dsc\Mongo\Metastamp::getDate('now'),
