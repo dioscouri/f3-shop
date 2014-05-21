@@ -24,6 +24,25 @@
             </div>
         </div>
         
+        <div class="">
+            [display this form only after clicking Email]
+            <form class="form-inline" role="form">
+                <div class="form-group">
+                    <label class="sr-only">Your Name</label>
+                    <input type="text" name="sender_name" value="" class="form-control" placeholder="Your Name" />
+                </div>
+                <div class="form-group">
+                    <label class="sr-only">Recipient Name</label>
+                    <input type="text" name="recipient_name" value="" class="form-control" placeholder="Recipient Name" />
+                </div>
+                <div class="form-group">
+                    <label class="sr-only">Recipient Email</label>
+                    <input type="text" name="recipient_email" value="" class="form-control" placeholder="Recipient Email" />
+                </div>
+                <button type="submit" class="btn btn-default">Send</button>
+            </form>        
+        </div>
+        
         <div class="margin-top">
             <a href="./shop" class="btn btn-default custom-button">Start Shopping</a>
         </div>    
