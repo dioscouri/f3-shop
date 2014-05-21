@@ -300,5 +300,11 @@ class Routes extends \Dsc\Routes\Group
             'action' => 'read'
         ) );
         
+        $f3->route( 'GET /shop/giftcard/print/@id/@token', function ( $f3 )
+        {
+            $f3->set( 'print', true );
+            (new \Shop\Site\Controllers\OrderedGiftCard())->read();
+        } );        
+        
     }
 }

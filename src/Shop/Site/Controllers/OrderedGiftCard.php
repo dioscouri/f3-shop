@@ -27,6 +27,13 @@ class OrderedGiftCard extends \Dsc\Controller
     	
     	\Base::instance()->set('giftcard', $item );
     	
+    	if ($f3->get('print')) {
+    	    $this->app->set('meta.title', 'Print | Gift Card');
+    	    $view = \Dsc\System::instance()->get('theme');
+    	    echo $view->renderView('Shop/Site/Views::orderedgiftcard/print.php');
+    	    return;
+    	}    	
+    	
     	$this->app->set('meta.title', 'Gift Card');
     	
     	$view = \Dsc\System::instance()->get('theme');
