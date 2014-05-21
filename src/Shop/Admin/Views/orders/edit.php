@@ -26,14 +26,31 @@
                 
                 <div class="row">
                     <div class="col-xs-12 col-sm-12 col-md-6">
-                        <div><label>Order placed:</label> <?php echo (new \DateTime($item->{'metadata.created.local'}))->format('F j, Y g:ia'); ?></div>
-                        <div><label>Order total:</label> <?php echo \Shop\Models\Currency::format( $item->{'grand_total'} ); ?></div>
+                        <div>
+                            <label>Order #</label>
+                            <span class="order-number">
+                                <?php echo $item->{'number'}; ?>
+                            </span>
+                        </div>
+                        <div>
+                            <label>Date:</label>
+                            <span>
+                                <?php echo (new \DateTime($item->{'metadata.created.local'}))->format('F j, Y g:ia'); ?>
+                            </span>
+                        </div>
+                        <div>
+                            <label class="strong">Total:</label>
+                            <span class="price"><?php echo \Shop\Models\Currency::format( $item->grand_total ); ?></span>
+                        </div>
                     </div>
                     <div class="col-xs-12 col-sm-12 col-md-6">
-                        <div><label>Order #</label><?php echo $item->{'number'}; ?></div>
-                        <div><label>Order status:</label> <?php echo $item->{'status'}; ?></div>
+                        <div>
+                            <label>Status:</label>
+                            <span><?php echo $item->{'status'}; ?></span>
+                        </div>
                     </div>
-                </div>        
+                </div>
+              
             </div>
             
             <div class="form-group">
@@ -71,18 +88,6 @@
                 </div>
                 <?php } ?>
                 
-                <?php foreach ($item->shipments as $shipment) { ?>
-                <div class="row">
-                    <div class="col-xs-12 col-sm-12 col-md-6">
-                        <div>Shipping Vendor (UPS/USPS/Fedex/etc)</div>
-                        <div>Tracking number + link</div>
-                        <div>Address</div>
-                    </div>
-                    <div class="col-xs-12 col-sm-12 col-md-6">
-                        <div>Items in shipment</div>
-                    </div>
-                </div>
-                <?php } ?>
             </div>
             
             <div class="form-group">
@@ -92,42 +97,66 @@
                 
                 <div class="row">
                     <div class="col-xs-12 col-sm-12 col-md-6">
-                        <?php if ($item->{'billing_address'}) { ?>
-                            <address>
-                                <?php echo $item->{'billing_address.name'}; ?><br/>
-                                <?php echo $item->{'billing_address.line_1'}; ?><br/>
-                                <?php echo !empty($item->{'billing_address.line_2'}) ? $item->{'billing_address.line_2'} . '<br/>' : null; ?>
-                                <?php echo $item->{'billing_address.city'}; ?> <?php echo $item->{'billing_address.region'}; ?> <?php echo $item->{'billing_address.postal_code'}; ?><br/>
-                                <?php echo $item->{'billing_address.country'}; ?><br/>
-                            </address>
-                            <?php if (!empty($item->{'billing_address.phone_number'})) { ?>
-                            <div>
-                                <label>Phone:</label> <?php echo $item->{'billing_address.phone_number'}; ?>
-                            </div>
-                            <?php } ?>
+                    <?php if ($method = $item->paymentMethod()) { ?>
+                        <div>
+                            <label>Method:</label> <?php echo $method->{'name'}; ?>
+                        </div>
+                    <?php } ?>
                         
+                    <?php if ($item->{'billing_address'}) { ?>
+                        <address>
+                            <?php echo $item->{'billing_address.name'}; ?><br />
+                            <?php echo $item->{'billing_address.line_1'}; ?><br />
+                            <?php echo !empty($item->{'billing_address.line_2'}) ? $item->{'billing_address.line_2'} . '<br/>' : null; ?>
+                            <?php echo $item->{'billing_address.city'}; ?> <?php echo $item->{'billing_address.region'}; ?> <?php echo $item->{'billing_address.postal_code'}; ?><br />
+                            <?php echo $item->{'billing_address.country'}; ?><br />
+                        </address>
+                        <?php if (!empty($item->{'billing_address.phone_number'})) { ?>
+                        <div>
+                            <label>Phone:</label> <?php echo $item->{'billing_address.phone_number'}; ?>
+                        </div>
+                        <?php } ?>                
+                    <?php } ?>
+                    </div>
+
+                    <div class="col-xs-12 col-sm-12 col-md-6">
+                        <div class="order-totals">
+                        <div>
+                            <label class="strong">Subtotal:</label>
+                            <span class="price"><?php echo \Shop\Models\Currency::format( $item->sub_total ); ?></span>
+                        </div>
+                        <?php if ($item->discount_total > 0) { ?>
+                        <div>
+                            <label class="strong">Discount:</label>
+                            <span class="price">-<?php echo \Shop\Models\Currency::format( $item->discount_total ); ?></span>
+                        </div>
+                        <?php } ?>                
+                        <?php if ($item->shipping_total > 0) { ?>
+                        <div>
+                            <label class="strong">Shipping:</label>
+                            <span class="price"><?php echo \Shop\Models\Currency::format( $item->shipping_total ); ?></span>
+                        </div>
                         <?php } ?>
-                    </div>
-                    <div class="col-xs-12 col-sm-12 col-md-6">
-                        <?php if ($method = $item->paymentMethod()) { ?>
-                            <div>
-                                <label>Method:</label> <?php echo $method->{'name'}; ?>
-                            </div>
+                        <?php if ($item->tax_total > 0) { ?>
+                        <div>
+                            <label class="strong">Tax:</label>
+                            <span class="price"><?php echo \Shop\Models\Currency::format( $item->tax_total ); ?></span>
+                        </div>
                         <?php } ?>
-                    </div>
-                </div>        
-                
-                <?php foreach ($item->payments as $payment) { ?>
-                <div class="row">
-                    <div class="col-xs-12 col-sm-12 col-md-6">
-                        <div>Payment method(s) (if CC, last 4)</div>
-                        <div>Address (if different from primary)</div>
-                    </div>
-                    <div class="col-xs-12 col-sm-12 col-md-6">
-                        <div>Amount paid via payment method</div>
+                        <?php if ($item->giftcard_total > 0) { ?>
+                        <div>
+                            <label class="strong">Giftcard:</label>
+                            <span class="price">-<?php echo \Shop\Models\Currency::format( $item->giftcard_total ); ?></span>
+                        </div>
+                        <?php } ?>
+                        <div>
+                            <label class="strong">Total:</label>
+                            <span class="price"><?php echo \Shop\Models\Currency::format( $item->grand_total ); ?></span>
+                        </div>
+                        </div>
                     </div>
                 </div>
-                <?php } ?>    
+                   
             </div>
             
             <div class="form-group">

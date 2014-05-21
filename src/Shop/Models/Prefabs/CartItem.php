@@ -27,7 +27,8 @@ class CartItem extends \Dsc\Prefabs
         'weight'=>null,
         'image'=>null,
 
-        'product'=>null        // complete \Shop\Models\Products object cast as an array                                       
+        'product'=>null,        // complete \Shop\Models\Products object cast as an array
+        'fulfillment_status' => \Shop\Constants\OrderFulfillmentStatus::unfulfilled,
     );
     
     public function __construct($source=array(), $options=array())

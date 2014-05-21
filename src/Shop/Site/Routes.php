@@ -294,5 +294,11 @@ class Routes extends \Dsc\Routes\Group
             'namespace' => '\Shop\Site\Controllers',
             'url_prefix' => '/account/addresses'
         ));
+        
+        $this->add( '/giftcard/@id/@token', 'GET', array(
+            'controller' => 'OrderedGiftCard',
+            'action' => 'read'
+        ) );
+        
     }
 }

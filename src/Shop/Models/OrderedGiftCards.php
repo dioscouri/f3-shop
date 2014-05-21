@@ -7,6 +7,9 @@ class OrderedGiftCards extends \Dsc\Mongo\Collections\Nodes
     public $initial_value;
     public $balance;
     public $history = array();
+    
+    public $token;                  // a MongoId.  Used to make new-giftcard URLs unique    
+    public $order_item = null;      // if from a purchase, this is the corresponding order.item
    
     protected $__collection_name = 'shop.orders.giftcards';
     protected $__type = 'shop.orders.giftcards';
@@ -70,6 +73,15 @@ class OrderedGiftCards extends \Dsc\Mongo\Collections\Nodes
         return parent::validate();
     }
     
+    protected function beforeSave()
+    {
+        if (empty($this->token)) {
+        	$this->token = new \MongoId;
+        }
+    
+        return parent::beforeSave();
+    }
+    
     protected function beforeCreate()
     {
         $this->balance = $this->initial_value;
@@ -77,12 +89,13 @@ class OrderedGiftCards extends \Dsc\Mongo\Collections\Nodes
         return parent::beforeCreate();
     }
     
-    protected function afterSave()
+    protected function afterCreate()
     {
         if (!empty($this->__email_recipient)) 
         {
         	// TODO Send this code via email
         	\Dsc\System::addMessage( 'Would send a gift card via email to ' . $this->__email_recipient );
+        	// $this->sendEmailNewGiftCard( array( $this->__email_recipient ) );
         }
         
         parent::afterSave();
@@ -193,5 +206,30 @@ class OrderedGiftCards extends \Dsc\Mongo\Collections\Nodes
     	// TODO Track this in f3-activity
     	
     	return $this->save();
+    }
+    
+    /**
+     * Send out new gift card emails
+     *
+     * @param array $recipients
+     */
+    public function sendEmailNewGiftCard( array $recipients=array() )
+    {
+        \Base::instance()->set('giftcard', $this);
+        \Base::instance()->set('settings', \Shop\Models\Settings::fetch());
+    
+        $html = \Dsc\System::instance()->get( 'theme' )->renderView( 'Shop/Views::emails_html/new_gift_card.php' );
+        $text = \Dsc\System::instance()->get( 'theme' )->renderView( 'Shop/Views::emails_text/new_gift_card.php' );
+    
+        $order_number = $this->number;
+        $subject = 'Your new gift card!';
+    
+        $this->__sendEmailNewGiftCard = array();
+        foreach ($recipients as $recipient) 
+        {
+            $this->__sendEmailNewGiftCard[$recipient] = \Dsc\System::instance()->get('mailer')->send($recipient, $subject, array($html, $text) );
+        }
+    
+        return $this;
     }
 }

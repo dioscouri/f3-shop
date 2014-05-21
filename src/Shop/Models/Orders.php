@@ -44,6 +44,9 @@ class Orders extends \Dsc\Mongo\Collections\Taggable
     public $discounts = array();    
     public $credits = array();
     
+    // internal log of changes to the order
+    public $history = array();
+    
     // TODO Add support for recurring charges products
     //public $recurring = array(
         // enabled => null,         // boolean, is there a trial period or no?                    
@@ -313,7 +316,6 @@ class Orders extends \Dsc\Mongo\Collections\Taggable
         }
         
         // 2. Add an email to the Mailer
-        // TODO confirm that user_email is set
         if ($this->user_email) {
             $this->sendEmailNewOrder();
         }
@@ -368,10 +370,81 @@ class Orders extends \Dsc\Mongo\Collections\Taggable
      */
     public function fulfill()
     {
-        // TODO send shipment notification emails
-        // TODO send gift certificate emails
-        // TODO trigger the onShopFulfillOrder event
-        // TODO Close the order and mark it as fulfilled
+        // Close the order and mark it as fulfilled
+        $this->fulfillment_status = \Shop\Constants\OrderFulfillmentStatus::fulfilled;
+        $this->status = \Shop\Constants\OrderStatus::closed;
+        $this->save();
+                
+        // TODO send shipment notification emails [optional]
+        
+        // TODO send gift certificate emails [optional]
+        $this->fulfillGiftCards();
+        
+        // trigger the onShopFulfillOrder event
+        $this->__fulfill_event = \Dsc\System::instance()->trigger( 'onShopFulfillOrder', array(
+            'order' => $this
+        ) );
+        
+        return $this;
+    }
+    
+    /**
+     * Did the customer purchase any gift cards in this order?  
+     * if so, create a Models\OrderedGiftCard document and send the customer email an email for each one
+     * but only if the gift card hasn't been fulfilled already
+     *  
+     * @return \Shop\Models\Orders
+     */
+    public function fulfillGiftCards()
+    {
+        $giftcards_fulfilled = array();
+        
+        foreach ($this->items as $key=>$item)
+        {
+            $product_type = \Dsc\ArrayHelper::get( $item, 'product.product_type' );
+            switch ($product_type) 
+            {
+            	case "giftcard":
+            	case "giftcards":
+            	case "\\Shop\\Models\\GiftCards":
+            	    if (\Dsc\ArrayHelper::get( $item, 'fulfillment_status' ) != \Shop\Constants\OrderFulfillmentStatus::fulfilled) 
+            	    {
+            	    	// Fulfill it and mark the order item as fulfilled
+            	    	$orderedGiftCard = new \Shop\Models\OrderedGiftCard;
+            	    	$orderedGiftCard->initial_value = \Dsc\ArrayHelper::get( $item, 'price' );
+            	    	$orderedGiftCard->order_item = $item;
+            	    	$orderedGiftCard->__email_recipient = $this->user_email;
+            	    	if ($orderedGiftCard->save()) 
+            	    	{
+            	    	    $giftcards_fulfilled[] = $orderedGiftCard;
+            	    	    $this->items[$key]['fulfillment_giftcard'] = $orderedGiftCard->id; 
+            	    	    $this->items[$key]['fulfillment_status'] = \Shop\Constants\OrderFulfillmentStatus::fulfilled;
+            	    	}
+            	    }            	        
+            	    break;
+            	default:
+            	    break;
+            }
+        }
+        
+        // if anything changed, save the order and note the changes
+        if (!empty($giftcards_fulfilled)) 
+        {
+            $string = null;
+            foreach ($giftcards_fulfilled as $giftcard_fulfilled) {
+            	$string .= $giftcard_fulfilled->id . ', ';
+            }
+            // log this in the order's internal history
+            $this->history[] = array(
+                'created' => \Dsc\Mongo\Metastamp::getDate('now'),
+                'verb' => 'fulfilled_giftcards',
+                'object' => $string,
+            );
+             
+            // TODO Track this in f3-activity
+            
+        	return $this->save();
+        }
         
         return $this;
     }

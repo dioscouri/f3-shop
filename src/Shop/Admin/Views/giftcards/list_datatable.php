@@ -125,7 +125,7 @@
                                 </h5>
                                 
                                 <div>
-                                    <a href="./shop/giftcard/<?php echo $item->slug; ?>" target="_blank">/<?php echo $item->{'slug'}; ?></a>
+                                    <a href="./shop/product/<?php echo $item->slug; ?>" target="_blank">/<?php echo $item->{'slug'}; ?></a>
                                 </div>
                                 
                                 <div>

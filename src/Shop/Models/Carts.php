@@ -130,7 +130,7 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
     {
         $options = !empty($post['options']) ? $post['options'] : array();
         $quantity = (!empty($post['quantity']) && $post['quantity'] > 0) ? (int) $post['quantity'] : 1;
-        $price = $product->price();
+        $price = $product->price( $variant_id );
         if (!$variant = $product->variant($variant_id)) {
             $variant = array();
         }
