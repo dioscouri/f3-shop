@@ -59,6 +59,18 @@ class Routes extends \Dsc\Routes\Group
             'controller' => 'Countries',
             'action' => 'forSelection'
         ));
+
+        $this->add('/countries/moveUp/@id', 'GET', array(
+        		'controller' => 'Countries',
+        		'action' => 'MoveUp'
+        ));
+
+        $this->add('/countries/moveDown/@id', 'GET', array(
+        		'controller' => 'Countries',
+        		'action' => 'MoveDown'
+        ));
+
+		$this->addChangeStateListRoutes( 'Countries', '/countries' );
         
         $this->addCrudGroup('Regions', 'Region');
         $this->add('/regions/forSelection [ajax]', 'GET|POST', array(
