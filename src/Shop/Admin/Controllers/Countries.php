@@ -3,7 +3,9 @@ namespace Shop\Admin\Controllers;
 
 class Countries extends \Admin\Controllers\BaseAuth 
 {
-    use \Dsc\Traits\Controllers\AdminList;
+    use \Dsc\Traits\Controllers\AdminList,
+    	\Dsc\Traits\Controllers\OrderableItemCollection,
+    	\Dsc\Traits\Controllers\EnablableItem;
     
     protected $list_route = '/admin/shop/countries';
 

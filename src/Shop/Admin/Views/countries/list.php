@@ -22,20 +22,18 @@
     <div class="no-padding">
         
         <div class="row">
-            <div class="col-xs-12 col-sm-5 col-md-5 col-lg-8">
-                <?php /* ?>
+           <div class="col-xs-12 col-sm-5 col-md-5 col-lg-8">
+
                 <ul class="list-filters list-unstyled list-inline">
                     <li>
-                        <a class="btn btn-link">Advanced Filtering</a>
+                        <select id="enabled_filter" name="filter[enabled]" class="form-control" onchange="this.form.submit();">
+                            <option value="">All Countries</option>
+                            <option value="1" <?php if ($state->get('filter.enabled') == '1') { echo "selected='selected'"; } ?>>Enabled only</option>
+                            <option value="0" <?php if ($state->get('filter.enabled') == '0') { echo "selected='selected'"; } ?>>Disabled only</option>
+                        </select>
                     </li>                
-                    <li>
-                        <a class="btn btn-link">Quicklink Filter</a>
-                    </li>
-                    <li>
-                        <a class="btn btn-link">Quicklink Filter</a>
-                    </li>                    
-                </ul>
-                */ ?>
+				</ul>    
+
             </div>
             <div class="col-xs-12 col-sm-7 col-md-7 col-lg-4">
                 <div class="form-group">
@@ -50,10 +48,41 @@
             </div>
         </div>
         
+        <div class="row">
+            <div class="col-xs-12 col-sm-6">
+                <ul class="list-filters list-unstyled list-inline">
+                    <li>
+                        <select name="list[order]" class="form-control" onchange="this.form.submit();">
+                            <option value="ordering" <?php if ($state->get('list.order') == 'ordering') { echo "selected='selected'"; } ?>>Ordering</option>
+                        	<option value="name" <?php if ($state->get('list.order') == 'name') { echo "selected='selected'"; } ?>>Name</option>
+                        </select>
+                    </li>
+                    <li>
+                        <select name="list[direction]" class="form-control" onchange="this.form.submit();">
+                            <option value="1" <?php if ($state->get('list.direction') == '1') { echo "selected='selected'"; } ?>>ASC</option>
+                            <option value="-1" <?php if ($state->get('list.direction') == '-1') { echo "selected='selected'"; } ?>>DESC</option>
+                        </select>                        
+                    </li>
+                </ul>            
+            </div>
+            
+            <div class="col-xs-12 col-sm-6">
+                <div class="text-align-right">
+                <ul class="list-filters list-unstyled list-inline">
+                    <li>
+                        <?php if (!empty($paginated->items)) { ?>
+                        <?php echo $paginated->getLimitBox( $state->get('list.limit') ); ?>
+                        <?php } ?>
+                    </li>                
+                </ul>    
+                </div>
+            </div>
+        </div>
+        
         <div class="widget-body-toolbar">    
     
             <div class="row">
-                <div class="col-xs-12 col-sm-5 col-md-3 col-lg-3">
+                <div class="col-xs-12 col-sm-6 col-lg-3">
                     <span class="pagination">
                     <div class="input-group">
                         <select id="bulk-actions" name="bulk_action" class="form-control">
@@ -66,87 +95,77 @@
                     </div>
                     </span>
                 </div>    
-                <div class="col-xs-12 col-sm-7 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3">
-                    <div class="row text-align-right">
-                        <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10">
+                <div class="col-xs-12 col-sm-6 col-lg-6 col-lg-offset-3">
+                    <div class="text-align-right">
                         <?php if (!empty($paginated->total_pages) && $paginated->total_pages > 1) { ?>
                             <?php echo $paginated->serve(); ?>
-                        <?php } ?>
-                        </div>
-                        <?php if (!empty($paginated->items)) { ?>
-                        <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-                            <span class="pagination">
-                            <?php echo $paginated->getLimitBox( $state->get('list.limit') ); ?>
-                            </span>
-                        </div>
                         <?php } ?>
                     </div>            
                 </div>
             </div>
         
         </div>
-        <!-- /.widget-body-toolbar -->
-        
+        <!-- /.widget-body-toolbar -->        
         <input type="hidden" name="list[order]" value="<?php echo $state->get('list.order'); ?>" />
         <input type="hidden" name="list[direction]" value="<?php echo $state->get('list.direction'); ?>" />
+   
+        <?php if (!empty($paginated->items)) { ?>
         
-        <div class="table-responsive datatable dt-wrapper dataTables_wrapper">
-            
-            <table class="table table-striped table-bordered table-hover table-highlight table-checkable">
-        	<thead>
-        		<tr>
-        		    <th class="checkbox-column"><input type="checkbox" class="icheck-input"></th>
-        			<th data-sortable="name">Name</th>
-        			<th>ISO Codes: 2 | 3</th>
-        			<th class="col-md-1"></th>
-        		</tr>
-        	</thead>
-        	<tbody>    
-        
-            <?php if (!empty($paginated->items)) { ?>
-            
-            <?php foreach($paginated->items as $item) { ?>
-                <tr>
-                    <td class="checkbox-column">
-                        <input type="checkbox" class="icheck-input" name="ids[]" value="<?php echo $item->_id; ?>">
-                    </td>
+            <?php foreach($paginated->items as $country) { ?>
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="checkbox-column col-xs-1 col-sm-1 col-md-1">
+							<input type="checkbox" class="icheck-input" name="ids[]" value="<?php echo $country->id; ?>">
+                        </div>
                     
-                    <td class="">
-                        <a href="./admin/shop/country/edit/<?php echo $item->_id; ?>">
-                        <?php echo $item->name; ?>
-                        </a>
-                    </td>
-                    
-                    <td class="">
-                        <a href="./admin/shop/country/edit/<?php echo $item->_id; ?>">
-                        <?php echo $item->isocode_2; ?> | <?php echo $item->isocode_3; ?>
-                        </a>
-                    </td>
-                                    
-                    <td class="text-center">
-                        <a class="btn btn-xs btn-secondary" href="./admin/shop/country/edit/<?php echo $item->_id; ?>">
-                            <i class="fa fa-pencil"></i>
-                        </a>
-                        &nbsp;
-                        <a class="btn btn-xs btn-danger" data-bootbox="confirm" href="./admin/shop/country/delete/<?php echo $item->_id; ?>">
-                            <i class="fa fa-times"></i>
-                        </a>
-                    </td>
-                </tr>
+                        <div class="col-xs-11 col-sm-11 col-md-11">
+                        	<div class="row">
+	                             <div class="col-xs-9 col-sm-10 col-md-11">
+	                            	<legend><a href="./admin/shop/country/edit/<?php echo $country->id; ?>"><?php echo $country->name; ?></a>
+		                        		|
+		                        		<a class="btn btn-xs" href="./admin/shop/countries/moveUp/<?php echo $country->id; ?>" title="Move Up">
+		                        			<i class="fa fa-chevron-up"></i>
+		                        		</a>
+		                        		&nbsp;
+		                        		<a class="btn btn-xs" href="./admin/shop/countries/moveDown/<?php echo $country->id; ?>" title="Move Down">
+		                        			<i class="fa fa-chevron-down"></i>
+		                        		</a>
+		                        		</legend>
+	                            	</div>
+		                        <div class="col-xs-3 col-sm-2 col-md-1">
+		                        	<div class="pull-right">
+				                        <a class="btn btn-xs btn-danger" data-bootbox="confirm" href="./admin/shop/country/delete/<?php echo $country->id; ?>">
+				                            <i class="fa fa-times"></i>
+				                        </a>
+		                        	</div>
+		                        	<div class="pull-right col-xs-12 col-md-12">
+										<?php if( $country->enabled ) { ?>
+		                        		<a class="btn btn-xs" href="./admin/shop/countries/disable/<?php echo $country->id; ?>" title="Disable">
+		                        			<i class="fa fa-check-square"></i> Enabled
+		                        		</a>
+		                        		<?php } else { ?>
+		                        		<a class="btn btn-xs" href="./admin/shop/countries/enable/<?php echo $country->id; ?>" title="Enable">
+		                        			<i class="fa fa-square"></i> Disabled
+		                        		</a>
+		                        		<?php } ?>
+		                        	</div>
+		                    	</div>
+                        	</div>
+                        	<div class="row">
+                        		<div class="col-xs-4 col-sm-4 col-md3">
+                        		<?php echo $country->isocode_2; ?> | <?php echo $country->isocode_3; ?>
+                        		</div>
+                        	</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <?php } ?>
             
             <?php } else { ?>
-                <tr>
-                <td colspan="100">
-                    <div class="">No items found.</div>
-                </td>
-                </tr>
+                <div class="">No items found.</div>
             <?php } ?>
-        
-            </tbody>
-            </table>
-            
-        </div>
         
         <div class="dt-row dt-bottom-row">
             <div class="row">
@@ -164,7 +183,6 @@
                 </div>
             </div>
         </div>
-    
     </div>
 
 </form>

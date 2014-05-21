@@ -3,16 +3,18 @@ namespace Shop\Models;
 
 class Countries extends \Dsc\Mongo\Collection
 {
+	use \Dsc\Traits\Models\OrderableCollection;
+	
     public $name = null;
     public $isocode_2 = null;
     public $isocode_3 = null;
     public $enabled = null;
-    public $ordering = null;
     
     protected $__collection_name = 'shop.countries';
     protected $__config = array(
         'default_sort' => array(
-            'name' => 1 
+        	'ordering' => 1,
+            'name' => 1,
         ) 
     );
     
@@ -32,7 +34,12 @@ class Countries extends \Dsc\Mongo\Collection
     
             $this->setCondition('$or', $where);
         }
+        
+        $filter_only_enabled = $this->getState( 'filter.enabled', null );
     
+        if( strlen( $filter_only_enabled ) ){
+        	$this->setCondition( "enabled", (int)$filter_only_enabled );
+    	}
         return $this;
     }
 
@@ -66,4 +73,11 @@ class Countries extends \Dsc\Mongo\Collection
         
         return $result;
     }
+    
+    protected function afterSave()
+    {
+    	parent::afterSave();
+    	$this->compressOrdering();
+    }
+    
 }
