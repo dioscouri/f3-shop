@@ -305,6 +305,10 @@ class Routes extends \Dsc\Routes\Group
             $f3->set( 'print', true );
             (new \Shop\Site\Controllers\OrderedGiftCard())->read();
         } );        
-        
+
+        $this->add( '/giftcard/email/@id/@token', 'POST', array(
+            'controller' => 'OrderedGiftCard',
+            'action' => 'email'
+        ) );
     }
 }

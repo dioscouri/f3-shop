@@ -76,7 +76,8 @@ class OrderedGiftCards extends \Dsc\Mongo\Collections\Nodes
     protected function beforeSave()
     {
         if (empty($this->token)) {
-        	$this->token = new \MongoId;
+            $mongo_id = (string) new \MongoId;
+        	$this->token = md5( $mongo_id . time() );
         }
     
         return parent::beforeSave();
@@ -225,8 +226,7 @@ class OrderedGiftCards extends \Dsc\Mongo\Collections\Nodes
     
         $html = \Dsc\System::instance()->get( 'theme' )->renderView( 'Shop/Views::emails_html/new_gift_card.php' );
         $text = \Dsc\System::instance()->get( 'theme' )->renderView( 'Shop/Views::emails_text/new_gift_card.php' );
-    
-        $order_number = $this->number;
+
         $subject = 'Your new gift card!';
     
         $this->__sendEmailNewGiftCard = array();
@@ -236,5 +236,29 @@ class OrderedGiftCards extends \Dsc\Mongo\Collections\Nodes
         }
     
         return $this;
+    }
+    
+    public function sendEmailShareGiftCard( $data )
+    {
+        \Base::instance()->set('data', $data);
+        \Base::instance()->set('giftcard', $this);
+        \Base::instance()->set('settings', \Shop\Models\Settings::fetch());
+        
+        $html = \Dsc\System::instance()->get( 'theme' )->renderView( 'Shop/Views::emails_html/share_gift_card.php' );
+        $text = \Dsc\System::instance()->get( 'theme' )->renderView( 'Shop/Views::emails_text/share_gift_card.php' );
+        
+        $subject = 'A gift card from ' . $data['sender_name'];
+        
+        $this->__sendEmailShareGiftCard = \Dsc\System::instance()->get('mailer')->send($data['recipient_email'], $subject, array($html, $text) );
+
+        // Add the entry to the gift card's internal history log
+        $this->history[] = array(
+            'created' => \Dsc\Mongo\Metastamp::getDate('now'),
+            'subject' => $data['sender_name'] . ' (' . $data['sender_email'] . ')',
+            'verb' => 'shared',
+            'object' => $data['recipient_name'] . ' (' . $data['recipient_email'] . ')',
+        );
+        
+        return $this->save();
     }
 }
