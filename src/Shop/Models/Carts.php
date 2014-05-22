@@ -420,6 +420,23 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
     }
     
     /**
+     * Does this cart require payment?
+     *
+     * @return boolean
+     */
+    public function paymentRequired()
+    {
+        $payment_required = true;
+        
+        if (empty($this->total())) 
+        {
+            $payment_required = false;
+        }
+        
+        return $payment_required;
+    }
+    
+    /**
      * Does this cart require shipping?
      * 
      * 0    = return if shipping is not required for this cart and global setting = no

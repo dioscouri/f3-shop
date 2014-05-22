@@ -35,6 +35,7 @@ class Orders extends \Dsc\Mongo\Collections\Taggable
     
     // Payment Fields
     public $financial_status = \Shop\Constants\OrderFinancialStatus::pending;
+    public $payment_required = true;
     public $payment_method = null;          // a PaymentMethod model cast as an array
     public $billing_address = array();
     public $payments = array();             // an array of Payment models cast as arrays
@@ -228,6 +229,7 @@ class Orders extends \Dsc\Mongo\Collections\Taggable
         
         // TODO Payment/Billing fields
         $order->billing_address = $cart->{'checkout.billing_address'};
+        $order->payment_required = $cart->paymentRequired();
         
         // TODO Credits
         
