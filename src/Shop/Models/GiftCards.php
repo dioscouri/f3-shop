@@ -92,6 +92,7 @@ class GiftCards extends \Shop\Models\Products
             }        	
         }
         
+        $this->set('shipping.enabled', false);
         $this->set('policies.track_inventory', false);
         $this->set('policies.variant_pricing.enabled', true);
         

@@ -35,7 +35,7 @@ class Products extends \Dsc\Mongo\Collections\Content
     );
     
     public $shipping = array(
-        'enabled'=>false,
+        'enabled'=>true,
         'weight'=>null,
         'dimensions'=>array(
             'length'=>null,
@@ -370,6 +370,9 @@ class Products extends \Dsc\Mongo\Collections\Content
         {
             $this->{'display.stickers'} = array();
         }
+        
+        $this->set( 'shipping.enabled', (bool) $this->get( 'shipping.enabled') );
+        $this->set( 'taxes.enabled', (bool) $this->get( 'taxes.enabled') );
         
         $this->set( 'prices.default', (float) $this->get( 'prices.default') );
         $this->set( 'prices.list', (float) $this->get( 'prices.list') );
