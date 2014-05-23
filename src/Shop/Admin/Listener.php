@@ -269,6 +269,12 @@ class Listener extends \Prefab
         $event->setArgument('content', $content);
     }
     
+    /**
+     * Add related products to the Pages model whenever it is saved
+     * 
+     * @param unknown $event
+     * @return \MongoId
+     */
     public function beforeSavePagesModelsPages( $event ) 
     {
         $model = $event->getArgument('model');
@@ -294,6 +300,59 @@ class Listener extends \Prefab
         	}
         }
         
+        $event->setArgument('model', $model);
+    }
+    
+    /**
+     * Adds a Shop tab to the Blog\Post editing form
+     */
+    public function onDisplayBlogPostEdit($event)
+    {
+        $item = $event->getArgument('item');
+        $tabs = $event->getArgument('tabs');
+        $content = $event->getArgument('content');
+    
+        $view = \Dsc\System::instance()->get('theme');
+        $shop_content = $view->renderLayout('Shop/Admin/Views::listeners/fields_related_products.php');
+    
+        $tabs['shop'] = 'Shop';
+        $content['shop'] = $shop_content;
+    
+        $event->setArgument('tabs', $tabs);
+        $event->setArgument('content', $content);
+    }
+    
+    /**
+     * Add related products to the Blog Posts model whenever it is saved
+     * 
+     * @param unknown $event
+     * @return \MongoId
+     */
+    public function beforeSaveBlogModelsPosts( $event )
+    {
+        $model = $event->getArgument('model');
+    
+        if (!empty($model->__products))
+        {
+            if (! is_array( $model->__products ))
+            {
+                $model->__products = trim( $model->__products );
+                if (! empty( $model->__products ))
+                {
+                    $model->__products = \Base::instance()->split( (string) $model->__products );
+                }
+            }
+             
+            if (! empty( $model->__products ) && is_array( $model->__products ))
+            {
+                // convert the array of product ids into an array of MongoIds
+                $model->{'shop.products'} = array_map( function ( $input )
+                {
+                    return new \MongoId( $input );
+                }, $model->__products );
+            }
+        }
+    
         $event->setArgument('model', $model);
     }
 }
