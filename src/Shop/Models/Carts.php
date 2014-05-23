@@ -908,7 +908,9 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
         {
             $cart = (new static)->load(array('_id' => new \MongoId( (string) $this->id ) ));
             
-            // Compare items, coupons, shipping address, and shipping method.  If changed, empty the taxes
+            // Compare items, coupons, shipping address, and shipping method.  
+            // If changed, empty the taxes
+            // and update coupon & giftcard values
             if ($cart->items != $this->items 
                 || $cart->coupons != $this->coupons
                 || $cart->giftcards != $this->giftcards
@@ -918,6 +920,11 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
             )
             {
                 $this->taxes = array();
+
+                foreach ((array) $this->coupons as $key=>$item)
+                {
+                    $this->{'coupons.' . $key . '.amount'} = $this->calcCouponValue( $item );
+                }
             }
         }
         
@@ -1207,6 +1214,9 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
         {
         	throw new \Exception('Cannot calculate value of invalid coupon');
         }
+        
+        // IMPORTANT: we only want the value -- we don't want to revalidate
+        // $coupon->__is_validated = true;
         
         $value = $coupon->cartValue( $this );
         

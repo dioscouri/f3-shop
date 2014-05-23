@@ -236,7 +236,11 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
          * and if the auto-coupon is exclusive, it can't be added with others
          */
         // If this is a user-submitted coupon && there are other user-submitted coupons in the cart, fail
-        if (empty($this->usage_automatic) && $cart->userCoupons()) 
+        if (
+            empty($this->usage_automatic) 
+            && $cart->userCoupons()
+            && $cart->userCoupons()[0]['code'] != $this->code // AND the userCoupon is different from this coupon
+            ) 
         {
             throw new \Exception('Only one coupon allowed per cart');
         }
