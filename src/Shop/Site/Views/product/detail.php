@@ -159,8 +159,8 @@ jQuery(document).ready(function(){
                         </div>
                     </div>
                     <div class="price-line">
-                        <?php if (((int) $item->get('prices.list') > 0) && $item->get('prices.list') != $item->price() ) { ?>
-                            <span class="list-price price"><strike><?php echo \Shop\Models\Currency::format( $item->{'prices.list'} ); ?></strike></span>
+                        <?php if (((int) $item->get('prices.list') > 0) && (float) $item->get('prices.list') != (float) $item->price() ) { ?>
+                            <span class="list-price"><strike><?php echo \Shop\Models\Currency::format( $item->{'prices.list'} ); ?></strike></span>
                         <?php } ?>
                         &nbsp;
                         <div class="price">
