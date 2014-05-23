@@ -1041,4 +1041,25 @@ class Products extends \Dsc\Mongo\Collections\Content
         
         return $this->__variants_in_stock;
     }
+    
+    /**
+     * Determines if a product is available for purchase
+     * by checking multiple things, including variant inventory
+     * publication dates, etc
+     * 
+     */
+    public function isAvailable() 
+    {
+        $return = true;
+        
+    	// stock:
+    	if (empty($this->inventory_count)) 
+    	{
+    	    $return = false;
+    	}
+    	
+    	// TODO Check publication dates
+    	    
+    	return $return;
+    }
 }
