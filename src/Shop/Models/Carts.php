@@ -1021,19 +1021,34 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
     {
         if (!empty($this->id)) 
         {
-            // If a cart is updated, recalculate coupon values and tax value                        
-            $this->taxes = array();            
-            $this->ensureAutoCoupons();            
-            foreach ((array) $this->coupons as $key=>$item)
+            // If a cart is updated, recalculate coupon values and tax value
+            $cart = (new static)->load(array('_id' => new \MongoId( (string) $this->id ) ));
+            
+            // Compare items, coupons, shipping address, and shipping method.
+            // If changed, empty the taxes
+            // and update coupon & giftcard values
+            if ($cart->items != $this->items
+                || $cart->coupons != $this->coupons
+                || $cart->auto_coupons != $this->auto_coupons
+                || $cart->giftcards != $this->giftcards
+                || $cart->shippingMethod() != $this->shippingMethod()
+                || $cart->{'checkout.shipping_address'} != $this->{'checkout.shipping_address'}
+                || $cart->{'checkout.billing_address'} != $this->{'checkout.billing_address'}
+            )
             {
-                if (!empty($item['usage_automatic'])) {
-                    unset($this->coupons[$key]);
+                $this->taxes = array();
+                $this->ensureAutoCoupons();
+                foreach ((array) $this->coupons as $key=>$item)
+                {
+                    if (!empty($item['usage_automatic'])) {
+                        unset($this->coupons[$key]);
+                    }
                 }
-            }
-            $this->coupons = array_values(array_filter($this->coupons));
-            foreach ((array) $this->coupons as $key=>$item)
-            {
-                $this->{'coupons.' . $key . '.amount'} = $this->calcCouponValue( $item );
+                $this->coupons = array_values(array_filter($this->coupons));
+                foreach ((array) $this->coupons as $key=>$item)
+                {
+                    $this->{'coupons.' . $key . '.amount'} = $this->calcCouponValue( $item );
+                }
             }
         }
         
