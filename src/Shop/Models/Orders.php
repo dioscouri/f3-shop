@@ -43,7 +43,8 @@ class Orders extends \Dsc\Mongo\Collections\Taggable
     // Lists
     public $items = array();            
     public $taxes = array();        
-    public $coupons = array();      
+    public $coupons = array();
+    public $auto_coupons = array();
     public $discounts = array();    
     public $credits = array();
     

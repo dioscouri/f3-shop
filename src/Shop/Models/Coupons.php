@@ -73,6 +73,12 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
         {
             $this->setCondition('code', $filter_code);
         }
+        
+        $filter_automatic = $this->getState('filter.automatic');
+        if (strlen($filter_automatic))
+        {
+            $this->setCondition('usage_automatic', $filter_automatic);
+        }
     }
     
     public function validate() 
@@ -244,8 +250,9 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
         {
             throw new \Exception('Only one coupon allowed per cart');
         }
-        // if this is an automatic coupon && usage_with_others == 0 && there are other automatic coupons in the cart  
-        elseif ($this->usage_automatic && empty($this->usage_with_others) && $cart->autoCoupons())
+        
+        // if this is an automatic coupon && usage_with_others == 0 && there are other automatic coupons in the cart
+        if ($this->usage_automatic && empty($this->usage_with_others) && $cart->autoCoupons())
         {
             throw new \Exception('This coupon cannot be combined with others');
         }
@@ -548,5 +555,35 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
     	}
     	
     	return $value;
+    }
+    
+    /**
+     * Does this coupon give a shipping discount?
+     * 
+     * @return boolean
+     */
+    public function shipping()
+    {
+        return static::givesShippingDiscount( $this->cast() ); 
+    }
+    
+    /**
+     * Does the provided coupon data array give a shipping discount
+     * 
+     * @return boolean
+     */
+    public static function givesShippingDiscount( array $coupon )
+    {
+        $result = false;
+        
+        switch($coupon['discount_applied']) 
+        {
+            case "product_shipping":
+            case "order_shipping":
+                $result = true;
+                break;
+        }
+        
+        return $result;
     }
 }

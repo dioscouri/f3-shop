@@ -10,7 +10,8 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
     
     public $taxes = array();        // array of \Shop\Models\Prefabs\TaxItems objects
     public $coupons = array();      // array of \Shop\Models\Prefabs\Coupon objects
-    public $discounts = array();    // array of \Shop\Models\Prefabs\Discount objects
+    public $auto_coupons = array(); // array of \Shop\Models\Prefabs\Coupon objects
+    public $discounts = array();    // array of \Shop\Models\Prefabs\Discount objects -- currently unused
     public $giftcards = array();    // array of \Shop\Models\OrderedGiftCards cast as arrays
     
     public $name = null;            // user-defined name for cart
@@ -669,11 +670,94 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
     {
         $discount = 0;
         
-        foreach ($this->coupons as $coupon) 
+        $discount = $this->userDiscountTotal();
+        
+        $discount = $discount + $this->autoDiscountTotal();
+        
+        return (float) $discount;
+    }
+    
+    /**
+     * Gets the total of all automatically-applied discounts,
+     * optionally excluding the discounts that apply to shipping 
+     * 
+     * @return number
+     */
+    public function autoDiscountTotal($exclude_shipping=false)
+    {
+        $discount = 0;
+        
+        foreach ($this->auto_coupons as $coupon)
         {
-        	$discount = $discount + $coupon['amount'];
+            if ($exclude_shipping && \Shop\Models\Coupons::givesShippingDiscount( $coupon ))
+            {
+                continue;
+            }            
+            $discount = $discount + $coupon['amount'];
         }
         
+        return (float) $discount;
+    }
+    
+    /**
+     * Returns the total of all the automatically-applied shipping discounts
+     * 
+     * @return number
+     */
+    public function autoShippingDiscountTotal()
+    {
+        $discount = 0;
+
+        foreach ($this->auto_coupons as $coupon)
+        {
+            if (\Shop\Models\Coupons::givesShippingDiscount( $coupon ))
+            {
+                $discount = $discount + $coupon['amount'];
+            }
+        }
+            
+        return (float) $discount;
+    }
+    
+    /**
+     * Gets the total of all user-applied discounts,
+     * optionally excluding the discounts that apply to shipping
+     * 
+     * @return number
+     */
+    public function userDiscountTotal($exclude_shipping=false)
+    {
+        $discount = 0;
+    
+        foreach ($this->coupons as $coupon)
+        {
+            if ($exclude_shipping && \Shop\Models\Coupons::givesShippingDiscount( $coupon )) 
+            {
+                continue;            	
+            }
+            $discount = $discount + $coupon['amount'];
+        }
+    
+        return (float) $discount;
+    }
+    
+    /**
+     * Gets the total of all user-applied shipping discounts
+     * 
+     * @return number
+     */
+    public function userShippingDiscountTotal()
+    {
+        $discount = 0;
+    
+        foreach ($this->coupons as $coupon)
+        {
+            if (\Shop\Models\Coupons::givesShippingDiscount( $coupon )) 
+            {
+                $discount = $discount + $coupon['amount'];
+            }            
+        }
+    
         return (float) $discount;
     }
     
@@ -713,6 +797,8 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
     public function taxableTotal()
     {
         $total = 0;
+        
+        /*
         foreach ($this->items as $item)
         {
             // is the item taxable?
@@ -721,6 +807,9 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
                 $total = $total + \Dsc\ArrayHelper::get( $item, 'price' );
             }
         }        
+        */
+        
+        $total = $total + $this->subtotal();
         
         if ($shippingMethod = $this->shippingMethod())
         {
@@ -930,28 +1019,21 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
      */
     protected function beforeSave()
     {
-        // Load the saved version of this cart using $this->id
         if (!empty($this->id)) 
         {
-            $cart = (new static)->load(array('_id' => new \MongoId( (string) $this->id ) ));
-            
-            // Compare items, coupons, shipping address, and shipping method.  
-            // If changed, empty the taxes
-            // and update coupon & giftcard values
-            if ($cart->items != $this->items 
-                || $cart->coupons != $this->coupons
-                || $cart->giftcards != $this->giftcards
-                || $cart->shippingMethod() != $this->shippingMethod()
-                || $cart->{'checkout.shipping_address'} != $this->{'checkout.shipping_address'}
-                || $cart->{'checkout.billing_address'} != $this->{'checkout.billing_address'}
-            )
+            // If a cart is updated, recalculate coupon values and tax value                        
+            $this->taxes = array();            
+            $this->ensureAutoCoupons();            
+            foreach ((array) $this->coupons as $key=>$item)
             {
-                $this->taxes = array();
-
-                foreach ((array) $this->coupons as $key=>$item)
-                {
-                    $this->{'coupons.' . $key . '.amount'} = $this->calcCouponValue( $item );
+                if (!empty($item['usage_automatic'])) {
+                    unset($this->coupons[$key]);
                 }
+            }
+            $this->coupons = array_values(array_filter($this->coupons));
+            foreach ((array) $this->coupons as $key=>$item)
+            {
+                $this->{'coupons.' . $key . '.amount'} = $this->calcCouponValue( $item );
             }
         }
         
@@ -1243,8 +1325,7 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
         }
         
         // IMPORTANT: we only want the value -- we don't want to revalidate
-        // $coupon->__is_validated = true;
-        
+        $coupon->__is_validated = true;        
         $value = $coupon->cartValue( $this );
         
         return $value;
@@ -1255,7 +1336,7 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
      * 
      * @return multitype:
      */
-    public function userCoupons()
+    public function userCoupons($shipping=null)
     {
         if (empty($this->coupons)) 
         {
@@ -1265,10 +1346,30 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
         $coupons = array();
         foreach ($this->coupons as $coupon)
         {
-        	if (empty($coupon['usage_automatic'])) 
-        	{
-        	    $coupons[] = $coupon;
-        	}
+            $gives_shipping_discount = \Shop\Models\Coupons::givesShippingDiscount( $coupon );
+            if ($shipping === false)
+            {
+                // only the non-shipping coupons
+                if ($gives_shipping_discount) {
+                    continue;
+                } else {
+                    $coupons[] = $coupon;
+                }                
+            }
+            
+            elseif ($shipping === true)
+            {
+                // only the shipping ones
+                if ($gives_shipping_discount) {
+                    $coupons[] = $coupon;
+                }                
+            }
+            
+            else 
+            {
+                // $shipping = null, so give me all of the user coupons 
+                $coupons[] = $coupon;
+            }
         }
         
         return $coupons;
@@ -1279,23 +1380,88 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
      *
      * @return multitype:
      */
-    public function autoCoupons()
+    public function autoCoupons($shipping=null)
     {
-        if (empty($this->coupons))
+        if (empty($this->auto_coupons))
         {
             return array();
         }
-    
+        
         $coupons = array();
-        foreach ($this->coupons as $coupon)
+        foreach ($this->auto_coupons as $coupon)
         {
-            if (!empty($coupon['usage_automatic']))
+            $gives_shipping_discount = \Shop\Models\Coupons::givesShippingDiscount( $coupon );
+            if ($shipping === false)
             {
+                // only the non-shipping coupons
+                if ($gives_shipping_discount) {
+                    continue;
+                } else {
+                    $coupons[] = $coupon;
+                }
+            }
+        
+            elseif ($shipping === true)
+            {
+                // only the shipping ones
+                if ($gives_shipping_discount) {
+                    $coupons[] = $coupon;
+                }
+            }
+        
+            else
+            {
+                // $shipping = null, so give me all of the user coupons
                 $coupons[] = $coupon;
             }
         }
-    
+        
         return $coupons;
+    }
+    
+    /**
+     * Determines which auto coupons should be part of this cart
+     * then ensures that those are the only auto coupons currently in the cart
+     * 
+     * @return \Shop\Models\Carts
+     */
+    public function ensureAutoCoupons()
+    {
+        // get all potential auto-coupons (published auto coupons)
+        // check each one against $this cart for validity
+        
+        $valid_auto_coupons = array();
+        
+        $coupons = (new \Shop\Models\Coupons)
+            ->setState('filter.publication_status', 'published')
+            ->setState('filter.published_today', true)
+            ->setState('filter.automatic', '1')
+            ->getItems();
+        
+        foreach ($coupons as $coupon) 
+        {
+            // if the coupon is valid for this cart, ensure it is added
+            // otherwise, ensure it is removed
+            try {
+            	$coupon->cartValid( $this );
+            	$valid_auto_coupons[$coupon->code] = $coupon;
+            }
+            catch (\Exception $e) {
+            	// REMOVE IT
+            }
+        }
+
+        $this->auto_coupons = array();        
+        foreach ($valid_auto_coupons as $valid_auto_coupon) 
+        {
+            $cast = $valid_auto_coupon->cast();
+            $cast['amount'] = $this->calcCouponValue( $valid_auto_coupon );
+            $this->auto_coupons[] = $cast;        	
+        }
+        
+        $this->auto_coupons = array_values($this->auto_coupons);
+        
+        return $this;
     }
     
     /**
