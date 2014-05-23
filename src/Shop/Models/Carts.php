@@ -304,8 +304,12 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
      */
     public function merge( $data )
     {
+        $save = false;
+        
         if (!empty($data['items'])) 
         {
+            $save = true;
+            
             foreach ($data['items'] as $data_key=>$data_item)
             {
             	// does it exist in $this?  if so, merge
@@ -326,7 +330,30 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
                     $this->items[] = $data_item;
                 }
             }
+        }
+        
+        if (!empty($data['coupons'])) 
+        {
+            $save = true;
             
+        	$this->coupons = $data['coupons'];
+        }
+        
+        if (!empty($data['giftcards']))
+        {
+            $save = true;
+        
+            $this->giftcards = $data['giftcards'];
+        }
+        
+        if (!empty($data['discounts']))
+        {
+            $save = true;
+        
+            $this->discounts = $data['discounts'];
+        }
+        
+        if ($save) {
             $this->save();
         }
         
