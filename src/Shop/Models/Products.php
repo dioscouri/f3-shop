@@ -387,40 +387,47 @@ class Products extends \Dsc\Mongo\Collections\Content
 
         // compare them, only acting if they're different
         // the arrays need to be sorted for comparison, which is why we sort above
-		if ($this->related_products != $old_product->related_products)
-		{
-		    // we need two arrays:
-		    // $new_relationships == the ones from $this->related_products that are NOT in $old_product->related_products
-		    // $deleted_relationships == the ones from $old_product->related_products that are NOT in $this->related_products
-
-		    $new_relationships = array_diff($this->related_products, $old_product->related_products);
-		    $deleted_relationships = array_diff($old_product->related_products, $this->related_products);
+        if ($this->related_products != $old_product->related_products)
+        {
+            // we need two arrays:
+            // $new_relationships == the ones from $this->related_products that are NOT in $old_product->related_products
+            // $deleted_relationships == the ones from $old_product->related_products that are NOT in $this->related_products
+            $new_relationships = array_diff($this->related_products, $old_product->related_products);
+            $deleted_relationships = array_diff($old_product->related_products, $this->related_products);
             
-	        // remove all $deleted_relationships 
-	        if (!empty( $deleted_relationships ) )
-	        {
-	            $this->collection()->update(
-	                array( 
-	                    '_id' => array( '$in' => $deleted_relationships ),
-	                    'related_products' => new \MongoId ( (string) $this->id )
-	                ),
-	                array( '$pull' =>
-	                    array( 'related_products' => new \MongoId ( (string) $this->id) ) ),
-	                array('multiple'=>true)
-	            );
-	        }
-	        	
-	        // insert $new_relationships
-	        if (!empty($new_relationships))
-	        {	        
-	            $this->collection()->update(
-	                array( '_id' => array(  '$in' => $new_relationships ) ),
-	                array( '$push' =>
-	                    array( 'related_products' => new \MongoId ( (string)$this->id) ) ),
-	                array('multiple'=>true)
-	            );
-	        }
-		}
+            // remove all $deleted_relationships
+            if (!empty($deleted_relationships))
+            {
+                $this->collection()->update(array(
+                    '_id' => array(
+                        '$in' => $deleted_relationships
+                    ),
+                    'related_products' => new \MongoId((string) $this->id)
+                ), array(
+                    '$pull' => array(
+                        'related_products' => new \MongoId((string) $this->id)
+                    )
+                ), array(
+                    'multiple' => true
+                ));
+            }
+            
+            // insert $new_relationships
+            if (!empty($new_relationships))
+            {
+                $this->collection()->update(array(
+                    '_id' => array(
+                        '$in' => $new_relationships
+                    )
+                ), array(
+                    '$push' => array(
+                        'related_products' => new \MongoId((string) $this->id)
+                    )
+                ), array(
+                    'multiple' => true
+                ));
+            }
+        }
         
         unset($this->parent);
         unset($this->new_category_title);
