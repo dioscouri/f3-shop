@@ -373,12 +373,13 @@ class Products extends \Dsc\Mongo\Collections\Content
                 $this->related_products[$key] = new \MongoId( (string) $product_id );
             }
         }
-        $this->related_products = sort( array_values($this->related_products) );        
+        $this->related_products = array_values($this->related_products);
+        sort($this->related_products);
                 
         // whether related_products is empty or not, we have to compare it to its previous state
         // and make updates if they aren't the same
         $old_product = (new static)->load( array('_id' => new \MongoId( (string) $this->id ) ));
-
+        
         if (!empty($old_product->related_products) && is_array($old_product->related_products)) {
             sort($old_product->related_products);
         } else {
