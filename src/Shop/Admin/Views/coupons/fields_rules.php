@@ -34,6 +34,35 @@
 <div class="row">
     <div class="col-md-2">
         
+        <h3>Required Coupons</h3>
+        <p class="help-block">This coupon will only be applied if the shopper has one of these OTHER coupons already in their cart.</p>
+                
+    </div>
+    <!-- /.col-md-2 -->
+                
+    <div class="col-md-10">
+    
+        <div class="form-group">
+            <label>Search</label>
+            <div class="input-group">
+                <input id="required_coupons" name="required_coupons" value="<?php echo implode(",", (array) $flash->old('required_coupons') ); ?>" type="text" class="form-control" /> 
+            </div>
+            <!-- /.form-group -->        
+            
+        </div>
+        <!-- /.form-group -->
+        
+    </div>
+    <!-- /.col-md-10 -->
+    
+</div>
+<!-- /.row -->
+
+<hr />
+
+<div class="row">
+    <div class="col-md-2">
+        
         <h3>Minimums</h3>
         <p class="help-block">The coupon will only be applied if these minimums are met.</p>
                 
@@ -122,7 +151,32 @@ jQuery(document).ready(function() {
         }
         <?php if ($flash->old('required_products')) { ?>
         , initSelection : function (element, callback) {
-            var data = <?php echo json_encode( \Shop\Models\Products::forSelection( array('_id'=>array('$in'=>array_map( function($input){ return new \MongoId($input); }, $flash->old('required_products') ) ) ) ) ); ?>;
+            var data = <?php echo json_encode( \Shop\Models\Products::forSelection( array('_id'=>array('$in'=>array_map( function($input){ return new \MongoId($input); }, (array) $flash->old('required_products') ) ) ) ) ); ?>;
+            callback(data);            
+        }
+        <?php } ?>
+    });
+
+    jQuery("#required_coupons").select2({
+        allowClear: true, 
+        placeholder: "Search...",
+        multiple: true,
+        minimumInputLength: 3,
+        ajax: {
+            url: "./admin/shop/coupons/forSelection",
+            dataType: 'json',
+            data: function (term, page) {
+                return {
+                    q: term
+                };
+            },
+            results: function (data, page) {
+                return {results: data.results};
+            }
+        }
+        <?php if ($flash->old('required_coupons')) { ?>
+        , initSelection : function (element, callback) {
+            var data = <?php echo json_encode( \Shop\Models\Coupons::forSelection( array('_id'=>array('$in'=>array_map( function($input){ return new \MongoId($input); }, (array) $flash->old('required_coupons') ) ) ) ) ); ?>;
             callback(data);            
         }
         <?php } ?>

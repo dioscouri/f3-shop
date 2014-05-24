@@ -17,6 +17,7 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
     public $max_value = null;
     public $max_value_currency = null;
     public $required_products = array();
+    public $required_coupons = array();
     public $min_order_amount = null;
     public $min_order_amount_currency = null;
     public $geo_address_type = null;
@@ -155,6 +156,18 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
             $this->required_products = array();
         }
         
+        if (!empty($this->required_coupons) && !is_array($this->required_coupons))
+        {
+            $this->required_coupons = trim($this->required_coupons);
+            if (!empty($this->required_coupons)) {
+                $this->required_coupons = \Base::instance()->split( (string) $this->required_coupons );
+            }
+        }
+        elseif(empty($this->required_coupons) && !is_array($this->required_coupons))
+        {
+            $this->required_coupons = array();
+        }
+        
         if (!empty($this->geo_countries) && !is_array($this->geo_countries))
         {
             $this->geo_countries = trim($this->geo_countries);
@@ -280,6 +293,29 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
             if (empty($intersection)) 
             {
                 throw new \Exception('Cart does not have any of the required products');
+            }
+        }
+        
+        /**
+         * check that at least one of the $this->required_coupons is in the cart
+         */
+        if (!empty($this->required_coupons))
+        {
+            // get the IDs of all coupons in this cart
+            $coupon_ids = array();
+            foreach ($cart->userCoupons() as $coupon)
+            {
+                $coupon_ids[] = (string) $coupon['_id'];
+            }
+            foreach ($cart->autoCoupons() as $coupon)
+            {
+                $coupon_ids[] = (string) $coupon['_id'];
+            }            
+        
+            $intersection = array_intersect($this->required_coupons, $coupon_ids);
+            if (empty($intersection))
+            {
+                throw new \Exception('Cart does not have any of the required coupons');
             }
         }
          
@@ -614,6 +650,37 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
                 break;
         }
         
+        return $result;
+    }
+    
+    /**
+     * Helper method for creating select list options
+     *
+     * @param array $query
+     * @return multitype:multitype:string NULL
+     */
+    public static function forSelection(array $query=array())
+    {
+        if (empty($this)) {
+            $model = new static();
+        } else {
+            $model = clone $this;
+        }
+    
+        $cursor = $model->collection()->find($query, array("title"=>1) );
+        $cursor->sort(array(
+            'title' => 1
+        ));
+    
+        $result = array();
+        foreach ($cursor as $doc) {
+            $array = array(
+                'id' => (string) $doc['_id'],
+                'text' => htmlspecialchars( $doc['title'], ENT_QUOTES ),
+            );
+            $result[] = $array;
+        }
+    
         return $result;
     }
 }

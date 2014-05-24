@@ -126,5 +126,9 @@ class Routes extends \Dsc\Routes\Group
             'action' => 'forSelection'
         ));
         
+        $this->add('/coupons/forSelection [ajax]', 'GET|POST', array(
+            'controller' => 'Coupons',
+            'action' => 'forSelection'
+        ));
     }
 }
