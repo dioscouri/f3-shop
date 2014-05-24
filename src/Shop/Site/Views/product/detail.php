@@ -176,6 +176,48 @@ jQuery(document).ready(function(){
                     </div>
                 </form>
 
+                <hr />
+            <?php if ($related_products = (array) $item->{'related_products'}) { ?>
+                <div class="margin-top">
+                <h3>Related Products</h3>
+                <?php $n=0; $count = count($related_products); ?>
+                
+                <?php 
+                	$related_products_db = (new \Shop\Models\Products)->setState('filter.ids', $related_products)->getList();
+                	foreach ($related_products_db as $product ) { ?>
+                    <?php $search_item = $product->toSearchItem(); ?>
+                    <?php if (empty($search_item->url) || !$product->isAvailable()) { continue; } ?>
+                    
+                    <?php if ($n == 0 || ($n % 4 == 0)) { ?><div class="row"><?php } ?>
+                    
+                    <div class="col-xs-6 col-sm-3 col-md-3 category-article category-grid text-center">
+                        
+                        <div class="">
+                            <?php if ($search_item->image) { ?>
+                            <a href="<?php echo $search_item->url; ?>">
+                                <img class="img-responsive" src="<?php echo $search_item->image ?>">
+                            </a>
+                            <?php } ?>
+                            <h4><?php echo $search_item->title; ?></h4>                
+                        </div>
+                        <div class="price-line">
+                            <?php if (((int) $product->get('prices.list') > 0) && $product->get('prices.list') != $product->price() ) { ?>
+                                <span class="list-price price"><strike><?php echo \Shop\Models\Currency::format( $product->{'prices.list'} ); ?></strike></span>
+                            <?php } ?>
+                            &nbsp;
+                            <div class="price">
+                                <?php echo \Shop\Models\Currency::format( $product->price() ); ?>
+                            </div>
+    
+                        </div>                        
+               
+                    </div>
+                    
+                    <?php $n++; if (($n % 4 == 0) || $n==$count) { ?></div> <hr/><?php } ?>
+                <?php } ?>
+                </div>
+            <?php } ?>
+                
             </div>
         </div>
     </div>
