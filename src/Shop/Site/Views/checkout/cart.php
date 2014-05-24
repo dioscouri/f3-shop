@@ -27,7 +27,7 @@
                 <?php if ($autocoupons_nonshipping_discount = $cart->autoDiscountTotal(true)) { ?>
                     <tr class="auto_discount">
                         <td>
-                            <div class="strong">Auto Discount:</div>
+                            <div class="strong">Discount:</div>
                         </td>
                         <td class="col-xs-6">
                             <div class="price">-<?php echo \Shop\Models\Currency::format( $autocoupons_nonshipping_discount ); ?></div>

@@ -23,6 +23,7 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
     public $geo_countries = array();
     public $geo_regions = array();
     public $groups = array();
+    public $groups_method = 'one';
     public $publication = array(
         'status' => 'unpublished',
         'start_date' => null,

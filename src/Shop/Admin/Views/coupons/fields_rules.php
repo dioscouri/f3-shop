@@ -186,30 +186,42 @@ jQuery(document).ready(function() {
     <div class="col-md-2">
         
         <h3>Shopper Groups</h3>
-        <p class="help-block">Shopper must be in one of these groups to get discount.</p>
                         
     </div>
     <!-- /.col-md-2 -->
                 
     <div class="col-md-10">
     
-        <div class="form-group">
-            <?php if ((array) $groups = \Users\Models\Groups::find() ) { ?>
-            <div class="max-height-200 list-group-item">
-                <?php foreach ($groups as $one) { ?>
-                <div class="checkbox">
-                    <label>
-                        <input type="checkbox" name="groups[]" class="icheck-input" value="<?php echo $one->_id; ?>" <?php if (in_array($one->_id, (array) $flash->old('groups'))) { echo "checked='checked'"; } ?>>
-                        <?php echo $one->name;  ?>
-                    </label>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <?php if ((array) $groups = \Users\Models\Groups::find() ) { ?>
+                    <div class="max-height-200 list-group-item">
+                        <?php foreach ($groups as $one) { ?>
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" name="groups[]" class="icheck-input" value="<?php echo $one->_id; ?>" <?php if (in_array($one->_id, (array) $flash->old('groups'))) { echo "checked='checked'"; } ?>>
+                                <?php echo $one->name;  ?>
+                            </label>
+                        </div>
+                        <?php } ?> 
+                        
+                    </div>
+                    <?php } ?>
+                    <input type="hidden" name="groups[]" value="" />                        
                 </div>
-                <?php } ?> 
-                
+                <!-- /.form-group -->
             </div>
-            <?php } ?>
-            <input type="hidden" name="groups[]" value="" />                        
+            <div class="col-md-6">
+                <label>Matching Method</label>
+                <select name="groups_method" class="form-control">
+                    <option value="one" <?php if ($flash->old('groups_method') == "one") { echo "selected='selected'"; } ?>>At least one</option>
+                    <option value="all" <?php if ($flash->old('groups_method') == "all") { echo "selected='selected'"; } ?>>Must be in all</option>
+                    <option value="none" <?php if ($flash->old('groups_method') == "none") { echo "selected='selected'"; } ?>>Cannot be in any</option>
+                </select>
+
+            </div>            
         </div>
-        <!-- /.form-group -->
         
     </div>
     <!-- /.col-md-10 -->
