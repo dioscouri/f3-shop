@@ -12,7 +12,7 @@
         <div class="form-group">
             <label>Search for Products</label>
             <div class="input-group">
-                <input id="products" name="__products" value="<?php echo implode(",", (array) $flash->old('shop.products') ); ?>" type="text" class="form-control" /> 
+                <input id="products" name="shop[products]" value="<?php echo implode(",", (array) $flash->old('shop.products') ); ?>" type="text" class="form-control" /> 
             </div>
             <!-- /.form-group -->        
             

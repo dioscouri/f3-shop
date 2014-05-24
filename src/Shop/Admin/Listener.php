@@ -279,25 +279,33 @@ class Listener extends \Prefab
     {
         $model = $event->getArgument('model');
         
-        if (!empty($model->__products)) 
+        if (!empty($model->{'shop.products'}))
         {
-        	if (! is_array( $model->__products ))
-        	{
-        	    $model->__products = trim( $model->__products );
-        	    if (! empty( $model->__products ))
-        	    {
-        	        $model->__products = \Base::instance()->split( (string) $model->__products );
-        	    }
-        	}
-        	
-        	if (! empty( $model->__products ) && is_array( $model->__products ))
-        	{
-        	    // convert the array of product ids into an array of MongoIds
-        	    $model->{'shop.products'} = array_map( function ( $input )
-        	    {
-        	        return new \MongoId( $input );
-        	    }, $model->__products );
-        	}
+            if (!is_array( $model->{'shop.products'} ))
+            {
+                $model->{'shop.products'} = trim( $model->{'shop.products'} );
+                if (! empty( $model->{'shop.products'} ))
+                {
+                    $model->{'shop.products'} = \Base::instance()->split( (string) $model->{'shop.products'} );
+                }
+                else
+                {
+                    $model->{'shop.products'} = array();
+                }
+            }
+             
+            if (!empty( $model->{'shop.products'} ) && is_array( $model->{'shop.products'} ))
+            {
+                // convert the array of product ids into an array of MongoIds
+                $model->{'shop.products'} = array_map( function ( $input )
+                {
+                    return new \MongoId( $input );
+                }, $model->{'shop.products'} );
+            }
+        }
+        elseif (!is_array($model->{'shop.products'}))
+        {
+            $model->{'shop.products'} = array();
         }
         
         $event->setArgument('model', $model);
@@ -332,25 +340,33 @@ class Listener extends \Prefab
     {
         $model = $event->getArgument('model');
     
-        if (!empty($model->__products))
+        if (!empty($model->{'shop.products'}))
         {
-            if (! is_array( $model->__products ))
+            if (!is_array( $model->{'shop.products'} ))
             {
-                $model->__products = trim( $model->__products );
-                if (! empty( $model->__products ))
+                $model->{'shop.products'} = trim( $model->{'shop.products'} );
+                if (! empty( $model->{'shop.products'} ))
                 {
-                    $model->__products = \Base::instance()->split( (string) $model->__products );
+                    $model->{'shop.products'} = \Base::instance()->split( (string) $model->{'shop.products'} );
+                }
+                else 
+                {
+                    $model->{'shop.products'} = array();
                 }
             }
              
-            if (! empty( $model->__products ) && is_array( $model->__products ))
+            if (!empty( $model->{'shop.products'} ) && is_array( $model->{'shop.products'} ))
             {
                 // convert the array of product ids into an array of MongoIds
                 $model->{'shop.products'} = array_map( function ( $input )
                 {
                     return new \MongoId( $input );
-                }, $model->__products );
+                }, $model->{'shop.products'} );
             }
+        }
+        elseif (!is_array($model->{'shop.products'})) 
+        {
+            $model->{'shop.products'} = array();
         }
     
         $event->setArgument('model', $model);
