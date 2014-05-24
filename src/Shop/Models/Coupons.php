@@ -288,10 +288,15 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
          */
         if (!empty($this->groups)) 
         {
+            $groups = array();
             $user = (new \Users\Models\Users)->setState('filter.id', $cart->user_id)->getItem();
-            if (empty($cart->user_id) || empty($user->id)) {
-            	// TODO Get the default group
-                $groups = array();
+            if (empty($cart->user_id) || empty($user->id)) 
+            {
+            	// Get the default group
+                $group_id = \Shop\Models\Settings::fetch()->{'users.default_group'};
+                if (!empty($group_id)) {
+                    $groups[] = $group->setState('filter.id', (string) $group_id)->getItem();
+                }
             }                
         	elseif (!empty($user->id)) 
         	{
@@ -304,11 +309,35 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
         	    $group_ids[] = (string) $group->id;
         	}
         	
-        	$intersection = array_intersect($this->groups, $group_ids);
-        	if (empty($intersection))
+        	switch ($this->groups_method) 
         	{
-        	    throw new \Exception('Customer is not in one of the required user groups');
-        	}
+        	    case "none":
+        	        $intersection = array_intersect($this->groups, $group_ids);
+        	        if (!empty($intersection))
+        	        {
+        	            throw new \Exception('Customer is in one of the excluded user groups');
+        	        }
+        	                	        
+        	        break;
+        	    case "all":
+        	        // $missing_groups == the ones from $this->groups that are NOT in $group_ids
+        	        $missing_groups = array_diff($this->groups, $group_ids);
+        	        if (empty($intersection))
+        	        {
+        	            throw new \Exception('Customer is not in all of the required user groups');
+        	        }
+        	        
+        	        break;
+        		case "one":
+        		default:
+        		    $intersection = array_intersect($this->groups, $group_ids);
+        		    if (empty($intersection))
+        		    {
+        		        throw new \Exception('Customer is not in any of the required user groups');
+        		    }
+        		    
+        		    break;
+        	}        	
         }
         
         /**
