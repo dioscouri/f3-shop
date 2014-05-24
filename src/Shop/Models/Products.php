@@ -81,6 +81,8 @@ class Products extends \Dsc\Mongo\Collections\Content
     	'stickers' => array()
     );
     
+    public $related_products = null;
+    
     protected $__collection_name = 'shop.products';
     protected $__type = 'shop.products';
     protected $__config = array(
@@ -339,7 +341,75 @@ class Products extends \Dsc\Mongo\Collections\Content
                 });
             });
         }
-    
+        
+        
+        // ---- related products
+        $old_product = (new static)->load( array('_id' => new \MongoId( (string) $this->id ) ));
+		// first check, if any related product was deleted from the list during this save
+		if (! is_array( $this->__related_products ))
+		{
+			$this->__related_products = trim( $this->__related_products );
+			if (! empty( $this->__related_products ))
+			{
+				$this->__related_products = \Base::instance()->split( (string) $this->__related_products );
+			}
+			else {
+				$this->__related_products = array();
+			}
+		}
+        
+		$added_related = array();
+		$this->__related_products = array_map( function ( $input )
+        	    {
+        	        return new \MongoId( (string)$input );
+        	    }, (array) $this->__related_products );
+		
+		foreach( $this->__related_products as $related ){
+			// check if this product was already connected the current product
+			$key = null;
+			foreach( (array)$old_product->related_products as $k => $v ){
+				if( (string)$v == (string)$related ) {
+					$key = $k;
+					break;
+				}
+			}
+			if( $key == null ){
+				$added_related []= $related;
+			} else {
+				unset( $old_product->related_products[$k] ); // mark this as checked
+			}
+		}
+			
+		// remove all deleted connections (all relations in $old_product->related_products)
+		if( !empty( $old_product->related_products ) ){
+			$ids = array();
+			
+			$ids = array_map( function ( $input )
+        	    {
+        	        return new \MongoId( (string)$input );
+        	    }, $old_product->related_products );
+			
+			// remove ID from disconnected products
+			$this->collection()->update( 
+						array( '_id' => array(  '$in' => $ids ) ),
+						array( '$pull' => 
+									array( 'related_products' => new \MongoId ( (string)$this->id) ) ),
+						array('upsert'=>true, 'multiple'=>true) );
+		}
+		
+		// add currently added connections
+		if( !empty( $this->__related_products ) ){
+			// add connections to all products
+			
+			$this->collection()->update(
+					array( '_id' => array(  '$in' => $added_related ) ),
+					array( '$push' =>
+							array( 'related_products' => new \MongoId ( (string)$this->id) ) ),
+					array('upsert'=>true, 'multiple'=>true) );
+		}
+		
+		$this->related_products = $this->__related_products;
+        
         unset($this->parent);
         unset($this->new_category_title);
     
@@ -370,6 +440,8 @@ class Products extends \Dsc\Mongo\Collections\Content
         {
             $this->{'display.stickers'} = array();
         }
+        
+        
         
         $this->set( 'shipping.enabled', (bool) $this->get( 'shipping.enabled') );
         $this->set( 'taxes.enabled', (bool) $this->get( 'taxes.enabled') );

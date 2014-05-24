@@ -37,3 +37,7 @@
     
 </div>
 <!-- /.row -->
+
+<hr />
+
+<?php echo $this->renderLayout('Shop/Admin/Views::products/fields_display_related_products.php'); ?>
