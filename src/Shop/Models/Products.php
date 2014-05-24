@@ -343,72 +343,84 @@ class Products extends \Dsc\Mongo\Collections\Content
         }
         
         
-        // ---- related products
-        $old_product = (new static)->load( array('_id' => new \MongoId( (string) $this->id ) ));
-		// first check, if any related product was deleted from the list during this save
-		if (! is_array( $this->__related_products ))
-		{
-			$this->__related_products = trim( $this->__related_products );
-			if (! empty( $this->__related_products ))
-			{
-				$this->__related_products = \Base::instance()->split( (string) $this->__related_products );
-			}
-			else {
-				$this->__related_products = array();
-			}
-		}
+        // related_products could be a CSV of MongoIds
+        if (!empty($this->related_products) && !is_array( $this->related_products ))
+        {
+            $this->related_products = trim( $this->related_products );
+            if (!empty( $this->related_products ))
+            {
+                $this->related_products = \Base::instance()->split( (string) $this->related_products );
+            }
+            else
+            {
+                $this->related_products = array();
+            }
+        }
+        elseif (empty($this->related_products) && !is_array( $this->related_products ))
+        {
+            $this->related_products = array();
+        }
         
-		$added_related = array();
-		$this->__related_products = array_map( function ( $input )
-        	    {
-        	        return new \MongoId( (string)$input );
-        	    }, (array) $this->__related_products );
-		
-		foreach( $this->__related_products as $related ){
-			// check if this product was already connected the current product
-			$key = null;
-			foreach( (array)$old_product->related_products as $k => $v ){
-				if( (string)$v == (string)$related ) {
-					$key = $k;
-					break;
-				}
-			}
-			if( $key == null ){
-				$added_related []= $related;
-			} else {
-				unset( $old_product->related_products[$k] ); // mark this as checked
-			}
+        foreach ($this->related_products as $key=>$product_id)
+        {
+            // don't allow self-relations.  it will make you go blind.  :-)
+            if ((string) $product_id == (string) $this->id)
+            {
+                unset($this->related_products[$key]);
+            }
+            else
+            {
+                $this->related_products[$key] = new \MongoId( (string) $product_id );
+            }
+        }
+        $this->related_products = sort( array_values($this->related_products) );        
+                
+        // whether related_products is empty or not, we have to compare it to its previous state
+        // and make updates if they aren't the same
+        $old_product = (new static)->load( array('_id' => new \MongoId( (string) $this->id ) ));
+
+        if (!empty($old_product->related_products) && is_array($old_product->related_products)) {
+            sort($old_product->related_products);
+        } else {
+            $old_product->related_products = array();
+        }
+
+        // compare them, only acting if they're different
+        // the arrays need to be sorted for comparison, which is why we sort above
+		if ($this->related_products != $old_product->related_products)
+		{
+		    // we need two arrays:
+		    // $new_relationships == the ones from $this->related_products that are NOT in $old_product->related_products
+		    // $deleted_relationships == the ones from $old_product->related_products that are NOT in $this->related_products
+
+		    $new_relationships = array_diff($this->related_products, $old_product->related_products);
+		    $deleted_relationships = array_diff($old_product->related_products, $this->related_products);
+            
+	        // remove all $deleted_relationships 
+	        if (!empty( $deleted_relationships ) )
+	        {
+	            $this->collection()->update(
+	                array( 
+	                    '_id' => array( '$in' => $deleted_relationships ),
+	                    'related_products' => new \MongoId ( (string) $this->id )
+	                ),
+	                array( '$pull' =>
+	                    array( 'related_products' => new \MongoId ( (string) $this->id) ) ),
+	                array('multiple'=>true)
+	            );
+	        }
+	        	
+	        // insert $new_relationships
+	        if (!empty($new_relationships))
+	        {	        
+	            $this->collection()->update(
+	                array( '_id' => array(  '$in' => $new_relationships ) ),
+	                array( '$push' =>
+	                    array( 'related_products' => new \MongoId ( (string)$this->id) ) ),
+	                array('multiple'=>true)
+	            );
+	        }
 		}
-			
-		// remove all deleted connections (all relations in $old_product->related_products)
-		if( !empty( $old_product->related_products ) ){
-			$ids = array();
-			
-			$ids = array_map( function ( $input )
-        	    {
-        	        return new \MongoId( (string)$input );
-        	    }, $old_product->related_products );
-			
-			// remove ID from disconnected products
-			$this->collection()->update( 
-						array( '_id' => array(  '$in' => $ids ) ),
-						array( '$pull' => 
-									array( 'related_products' => new \MongoId ( (string)$this->id) ) ),
-						array('upsert'=>true, 'multiple'=>true) );
-		}
-		
-		// add currently added connections
-		if( !empty( $this->__related_products ) ){
-			// add connections to all products
-			
-			$this->collection()->update(
-					array( '_id' => array(  '$in' => $added_related ) ),
-					array( '$push' =>
-							array( 'related_products' => new \MongoId ( (string)$this->id) ) ),
-					array('upsert'=>true, 'multiple'=>true) );
-		}
-		
-		$this->related_products = $this->__related_products;
         
         unset($this->parent);
         unset($this->new_category_title);
@@ -440,8 +452,6 @@ class Products extends \Dsc\Mongo\Collections\Content
         {
             $this->{'display.stickers'} = array();
         }
-        
-        
         
         $this->set( 'shipping.enabled', (bool) $this->get( 'shipping.enabled') );
         $this->set( 'taxes.enabled', (bool) $this->get( 'taxes.enabled') );
@@ -504,9 +514,8 @@ class Products extends \Dsc\Mongo\Collections\Content
     
     protected function beforeCreate()
     {
-        \Dsc\System::addMessage( \Dsc\Debug::dump( $this->cast() ));        
         $this->createVariants();
-        \Dsc\System::addMessage( \Dsc\Debug::dump( $this->cast() ));
+
         return parent::beforeCreate();
     }
     
