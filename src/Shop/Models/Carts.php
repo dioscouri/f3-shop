@@ -1049,6 +1049,11 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
                 {
                     $this->{'coupons.' . $key . '.amount'} = $this->calcCouponValue( $item );
                 }
+                
+                foreach ((array) $this->giftcards as $key=>$item)
+                {
+                    $this->{'giftcards.' . $key . '.amount'} = $this->calcGiftCardValue( $item );
+                }
             }
         }
         
@@ -1536,5 +1541,34 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
         }
     
         return $this;
+    }
+    
+    /**
+     * Calculates the value of a giftcard against the data in this cart.
+     * Is a wrapper for the same method in Models\GiftCards to ease getting the value from
+     * a stored cart
+     *
+     * @return number
+     */
+    public function calcGiftCardValue( $giftcard )
+    {
+        $value = 0;
+    
+        if (is_object($giftcard) && is_a($giftcard, '\Shop\Models\OrderedGiftCards') )
+        {
+            // do nothing
+        }
+        elseif (is_array($giftcard) || is_object($giftcard))
+        {
+            $giftcard = new \Shop\Models\OrderedGiftCards( $giftcard );
+        }
+        else
+        {
+            throw new \Exception('Cannot calculate value of invalid giftcard');
+        }
+
+        $value = $giftcard->cartValue( $this );
+    
+        return $value;
     }
 }
