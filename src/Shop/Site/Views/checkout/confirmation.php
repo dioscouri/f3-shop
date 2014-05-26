@@ -23,6 +23,8 @@
         ?>
 
         <?php /* ?> [tracking pixels] */ ?>
+        <?php echo $this->renderView('Shop/Site/Views::checkout/tracking_custom.php'); ?>
+        
         <?php
         if ($settings->{'order_confirmation.gtm.enabled'} == 1) 
         {
