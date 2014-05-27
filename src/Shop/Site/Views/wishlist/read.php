@@ -1,3 +1,13 @@
+<?php 
+	$settings = \Shop\Models\Settings::fetch();
+	$is_kissmetrics = $settings->enabledIntegration( 'kissmetrics' );
+	if( $is_kissmetrics ) { ?>
+<script type="text/javascript">
+	<?php // track viewing cart ?>
+	_kmq.push(['record', 'Viewed Wishlist', {'Wishlist ID' : '<?php echo (string)$wishlist->id; ?>' }]);
+</script>
+	<?php } ?>
+
 <div class="container">
 
 	<ol class="breadcrumb">
