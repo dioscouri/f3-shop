@@ -5,6 +5,24 @@
 <script type="text/javascript">
 	<?php // track viewing cart ?>
 	_kmq.push(['record', 'Viewed Wishlist', {'Wishlist ID' : '<?php echo (string)$wishlist->id; ?>' }]);
+
+	<?php // track click on "Added to cart" ?>
+			jQuery(document).ready(function(){
+				jQuery( 'a[data-button="add-to-cart"]' ).on( 'click', function(e){
+					$this = jQuery( e.currentTarget );
+					data = { 'Product Name' : $this.data( 'product-name' ) };
+					
+					if($this.data( 'product-variant' ).length ) {
+						data["Variant"] = $this.data( 'product-variant' );
+					}
+					if($this.data( 'product-sku' ).length ) {
+						data["SKU"] = $this.data( 'product-sku' );
+					}
+
+					_kmq.push(['record', 'Added to Cart from Wishlist', data ]);
+				}); 
+			});
+	
 </script>
 	<?php } ?>
 
@@ -75,7 +93,7 @@
                         <td>
                             <div class="price text-center">
                             <?php if (\Shop\Models\Variants::quantity(\Dsc\ArrayHelper::get($item, 'variant_id'))) { ?>
-                                <a class="btn btn-default" href="./shop/wishlist/<?php echo $wishlist->id; ?>/cart/<?php echo \Dsc\ArrayHelper::get($item, 'hash'); ?>">Add to Cart</a>
+                                <a class="btn btn-default" data-product-sku="<?php echo  \Dsc\ArrayHelper::get($item, 'sku'); ?>" data-product-variant="<?php echo \Dsc\ArrayHelper::get($item, 'attribute_title'); ?>" data-product-name="<?php echo \Dsc\ArrayHelper::get($item, 'product.title'); ?>" href="./shop/wishlist/<?php echo $wishlist->id; ?>/cart/<?php echo \Dsc\ArrayHelper::get($item, 'hash'); ?>" data-button="add-to-cart">Add to Cart</a>
                             <?php } else { ?>
                                 Unavailable
                             <?php } ?>
