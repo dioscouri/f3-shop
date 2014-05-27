@@ -36,9 +36,6 @@ jQuery(document).ready(function(){
                 <li>
                     <a href="#tab-order-confirmation" data-toggle="tab"> Order Confirmation </a>
                 </li>                                
-                <li>
-                    <a href="#tab-integration" data-toggle="tab"> Integration </a>
-                </li>                                
                 <?php if (!empty($this->event)) { foreach ((array) $this->event->getArgument('tabs') as $key => $title ) { ?>
                 <li>
                     <a href="#tab-<?php echo $key; ?>" data-toggle="tab"> <?php echo $title; ?> </a>
@@ -87,12 +84,6 @@ jQuery(document).ready(function(){
 
                 </div>
 
-                <div class="tab-pane fade in" id="tab-integration">
-                
-                    <?php echo $this->renderLayout('Shop/Admin/Views::settings/integration.php'); ?>
-
-                </div>
-                
                 <?php if (!empty($this->event)) { foreach ((array) $this->event->getArgument('content') as $key => $content ) { ?>
                 <div class="tab-pane fade in" id="tab-<?php echo $key; ?>">
                     <?php echo $content; ?>

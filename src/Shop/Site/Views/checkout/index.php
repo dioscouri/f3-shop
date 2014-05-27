@@ -4,7 +4,7 @@
 	if( $settings->enabledIntegration( 'kissmetrics' ) ) { ?>
 <?php // track start checkout ?>
 <script type="text/javascript">
-	_kmq.push(['record', 'Checkout Started', { 'Cart ID' : '<?php echo (string)$cart->id; ?>' }]);
+	_kmq.push(['record', 'Started Purchase']);
 </script>
 <?php } ?>
 

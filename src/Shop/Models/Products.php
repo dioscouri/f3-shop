@@ -713,9 +713,19 @@ class Products extends \Dsc\Mongo\Collections\Content
     public function toSearchItem()
     {
         $image = (!empty($this->{'featured_image.slug'})) ? './asset/thumb/' . $this->{'featured_image.slug'} : null;
+        $settings = \Admin\Models\Settings::fetch();
+        $is_kissmetrics = $settings->enabledIntegration( 'kissmetrics' );
+        
+        $js = '';
+        // TODO: This is ugly fix, but for now it's OK ==> maybe if we move Kissmetrics up to f3-admin
+        // and make tighter implementation, we can move this to view file
+        if( $is_kissmetrics ){
+        	$term = \Base::instance()->get('q');
+        	$js = "\" onclick=\"javascript:_kmq.push(['record', 'Searched Product', {'Product Name' : '".$this->title."', 'SKU' : '".$this->{'tracking.sku'}."', 'Search Terms' : '".$term."' }])";
+        }
         
         $item = new \Search\Models\Item(array(
-        	'url' => './shop/product/' . $this->slug,
+        	'url' => './shop/product/' . $this->slug .$js,
             'title' => $this->title,
             'subtitle' => $this->{'tracking.sku'},
             'image' => $image,

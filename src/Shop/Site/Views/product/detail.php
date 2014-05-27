@@ -4,7 +4,7 @@
 <?php $variant_1 = current( $variantsInStock ); ?>
 <?php $wishlist_state = \Shop\Models\Wishlists::hasAddedVariant($variant_1['id'], (string) $this->auth->getIdentity()->id) ? 'false' : 'true'; ?>
 <?php 
-	$settings = \Shop\Models\Settings::fetch();
+	$settings = \Admin\Models\Settings::fetch();
 	$is_kissmetrics = $settings->enabledIntegration( 'kissmetrics' );
 ?>
 
@@ -38,9 +38,9 @@ jQuery(document).ready(function(){
 					<?php // track adding to wishlist ?>
 					var sel = jQuery( 'select[name="variant_id"]' );
 					if( sel.size() ) {
-						_kmq.push(['record', 'Added Product to Wishlist', {'Variant' : jQuery("option:selected", sel).text(), 'Name' : '<?php echo $item->title; ?>' }]);
+						_kmq.push(['record', 'Added Product to Wishlist', {'Variant' : jQuery("option:selected", sel).text(), 'Product Name' : '<?php echo $item->title; ?>' }]);
 					} else { // no variants
-						_kmq.push(['record', 'Added Product to Wishlist', { 'Name' : '<?php echo $item->title; ?>' }]);
+						_kmq.push(['record', 'Added Product to Wishlist', { 'Product Name' : '<?php echo $item->title; ?>' }]);
 					}
 	                <?php } ?>
 	            }
@@ -68,7 +68,7 @@ jQuery(document).ready(function(){
 
 <?php if( $is_kissmetrics ) { ?>
 	<?php // track viewed products ?>
-	_kmq.push(['record', 'Viewed Product', {'SKU':'<?php echo $item->{'tracking.sku'}; ?>', 'Name' : '<?php echo $item->title; ?>' }]);
+	_kmq.push(['record', 'Viewed Potential Purchase', {'SKU':'<?php echo $item->{'tracking.sku'}; ?>', 'Product Name' : '<?php echo $item->title; ?>' }]);
 
 	<?php // track click on "Added to cart" ?>
 	jQuery(document).ready(function(){
@@ -76,9 +76,9 @@ jQuery(document).ready(function(){
 			var sel = jQuery( 'select[name="variant_id"]' );
 
 			if( sel.size() ) {
-				_kmq.push(['record', 'Added Product to Cart', {'Variant' : jQuery("option:selected", sel).text(), 'SKU':'<?php echo $item->{'tracking.sku'}; ?>', 'Name' : '<?php echo $item->title; ?>' }]);
+				_kmq.push(['record', 'Added to Cart', {'Variant' : jQuery("option:selected", sel).text(), 'SKU':'<?php echo $item->{'tracking.sku'}; ?>', 'Product Name' : '<?php echo $item->title; ?>' }]);
 			} else { // no variants
-				_kmq.push(['record', 'Added Product to Cart', {'SKU':'<?php echo $item->{'tracking.sku'}; ?>', 'Name' : '<?php echo $item->title; ?>' }]);
+				_kmq.push(['record', 'Added to Cart', {'SKU':'<?php echo $item->{'tracking.sku'}; ?>', 'Product Name' : '<?php echo $item->title; ?>' }]);
 			}
 		}); 
 	});

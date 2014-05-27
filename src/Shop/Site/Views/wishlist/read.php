@@ -1,5 +1,5 @@
 <?php 
-	$settings = \Shop\Models\Settings::fetch();
+	$settings = \Admin\Models\Settings::fetch();
 	$is_kissmetrics = $settings->enabledIntegration( 'kissmetrics' );
 	if( $is_kissmetrics ) { ?>
 <script type="text/javascript">

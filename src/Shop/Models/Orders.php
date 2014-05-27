@@ -295,8 +295,9 @@ class Orders extends \Dsc\Mongo\Collections\Taggable
             return false;
         }
     
+        
         $method = new \Shop\Models\PaymentMethods( $this->{'payment_method'} );
-    
+        
         return $method;
     }
     

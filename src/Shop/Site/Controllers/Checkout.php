@@ -66,6 +66,42 @@ class Checkout extends \Dsc\Controller
         {
             try {
                 $order = (new \Shop\Models\Orders)->load(array('_id' => new \MongoId( (string) $just_completed_order_id ) ));
+                
+                // update kissmetrics, if you can
+                $settings = \Admin\Models\Settings::fetch();
+                if( class_exists( '\KM' ) && $settings->enabledIntegration('kissmetrics')){
+                	\KM::init( $settings->{'integration.kissmetrics.key'} );
+                	 
+                	$identity = \Dsc\System::instance()->get('auth')->getIdentity();
+                	\KM::identify( $identity->email );
+                	
+                	$data_km = array( "Revenue" => $order->grand_total );
+                	
+                	$products_km = array();
+                	foreach( $order->items as $item ){
+                		$product = array();
+                		
+                		$product['Product Name'] = \Dsc\ArrayHelper::get($item, 'product.title');
+                		if( \Dsc\ArrayHelper::get($item, 'attribute_title') ) {
+                			$product['Variant'] =  \Dsc\ArrayHelper::get($item, 'attribute_title');
+                		}
+                		\KM::record("Purchased", $product );
+                	}
+                	 
+               		if( count( $order->coupons ) ){
+               			$data_km['Coupons'] = implode( ', ', sort( (array)\Joomla\Utilities\ArrayHelper::getColumn( (array) $flash->old('coupons'), 'code' ) ) );
+               		}
+                		
+               		if( count( $order->auto_coupons ) ){
+               			$data_km['Auto Coupons'] = implode( ', ', sort( (array)\Joomla\Utilities\ArrayHelper::getColumn( (array) $flash->old('coupons'), 'code' ) ) );
+               		}
+                		
+               	    if( !empty( $order->credit ) ){
+               			$data_km['Credit'] = $order->credit;
+               		}                	
+                	
+                	\KM::record("Finished Checkout", $data_km);
+                }
             } catch (\Exception $e) {
             	// TODO Handle when it's an invalid order
             }
