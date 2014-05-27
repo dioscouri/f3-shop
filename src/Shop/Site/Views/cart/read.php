@@ -5,6 +5,17 @@
     </div>
 <?php } ?>
 
+<?php 
+	$settings = \Shop\Models\Settings::fetch();
+	$is_kissmetrics = $settings->enabledIntegration( 'kissmetrics' );
+	if( $is_kissmetrics ) { ?>
+<script type="text/javascript">
+	<?php // track viewing cart ?>
+	_kmq.push(['record', 'Viewed Cart', {'Cart ID' : '<?php echo (string)$cart->id; ?>' }]);
+</script>
+	<?php } ?>
+
+
 <?php if (!empty($cart->items)) { ?>
 <div class="container cart-container">
     <div class="row">

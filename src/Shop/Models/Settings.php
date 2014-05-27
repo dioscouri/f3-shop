@@ -46,4 +46,23 @@ class Settings extends \Dsc\Mongo\Collections\Settings
         'postal_code' => null,
         'phone_number' => null,
     );
+    
+    public $integration = array(
+    		'kissmetrics' => array(
+    				'enabled' => 0,
+    				'key' => '',
+    		),
+    );
+    
+    public function enabledIntegration( $name ){
+    	$result = false;
+    
+    	switch( $name ){
+    		case 'kissmetrics' :
+    			$result = $this->{'integration.kissmetrics.enabled'} && strlen( $this->{'integration.kissmetrics.key'} );
+    			break;
+    	}
+    
+    	return $result;
+    }
 }

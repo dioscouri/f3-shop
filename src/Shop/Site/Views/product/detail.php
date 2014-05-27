@@ -3,6 +3,11 @@
 <?php $variantsInStock = $item->variantsInStock(); ?>
 <?php $variant_1 = current( $variantsInStock ); ?>
 <?php $wishlist_state = \Shop\Models\Wishlists::hasAddedVariant($variant_1['id'], (string) $this->auth->getIdentity()->id) ? 'false' : 'true'; ?>
+<?php 
+	$settings = \Shop\Models\Settings::fetch();
+	$is_kissmetrics = $settings->enabledIntegration( 'kissmetrics' );
+?>
+
 <script>
 
 Shop.toggleWishlist = function(state) {
@@ -29,6 +34,15 @@ jQuery(document).ready(function(){
 	            if (response.result) {
 					jQuery( 'select[name="variant_id"] option[value="'+variant_id+'"]' ).attr( 'data-wishlist', "0" );
 	                el.replaceWith("<a href='javascript:void(0);'><i class='glyphicon glyphicon-heart'></i> In your wishlist</a>");
+	                <?php if( $is_kissmetrics ) { ?>
+					<?php // track adding to wishlist ?>
+					var sel = jQuery( 'select[name="variant_id"]' );
+					if( sel.size() ) {
+						_kmq.push(['record', 'Added Product to Wishlist', {'Variant' : jQuery("option:selected", sel).text(), 'Name' : '<?php echo $item->title; ?>' }]);
+					} else { // no variants
+						_kmq.push(['record', 'Added Product to Wishlist', { 'Name' : '<?php echo $item->title; ?>' }]);
+					}
+	                <?php } ?>
 	            }
 	        });
        } 
@@ -40,7 +54,36 @@ jQuery(document).ready(function(){
 	   });
 
    Shop.toggleWishlist(<?php echo $wishlist_state; ?>);
+
+	var select = jQuery('select.select-variant');
+	if (select.length) {
+		var selected = select.find("option:selected");
+        var variant = jQuery.parseJSON( selected.attr('data-variant') );
+        if (variant.image) {
+        	Shop.selectVariant(variant);
+        }		
+	}
+   
 });
+
+<?php if( $is_kissmetrics ) { ?>
+	<?php // track viewed products ?>
+	_kmq.push(['record', 'Viewed Product', {'SKU':'<?php echo $item->{'tracking.sku'}; ?>', 'Name' : '<?php echo $item->title; ?>' }]);
+
+	<?php // track click on "Added to cart" ?>
+	jQuery(document).ready(function(){
+		jQuery( 'button[data-button="add-to-bag"]' ).on( 'click', function(e){
+			var sel = jQuery( 'select[name="variant_id"]' );
+
+			if( sel.size() ) {
+				_kmq.push(['record', 'Added Product to Cart', {'Variant' : jQuery("option:selected", sel).text(), 'SKU':'<?php echo $item->{'tracking.sku'}; ?>', 'Name' : '<?php echo $item->title; ?>' }]);
+			} else { // no variants
+				_kmq.push(['record', 'Added Product to Cart', {'SKU':'<?php echo $item->{'tracking.sku'}; ?>', 'Name' : '<?php echo $item->title; ?>' }]);
+			}
+		}); 
+	});
+	
+<?php } ?>
 </script>
 
 <div class="container">
@@ -166,7 +209,7 @@ jQuery(document).ready(function(){
                         <div class="price">
                             <?php echo \Shop\Models\Currency::format( $item->price() ); ?>
                         </div>
-                        <button class="btn btn-default custom-button custom-button-inverted">Add to bag</button>
+                        <button class="btn btn-default custom-button custom-button-inverted" data-button="add-to-bag">Add to bag</button>
                         
                         <div class="small-buttons">
                             <div class="add-to-wishlist-container">
@@ -223,17 +266,3 @@ jQuery(document).ready(function(){
     </div>
 
 </div>
-
-<script>
-jQuery(document).ready(function(){
-	var select = jQuery('select.select-variant');
-	if (select.length) {
-		var selected = select.find("option:selected");
-        var variant = jQuery.parseJSON( selected.attr('data-variant') );
-        if (variant.image) {
-        	Shop.selectVariant(variant);
-        }		
-	}
-});
-</script>
-
