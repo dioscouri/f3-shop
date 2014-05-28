@@ -87,13 +87,14 @@
                             <input type="checkbox" class="icheck-input" name="ids[]" value="<?php echo $item->id; ?>">
                         </div>
                         <div class="col-xs-10 col-md-4">
+                            <span class="pull-right label <?php echo $item->credit_issued_to_user ? 'label-default' : 'label-warning'; ?>"><?php echo $item->credit_issued_to_user ? 'Issued' : 'Not Issued'; ?></span>
                             <h4>
                                 <a href="./admin/shop/credit/edit/<?php echo $item->id; ?>">
                                     <?php echo $item->customerName(); ?>
                                 </a>
                             </h4>
                             <div>
-                                <label>Issued:</label>
+                                <label>Created:</label>
                                 <a href="./admin/shop/credit/edit/<?php echo $item->id; ?>">
                                     <?php echo date( 'Y-m-d', $item->{'metadata.created.time'} ); ?>
                                 </a>
