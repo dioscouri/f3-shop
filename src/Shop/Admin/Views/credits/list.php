@@ -89,7 +89,7 @@
                         <div class="col-xs-10 col-md-4">
                             <h4>
                                 <a href="./admin/shop/credit/edit/<?php echo $item->id; ?>">
-                                    <?php echo $item->code; ?>
+                                    <?php echo $item->customerName(); ?>
                                 </a>
                             </h4>
                             <div>
@@ -102,11 +102,12 @@
                         </div>
                         <div class="col-xs-10 col-xs-offset-2 col-md-6 col-md-offset-0">
                             <div>
-                                <label>Initial Value:</label> <?php echo \Shop\Models\Currency::format( $item->{'initial_value'} ); ?> 
+                                <label>Amount:</label> <?php echo \Shop\Models\Currency::format( $item->{'amount'} ); ?> 
                             </div>
 
                             <div>
-                                <label>Balance:</label> <span class='label label-default'><?php echo \Shop\Models\Currency::format( $item->balance() ); ?></span>
+                                <label>Balance Before:</label> <span class='label label-default'><?php echo \Shop\Models\Currency::format( $item->balance_before ); ?></span>
+                                <label>Balance After:</label> <span class='label label-default'><?php echo \Shop\Models\Currency::format( $item->balance_after ); ?></span>
                             </div>
                         </div>
                         <div class="hidden-xs hidden-sm col-md-1">

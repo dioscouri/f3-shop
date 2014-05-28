@@ -31,7 +31,7 @@ jQuery(document).ready(function(){
                     </div>
                         
                     &nbsp;
-                    <a class="btn btn-default" href="./admin/shop/orders/giftcards">Cancel</a>
+                    <a class="btn btn-default" href="./admin/shop/credits">Cancel</a>
                 </div>
 
             </div>
@@ -65,8 +65,8 @@ jQuery(document).ready(function(){
                         <div class="col-md-10">
                             
                             <div class="form-group">
-                                <label>Initial Value</label>
-                                <input type="text" name="initial_value" placeholder="e.g. 10.00" value="<?php echo $flash->old('initial_value'); ?>" class="form-control required" required data-required='required' />
+                                <label>Amount</label>
+                                <input type="text" name="amount" placeholder="e.g. 10.00" value="<?php echo $flash->old('amount'); ?>" class="form-control required" required data-required='required' />
                             </div>
                             <!-- /.form-group -->
                             
@@ -82,7 +82,6 @@ jQuery(document).ready(function(){
                         <div class="col-md-2">
                             
                             <h3>Customer</h3>
-                            <p class="help-block">Optional.  If you select a customer, they will be emailed the code after you issue it.</p>
                                     
                         </div>
                         <!-- /.col-md-2 -->
@@ -91,7 +90,7 @@ jQuery(document).ready(function(){
                         
                             <div class="form-group">
                                 <label>Customer</label>
-                                <input id="customers" type="text" name="__customers" placeholder="Search..." class="form-control" />
+                                <input id="customers" type="text" name="user_id" placeholder="Search..." class="form-control" />
                             </div>
                             <!-- /.form-group -->
                             
@@ -106,8 +105,8 @@ jQuery(document).ready(function(){
                     <div class="row">
                         <div class="col-md-2">
                             
-                            <h3>Email Addresses</h3>
-                            <p class="help-block">Optional.  Directly provide recipient email addresses.  Use when the email address is not associated with a customer.</p>
+                            <h3>Message</h3>
+                            <p class="help-block">Optional.  Will be displayed to the customer.</p>
                                     
                         </div>
                         <!-- /.col-md-2 -->
@@ -115,8 +114,7 @@ jQuery(document).ready(function(){
                         <div class="col-md-10">
                         
                             <div class="form-group">
-                                <label>Email Addresses</label>
-                                <input id="emails" type="text" name="__emails" placeholder="Email address..." class="form-control ui-select2-tags" data-tags="[]" />
+                                <textarea class="form-control" name="message" rows="10"></textarea>
                             </div>
                             <!-- /.form-group -->
                             
@@ -150,10 +148,10 @@ jQuery(document).ready(function() {
     jQuery("#customers").select2({
         allowClear: true, 
         placeholder: "Search...",
-        multiple: true,
+        multiple: false,
         minimumInputLength: 3,
         ajax: {
-            url: "./admin/shop/customers/forSelection?value=email",
+            url: "./admin/shop/customers/forSelection",
             dataType: 'json',
             data: function (term, page) {
                 return {

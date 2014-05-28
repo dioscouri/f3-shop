@@ -40,7 +40,7 @@ class Credit extends \Admin\Controllers\BaseAuth
 
         $model = new \Shop\Models\Coupons;
         
-        $this->app->set('meta.title', 'Issue a Gift Card | Shop');
+        $this->app->set('meta.title', 'Issue a Credit | Shop');
         
         $view = \Dsc\System::instance()->get('theme');
         $view->event = $view->trigger( 'onDisplayShopCreditsEdit', array( 'item' => $this->getItem(), 'tabs' => array(), 'content' => array() ) );
@@ -55,7 +55,7 @@ class Credit extends \Admin\Controllers\BaseAuth
         
         $flash = \Dsc\Flash::instance();
 
-        $this->app->set('meta.title', 'Edit an Issued Gift Card | Shop');
+        $this->app->set('meta.title', 'Edit an Issued Credit | Shop');
         
         $view = \Dsc\System::instance()->get('theme');
         $view->event = $view->trigger( 'onDisplayShopCreditsEdit', array( 'item' => $this->getItem(), 'tabs' => array(), 'content' => array() ) );        
@@ -74,72 +74,4 @@ class Credit extends \Admin\Controllers\BaseAuth
     }
     
     protected function displayRead() {}
-    
-    /**
-     * Target for POST to create new record
-     */
-    public function add()
-    {
-        $f3 = \Base::instance();
-        $flash = \Dsc\Flash::instance();
-        
-        $data = \Base::instance()->get('REQUEST');
-
-        //\Dsc\System::addMessage( \Dsc\Debug::dump($data) );        
-
-        if (!$this->canCreate($data)) {
-            throw new \Exception('Not allowed to add record');
-        }
-        
-        $__customers = explode( ",", \Dsc\ArrayHelper::get($data, '__customers') );
-        $__emails = explode( ",", \Dsc\ArrayHelper::get($data, '__emails') );
-        
-        $emails = array_unique( array_merge(array(), $__customers, $__emails) );
-        
-        if (!empty($emails)) 
-        {
-        	try {
-        	    $this->getModel()->issueToEmails( $data, $emails );
-        	    
-        	    switch ($data['submitType'])
-        	    {
-        	    	case "save_new":
-        	    	    $route = $this->create_item_route;
-        	    	    break;
-        	    	case "save_close":
-        	    	default:
-        	    	    $route = $this->list_route;
-        	    	    break;
-        	    }
-        	    
-        	    $this->setRedirect( $route );
-
-        	}
-        	catch (\Exception $e) 
-        	{
-        	    \Dsc\System::instance()->addMessage('Save failed with the following errors:', 'error');
-        	    \Dsc\System::instance()->addMessage($e->getMessage(), 'error');
-        	    if (\Base::instance()->get('DEBUG')) {
-        	        \Dsc\System::instance()->addMessage($e->getTraceAsString(), 'error');
-        	    }
-        	     
-        	    // redirect back to the create form with the fields pre-populated
-        	    \Dsc\System::instance()->setUserState('use_flash.' . $this->create_item_route, true);
-        	    $flash->store($data);
-        	    
-        	    $this->setRedirect( $this->create_item_route );
-        	}
-        	
-        }
-        else {
-        	// create just a single gift card
-            $this->doAdd($data);
-        }
-    
-        if ($route = $this->getRedirect()) {
-            \Base::instance()->reroute( $route );
-        }
-    
-        return;
-    }
 }

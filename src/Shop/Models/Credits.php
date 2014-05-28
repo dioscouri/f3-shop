@@ -50,7 +50,8 @@ class Credits extends \Dsc\Mongo\Collections\Nodes
         $this->amount = (float) $this->amount;
         $this->balance_before = (float) $this->balance_before;
         $this->balance_after = (float) $this->balance_after;
-    
+        $this->user_id = new \MongoId( (string) $this->user_id );
+        
         return parent::beforeSave();
     }
     
@@ -62,5 +63,38 @@ class Credits extends \Dsc\Mongo\Collections\Nodes
         }
         
         parent::afterSave();
+    }
+    
+    /**
+     * Gets the associated user object
+     *
+     * @return unknown
+     */
+    public function user()
+    {
+        $user = (new \Users\Models\Users)->load(array('_id'=>$this->user_id));
+    
+        return $user;
+    }
+    
+    /**
+     * Gets a customer's full name,
+     * defaulting to email
+     *
+     * @return unknown
+     */
+    public function customerName()
+    {
+        $name = $this->customer_name;
+        if (empty($name)) {
+            $user = (new \Users\Models\Users)->load(array('_id'=>$this->user_id));
+            $name = $user->fullName();
+        }
+    
+        if (empty($name)) {
+            $name = $this->user_email;
+        }
+    
+        return $name;
     }
 }
