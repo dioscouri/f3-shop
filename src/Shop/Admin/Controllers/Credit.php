@@ -55,7 +55,7 @@ class Credit extends \Admin\Controllers\BaseAuth
         
         $flash = \Dsc\Flash::instance();
 
-        $this->app->set('meta.title', 'Edit an Issued Credit | Shop');
+        $this->app->set('meta.title', 'Edit a Credit | Shop');
         
         $view = \Dsc\System::instance()->get('theme');
         $view->event = $view->trigger( 'onDisplayShopCreditsEdit', array( 'item' => $this->getItem(), 'tabs' => array(), 'content' => array() ) );        

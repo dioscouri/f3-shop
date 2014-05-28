@@ -101,7 +101,7 @@
                             </div>
                           
                         </div>
-                        <div class="col-xs-10 col-xs-offset-2 col-md-6 col-md-offset-0">
+                        <div class="col-xs-10 col-xs-offset-2 col-md-5 col-md-offset-0">
                             <div>
                                 <label>Amount:</label> <?php echo \Shop\Models\Currency::format( $item->{'amount'} ); ?> 
                             </div>
@@ -111,10 +111,16 @@
                                 <label>Balance After:</label> <span class='label label-default'><?php echo \Shop\Models\Currency::format( $item->balance_after ); ?></span>
                             </div>
                         </div>
-                        <div class="hidden-xs hidden-sm col-md-1">
-    	                    <a class="btn btn-xs btn-danger" data-bootbox="confirm" href="./admin/shop/credit/delete/<?php echo $item->id; ?>">
-    	                        <i class="fa fa-times"></i>
-    	                    </a>                        
+                        <div class="hidden-xs hidden-sm col-md-2">
+                            <?php if (empty($item->credit_issued_to_user)) { ?>
+    	                    <a class="btn btn-xs btn-success" data-bootbox="confirm" href="./admin/shop/credit/success/<?php echo $item->id; ?>">
+    	                        Issue
+    	                    </a>
+    	                    <?php } else { ?>                        
+    	                    <a class="btn btn-xs btn-danger" data-bootbox="confirm" href="./admin/shop/credit/revoke/<?php echo $item->id; ?>">
+    	                        Revoke
+    	                    </a>           
+    	                    <?php } ?>             
                         </div>
                     </div>
                 </div>
