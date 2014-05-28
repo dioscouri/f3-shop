@@ -164,6 +164,24 @@ class Orders extends \Dsc\Mongo\Collections\Taggable
         return parent::beforeSave();
     }
     
+    /**
+     * Gets the associated user object
+     * 
+     * @return unknown
+     */
+    public function user()
+    {
+        $user = (new \Users\Models\Users)->load(array('_id'=>$this->user_id));
+    
+        return $user;
+    }
+    
+    /**
+     * Gets a customer's full name,
+     * defaulting to email
+     * 
+     * @return unknown
+     */
     public function customerName()
     {
         $name = $this->customer_name;

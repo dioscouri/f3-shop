@@ -57,6 +57,8 @@
     
     </div>
 
+    <?php echo $this->renderView('Shop/Site/Views::checkout/before_submit_button.php'); ?>
+    
     <div class="input-group form-group">
         <button id="submit-order" type="submit" class="btn btn-default custom-button btn-lg pull-left">Submit Order</button>
         <div class="working pull-left hidden">
@@ -66,6 +68,8 @@
         <?php \Dsc\System::instance()->get('session')->set('site.shop.checkout.redirect', '/shop/checkout/confirmation'); ?>
     </div>
 
+    <?php echo $this->renderView('Shop/Site/Views::checkout/after_submit_button.php'); ?>
+    
 </form>
 
 <script>
