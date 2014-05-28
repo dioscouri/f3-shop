@@ -33,6 +33,11 @@ class Listener extends \Prefab
                     'icon' => 'fa fa-inbox'
                 ),
                 array(
+                    'title' => 'Customers',
+                    'route' => 'javascript:void(0);',
+                    'icon' => 'fa fa-users'
+                ),                
+                array(
                     'title' => 'Coupons',
                     'route' => './admin/shop/coupons',
                     'icon' => 'fa fa-barcode'
@@ -125,6 +130,33 @@ class Listener extends \Prefab
                 );
                 
                 $orders_item->addChildren($orders_children);
+            }
+            
+            // Find the Customers Item
+            $customers_item = (new \Admin\Models\Nav\Primary())->load(array(
+                'type' => 'admin.nav',
+                'parent' => $shop->id,
+                'title' => 'Customers'
+            ));
+            
+            // add its children
+            if (!empty($customers_item->id))
+            {
+                $customers_children = array(
+                    /*
+                    array(
+                        'title' => 'List',
+                        'route' => './admin/shop/customers',
+                        'icon' => 'fa fa-list'
+                    ),*/
+                    array(
+                        'title' => 'Credits',
+                        'route' => './admin/shop/credits',
+                        'icon' => 'fa fa-exchange'
+                    ),
+                );
+            
+                $customers_item->addChildren($customers_children);
             }
             
             
