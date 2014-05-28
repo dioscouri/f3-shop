@@ -12,7 +12,7 @@ class Credits extends \Admin\Controllers\BaseAuth
 
     protected function getModel()
     {
-        $model = new \Shop\Models\OrderedGiftCards;
+        $model = new \Shop\Models\Credits;
         return $model;
     }
     
