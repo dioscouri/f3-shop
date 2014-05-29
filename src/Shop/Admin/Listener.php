@@ -311,37 +311,108 @@ class Listener extends \Prefab
     {
         $model = $event->getArgument('model');
         
-        if (!empty($model->{'shop.products'}))
-        {
-            if (!is_array( $model->{'shop.products'} ))
-            {
-                $model->{'shop.products'} = trim( $model->{'shop.products'} );
-                if (! empty( $model->{'shop.products'} ))
-                {
-                    $model->{'shop.products'} = \Base::instance()->split( (string) $model->{'shop.products'} );
-                }
-                else
-                {
-                    $model->{'shop.products'} = array();
-                }
-            }
-             
-            if (!empty( $model->{'shop.products'} ) && is_array( $model->{'shop.products'} ))
-            {
-                // convert the array of product ids into an array of MongoIds
-                $model->{'shop.products'} = array_map( function ( $input )
-                {
-                    return new \MongoId( $input );
-                }, $model->{'shop.products'} );
-            }
+        // related_products could be a CSV of MongoIds
+        if( empty($model->{'shop.products'})){
+        	if( !is_array($model->{'shop.products'}) ){
+        		$model->{'shop.products'} = array();
+        	}
+        } else {
+        	if( !is_array( $model->{'shop.products'} ) ){
+        		$model->{'shop.products'} = trim( $model->{'shop.products'} );
+        		if (! empty( $model->{'shop.products'} ))
+        		{
+        			$model->{'shop.products'} = \Base::instance()->split( (string) $model->{'shop.products'} );
+        		}
+        		else
+        		{
+        			$model->{'shop.products'} = array();
+        		}
+        	}
+        	 
+        	if( !empty( $model->{'shop.products'} )  ){
+        		$products = array_values( $model->{'shop.products'} );
+        		 
+        		array_walk($products, function(&$item, $key){
+        			$item= new \MongoId( (string)$item);
+        		});
+        		sort($products);
+        		$model->{'shop.products'} = $products;
+        	}
         }
-        elseif (!is_array($model->{'shop.products'}))
-        {
-            $model->{'shop.products'} = array();
+        
+        $old_products = array();
+        if( !empty( $model->id ) ){
+        	$old_product = (new \Pages\Models\Pages)->load( array('_id' => new \MongoId( (string) $model->id ) ));
+        	$old_products = array_values( (array)$old_product->{'shop.products'} );
+        	 
+        	if (!empty($old_products) ) {
+        		sort($old_products);
+        	}
         }
+        $model->__old_products = $old_products;
         
         $event->setArgument('model', $model);
     }
+    
+    /**
+     * Add related products to the Pages model whenever it is saved
+     *
+     * @param unknown $event
+     * @return \MongoId
+     */
+    public function afterSavePagesModelsPages( $event ) {
+    	$model = $event->getArgument('model');
+    	
+    	// whether related_products is empty or not, we have to compare it to its previous state
+    	// and make updates if they aren't the same
+    	$old_products = array_values($model->__old_products );
+    	
+    	// compare them, only acting if they're different
+    	// the arrays need to be sorted for comparison, which is why we sort above
+    	if ($model->{'shop.products'} != $old_products)
+    	{
+    		// we need two arrays:
+    		// $new_relationships == the ones from $this->related_products that are NOT in $old_product->related_products
+    		// $deleted_relationships == the ones from $old_product->related_products that are NOT in $this->related_products
+    		$new_relationships = array_diff($model->{'shop.products'}, $old_products);
+    		$deleted_relationships = array_diff($old_products, $model->{'shop.products'});
+    	
+    		// remove all $deleted_relationships
+    		if (!empty($deleted_relationships))
+    		{
+    			\Shop\Models\Products::collection()->update(array(
+    					'_id' => array(
+    							'$in' => $deleted_relationships
+    					),
+    					'pages.related' => new \MongoId((string) $model->id)
+    			), array(
+    					'$pull' => array(
+    							'pages.related' => new \MongoId((string) $model->id)
+    					)
+    			), array(
+    					'multiple' => true
+    			));
+    		}
+    	
+    		// insert $new_relationships
+    		if (!empty($new_relationships))
+    		{
+    			\Shop\Models\Products::collection()->update(array(
+    					'_id' => array(
+    							'$in' => $new_relationships
+    					)
+    			), array(
+    					'$push' => array(
+    							'pages.related' => new \MongoId((string) $model->id)
+    					)
+    			), array(
+    					'multiple' => true
+    			));
+    		}
+    	}
+    	 
+        $event->setArgument('model', $model);
+	}
     
     /**
      * Adds a Shop tab to the Blog\Post editing form

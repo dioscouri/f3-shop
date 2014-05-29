@@ -267,7 +267,34 @@ jQuery(document).ready(function(){
                 <?php } ?>
                 </div>
             <?php } ?>
+            <?php if ($related_pages = (array) $item->{'pages.related'}) { ?>
+                <div class="margin-top">
+                <h3>Related Pages</h3>
+                <?php $n=0; $count = count($related_pages); ?>
                 
+                <?php 
+                	$related_pages_db = (new \Pages\Models\Pages)->setState('filter.ids', $related_pages)->setState('filter.published_today',1)->getList();
+                	foreach ($related_pages_db as $page) { ?>
+                    
+                    <?php if ($n == 0 || ($n % 4 == 0)) { ?><div class="row"><?php } ?>
+                    
+                    <div class="col-xs-6 col-sm-3 col-md-3 category-article category-grid text-center">
+                        
+                        <div>
+                            <a href="./pages/<?php echo $page->slug; ?>">
+                        		<h4><?php echo $page->title; ?></h4>
+                        		<?php if ($page->{'featured_image.slug'} ) { ?>
+                                	<img class="img-responsive" alt="<?php echo $page->title; ?>" src="./asset/thumb/<?php echo $page->{'featured_image.slug'}; ?>" />
+                            	<?php } ?>
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <?php $n++; if (($n % 4 == 0) || $n==$count) { ?></div> <hr/><?php } ?>
+                <?php } ?>
+                </div>
+            <?php } ?>
+            
             </div>
         </div>
     </div>
