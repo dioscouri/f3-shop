@@ -132,5 +132,15 @@ class Routes extends \Dsc\Routes\Group
         ));
         
         $this->addCrudGroup('Credits', 'Credit');
+
+        $this->add('/credit/issue/@id', 'GET', array(
+            'controller' => 'Credit',
+            'action' => 'issue'
+        ));
+        
+        $this->add('/credit/revoke/@id', 'GET', array(
+            'controller' => 'Credit',
+            'action' => 'revoke'
+        ));
     }
 }

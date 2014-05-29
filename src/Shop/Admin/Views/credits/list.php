@@ -87,7 +87,7 @@
                             <input type="checkbox" class="icheck-input" name="ids[]" value="<?php echo $item->id; ?>">
                         </div>
                         <div class="col-xs-10 col-md-4">
-                            <span class="pull-right label <?php echo $item->credit_issued_to_user ? 'label-default' : 'label-warning'; ?>"><?php echo $item->credit_issued_to_user ? 'Issued' : 'Not Issued'; ?></span>
+                            <span class="pull-right label <?php echo $item->credit_issued_to_user ? 'label-success' : 'label-warning'; ?>"><?php echo $item->credit_issued_to_user ? 'Issued' : 'Not Issued'; ?></span>
                             <h4>
                                 <a href="./admin/shop/credit/edit/<?php echo $item->id; ?>">
                                     <?php echo $item->customerName(); ?>
@@ -117,10 +117,13 @@
     	                        Issue
     	                    </a>
     	                    <?php } else { ?>                        
-    	                    <a class="btn btn-xs btn-danger" data-bootbox="confirm" href="./admin/shop/credit/revoke/<?php echo $item->id; ?>">
+    	                    <a class="btn btn-xs btn-warning" data-bootbox="confirm" href="./admin/shop/credit/revoke/<?php echo $item->id; ?>">
     	                        Revoke
     	                    </a>           
-    	                    <?php } ?>             
+    	                    <?php } ?>
+    	                    <a class="btn btn-xs btn-danger" data-bootbox="confirm" href="./admin/shop/credit/delete/<?php echo $item->id; ?>">
+    	                        <i class="fa fa-times"></i>
+    	                    </a>
                         </div>
                     </div>
                 </div>

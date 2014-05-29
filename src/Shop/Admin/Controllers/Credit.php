@@ -74,4 +74,47 @@ class Credit extends \Admin\Controllers\BaseAuth
     }
     
     protected function displayRead() {}
+    
+    /**
+     * 
+     * @throws \Exception
+     */
+    public function issue()
+    {
+        try {
+            $item = $this->getItem();
+            if (empty($item->id)) {
+            	throw new \Exception('Invalid Item');
+            }
+            $item->issue();
+            \Dsc\System::addMessage('Store credit issued', 'success');
+        }
+        catch(\Exception $e) {
+            \Dsc\System::addMessage('Issuing failed.', 'error');
+            \Dsc\System::addMessage($e->getMessage(), 'error');
+        }
+        
+        $id = $this->inputfilter->clean( $this->app->get('PARAMS.id'), 'alnum' );
+        $this->app->reroute('/admin/shop/credit/edit/' . $id);        
+    }
+    
+    public function revoke()
+    {
+        try {
+            $item = $this->getItem();
+            if (empty($item->id)) {
+                throw new \Exception('Invalid Item');
+            }
+            $item->revoke();
+            \Dsc\System::addMessage('Store credit revoked', 'success');
+        }
+        catch(\Exception $e) {
+            \Dsc\System::addMessage('Revoke failed.', 'error');
+            \Dsc\System::addMessage($e->getMessage(), 'error');
+        }
+        
+        $id = $this->inputfilter->clean( $this->app->get('PARAMS.id'), 'alnum' );
+        $this->app->reroute('/admin/shop/credit/edit/' . $id);
+        
+    }
 }
