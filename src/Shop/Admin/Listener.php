@@ -311,6 +311,35 @@ class Listener extends \Prefab
     {
         $model = $event->getArgument('model');
         
+        // related_products could be a CSV of MongoIds
+        if( empty($model->{'shop.products'})){
+        	if( !is_array($model->{'shop.products'}) ){
+        		$model->{'shop.products'} = array();
+        	}
+        } else {
+        	if( !is_array( $model->{'shop.products'} ) ){
+        		$model->{'shop.products'} = trim( $model->{'shop.products'} );
+        		if (! empty( $model->{'shop.products'} ))
+        		{
+        			$model->{'shop.products'} = \Base::instance()->split( (string) $model->{'shop.products'} );
+        		}
+        		else
+        		{
+        			$model->{'shop.products'} = array();
+        		}
+        	}
+        	 
+        	if( !empty( $model->{'shop.products'} )  ){
+        		$products = array_values( $model->{'shop.products'} );
+        		 
+        		array_walk($products, function(&$item, $key){
+        			$item= new \MongoId( (string)$item);
+        		});
+        		sort($products);
+        		$model->{'shop.products'} = $products;
+        	}
+        }
+        
         $old_products = array();
         if( !empty( $model->id ) ){
         	$old_product = (new \Pages\Models\Pages)->load( array('_id' => new \MongoId( (string) $model->id ) ));
@@ -333,34 +362,6 @@ class Listener extends \Prefab
      */
     public function afterSavePagesModelsPages( $event ) {
     	$model = $event->getArgument('model');
-    	// related_products could be a CSV of MongoIds
-    	if( empty($model->{'shop.products'})){
-    		if( !is_array($model->{'shop.products'}) ){
-    			$model->{'shop.products'} = array();
-    		}
-    	} else {
-    		if( !is_array( $model->{'shop.products'} ) ){
-    			$model->{'shop.products'} = trim( $model->{'shop.products'} );
-    			if (! empty( $model->{'shop.products'} ))
-    			{
-    				$model->{'shop.products'} = \Base::instance()->split( (string) $model->{'shop.products'} );
-    			}
-    			else
-    			{
-    				$model->{'shop.products'} = array();
-    			}
-    		}
-    		 
-    		if( !empty( $model->{'shop.products'} )  ){
-    			$products = array_values( $model->{'shop.products'} );
-    	
-    			array_walk($products, function(&$item, $key){
-    				$item= new \MongoId( (string)$item);
-    			});
-    			sort($products);
-    		$model->{'shop.products'} = $products;
-    		}
-    	}
     	
     	// whether related_products is empty or not, we have to compare it to its previous state
     	// and make updates if they aren't the same
@@ -409,11 +410,6 @@ class Listener extends \Prefab
     			));
     		}
     	}
-    	// save related products properly
-    	$model->collection()->update(
-    			array('_id'=> new \MongoId((string) $model->id ) ),
-    			$model->cast(),
-    			array('upsert'=>true, 'multiple'=>false));
     	 
         $event->setArgument('model', $model);
 	}
