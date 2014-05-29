@@ -111,7 +111,7 @@
         
                     <div class="row">
                         <div class="col-xs-12 col-sm-12 col-md-6">
-                        <?php if ($method = $order->paymentMethod() && $order->grand_total) { ?>
+                        <?php if (($method = $order->paymentMethod()) && $order->grand_total) { ?>
                             <div>
                                 <label>Method:</label> <?php echo $method->{'name'}; ?>
                             </div>

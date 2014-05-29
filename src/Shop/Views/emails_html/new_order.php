@@ -74,7 +74,7 @@
 </h3>
 
 <div>
-    <?php if ($method = $order->paymentMethod()) { ?>
+    <?php if (($method = $order->paymentMethod()) && $order->grand_total) { ?>
         <div>
             <label>Method:</label> <?php echo $method->{'name'}; ?>
         </div>

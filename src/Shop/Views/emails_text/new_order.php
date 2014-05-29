@@ -47,16 +47,16 @@ Method: <?php echo $method->{'name'}; ?> - $<?php echo $method->total(); ?>
 
 Payment Information:
 
-<?php if ($method = $order->paymentMethod()) { ?>
+<?php if (($method = $order->paymentMethod()) && $order->grand_total) { ?>
 Method: <?php echo $method->{'name'}; ?> 
-<?php } ?>
-<?php if ($order->credit_total) { ?> 
 
+<?php } ?>
+<?php if ($order->credit_total) { ?>  
 Store Credit Applied: <?php echo $order->credit_total; ?> 
+ 
 <?php } ?>
 
-<?php if ($order->{'billing_address'}) { ?>
-
+<?php if ($order->{'billing_address'}) { ?> 
 <?php echo $order->{'billing_address.name'}; ?> 
 <?php echo $order->{'billing_address.line_1'}; ?> 
 <?php echo !empty($order->{'billing_address.line_2'}) ? $order->{'billing_address.line_2'} . '<br/>' : null; ?> 
