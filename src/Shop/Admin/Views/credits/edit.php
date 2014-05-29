@@ -38,7 +38,8 @@
                             
                 <div class="col-md-10">
                     
-                    <?php echo $item->customerName(); ?>
+                    <p><?php echo $item->customerName(); ?></p>
+                    <p><?php echo $item->user()->email; ?></p>
                     
                 </div>
                 <!-- /.col-md-10 -->
