@@ -173,6 +173,11 @@
                             <label>Method:</label> <?php echo $method->{'name'}; ?>
                         </div>
                     <?php } ?>
+                    <?php if ($item->credit_total) { ?>
+                        <div>
+                            <label>Store Credit Applied:</label> <?php echo \Shop\Models\Currency::format( $item->credit_total ); ?>
+                        </div>
+                    <?php } ?>
                         
                     <?php if ($item->{'billing_address'}) { ?>
                         <address>
@@ -220,6 +225,12 @@
                             <span class="price">-<?php echo \Shop\Models\Currency::format( $item->giftcard_total ); ?></span>
                         </div>
                         <?php } ?>
+                        <?php if ($item->credit_total > 0) { ?>
+                        <div>
+                            <label class="strong">Credit:</label>
+                            <span class="price">-<?php echo \Shop\Models\Currency::format( $item->credit_total ); ?></span>
+                        </div>
+                        <?php } ?>                        
                         <div>
                             <label class="strong">Total:</label>
                             <span class="price"><?php echo \Shop\Models\Currency::format( $item->grand_total ); ?></span>

@@ -50,6 +50,10 @@ Payment Information:
 <?php if ($method = $order->paymentMethod()) { ?>
 Method: <?php echo $method->{'name'}; ?> 
 <?php } ?>
+<?php if ($order->credit_total) { ?> 
+
+Store Credit Applied: <?php echo $order->credit_total; ?> 
+<?php } ?>
 
 <?php if ($order->{'billing_address'}) { ?>
 
@@ -79,6 +83,9 @@ Tax: <?php echo \Shop\Models\Currency::format( $order->tax_total ); ?>
 <?php } ?>
 <?php if ($order->giftcard_total > 0) { ?>
 Giftcard: -<?php echo \Shop\Models\Currency::format( $order->giftcard_total ); ?> 
+<?php } ?>
+<?php if ($order->credit_total > 0) { ?>
+Store Credit: -<?php echo \Shop\Models\Currency::format( $order->credit_total ); ?> 
 <?php } ?>
 Total: <?php echo \Shop\Models\Currency::format( $order->grand_total ); ?> 
 

@@ -10,6 +10,9 @@ class Credits extends \Dsc\Mongo\Collections\Nodes
     public $balance_after;                      // float
     public $message;                            // string
     public $history = array();
+    public $order_id = null;                    // MongoId of an order where this credit is used
+    
+    public $__issue_to_user = false;            // set this to true if you want the credit immediately issued to the user after it is created
     
     protected $__collection_name = 'shop.credits';
     protected $__type = 'general';
@@ -52,6 +55,9 @@ class Credits extends \Dsc\Mongo\Collections\Nodes
         $this->balance_before = (float) $this->balance_before;
         $this->balance_after = (float) $this->balance_after;
         $this->user_id = new \MongoId( (string) $this->user_id );
+        if (!empty($this->order_id)) {
+            $this->order_id = new \MongoId( (string) $this->order_id );
+        }       
         
         return parent::beforeSave();
     }

@@ -48,6 +48,29 @@
             
             <hr/>
             
+            <?php if (!empty($item->order_id)) { ?>
+            
+            <div class="row">
+                <div class="col-md-2">
+                    
+                    <h3>Order</h3>
+                            
+                </div>
+                <!-- /.col-md-2 -->
+                            
+                <div class="col-md-10">
+                    
+                    <p>Used in order #<a href="./admin/shop/order/edit/<?php echo $item->order_id; ?>"><?php echo $item->order_id; ?></p>
+                    
+                </div>
+                <!-- /.col-md-10 -->
+                
+            </div>
+            
+            <hr/>   
+                     
+            <?php } ?>
+            
             <div class="row">
                 <div class="col-md-2">
                     
