@@ -120,29 +120,32 @@ jQuery(document).ready(function(){
 
 <div class="container">
     <div class="row">
-        <?php if (count($images)) { ?> 
+        <?php if (!empty($images)) { ?> 
         <div class="col-sm-6">
-            <div class="product-slider-small hidden-xs">
-                <?php if (count($images) > 1) { ?>       
-                <ul class="zoom-thumbs">
-                    <?php foreach ($images as $key=>$image) { ?>
-                    <li id="<?php echo $image; ?>">
-                        <a rel="{gallery: 'zoom-gallery', smallimage: './asset/thumb/<?php echo $image; ?>', largeimage: './asset/<?php echo $image; ?>'}" href="javascript:void(0);">
-                            <img src="./asset/thumb/<?php echo $image; ?>" title="<?php echo htmlspecialchars_decode( $item->title ); ?>"> 
-                        </a>                        
-                    </li>
+            <div class="row">
+                <div class="product-slider hidden-xs col-sm-3 col-md-3 col-lg-2"> <?php // product-slider-small ?>
+                    <?php if (count($images) > 1) { ?>       
+                    <ul class="zoom-thumbs list-unstyled">
+                        <?php foreach ($images as $key=>$image) { ?>
+                        <li id="<?php echo $image; ?>">
+                            <a rel="{gallery: 'zoom-gallery', smallimage: './asset/thumb/<?php echo $image; ?>', largeimage: './asset/<?php echo $image; ?>'}" href="javascript:void(0);">
+                                <img src="./asset/thumb/<?php echo $image; ?>" title="<?php echo htmlspecialchars_decode( $item->title ); ?>"> 
+                            </a>                        
+                        </li>
+                        <?php } ?>
+                    </ul>
+                    <?php } ?>                
+                </div>
+                <div class="col-xs-12 col-sm-9 col-md-9 col-lg-10">
+                    <?php if ($item->{'featured_image.slug'}) { ?>
+                    <div class="product-image product-image-big">
+                        <a class="zoom" rel="zoom-gallery" href="./asset/<?php echo $item->{'featured_image.slug'}; ?>" title="<?php echo htmlspecialchars_decode( $item->title ); ?>" data-large-url="./asset/<?php echo $item->{'featured_image.slug'}; ?>">
+            	            <img class="zoomable img-responsive" src="./asset/thumb/<?php echo $item->{'featured_image.slug'}; ?>" title="<?php echo htmlspecialchars_decode( $item->title ); ?>" />
+                        </a>
+                    </div>
                     <?php } ?>
-                </ul>
-                <?php } ?>
+                </div>
             </div>
-            
-            <?php if ($item->{'featured_image.slug'}) { ?>
-            <div class="product-image product-image-big">
-                <a class="zoom" rel="zoom-gallery" href="./asset/<?php echo $item->{'featured_image.slug'}; ?>" title="<?php echo htmlspecialchars_decode( $item->title ); ?>" data-large-url="./asset/<?php echo $item->{'featured_image.slug'}; ?>">
-    	            <img class="zoomable" src="./asset/thumb/<?php echo $item->{'featured_image.slug'}; ?>" title="<?php echo htmlspecialchars_decode( $item->title ); ?>" />
-                </a>
-            </div>
-            <?php } ?>
                             
         </div>
         <?php } ?>
