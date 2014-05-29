@@ -122,31 +122,35 @@ jQuery(document).ready(function(){
     <div class="row">
         <?php if (!empty($images)) { ?> 
         <div class="col-sm-6">
-            <div class="row">
-                <div class="product-slider hidden-xs col-sm-3 col-md-3 col-lg-2"> <?php // product-slider-small ?>
-                    <?php if (count($images) > 1) { ?>       
-                    <ul class="zoom-thumbs list-unstyled">
-                        <?php foreach ($images as $key=>$image) { ?>
-                        <li id="<?php echo $image; ?>">
-                            <a rel="{gallery: 'zoom-gallery', smallimage: './asset/thumb/<?php echo $image; ?>', largeimage: './asset/<?php echo $image; ?>'}" href="javascript:void(0);">
-                                <img src="./asset/thumb/<?php echo $image; ?>" title="<?php echo htmlspecialchars_decode( $item->title ); ?>"> 
-                            </a>                        
-                        </li>
-                        <?php } ?>
-                    </ul>
-                    <?php } ?>                
-                </div>
-                <div class="col-xs-12 col-sm-9 col-md-9 col-lg-10">
-                    <?php if ($item->{'featured_image.slug'}) { ?>
-                    <div class="product-image product-image-big">
-                        <a class="zoom" rel="zoom-gallery" href="./asset/<?php echo $item->{'featured_image.slug'}; ?>" title="<?php echo htmlspecialchars_decode( $item->title ); ?>" data-large-url="./asset/<?php echo $item->{'featured_image.slug'}; ?>">
-            	            <img class="zoomable img-responsive" src="./asset/thumb/<?php echo $item->{'featured_image.slug'}; ?>" title="<?php echo htmlspecialchars_decode( $item->title ); ?>" />
+            <?php if ($item->{'featured_image.slug'}) { ?>
+            <div class="product-image product-image-big hidden-xs">
+   	            <img id="product-image" class="imagezoom img-responsive" src="./asset/<?php echo $item->{'featured_image.slug'}; ?>" title="<?php echo htmlspecialchars_decode( $item->title ); ?>" data-big-image-src="./asset/<?php echo $item->{'featured_image.slug'}; ?>" />
+            </div>
+            <?php } ?>
+
+            <?php if (count($images) > 1) { ?>
+                <div class="product-image-container">
+                    <div class="owl-nav-container hidden-xs">
+                        <a href="javascript:void(0);" class="btn btn-link custom-button owl-nav prev" data-target="#product-image-carousel">
+                            <i class="glyphicon glyphicon-chevron-left"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="btn btn-link custom-button owl-nav next" data-target="#product-image-carousel">
+                             <i class="glyphicon glyphicon-chevron-right"></i>
                         </a>
                     </div>
-                    <?php } ?>
+                
+                    <div id="product-image-carousel" class="owl-carousel" data-lazy-load="true" data-scroll-per-page="true">
+                        <?php foreach ($images as $key=>$image) { ?>
+                        <div id="<?php echo $image; ?>" class="slide">
+                            <a href="javascript:void(0);" class="imagezoom-thumb btn btn-link" data-target="#product-image">
+                                 <img class="img-responsive lazyOwl" data-src="./asset/<?php echo $image; ?>" src="./asset/<?php echo $image; ?>" title="<?php echo htmlspecialchars_decode( $item->title ); ?>" data-big-image-src="./asset/<?php echo $image; ?>">
+                            </a>                        
+                        </div>
+                        <?php } ?>
+                    </div>
                 </div>
-            </div>
-                            
+            <?php } ?>
+            
         </div>
         <?php } ?>
         

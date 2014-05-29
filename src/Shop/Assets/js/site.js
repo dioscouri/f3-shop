@@ -33,6 +33,8 @@ var Shop = {
 		        jqzoom = jQuery('.product-image a.zoom').data('jqzoom');
 		        if (jqzoom) {
 		            jqzoom.swapimage( jQuery('.zoom-thumbs #'+new_image+' a') );
+		        } else if (jQuery('#' + new_image + ' a')) {
+		        	jQuery('#' + new_image + ' a').click();
 		        } else {
 		            jQuery('.product-image img').attr('src', './asset/thumb/'+new_image );
 		        }        
