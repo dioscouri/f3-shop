@@ -725,10 +725,10 @@ class Products extends \Dsc\Mongo\Collections\Content
         }
         
         $item = new \Search\Models\Item(array(
-        	'url' => './shop/product/' . $this->slug .$js,
+        	'url' => './shop/product/' . $this->slug . $js,
             'title' => $this->title,
             'subtitle' => $this->{'tracking.sku'},
-            'image' => $image,
+            'image' => $image . $js,
             'summary' => $this->description,
             'datetime' => null,
             'price' => $this->price(),
