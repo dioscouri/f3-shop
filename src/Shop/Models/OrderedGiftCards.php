@@ -104,7 +104,7 @@ class OrderedGiftCards extends \Dsc\Mongo\Collections\Nodes
         	}
         }
         
-        parent::afterSave();
+        parent::afterCreate();
     }
     
     /**

@@ -1,7 +1,7 @@
 <?php 
-	$settings = \Shop\Models\Settings::fetch();
+$settings = \Admin\Models\Settings::fetch();
 
-	if( $settings->enabledIntegration( 'kissmetrics' ) ) { ?>
+if( $settings->enabledIntegration( 'kissmetrics' ) ) { ?>
 <?php // track start checkout ?>
 <script type="text/javascript">
 	_kmq.push(['record', 'Started Purchase']);

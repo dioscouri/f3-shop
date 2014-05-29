@@ -5,7 +5,7 @@ class Customers extends \Admin\Controllers\BaseAuth
 {
     public function forSelection()
     {
-        $field = $this->input->get('value', null, 'default');
+        $field = $this->input->get('value', '_id', 'default');
         $term = $this->input->get('q', null, 'default');
         $key =  new \MongoRegex('/'. $term .'/i');
         

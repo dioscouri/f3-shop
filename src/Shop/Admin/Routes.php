@@ -130,5 +130,7 @@ class Routes extends \Dsc\Routes\Group
             'controller' => 'Coupons',
             'action' => 'forSelection'
         ));
+        
+        $this->addCrudGroup('Credits', 'Credit');
     }
 }
