@@ -10,6 +10,8 @@ class Checkout extends \Dsc\Controller
         foreach ($cart->validateProducts() as $change) {
         	\Dsc\System::addMessage($change);
         }
+        $cart->applyCredit();
+        
         \Base::instance()->set( 'cart', $cart );
         
         $identity = $this->getIdentity();

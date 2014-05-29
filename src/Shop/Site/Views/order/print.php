@@ -111,9 +111,14 @@
         
                     <div class="row">
                         <div class="col-xs-12 col-sm-12 col-md-6">
-                        <?php if ($method = $order->paymentMethod() && $order->grand_total) { ?>
+                        <?php if (($method = $order->paymentMethod()) && $order->grand_total) { ?>
                             <div>
                                 <label>Method:</label> <?php echo $method->{'name'}; ?>
+                            </div>
+                        <?php } ?>
+                        <?php if ($order->credit_total) { ?>
+                            <div>
+                                <label>Store Credit Applied:</label> <?php echo \Shop\Models\Currency::format( $order->credit_total ); ?>
                             </div>
                         <?php } ?>
                             
@@ -162,7 +167,13 @@
                                 <label class="strong">Giftcard:</label>
                                 <span class="price">-<?php echo \Shop\Models\Currency::format( $order->giftcard_total ); ?></span>
                             </div>
-                            <?php } ?>                            
+                            <?php } ?>                
+                            <?php if ($order->credit_total > 0) { ?>
+                            <div>
+                                <label class="strong">Credit:</label>
+                                <span class="price">-<?php echo \Shop\Models\Currency::format( $order->credit_total ); ?></span>
+                            </div>
+                            <?php } ?>                        
                             <div>
                                 <label class="strong">Total:</label>
                                 <span class="price"><?php echo \Shop\Models\Currency::format( $order->grand_total ); ?></span>

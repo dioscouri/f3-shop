@@ -13,6 +13,8 @@ class Cart extends \Dsc\Controller
         foreach ($cart->validateProducts() as $change) {
         	\Dsc\System::addMessage($change);
         }
+        $cart->applyCredit();
+        
         \Base::instance()->set('cart', $cart);
         
         $this->app->set('meta.title', 'Shopping Cart');

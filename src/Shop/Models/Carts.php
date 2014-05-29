@@ -13,6 +13,7 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
     public $auto_coupons = array(); // array of \Shop\Models\Prefabs\Coupon objects
     public $discounts = array();    // array of \Shop\Models\Prefabs\Discount objects -- currently unused
     public $giftcards = array();    // array of \Shop\Models\OrderedGiftCards cast as arrays
+    public $credit_total = 0;
     
     public $name = null;            // user-defined name for cart
     
@@ -127,6 +128,25 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
         return $cart;
     }
     
+    /**
+     * Gets the associated user object
+     *
+     * @return unknown
+     */
+    public function user()
+    {
+        $user = (new \Users\Models\Users)->load(array('_id'=>$this->user_id));
+    
+        return $user;
+    }
+    
+    /**
+     * 
+     * @param unknown $variant_id
+     * @param \Shop\Models\Products $product
+     * @param array $post
+     * @return \Shop\Models\Prefabs\CartItem
+     */
     public static function createItem( $variant_id, \Shop\Models\Products $product, array $post=array() ) 
     {
         $options = !empty($post['options']) ? $post['options'] : array();
@@ -620,7 +640,7 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
             $total = $total + $this->taxEstimate();
         }
         
-        $total = $total - $this->discountTotal() - $this->giftCardTotal();
+        $total = $total - $this->discountTotal() - $this->giftCardTotal() - $this->creditTotal();
     
         return (float) $total;
     }
@@ -785,8 +805,7 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
      */
     public function creditTotal()
     {
-        $credit = 0;
-        return (float) $credit;
+        return (float) $this->credit_total;
     }
 
     /**
@@ -1570,5 +1589,25 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
         $value = $giftcard->cartValue( $this );
     
         return $value;
+    }
+    
+    /**
+     * Check the user's current account balance and apply it to $this
+     */
+    public function applyCredit()
+    {
+        $this->credit_total = 0;
+        
+        if ($value = (float) $this->user()->{'shop.credits.balance'}) 
+        {
+            if ($this->total() < $value)
+            {
+                $value = $this->total();
+            }
+            
+        	$this->credit_total = $value;
+        }
+        
+        return $this->save();
     }
 }

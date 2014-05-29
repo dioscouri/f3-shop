@@ -9,6 +9,10 @@ class Credits extends \Dsc\Mongo\Collections\Nodes
     public $balance_before;                     // float
     public $balance_after;                      // float
     public $message;                            // string
+    public $history = array();
+    public $order_id = null;                    // MongoId of an order where this credit is used
+    
+    public $__issue_to_user = false;            // set this to true if you want the credit immediately issued to the user after it is created
     
     protected $__collection_name = 'shop.credits';
     protected $__type = 'general';
@@ -51,6 +55,9 @@ class Credits extends \Dsc\Mongo\Collections\Nodes
         $this->balance_before = (float) $this->balance_before;
         $this->balance_after = (float) $this->balance_after;
         $this->user_id = new \MongoId( (string) $this->user_id );
+        if (!empty($this->order_id)) {
+            $this->order_id = new \MongoId( (string) $this->order_id );
+        }       
         
         return parent::beforeSave();
     }
@@ -59,7 +66,7 @@ class Credits extends \Dsc\Mongo\Collections\Nodes
     {
         if (!empty($this->__issue_to_user)) 
         {
-            // TODO Update the user's record, changing the balance, and if successful, update $this->credit_issued_to_user, $this->balance_before, & $this->balance_after
+            $this->issue();
         }
         
         parent::afterSave();
@@ -96,5 +103,72 @@ class Credits extends \Dsc\Mongo\Collections\Nodes
         }
     
         return $name;
+    }
+    
+    /**
+     * Issues a credit, updating the user's balance appropriately
+     * 
+     * @return \Shop\Models\Credits
+     */
+    public function issue()
+    {
+        if (!$this->credit_issued_to_user) 
+        {
+        	$user = $this->user();
+        	if (empty($user->id)) {
+        		throw new \Exception('Invalid User');
+        	}
+        	
+        	$this->balance_before = (float) $user->{'shop.credits.balance'};
+        	$this->balance_after = $this->balance_before + (float) $this->amount;
+        	// Add to the history
+        	$this->history[] = array(
+        	    'created' => \Dsc\Mongo\Metastamp::getDate('now'),
+        	    'subject' => \Dsc\System::instance()->get('auth')->getIdentity()->fullName(),
+        	    'verb' => 'issued',
+        	    'object' => (float) $this->amount
+        	);        	     
+            $user->{'shop.credits.balance'} = (float) $this->balance_after;
+            $user->save();
+            
+            $this->credit_issued_to_user = true;
+            $this->save();
+        }
+        
+        return $this;
+    }
+    
+    /**
+     * Revoke an issued credit, updating the user's balance appropriately
+     *
+     * @return \Shop\Models\Credits
+     */
+    public function revoke()
+    {
+        if ($this->credit_issued_to_user)
+        {
+            $user = $this->user();
+            if (empty($user->id)) {
+                throw new \Exception('Invalid User');
+            }
+             
+            $this->balance_before = (float) $user->{'shop.credits.balance'};
+            $this->balance_after = $this->balance_before - (float) $this->amount;
+            // Add to the history
+            $this->history[] = array(
+                'created' => \Dsc\Mongo\Metastamp::getDate('now'),
+                'subject' => \Dsc\System::instance()->get('auth')->getIdentity()->fullName(),
+                'verb' => 'revoked',
+                'object' => (float) $this->amount
+            );
+             
+            $user->{'shop.credits.balance'} = (float) $this->balance_after;
+            $user->save();
+            
+            $this->credit_issued_to_user = false;
+            $this->save();
+        }
+    
+        return $this;
     }
 }

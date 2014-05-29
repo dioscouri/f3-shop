@@ -7,14 +7,14 @@ class Orders extends \Dsc\Mongo\Collections\Taggable
     public $status = \Shop\Constants\OrderStatus::open;
     public $status_history = array();
     
-    public $grand_total = null;
-    public $sub_total = null;
-    public $tax_total = null;
-    public $shipping_total = null;
-    public $shipping_tax = null;
-    public $discount_total = null;
-    public $credit_total = null;
-    public $giftcard_total = null;
+    public $grand_total = 0;
+    public $sub_total = 0;
+    public $tax_total = 0;
+    public $shipping_total = 0;
+    public $shipping_tax = 0;
+    public $discount_total = 0;
+    public $credit_total = 0;
+    public $giftcard_total = 0;
 
     public $customer = array();     // Users\Models\Users cast as an array
     public $customer_name = null;
@@ -357,6 +357,7 @@ class Orders extends \Dsc\Mongo\Collections\Taggable
      * Sending an email to the customer
      * Updating available product quantities.
      * Deduct giftcard.amount from any giftcards
+     * Deduct credit.total from customer credit balance
      * 
      * This does NOT do the following:
 	 * Enabling file downloads
@@ -405,6 +406,9 @@ class Orders extends \Dsc\Mongo\Collections\Taggable
         // 4. Decrease value of any used gift certificates
         $this->redeemGiftCards();
 
+        // 5. Add a negative credit record for historical purposes
+        $this->deductCredit();
+        
         // trigger event
         $this->__complete_event = \Dsc\System::instance()->trigger( 'onShopCompleteOrder', array(
         	'order' => $this
@@ -438,6 +442,26 @@ class Orders extends \Dsc\Mongo\Collections\Taggable
             }
         }    
         
+        return $this;
+    }
+    
+    /**
+     * If this order has a credit_total, deduct it from the customer's shop.credits.balance
+     * by immediately issuing a negative credit
+     * 
+     * @return \Shop\Models\Orders
+     */
+    public function deductCredit()
+    {
+        if ($this->credit_total) {
+            $credit = (new \Shop\Models\Credits)->bind(array(
+            	'user_id' => $this->user_id,
+                'amount' => (float) (0-$this->credit_total),
+                'order_id' => $this->id
+            ));
+            $credit->__issue_to_user = true;
+            $credit->save();
+        }
         return $this;
     }
     

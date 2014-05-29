@@ -438,17 +438,6 @@ class Products extends \Dsc\Mongo\Collections\Content
     
     protected function beforeSave()
     {
-        $this->attributes_count = count( $this->attributes );
-        $this->variants_count = count( $this->variants );
-        
-        $this->inventory_count = 0;
-        foreach ($this->variants as $variant) 
-        {
-            if (!empty($variant['quantity'])) {
-                $this->inventory_count += (int) $variant['quantity'];
-            }            
-        }
-        
         if (!empty($this->{'display.stickers'}) && !is_array($this->{'display.stickers'}))
         {
             $this->{'display.stickers'} = trim($this->{'display.stickers'});
@@ -472,12 +461,18 @@ class Products extends \Dsc\Mongo\Collections\Content
         
         $this->set( 'policies.track_inventory', (bool) $this->get( 'policies.track_inventory') );
         
+        $this->attributes_count = count( $this->attributes );
+        $this->variants_count = count( $this->variants );        
+        $this->inventory_count = 0;
         array_walk($this->variants, function(&$item, $key) {
             $item['quantity'] = (int) $item['quantity'];
             $item['price'] = (float) $item['price'];
             if (empty($item['quantity']) && !empty($this->{'policies.track_inventory'})) {
             	$item['enabled'] = 0;
             }
+            if (!empty($item['quantity'])) {
+                $this->inventory_count += (int) $item['quantity'];
+            }            
         });
         
         if (!empty($this->{'prices.special'}) && is_array($this->{'prices.special'}))
@@ -1042,7 +1037,7 @@ class Products extends \Dsc\Mongo\Collections\Content
                 return $ri['image'];
             }
         });        
-                    
+            
         $images = array_unique( array_merge( array(), (array) $featured_image, (array) $variant_images, (array) $related_images ) );
         
         return $images;
