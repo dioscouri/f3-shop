@@ -35,7 +35,7 @@
         </div>
     </div>
     
-    <?php if ($balance = $this->auth->getIdentity()->refresh()->{'shop.credits.balance'}) { ?>
+    <?php if ($balance = $this->auth->getIdentity()->reload()->{'shop.credits.balance'}) { ?>
     <div class="panel panel-default">
         <div class="panel-body">
             <div class="row">
