@@ -91,11 +91,11 @@ class Checkout extends \Dsc\Controller
                 	}
                 	 
                		if( count( $order->coupons ) ){
-               			$data_km['Coupons'] = implode( ', ', sort( (array)\Joomla\Utilities\ArrayHelper::getColumn( (array) $order->coupons, 'code' ) ) );
+               			$data_km['Coupons'] = implode( ', ', \Joomla\Utilities\ArrayHelper::getColumn( (array) $order->coupons, 'code' ) );
                		}
                 		
                		if( count( $order->auto_coupons ) ){
-               			$data_km['Auto Coupons'] = implode( ', ', sort( (array)\Joomla\Utilities\ArrayHelper::getColumn( (array) $order->coupons, 'code' ) ) );
+               			$data_km['Auto Coupons'] = implode( ', ', \Joomla\Utilities\ArrayHelper::getColumn( (array) $order->coupons, 'code' ) );
                		}
                 		
                	    if( !empty( $order->credit ) ){
