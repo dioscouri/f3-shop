@@ -11,7 +11,7 @@
         
         
             <?php  
-            if ( $rebuilt_variants = $item->rebuildVariants() ) 
+            if (!empty($item->id) && ($rebuilt_variants = $item->rebuildVariants()) ) 
             {
                 ?>
                 <div class="panel panel-default">
