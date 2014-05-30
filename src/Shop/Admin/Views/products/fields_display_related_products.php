@@ -1,7 +1,7 @@
 <div class="row">
     <div class="col-md-2">
         
-        <h3>Relatated Products</h3>
+        <h3>Related Products</h3>
         <p class="help-block">Manually associate products with this item.</p>
                 
     </div>
