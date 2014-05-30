@@ -502,7 +502,7 @@ class Products extends \Dsc\Mongo\Collections\Content
     		{
     			$this->collection()->update(array(
     					'_id' => array(
-    							'$in' => $deleted_relationships
+    							'$in' => array_values( $deleted_relationships )
     					),
     					'related_products' => new \MongoId((string) $this->id)
     			), array(
@@ -519,7 +519,7 @@ class Products extends \Dsc\Mongo\Collections\Content
     		{
     			$this->collection()->update(array(
     					'_id' => array(
-    							'$in' => $new_relationships
+    							'$in' => array_values( $new_relationships )
     					)
     			), array(
     					'$push' => array(
