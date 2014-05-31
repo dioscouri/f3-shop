@@ -8,6 +8,27 @@ class ShopBootstrap extends \Dsc\Bootstrap
     	parent::preAdmin();
     	
     	\Dsc\Apps::registerPath( $this->dir . "/src/Shop/MassUpdate", 'massupdate' );
+    	
+    	// add the css & js files to the minifier
+    	\Minify\Factory::registerPath( $this->dir . "/src/" );
+    	
+    	$files = array(
+    	    'Shop/Assets/js/jquery.sortable.css',
+    	);
+    	
+    	foreach ( $files as $file )
+    	{
+    	    \Minify\Factory::css( $file );
+    	}
+    	
+    	$files = array(
+    	    'Shop/Assets/js/jquery.sortable.min.js',
+    	);
+
+    	foreach ( $files as $file )
+    	{
+    	    \Minify\Factory::js( $file );
+    	}
     }
     
     protected function preSite()

@@ -11,16 +11,16 @@ class Collection extends \Dsc\Controller
     
     public function index()
     {
-    	// TODO get the slug param.  lookup the category.  Check ACL against both category.
-    	// get paginated list of blog posts associated with this category
-    	// only posts that are published as of now
-    	
     	$f3 = \Base::instance();
     	$slug = $this->inputfilter->clean( $f3->get('PARAMS.slug'), 'cmd' );
     	$model = $this->getModel()->populateState();
     	
     	try {
     	    $collection = (new \Shop\Models\Collections)->setState('filter.slug', $slug)->getItem();
+    	    if (empty($collection->id)) {
+    	    	throw new \Exception('Invalid Collection');
+    	    }
+    	    $model->setState('filter.collection', $collection->id);
     	    $conditions = \Shop\Models\Collections::getProductQueryConditions($collection->id);
     	    
     	    if ($filter_tags = (array) $model->getState('filter.tags')) 
@@ -44,8 +44,30 @@ class Collection extends \Dsc\Controller
     	            }
     	        }
     	    }
+    	    
+    	    switch ($model->getState('sort_by')) 
+    	    {
+    	        // only use the collection's $collection->sort_by if the user hasn't set their own state, 
+    	        // which is populated in the model by populateState()
+    	    	case "collection-default":
+    	    	case "":
+    	    	    switch ($collection->sort_by) 
+    	    	    {
+    	    	    	case "ordering-asc":
+    	    	    	    
+    	    	    	    $model->setState('list.sort', array(
+    	    	    	        array( 'collections.'. $collection->id .'.ordering' => 1 )
+    	    	    	    ));
+    	    	    	    	
+    	    	    	    break;
+    	    	    	default:
+    	    	    	    $model->handleSortBy($collection->sort_by);
+    	    	    	    break;
+    	    	    }
+    	    	    break;
+    	    }
+
     		$paginated = $model->setParam('conditions', $conditions)->paginate();
-    		
     	} 
     	catch ( \Exception $e ) 
     	{

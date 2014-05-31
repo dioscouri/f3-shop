@@ -142,5 +142,21 @@ class Routes extends \Dsc\Routes\Group
             'controller' => 'Credit',
             'action' => 'revoke'
         ));
+        
+        $this->add('/collection/@id/products', 'GET|POST', array(
+            'controller' => 'Collection',
+            'action' => 'products'
+        ));
+        
+        $this->add('/collection/@id/products/page/@page', 'GET', array(
+            'controller' => 'Collection',
+            'action' => 'products'
+        ));
+        
+        $this->add('/collection/@id/products/order', 'POST', array(
+            'controller' => 'Collection',
+            'action' => 'saveProductsOrder'
+        ));
+        
     }
 }

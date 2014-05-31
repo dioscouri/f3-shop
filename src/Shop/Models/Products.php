@@ -117,10 +117,19 @@ class Products extends \Dsc\Mongo\Collections\Content
         /**
          * Handle the sort_by value, which users use to sort the list of products
          */
+        $sort_by = $input->get('sort_by', null, 'string');
+        $this->handleSortBy($sort_by);
+        
+        return $this;
+    }
+    
+    public function handleSortBy( $sort_by )
+    {
+        $system = \Dsc\System::instance();
+        
         $default = null;
         $old_state = $system->getUserState($this->context() . '.sort_by');
         $cur_state = (!is_null($old_state)) ? $old_state : $default;
-        $sort_by = $input->get('sort_by', $default, 'string');
         if ($sort_by && $cur_state != $sort_by)
         {
             $pieces = explode('-', $sort_by);
@@ -131,7 +140,8 @@ class Products extends \Dsc\Mongo\Collections\Content
         $this->setState('sort_by', $sort_by);
         $system->setUserState($this->context() . '.sort_by', $sort_by);
         
-        switch($pieces[0]) 
+        // TODO Push this into a method so it can be reused
+        switch($pieces[0])
         {
         	case "price":
         	    if (!empty($pieces[1]) && $pieces[1] == 'desc') {
@@ -489,7 +499,7 @@ class Products extends \Dsc\Mongo\Collections\Content
     	
     	// compare them, only acting if they're different
     	// the arrays need to be sorted for comparison, which is why we sort above
-    	if ($this->related_products != $this->__old_products)
+    	if (!empty($this->__old_products) && is_array($this->__old_products) && $this->related_products != $this->__old_products)
     	{
     		// we need two arrays:
     		// $new_relationships == the ones from $this->related_products that are NOT in $old_product->related_products

@@ -13,6 +13,8 @@ class Collections extends \Dsc\Mongo\Collections\Describable
     public $publication_status = "published";
 
     public $inventory_status = "in_stock";
+    
+    public $sort_by = "title-asc";
 
     protected $__collection_name = 'shop.collections';
 

@@ -76,4 +76,88 @@ class Collection extends \Admin\Controllers\BaseAuth
     }
     
     protected function displayRead() {}
+    
+    public function products() 
+    {
+        $model = (new \Shop\Models\Products)->populateState();
+        $id = $this->inputfilter->clean( $this->app->get('PARAMS.id'), 'alnum' );
+        
+        try {
+            $collection = (new \Shop\Models\Collections)->setState('filter.id', $id)->getItem();
+            if (empty($collection->id)) {
+                throw new \Exception('Invalid Collection');
+            }            
+            $conditions = \Shop\Models\Collections::getProductQueryConditions($collection->id);
+            	
+            if ($filter_tags = (array) $model->getState('filter.tags'))
+            {
+                if ($tags = array_filter( array_values( $filter_tags ) ))
+                {
+                    if (!empty($conditions['tags']))
+                    {
+                        // Add this to an $and clause
+                        if (empty($conditions['$and']))
+                        {
+                            $conditions['$and'] = array();
+                        }
+                        $conditions['$and'][] = array('tags' => array( '$in' => $tags ) );
+        
+                    }
+                    // we're only filtering by this set of tags
+                    else
+                    {
+                        $conditions['tags'] = array( '$in' => $tags );
+                    }
+                }
+            }
+            
+            if (!$model->getState('list.limit')) {
+                $model->setState('list.limit', '100');
+            }
+
+            $paginated = $model->setParam('conditions', $conditions)->setState('list.sort', array(
+            	array( 'collections.'. $id .'.ordering' => 1 )
+            ))->paginate();
+            $this->app->set('paginated', $paginated);
+            $this->app->set('collection', $collection);
+            $this->app->set('state', $model->getState());
+        }
+        catch ( \Exception $e )
+        {
+            \Dsc\System::addMessage( (string) $e, 'error');
+            $this->app->reroute( '/admin/shop/collections' );
+        }        
+        
+        $this->app->set('meta.title', 'Manually Sort Products in Collection | Shop');
+        
+        echo $this->theme->renderTheme('Shop/Admin/Views::collections/products.php');    	
+    }
+    
+    public function saveProductsOrder()
+    {
+        $collection_id = $this->inputfilter->clean( $this->app->get('PARAMS.id'), 'alnum' );
+        $products_ordering = $this->inputfilter->clean( $this->app->get('REQUEST.ordering'), 'array' );
+        
+        // Loop thru the ordering array from the POST
+        // key = id of product, value = ordering position
+        // update the product's document, setting $product->{'collections.' . $collection->id . '.ordering'} = value
+        // return to the ordering page
+        
+        foreach ($products_ordering as $product_id=>$ordering) 
+        {
+        	$product = (new \Shop\Models\Products)->setState('filter.id', $product_id)->getItem();
+        	if (!empty($product->id)) 
+        	{
+        		$product->update(array(
+        		    'collections.' . $collection_id . '.ordering' => (int) $ordering
+        		), array(
+        		    'overwrite' => false
+        		));
+        	}
+        }
+        
+        $redirect = $this->session->get('collections.products.current_page') ? '/admin/shop/collection/' . $collection_id . '/products/page/' . $this->session->get('collections.products.current_page') : '/admin/shop/collection/' . $collection_id . '/products';
+        $this->app->reroute( $redirect );
+        
+    }
 }
