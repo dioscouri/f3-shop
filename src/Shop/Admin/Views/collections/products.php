@@ -5,9 +5,6 @@
 		<h1 class="page-title txt-color-blueDark">
 			<i class="fa fa-table fa-fw "></i> 
 				"<?php echo $collection->title; ?>" Collection  
-			<span> > 
-				Products
-			</span>
 		</h1>
 	</div>
 	<div class="col-xs-12 col-sm-5 col-md-5 col-lg-8">
@@ -81,7 +78,7 @@ jQuery(document).ready(function() {
                         <div class="row">
                             <div class="col-sm-11">
                                 <div class="alert alert-info">
-                                Drag & Drop using the <i class="fa fa-list"></i> handle ro reorder the products.  <b>Click save</b> to commit your changes.
+                                Drag & Drop using the <i class="fa fa-list"></i> handle to reorder the products.  <b>Click save</b> to commit your changes.
                                 </div>
                             </div>
                             <div class="col-sm-1">
