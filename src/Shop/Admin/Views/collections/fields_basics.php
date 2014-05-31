@@ -58,9 +58,11 @@
                     <!-- /.form-group -->                
                 <?php } else { ?>
                     <div class="form-group">
-                        <p>
-                            <a class="btn btn-link" href="./admin/shop/collection/<?php echo $item->id; ?>/products">Manually sort this collection's products <b>(Save your work first!)</b></a>
+                        <a class="btn btn-link" href="./admin/shop/collection/<?php echo $item->id; ?>/products">Manually sort this collection's products</a>
+                        <p class="help-block">
+                            <b>Tip:</b> Before manually sorting this collection's products, change this setting to "Manual Ordering" and click Save. 
                         </p>
+                        
                     </div>
                     <!-- /.form-group -->                
                 <?php } ?>            

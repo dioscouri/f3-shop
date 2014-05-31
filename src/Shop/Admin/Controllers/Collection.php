@@ -88,28 +88,6 @@ class Collection extends \Admin\Controllers\BaseAuth
                 throw new \Exception('Invalid Collection');
             }            
             $conditions = \Shop\Models\Collections::getProductQueryConditions($collection->id);
-            	
-            if ($filter_tags = (array) $model->getState('filter.tags'))
-            {
-                if ($tags = array_filter( array_values( $filter_tags ) ))
-                {
-                    if (!empty($conditions['tags']))
-                    {
-                        // Add this to an $and clause
-                        if (empty($conditions['$and']))
-                        {
-                            $conditions['$and'] = array();
-                        }
-                        $conditions['$and'][] = array('tags' => array( '$in' => $tags ) );
-        
-                    }
-                    // we're only filtering by this set of tags
-                    else
-                    {
-                        $conditions['tags'] = array( '$in' => $tags );
-                    }
-                }
-            }
             
             if (!$model->getState('list.limit')) {
                 $model->setState('list.limit', '100');
@@ -118,6 +96,7 @@ class Collection extends \Admin\Controllers\BaseAuth
             $paginated = $model->setParam('conditions', $conditions)->setState('list.sort', array(
             	array( 'collections.'. $id .'.ordering' => 1 )
             ))->paginate();
+            
             $this->app->set('paginated', $paginated);
             $this->app->set('collection', $collection);
             $this->app->set('state', $model->getState());

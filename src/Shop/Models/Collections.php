@@ -328,6 +328,61 @@ class Collections extends \Dsc\Mongo\Collections\Describable
             $this->products = array();
         }
         
+        $this->__update_products_ordering = false;
+        if ($this->sort_by == 'ordering-asc') 
+        {
+            if (!empty($this->id)) 
+            {
+                // check what it was before
+                $this->__old = (new static)->load( array('_id' => new \MongoId( (string) $this->id ) ));
+                if ($this->__old->sort_by != $this->sort_by) 
+                {
+                    $this->__update_products_ordering = true;
+                }
+            }
+            else 
+            {
+            	$this->__update_products_ordering = true;
+            }
+        }
+        
         return parent::beforeSave();
+    }
+    
+    protected function afterSave() 
+    {
+        parent::afterSave();
+        
+        if (!empty($this->__update_products_ordering)) 
+        {
+            // $to_update = find all products in this collection that dont have an ordering value for this collection
+            // if there are some,
+            // get a count of all products in this collection, set $ordering = count to push them to the end
+            // loop though $to_update and set their ordering value = $ordering + $key
+            
+            $conditions = \Shop\Models\Collections::getProductQueryConditions($this->id);
+            $conditions['collections.'. $this->id .'.ordering'] = null;
+            $to_update = \Shop\Models\Products::collection()->distinct( '_id', $conditions);
+            if (!empty($to_update)) 
+            {
+                $collection_id = (string) $this->id;
+                unset($conditions['collections.'. $this->id .'.ordering']);
+                $count = \Shop\Models\Products::collection()->count($conditions);
+                foreach ($to_update as $key=>$product_id) 
+                {
+                    $ordering = $count + $key;
+                    $product = (new \Shop\Models\Products)->setState('filter.id', (string) $product_id)->getItem();
+                    if (!empty($product->id))
+                    {
+                        $product->update(array(
+                            'collections.' . $collection_id . '.ordering' => (int) $ordering
+                        ), array(
+                            'overwrite' => false
+                        ));
+                    }                	
+                }
+            }
+            
+        }
     }
 }
