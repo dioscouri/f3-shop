@@ -252,10 +252,10 @@ jQuery(document).ready(function(){
                         </div>
                         <div class="price-line">
                             <?php if (((int) $product->get('prices.list') > 0) && $product->get('prices.list') != $product->price() ) { ?>
-                                <span class="list-price price"><strike><?php echo \Shop\Models\Currency::format( $product->{'prices.list'} ); ?></strike></span>
+                                <span class="list-price"><strike><?php echo \Shop\Models\Currency::format( $product->{'prices.list'} ); ?></strike></span>
                             <?php } ?>
                             &nbsp;
-                            <div class="price">
+                            <div class="">
                                 <?php echo \Shop\Models\Currency::format( $product->price() ); ?>
                             </div>
     
