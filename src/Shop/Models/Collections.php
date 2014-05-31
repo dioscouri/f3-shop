@@ -357,8 +357,8 @@ class Collections extends \Dsc\Mongo\Collections\Describable
         {
             // $to_update = find all products in this collection that dont have an ordering value for this collection
             // if there are some,
-            // get a count of all products in this collection, set $ordering = count to push them to the end
-            // loop though $to_update and set their ordering value = $ordering + $key
+            // get a count of all products in this collection, set $start = count to push them to the end
+            // loop though $to_update and set their ordering value = $start + $key
             
             $conditions = \Shop\Models\Collections::getProductQueryConditions($this->id);
             $conditions['collections.'. $this->id .'.ordering'] = null;
