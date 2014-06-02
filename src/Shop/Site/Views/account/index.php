@@ -100,10 +100,19 @@
                             </ul>
                         </div>
                         <div class="col-xs-12 col-sm-12 col-md-6">
+                            <?php if (class_exists('\Affiliates\Models\Referrals')) { ?>
+                            <h4>Referrals</h4>
+                            <ul class="list-unstyled">
+                                <li><a href="./affiliate/dashboard">Your affiliate account</a></li>
+                                <li><a href="./affiliate/invite-friends">Invite friends</a></li>
+                            </ul>
+                            <?php } ?>
+                            <?php /* ?>
                             <h4>Newsletters</h4>
                             <ul class="list-unstyled">
                                 <li>Manage subscriptions</li>
                             </ul>
+                            */ ?>
                         </div>
                     </div>                
                 </div>
