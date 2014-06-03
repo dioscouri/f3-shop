@@ -48,6 +48,29 @@
             
             <hr/>
             
+            <?php if (!empty($item->message)) { ?>
+            
+            <div class="row">
+                <div class="col-md-2">
+                    
+                    <h3>Message</h3>
+                            
+                </div>
+                <!-- /.col-md-2 -->
+                            
+                <div class="col-md-10">
+                    
+                    <?php echo $item->message; ?>
+                    
+                </div>
+                <!-- /.col-md-10 -->
+                
+            </div>
+            
+            <hr/>   
+                     
+            <?php } ?>
+            
             <?php if (!empty($item->order_id)) { ?>
             
             <div class="row">
@@ -60,7 +83,30 @@
                             
                 <div class="col-md-10">
                     
-                    <p>Used in order #<a href="./admin/shop/order/edit/<?php echo $item->order_id; ?>"><?php echo $item->order_id; ?></p>
+                    <p>Used in order #<a href="./admin/shop/order/edit/<?php echo $item->order_id; ?>"><?php echo $item->order_id; ?></a></p>
+                    
+                </div>
+                <!-- /.col-md-10 -->
+                
+            </div>
+            
+            <hr/>   
+                     
+            <?php } ?>
+            
+            <?php if (!empty($item->referral_id)) { ?>
+            
+            <div class="row">
+                <div class="col-md-2">
+                    
+                    <h3>Referral</h3>
+                            
+                </div>
+                <!-- /.col-md-2 -->
+                            
+                <div class="col-md-10">
+                    
+                    <p>Associated with referral #<a href="./admin/affiliates/referral/edit/<?php echo $item->referral_id; ?>"><?php echo $item->referral_id; ?></a></p>
                     
                 </div>
                 <!-- /.col-md-10 -->

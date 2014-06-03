@@ -297,6 +297,7 @@ class Checkout extends \Dsc\Controller
             }        
         }
         
+        // the order WAS accepted
         // Fire an afterShopCheckout event
         $event_after = new \Joomla\Event\Event( 'afterShopCheckout' );
         $event_after->addArgument('checkout', $checkout);
