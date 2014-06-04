@@ -103,18 +103,6 @@ class Products extends \Dsc\Mongo\Collections\Content
         $input = $system->get('input');
         
         /**
-         * Set which price field to use 
-         */
-        $price_field = 'prices.default';
-        $user = \Dsc\System::instance()->get('auth')->getIdentity();
-        $primaryGroup = \Shop\Models\Customer::primaryGroup( $user );
-        if ($group_slug = $primaryGroup->{'slug'}) {
-            if ($this->exists('prices.'.$group_slug)) {
-                $price_field = 'prices.'.$group_slug;
-            }
-        }
-        
-        /**
          * Handle the sort_by value, which users use to sort the list of products
          */
         $sort_by = $input->get('sort_by', null, 'string');
@@ -126,7 +114,7 @@ class Products extends \Dsc\Mongo\Collections\Content
     public function handleSortBy( $sort_by )
     {
         $system = \Dsc\System::instance();
-        
+                
         $default = null;
         $old_state = $system->getUserState($this->context() . '.sort_by');
         $cur_state = (!is_null($old_state)) ? $old_state : $default;
@@ -140,10 +128,20 @@ class Products extends \Dsc\Mongo\Collections\Content
         $this->setState('sort_by', $sort_by);
         $system->setUserState($this->context() . '.sort_by', $sort_by);
         
-        // TODO Push this into a method so it can be reused
         switch($pieces[0])
         {
         	case "price":
+        	    
+        	    // Set which price field to use
+        	    $price_field = 'prices.default';
+        	    $user = \Dsc\System::instance()->get('auth')->getIdentity();
+        	    $primaryGroup = \Shop\Models\Customer::primaryGroup( $user );
+        	    if ($group_slug = $primaryGroup->{'slug'}) {
+        	        if ($this->exists('prices.'.$group_slug)) {
+        	            $price_field = 'prices.'.$group_slug;
+        	        }
+        	    }
+
         	    if (!empty($pieces[1]) && $pieces[1] == 'desc') {
         	        $dir = -1;
         	    }
@@ -152,6 +150,7 @@ class Products extends \Dsc\Mongo\Collections\Content
         	    }
         	    $this->setState('list.sort', array( $price_field => $dir ) );
         	    $this->setState('list.order', 'price');
+        	    
         	    break;
         	case "title":
         	default:
