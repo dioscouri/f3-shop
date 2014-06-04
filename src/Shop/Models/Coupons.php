@@ -331,7 +331,7 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
             	// Get the default group
                 $group_id = \Shop\Models\Settings::fetch()->{'users.default_group'};
                 if (!empty($group_id)) {
-                    $groups[] = $group->setState('filter.id', (string) $group_id)->getItem();
+                    $groups[] = (new \Users\Models\Groups)->setState('filter.id', (string) $group_id)->getItem();
                 }
             }                
         	elseif (!empty($user->id)) 
