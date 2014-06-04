@@ -410,7 +410,7 @@ class Orders extends \Dsc\Mongo\Collections\Taggable
         $this->deductCredit();
         
         // trigger event
-        $this->__complete_event = \Dsc\System::instance()->trigger( 'onShopCompleteOrder', array(
+        $this->__accept_event = \Dsc\System::instance()->trigger( 'onShopAcceptOrder', array(
         	'order' => $this
         ) );
         
