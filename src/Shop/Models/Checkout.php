@@ -32,8 +32,11 @@ class Checkout extends \Dsc\Singleton
         $this->__order = \Shop\Models\Orders::fromCart( $this->cart() );
         
         // Add payment details if applicable
-        // TODO Don't add the credit card number form the PaymentData to the cart, it shouldn't be stored in the order object in the DB
-        $this->__order->addPayment( $this->paymentData() );
+        // Don't add the credit card number form the PaymentData to the cart, it shouldn't be stored in the order object in the DB
+        $payment_data = (array) $this->paymentData();
+        \Dsc\ArrayHelper::clear( $payment_data, 'card' );
+        
+        $this->__order->addPayment( $payment_data );
         
         return $this;
     }
