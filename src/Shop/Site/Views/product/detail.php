@@ -1,9 +1,10 @@
-<?php $item->url = './shop/product/' . $item->{'slug'}; ?>
-<?php $images = $item->images(); ?>
-<?php $variantsInStock = $item->variantsInStock(); ?>
-<?php $variant_1 = current( $variantsInStock ); ?>
-<?php $wishlist_state = \Shop\Models\Wishlists::hasAddedVariant($variant_1['id'], (string) $this->auth->getIdentity()->id) ? 'false' : 'true'; ?>
-<?php 
+<?php
+	$item->url = './shop/product/' . $item->{'slug'};
+	$images = $item->images();
+	$variantsInStock = $item->variantsInStock();
+	$variant_1 = current( $variantsInStock );
+	$wishlist_state = \Shop\Models\Wishlists::hasAddedVariant($variant_1['id'], (string) $this->auth->getIdentity()->id) ? 'false' : 'true';
+ 
 	$settings = \Admin\Models\Settings::fetch();
 	$is_kissmetrics = $settings->enabledIntegration( 'kissmetrics' );
 ?>
@@ -234,21 +235,30 @@ jQuery(document).ready(function(){
                 
                 <?php 
                 	$related_products_db = (new \Shop\Models\Products)->setState('filter.ids', $related_products)->getList();
-                	foreach ($related_products_db as $product ) { ?>
-                    <?php $search_item = $product->toSearchItem(); ?>
-                    <?php if (empty($search_item->url) || !$product->isAvailable()) { continue; } ?>
+                	foreach ($related_products_db as $product ) {
+						$image = (!empty($product->{'featured_image.slug'})) ? './asset/thumb/' . $product->{'featured_image.slug'} : null;
+						$url = './shop/product/' . $product->slug;
+						$js = '';
+						if( $is_kissmetrics ){
+							$js ="\" onclick=\"javascript:_kmq.push(['record', 'Product Related Items', {'Product Name' : '".$product->title."', 'SKU' : '".$product->{'tracking.sku'}."' }])";
+						
+							$url .= $js;
+							$image .= $js;
+						}
+
+						if (empty($url) || !$product->isAvailable()) { continue; }
                     
-                    <?php if ($n == 0 || ($n % 4 == 0)) { ?><div class="row"><?php } ?>
+                    	if ($n == 0 || ($n % 4 == 0)) { ?><div class="row"><?php } ?>
                     
                     <div class="col-xs-6 col-sm-3 col-md-3 category-article category-grid text-center">
                         
                         <div class="">
-                            <?php if ($search_item->image) { ?>
-                            <a href="<?php echo $search_item->url; ?>">
-                                <img class="img-responsive" src="<?php echo $search_item->image ?>">
+                            <?php if ($image) { ?>
+                            <a href="<?php echo $url; ?>">
+                                <img class="img-responsive" src="<?php echo $image ?>">
                             </a>
                             <?php } ?>
-                            <h4><?php echo $search_item->title; ?></h4>                
+                            <h4><?php echo $product->title; ?></h4>                
                         </div>
                         <div class="price-line">
                             <?php if (((int) $product->get('prices.list') > 0) && $product->get('prices.list') != $product->price() ) { ?>
