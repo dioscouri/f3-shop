@@ -3,6 +3,9 @@ namespace Shop\Site\Controllers;
 
 class Collection extends \Dsc\Controller 
 {    
+	
+	use \Dsc\Traits\Controllers\SupportPreview;
+	
     protected function getModel() 
     {
         $model = new \Shop\Models\Products;
@@ -11,8 +14,7 @@ class Collection extends \Dsc\Controller
     
     public function index()
     {
-    	$f3 = \Base::instance();
-    	$slug = $this->inputfilter->clean( $f3->get('PARAMS.slug'), 'cmd' );
+    	$slug = $this->inputfilter->clean( $this->app->get('PARAMS.slug'), 'cmd' );
     	$model = $this->getModel()->populateState();
     	
     	try {
@@ -66,7 +68,7 @@ class Collection extends \Dsc\Controller
     	    	    }
     	    	    break;
     	    }
-
+    	    
     		$paginated = $model->setParam('conditions', $conditions)->paginate();
     	} 
     	catch ( \Exception $e ) 
@@ -81,10 +83,10 @@ class Collection extends \Dsc\Controller
     	$this->session->trackState( get_class( $model ), $model->getParam() )->clearUrls()->trackUrl( $collection->{'title'} );
     	
     	$state = $model->getState();
-    	\Base::instance()->set('state', $state );
-    	\Base::instance()->set('paginated', $paginated );
+    	$this->app->set('state', $state );
+    	$this->app->set('paginated', $paginated );
     	 
-    	\Base::instance()->set('collection', $collection );    	
+    	$this->app->set('collection', $collection );    	
     	$this->app->set('meta.title', $collection->{'title'} . ' | Shop');
     	
     	$view = \Dsc\System::instance()->get('theme');

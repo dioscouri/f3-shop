@@ -96,10 +96,17 @@
             </td>
             
             <td>
-                <a href="./shop/category<?php echo $item->get('path'); ?>" target="_blank">Preview</a>
+                <a href="./shop/category<?php echo $item->get('path'); ?>" target="_blank">Live Preview</a>
             </td>
                             
-            <td class="text-center">
+            <td class="text-center col-lg-2 col-md-3">
+	        	<?php if( $allow_preview ) { ?>
+                <a class="btn btn-xs btn-warning" target="_blank" title="Unpublished Preview" href="./shop/category/<?php echo $item->slug; ?>?preview=1">
+                   <i class="fa fa-search"></i>
+                 </a>
+   	            &nbsp;
+	            <?php } ?>
+            
                 <a class="btn btn-xs btn-secondary" href="./admin/shop/category/edit/<?php echo $item->_id; ?>">
                     <i class="fa fa-pencil"></i>
                 </a>

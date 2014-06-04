@@ -2,7 +2,9 @@
 namespace Shop\Site\Controllers;
 
 class Product extends \Dsc\Controller 
-{    
+{
+	use \Dsc\Traits\Controllers\SupportPreview;
+	
     protected function model($type=null) 
     {
         switch (strtolower($type)) 
@@ -21,22 +23,28 @@ class Product extends \Dsc\Controller
     
     public function read()
     {
-    	$f3 = \Base::instance();
-    	$slug = $this->inputfilter->clean( $f3->get('PARAMS.slug'), 'cmd' );
+    	$slug = $this->inputfilter->clean( $this->app->get('PARAMS.slug'), 'cmd' );
     	
     	try {
-    		$item = $this->model('products')
-    		->setState('filter.slug', $slug)
-    		->setState('filter.publication_status', 'published')
-    		->setState('filter.published_today', true)
-    		->setState('filter.inventory_status', 'in_stock')    		
-    		->getItem();
+    		$model = $this->model('products')
+    		->setState('filter.slug', $slug);
+
+    		$preview = $this->input->get( "preview", 0, 'int' );
+    		if( $preview ){
+    			$this->canPreview(false, "Shop\Models\Products" );
+    		} else {
+    			$model->setState('filter.published_today', true)
+    			->setState('filter.publication_status', 'published')
+    			->setState('filter.inventory_status', 'in_stock');
+    		}
+    		$item = $model->getItem();
+    		    		
     		if (empty($item->id)) {
     			throw new \Exception;
     		}
     	} catch ( \Exception $e ) {
     		\Dsc\System::instance()->addMessage( "Invalid Item", 'error');
-    		$f3->reroute( '/shop' );
+    		$this->app->reroute( '/shop' );
     		return;
     	}
     	

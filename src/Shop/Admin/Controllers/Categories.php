@@ -4,6 +4,7 @@ namespace Shop\Admin\Controllers;
 class Categories extends \Admin\Controllers\BaseAuth 
 {
     use \Dsc\Traits\Controllers\AdminList;
+    use \Dsc\Traits\Controllers\SupportPreview;
     
     protected $list_route = '/admin/shop/categories';
 
@@ -17,12 +18,13 @@ class Categories extends \Admin\Controllers\BaseAuth
     {
         $model = $this->getModel();
         $state = $model->emptyState()->populateState()->getState();
-        \Base::instance()->set('state', $state );
+        $this->app->set('state', $state );
         $paginated = $model->paginate();
-        \Base::instance()->set('paginated', $paginated );
-        \Base::instance()->set('selected', 'null' );
+        $this->app->set('paginated', $paginated );
+        $this->app->set('selected', 'null' );
         
         $this->app->set('meta.title', 'Categories | Shop');
+        $this->app->set( 'allow_preview', $this->canPreview( true ) );
         
         $view = \Dsc\System::instance()->get('theme');
         echo $view->render('Shop/Admin/Views::categories/list.php');
@@ -33,10 +35,10 @@ class Categories extends \Admin\Controllers\BaseAuth
         $model = $this->getModel();
         
         $state = $model->populateState()->getState();
-        \Base::instance()->set('state', $state );
+        $this->app->set('state', $state );
         
         $paginated = $model->paginate();
-        \Base::instance()->set('paginated', $paginated );
+        $this->app->set('paginated', $paginated );
     
         $view = \Dsc\System::instance()->get('theme');
         $html = $view->renderLayout('Shop/Admin/Views::categories/list_datatable.php');
@@ -51,9 +53,9 @@ class Categories extends \Admin\Controllers\BaseAuth
     {
         $model = $this->getModel();
         $categories = $model->getList();
-        \Base::instance()->set('categories', $categories );
+        $this->app->set('categories', $categories );
 
-        \Base::instance()->set('selected', 'null' );
+        $this->app->set('selected', 'null' );
         
         $view = \Dsc\System::instance()->get('theme');
         $html = $view->renderLayout('Shop/Admin/Views::categories/list_parents.php');
@@ -68,7 +70,7 @@ class Categories extends \Admin\Controllers\BaseAuth
     {
         $model = $this->getModel();
         $categories = $model->getList();
-        \Base::instance()->set('categories', $categories );
+        $this->app->set('categories', $categories );
     
         $selected = array();
         $data = \Base::instance()->get('REQUEST');
@@ -82,7 +84,7 @@ class Categories extends \Admin\Controllers\BaseAuth
 
         $flash = \Dsc\Flash::instance();
         $flash->store( array( 'metadata'=>array('categories'=>$selected) ) );
-        \Base::instance()->set('flash', $flash );
+        $this->app->set('flash', $flash );
         
         $view = \Dsc\System::instance()->get('theme');
         $html = $view->renderLayout('Shop/Admin/Views::categories/checkboxes.php');
@@ -97,8 +99,8 @@ class Categories extends \Admin\Controllers\BaseAuth
     {
         $model = $this->getModel();
         $categories = $model->getList();
-        \Base::instance()->set('categories', $categories );
-        \Base::instance()->set('selected', $selected );
+        $this->app->set('categories', $categories );
+        $this->app->set('selected', $selected );
          
         $view = \Dsc\System::instance()->get('theme');
         echo $view->renderLayout('Shop/Admin/Views::categories/list_parents.php');

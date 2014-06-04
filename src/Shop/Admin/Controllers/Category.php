@@ -4,7 +4,8 @@ namespace Shop\Admin\Controllers;
 class Category extends \Admin\Controllers\BaseAuth 
 {
     use \Dsc\Traits\Controllers\CrudItemCollection;
-
+    use \Dsc\Traits\Controllers\SupportPreview;
+    
     protected $list_route = '/admin/shop/categories';
     protected $create_item_route = '/admin/shop/category/create';
     protected $get_item_route = '/admin/shop/category/read/{id}';    
@@ -18,8 +19,7 @@ class Category extends \Admin\Controllers\BaseAuth
     
     protected function getItem() 
     {
-        $f3 = \Base::instance();
-        $id = $this->inputfilter->clean( $f3->get('PARAMS.id'), 'alnum' );
+        $id = $this->inputfilter->clean( $this->app->get('PARAMS.id'), 'alnum' );
         $model = $this->getModel()
             ->setState('filter.id', $id);
 
@@ -27,7 +27,7 @@ class Category extends \Admin\Controllers\BaseAuth
             $item = $model->getItem();
         } catch ( \Exception $e ) {
             \Dsc\System::instance()->addMessage( "Invalid Item: " . $e->getMessage(), 'error');
-            $f3->reroute( $this->list_route );
+            $this->app->reroute( $this->list_route );
             return;
         }
 
@@ -36,14 +36,13 @@ class Category extends \Admin\Controllers\BaseAuth
     
     protected function displayCreate() 
     {
-        $f3 = \Base::instance();
-        $f3->set('pagetitle', 'Edit Category');
+        $this->app->set('pagetitle', 'Edit Category');
 
         $model = new \Shop\Models\Categories;
         $all = $model->emptyState()->getList();
-        \Base::instance()->set('all', $all );
+        $this->app->set('all', $all );
         
-        \Base::instance()->set('selected', null );
+        $this->app->set('selected', null );
         
         $view = \Dsc\System::instance()->get('theme');
         $view->event = $view->trigger( 'onDisplayShopCategoriesEdit', array( 'item' => $this->getItem(), 'tabs' => array(), 'content' => array() ) );
@@ -55,8 +54,7 @@ class Category extends \Admin\Controllers\BaseAuth
     
     protected function displayEdit()
     {
-        $f3 = \Base::instance();
-        $f3->set('pagetitle', 'Edit Category');
+        $this->app->set('pagetitle', 'Edit Category');
 
         $model = new \Shop\Models\Categories;
         $categories = $model->emptyState()->getList();
@@ -65,6 +63,7 @@ class Category extends \Admin\Controllers\BaseAuth
         $flash = \Dsc\Flash::instance();
         $selected = $flash->old('parent');
         \Base::instance()->set('selected', $selected );
+        $this->app->set( 'allow_preview', $this->canPreview( true ) );
         
         $view = \Dsc\System::instance()->get('theme');
         $view->event = $view->trigger( 'onDisplayShopCategoriesEdit', array( 'item' => $this->getItem(), 'tabs' => array(), 'content' => array() ) );
@@ -79,10 +78,9 @@ class Category extends \Admin\Controllers\BaseAuth
      */
     protected function doRead(array $data, $key=null) 
     {
-        $f3 = \Base::instance();
         $id = $this->getItem()->get( $this->getItemKey() );
         $route = str_replace('{id}', $id, $this->edit_item_route );
-        $f3->reroute( $route );
+        $this->app->reroute( $route );
     }
     
     protected function displayRead() {}
@@ -91,7 +89,7 @@ class Category extends \Admin\Controllers\BaseAuth
     {
     	$model = $this->getModel();
     	$categories = $model->getList();
-    	\Base::instance()->set('categories', $categories );
+    	$this->app->set('categories', $categories );
     	 
     	$view = \Dsc\System::instance()->get('theme');
     	echo $view->renderLayout('Shop/Admin/Views::categories/quickadd.php');

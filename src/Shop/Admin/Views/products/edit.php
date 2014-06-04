@@ -12,7 +12,11 @@ jQuery(document).ready(function(){
     <div class="clearfix">
 
         <div class="pull-right">
-            <div class="btn-group">
+        	<?php if( $allow_preview ) { ?>
+            <a class="btn btn-warning" href="./shop/product/<?php echo $flash->old('slug'); ?>?preview=1" target="_blank" title="Unpublished Preview">Preview</a>
+            &nbsp;
+            <?php } ?>
+        	<div class="btn-group">
                 <button type="submit" class="btn btn-primary">Save</button>
                 <input id="primarySubmit" type="hidden" value="save_edit" name="submitType" />
                 <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">

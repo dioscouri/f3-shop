@@ -4,6 +4,7 @@ namespace Shop\Admin\Controllers;
 class Collections extends \Admin\Controllers\BaseAuth 
 {
     use \Dsc\Traits\Controllers\AdminList;
+    use \Dsc\Traits\Controllers\SupportPreview;
     
     protected $list_route = '/admin/shop/collections';
 
@@ -17,11 +18,12 @@ class Collections extends \Admin\Controllers\BaseAuth
     {
         $model = $this->getModel();
         $state = $model->emptyState()->populateState()->getState();
-        \Base::instance()->set('state', $state );
+        $this->app->set('state', $state );
         $paginated = $model->paginate();
-        \Base::instance()->set('paginated', $paginated );
-        \Base::instance()->set('selected', 'null' );
-
+        $this->app->set('paginated', $paginated );
+        $this->app->set('selected', 'null' );
+        $this->app->set( 'allow_preview', $this->canPreview( true ) );
+        
         $this->app->set('meta.title', 'Collections | Shop');
         
         $view = \Dsc\System::instance()->get('theme');

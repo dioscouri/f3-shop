@@ -4,7 +4,8 @@ namespace Shop\Admin\Controllers;
 class Product extends \Admin\Controllers\BaseAuth 
 {
     use \Dsc\Traits\Controllers\CrudItemCollection;
-
+    use \Dsc\Traits\Controllers\SupportPreview;
+    
     protected $list_route = '/admin/shop/products';
     protected $create_item_route = '/admin/shop/product/create';
     protected $get_item_route = '/admin/shop/product/read/{id}';    
@@ -18,8 +19,7 @@ class Product extends \Admin\Controllers\BaseAuth
     
     protected function getItem() 
     {
-        $f3 = \Base::instance();
-        $id = $this->inputfilter->clean( $f3->get('PARAMS.id'), 'alnum' );
+        $id = $this->inputfilter->clean( $this->app->get('PARAMS.id'), 'alnum' );
         
         if (empty($id)) {
         	return $this->getModel();
@@ -29,7 +29,7 @@ class Product extends \Admin\Controllers\BaseAuth
             $item = $this->getModel()->setState('filter.id', $id)->getItem();
         } catch ( \Exception $e ) {
             \Dsc\System::instance()->addMessage( "Invalid Item: " . $e->getMessage(), 'error');
-            $f3->reroute( $this->list_route );
+            $this->app->reroute( $this->list_route );
             return;
         }
 
@@ -38,12 +38,10 @@ class Product extends \Admin\Controllers\BaseAuth
     
     protected function displayCreate() 
     {
-        $f3 = \Base::instance();
-        
         $model = new \Shop\Models\Categories;
         $categories = $model->getList();
-        \Base::instance()->set('categories', $categories );
-        \Base::instance()->set('selected', 'null' );
+        $this->app->set('categories', $categories );
+        $this->app->set('selected', 'null' );
 
         $item = $this->getItem();
         
@@ -70,7 +68,7 @@ class Product extends \Admin\Controllers\BaseAuth
         $flash->store( $flash->get('old') + array('categories'=>$selected));        
 
         $all_tags = $this->getModel()->getTags();
-        \Base::instance()->set('all_tags', $all_tags );
+        $this->app->set('all_tags', $all_tags );
         
         $this->app->set('meta.title', 'Create Product | Shop');
         
@@ -91,8 +89,6 @@ class Product extends \Admin\Controllers\BaseAuth
     
     protected function displayEdit()
     {
-        $f3 = \Base::instance();
-
         $item = $this->getItem();
         
         $flash = \Dsc\Flash::instance();
@@ -112,13 +108,14 @@ class Product extends \Admin\Controllers\BaseAuth
         
         $model = new \Shop\Models\Categories;
         $categories = $model->getList();
-        \Base::instance()->set('categories', $categories );
-        \Base::instance()->set('selected', 'null' );
+        $this->app->set('categories', $categories );
+        $this->app->set('selected', 'null' );
         
         $all_tags = $this->getModel()->getTags();
-        \Base::instance()->set('all_tags', $all_tags );
+        $this->app->set('all_tags', $all_tags );
         
         $this->app->set('meta.title', 'Edit Product | Shop');
+        $this->app->set( 'allow_preview', $this->canPreview( true ) );
         
         $view = \Dsc\System::instance()->get('theme');
         $view->event = $view->trigger( 'onDisplayShopProductsEdit', array( 'item' => $item, 'tabs' => array(), 'content' => array() ) );
@@ -141,10 +138,9 @@ class Product extends \Admin\Controllers\BaseAuth
      */
     protected function doRead(array $data, $key=null) 
     {
-        $f3 = \Base::instance();
         $id = $this->getItem()->get( $this->getItemKey() );
         $route = str_replace('{id}', $id, $this->edit_item_route );
-        $f3->reroute( $route );
+        $this->app->reroute( $route );
     }
     
     protected function displayRead() {}

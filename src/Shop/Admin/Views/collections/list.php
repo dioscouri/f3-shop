@@ -134,6 +134,13 @@
                     </td>
                                     
                     <td class="text-center">
+			        	<?php if( $allow_preview ) { ?>
+	                        <a class="btn btn-xs btn-warning" target="_blank" href="./shop/collection/<?php echo $item->slug; ?>?preview=1" title="Unpublished Preview">
+	                            <i class="fa fa-search"></i>
+	                        </a>
+	        	            &nbsp;
+			            <?php } ?>
+                    
                         <a class="btn btn-xs btn-secondary" href="./admin/shop/collection/edit/<?php echo $item->_id; ?>">
                             <i class="fa fa-pencil"></i>
                         </a>

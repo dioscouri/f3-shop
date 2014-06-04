@@ -2,7 +2,9 @@
 namespace Shop\Site\Controllers;
 
 class Category extends \Dsc\Controller 
-{    
+{ 
+	use \Dsc\Traits\Controllers\SupportPreview;
+	
     protected function model($type=null) 
     {
         switch (strtolower($type)) 
@@ -22,11 +24,9 @@ class Category extends \Dsc\Controller
     public function index()
     {
     	// TODO Check ACL against both category and item.
-    	
-    	$f3 = \Base::instance();
-    	$url_params = $f3->get('PARAMS');
+    	$url_params = $this->app->get('PARAMS');
     	    	
-    	$param = $this->inputfilter->clean( $f3->get('PARAMS.1'), 'string' );
+    	$param = $this->inputfilter->clean( $this->app->get('PARAMS.1'), 'string' );
     	$pieces = explode('?', $param);
     	$path = $pieces[0];
     	$products_model = $this->model('products');
@@ -37,15 +37,25 @@ class Category extends \Dsc\Controller
     	    	throw new \Exception;
     	    }
     		$paginated = $products_model->populateState()
-    		      ->setState('filter.category.id', $category->id)
-    		      ->setState('filter.publication_status', 'published')
-    		      ->setState('filter.published_today', true)
-    		      ->setState('filter.inventory_status', 'in_stock')
-    		      ->paginate();
+    		      ->setState('filter.category.id', $category->id);
+    		      
+    		
+    		$preview = $this->input->get( "preview", 0, 'int' );
+    		if( $preview ){
+    			$this->canPreview(false, "Shop\Models\Categories");
+    		} else {
+    			$products_model->setState('filter.published_today', true)
+    			->setState('filter.inventory_status', 'in_stock')
+    			->setState('filter.publication_status', 'published');
+    		}
+    		
+    		$paginated = $products_model->paginate();
+    		
+    		
     	} catch ( \Exception $e ) {
     		\Dsc\System::instance()->addMessage( 'Invalid category', 'error');
     		\Dsc\System::instance()->addMessage( $path, 'error');
-    		$f3->reroute( '/shop' ); // $f3->error('404');
+    		$this->app->reroute( '/shop' ); // $f3->error('404');
     		return;
     	}
 
@@ -57,10 +67,10 @@ class Category extends \Dsc\Controller
     	$this->session->trackUrl( $category->{'title'} );
 
     	$state = $products_model->getState();
-    	\Base::instance()->set('state', $state );
-    	\Base::instance()->set('paginated', $paginated );
+    	$this->app->set('state', $state );
+    	$this->app->set('paginated', $paginated );
     	
-    	\Base::instance()->set('category', $category );
+    	$this->app->set('category', $category );
     	$this->app->set('meta.title', $category->{'title'} . ' | Shop');
 
     	$view = \Dsc\System::instance()->get('theme');

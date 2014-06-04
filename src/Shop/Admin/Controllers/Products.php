@@ -4,6 +4,7 @@ namespace Shop\Admin\Controllers;
 class Products extends \Admin\Controllers\BaseAuth 
 {
 	use \Dsc\Traits\Controllers\AdminList;
+	use \Dsc\Traits\Controllers\SupportPreview;
 	
 	protected $list_route = '/admin/shop/products';
 	
@@ -17,13 +18,14 @@ class Products extends \Admin\Controllers\BaseAuth
     {
         $model = $this->getModel();
         $state = $model->populateState()->getState();
-        \Base::instance()->set('state', $state );
+        $this->app->set('state', $state );
         
         $paginated = $model->paginate();     
-        \Base::instance()->set('paginated', $paginated );
+        $this->app->set('paginated', $paginated );
         
         $this->app->set('meta.title', 'Products | Shop');
-                
+        $this->app->set( 'allow_preview', $this->canPreview( true ) );
+        
         $view = \Dsc\System::instance()->get('theme');
         echo $view->render('Shop\Admin\Views::products/list.php');
     }
