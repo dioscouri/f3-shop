@@ -1059,14 +1059,25 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
             )
             {
                 $this->taxes = array();
-                $this->ensureAutoCoupons();
                 foreach ((array) $this->coupons as $key=>$item)
                 {
                     if (!empty($item['usage_automatic'])) {
                         unset($this->coupons[$key]);
                     }
+                    
+                    // ensure that the coupon is still valid, removing it if not
+                    try {
+                        $coupon = (new \Shop\Models\Coupons)->bind($item)->cartValid( $this );
+                    }
+                    catch (\Exception $e) {
+                        unset($this->coupons[$key]);
+                    }
                 }
                 $this->coupons = array_values(array_filter($this->coupons));
+                
+                // now that user coupons have been validated, ensure the autoCoupons
+                $this->ensureAutoCoupons();
+                
                 foreach ((array) $this->coupons as $key=>$item)
                 {
                     $this->{'coupons.' . $key . '.amount'} = $this->calcCouponValue( $item );

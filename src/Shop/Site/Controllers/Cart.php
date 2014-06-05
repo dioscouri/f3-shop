@@ -28,8 +28,6 @@ class Cart extends \Dsc\Controller
      */
     public function add()
     {
-        $f3 = \Base::instance();
-        
         // -----------------------------------------------------
         // Start: validation
         // -----------------------------------------------------
@@ -39,13 +37,13 @@ class Cart extends \Dsc\Controller
         try {
             $product = (new \Shop\Models\Variants)->getById($variant_id);
         } catch (\Exception $e) {
-            if ($f3->get('AJAX')) {
+            if ($this->app->get('AJAX')) {
                 return $this->outputJson( $this->getJsonResponse( array(
                     'result'=>false
                 ) ) );
             } else {
                 \Dsc\System::addMessage('Item not added to cart - Invalid product', 'error');
-                $f3->reroute('/shop/cart');
+                $this->app->reroute('/shop/cart');
                 return;
             }
         }
@@ -58,27 +56,27 @@ class Cart extends \Dsc\Controller
         
         // add the item
         try {
-            $cart->addItem( $variant_id, $product, $f3->get('POST') );
+            $cart->addItem( $variant_id, $product, $this->app->get('POST') );
         } catch (\Exception $e) {
-            if ($f3->get('AJAX')) {
+            if ($this->app->get('AJAX')) {
                 return $this->outputJson( $this->getJsonResponse( array(
                     'result'=>false
                 ) ) );
             } else {
                 \Dsc\System::addMessage('Item not added to cart', 'error');
                 \Dsc\System::addMessage($e->getMessage(), 'error');
-                $f3->reroute('/shop/cart');
+                $this->app->reroute('/shop/cart');
                 return;
             }
         }
 
-        if ($f3->get('AJAX')) {
+        if ($this->app->get('AJAX')) {
             return $this->outputJson( $this->getJsonResponse( array(
                 'result'=>true
             ) ) );
         } else {
             \Dsc\System::addMessage('Item added to cart');
-        	$f3->reroute('/shop/cart');
+        	$this->app->reroute('/shop/cart');
         }
     }
     
@@ -87,21 +85,24 @@ class Cart extends \Dsc\Controller
      */
     public function remove()
     {
-        $f3 = \Base::instance();
-        
         // -----------------------------------------------------
         // Start: validation
         // -----------------------------------------------------
-        // TODO validate the POST values
+        // validate the POST values
             // min: cartitem_hash
-        $cartitem_hash = $this->inputfilter->clean( $f3->get('PARAMS.cartitem_hash'), 'cmd' );
-        
-        // TODO if validation fails, respond appropriately
-        if ($f3->get('AJAX')) {
-        
-        } else {
-        
+        if (!$cartitem_hash = $this->inputfilter->clean( $this->app->get('PARAMS.cartitem_hash'), 'cmd' )) 
+        {
+            // if validation fails, respond appropriately
+            if ($this->app->get('AJAX')) {
+                return $this->outputJson( $this->getJsonResponse( array(
+                    'result'=>false
+                ) ) );            
+            } else {
+                \Dsc\System::addMessage('Invalid Cart Item', 'error');
+                $this->app->reroute('/shop/cart');            
+            }
         }
+        
         // -----------------------------------------------------
         // End: validation
         // -----------------------------------------------------
@@ -112,25 +113,28 @@ class Cart extends \Dsc\Controller
         // remove the item
         try {
             $cart->removeItem( $cartitem_hash );
+            
+            if ($this->app->get('AJAX')) {
+                return $this->outputJson( $this->getJsonResponse( array(
+                    'result'=>true
+                ) ) );
+            } else {
+                \Dsc\System::addMessage('Item removed from cart');
+                $this->app->reroute('/shop/cart');
+            }
+            
         } catch (\Exception $e) {
-            // TODO respond appropriately with failure message
-            // return;
+            // respond appropriately with failure message
+            if ($this->app->get('AJAX')) {
+                return $this->outputJson( $this->getJsonResponse( array(
+                    'result'=>false
+                ) ) );
+            } else {
+                \Dsc\System::addMessage($e->getMessage(), 'error');
+                $this->app->reroute('/shop/cart');
+            }
         }
         
-        //echo \Dsc\Debug::dump( $cart );
-        
-        // TODO respond appropriately
-            // ajax?  send response object
-            // otherwise redirect to cart
-        
-        if ($f3->get('AJAX')) {
-            return $this->outputJson( $this->getJsonResponse( array(
-                'result'=>true
-            ) ) );        
-        } else {
-            \Dsc\System::addMessage('Item removed from cart');
-            $f3->reroute('/shop/cart');
-        }
     }
     
     /**
@@ -138,8 +142,6 @@ class Cart extends \Dsc\Controller
      */
     public function updateQuantities()
     {
-        $f3 = \Base::instance();
-        
         // get the current user's cart, either based on session_id (visitor) or user_id (logged-in)
         $cart = \Shop\Models\Carts::fetch();
         
@@ -157,17 +159,13 @@ class Cart extends \Dsc\Controller
             }
         }
         
-        // TODO respond appropriately
-            // ajax?  send response object
-            // otherwise redirect to cart
-        
-        if ($f3->get('AJAX')) {
+        if ($this->app->get('AJAX')) {
             return $this->outputJson( $this->getJsonResponse( array(
                 'result'=>true
             ) ) );        
         } else {
             \Dsc\System::addMessage('Quantities updated');
-            $f3->reroute('/shop/cart');
+            $this->app->reroute('/shop/cart');
         }
     }
 
@@ -176,8 +174,6 @@ class Cart extends \Dsc\Controller
      */
     public function addCoupon()
     {
-        $f3 = \Base::instance();
-
         $redirect = '/shop/cart';
         if ($custom_redirect = \Dsc\System::instance()->get( 'session' )->get( 'site.addcoupon.redirect' ))
         {
@@ -200,13 +196,13 @@ class Cart extends \Dsc\Controller
             }
                 
         } catch (\Exception $e) {
-            if ($f3->get('AJAX')) {
+            if ($this->app->get('AJAX')) {
                 return $this->outputJson( $this->getJsonResponse( array(
                     'result'=>false
                 ) ) );
             } else {
                 \Dsc\System::addMessage($e->getMessage(), 'error');
-                $f3->reroute($redirect);
+                $this->app->reroute($redirect);
                 return;
             }
         }
@@ -222,14 +218,14 @@ class Cart extends \Dsc\Controller
         try {
             $cart->addCoupon( $coupon );
         } catch (\Exception $e) {
-            if ($f3->get('AJAX')) {
+            if ($this->app->get('AJAX')) {
                 return $this->outputJson( $this->getJsonResponse( array(
                     'result'=>false
                 ) ) );
             } else {
                 \Dsc\System::addMessage('Coupon not added to cart', 'error');
                 \Dsc\System::addMessage($e->getMessage(), 'error');
-                $f3->reroute($redirect);
+                $this->app->reroute($redirect);
                 return;
             }
         }
@@ -237,13 +233,13 @@ class Cart extends \Dsc\Controller
         // End: add the item
         // -----------------------------------------------------                
         
-        if ($f3->get('AJAX')) {
+        if ($this->app->get('AJAX')) {
             return $this->outputJson( $this->getJsonResponse( array(
                 'result'=>true
             ) ) );        
         } else {
             \Dsc\System::addMessage('Added coupon: ' . $coupon_code);
-            $f3->reroute($redirect);
+            $this->app->reroute($redirect);
         }
     }
     
@@ -252,8 +248,6 @@ class Cart extends \Dsc\Controller
      */
     public function removeCoupon()
     {
-        $f3 = \Base::instance();
-        
         $redirect = '/shop/cart';
         if ($custom_redirect = \Dsc\System::instance()->get( 'session' )->get( 'site.removecoupon.redirect' ))
         {
@@ -264,16 +258,20 @@ class Cart extends \Dsc\Controller
         // -----------------------------------------------------
         // Start: validation
         // -----------------------------------------------------
-        // TODO validate the POST values
-        // min: cartitem_hash
-        $code = $this->inputfilter->clean( $f3->get('PARAMS.code'), 'string' );
-    
-        // TODO if validation fails, respond appropriately
-        if ($f3->get('AJAX')) {
-    
-        } else {
-    
+        // validate the POST values
+        if (!$code = $this->inputfilter->clean( $this->app->get('PARAMS.code'), 'string' )) 
+        {
+            // if validation fails, respond appropriately
+            if ($this->app->get('AJAX')) {
+                return $this->outputJson( $this->getJsonResponse( array(
+                    'result'=>false
+                ) ) );
+            } else {
+                \Dsc\System::addMessage('Invalid Coupon Code', 'error');
+                $this->app->reroute('/shop/cart');
+            }        	
         }
+
         // -----------------------------------------------------
         // End: validation
         // -----------------------------------------------------
@@ -284,24 +282,25 @@ class Cart extends \Dsc\Controller
         // remove the item
         try {
             $cart->removeCoupon( $code );
+            
+            if ($this->app->get('AJAX')) {
+                return $this->outputJson( $this->getJsonResponse( array(
+                    'result'=>true
+                ) ) );
+            } else {
+                \Dsc\System::addMessage('Coupon removed from cart');
+                $this->app->reroute('/shop/cart');
+            }
+            
         } catch (\Exception $e) {
-            // TODO respond appropriately with failure message
-            // return;
-        }
-    
-        //echo \Dsc\Debug::dump( $cart );
-    
-        // TODO respond appropriately
-        // ajax?  send response object
-        // otherwise redirect to cart
-    
-        if ($f3->get('AJAX')) {
-            return $this->outputJson( $this->getJsonResponse( array(
-                'result'=>true
-            ) ) );
-        } else {
-            \Dsc\System::addMessage('Coupon removed from cart');
-            $f3->reroute($redirect);
+            if ($this->app->get('AJAX')) {
+                return $this->outputJson( $this->getJsonResponse( array(
+                    'result'=>false
+                ) ) );
+            } else {
+                \Dsc\System::addMessage($e->getMessage(), 'error');
+                $this->app->reroute('/shop/cart');
+            }
         }
     }
     
@@ -310,8 +309,6 @@ class Cart extends \Dsc\Controller
      */
     public function addGiftCard()
     {
-        $f3 = \Base::instance();
-    
         $redirect = '/shop/cart';
         if ($custom_redirect = \Dsc\System::instance()->get( 'session' )->get( 'site.addgiftcard.redirect' ))
         {
@@ -333,13 +330,13 @@ class Cart extends \Dsc\Controller
             }
     
         } catch (\Exception $e) {
-            if ($f3->get('AJAX')) {
+            if ($this->app->get('AJAX')) {
                 return $this->outputJson( $this->getJsonResponse( array(
                     'result'=>false
                 ) ) );
             } else {
                 \Dsc\System::addMessage($e->getMessage(), 'error');
-                $f3->reroute($redirect);
+                $this->app->reroute($redirect);
                 return;
             }
         }
@@ -355,14 +352,14 @@ class Cart extends \Dsc\Controller
         try {
             $cart->addGiftcard( $giftcard );
         } catch (\Exception $e) {
-            if ($f3->get('AJAX')) {
+            if ($this->app->get('AJAX')) {
                 return $this->outputJson( $this->getJsonResponse( array(
                     'result'=>false
                 ) ) );
             } else {
                 \Dsc\System::addMessage('Gift card not added to cart', 'error');
                 \Dsc\System::addMessage($e->getMessage(), 'error');
-                $f3->reroute($redirect);
+                $this->app->reroute($redirect);
                 return;
             }
         }
@@ -370,13 +367,13 @@ class Cart extends \Dsc\Controller
         // End: add the item
         // -----------------------------------------------------
     
-        if ($f3->get('AJAX')) {
+        if ($this->app->get('AJAX')) {
             return $this->outputJson( $this->getJsonResponse( array(
                 'result'=>true
             ) ) );
         } else {
             \Dsc\System::addMessage('Added Gift Card');
-            $f3->reroute($redirect);
+            $this->app->reroute($redirect);
         }
     }
     
@@ -385,8 +382,6 @@ class Cart extends \Dsc\Controller
      */
     public function removeGiftCard()
     {
-        $f3 = \Base::instance();
-    
         $redirect = '/shop/cart';
         if ($custom_redirect = \Dsc\System::instance()->get( 'session' )->get( 'site.removegiftcard.redirect' ))
         {
@@ -397,16 +392,20 @@ class Cart extends \Dsc\Controller
         // -----------------------------------------------------
         // Start: validation
         // -----------------------------------------------------
-        // TODO validate the POST values
-        // min: cartitem_hash
-        $code = $this->inputfilter->clean( $f3->get('PARAMS.code'), 'alnum' );
-    
-        // TODO if validation fails, respond appropriately
-        if ($f3->get('AJAX')) {
-    
-        } else {
-    
+        // validate the POST values
+        if (!$code = $this->inputfilter->clean( $this->app->get('PARAMS.code'), 'string' ))
+        {
+            // if validation fails, respond appropriately
+            if ($this->app->get('AJAX')) {
+                return $this->outputJson( $this->getJsonResponse( array(
+                    'result'=>false
+                ) ) );
+            } else {
+                \Dsc\System::addMessage('Invalid Gift Card', 'error');
+                $this->app->reroute('/shop/cart');
+            }
         }
+            
         // -----------------------------------------------------
         // End: validation
         // -----------------------------------------------------
@@ -417,24 +416,27 @@ class Cart extends \Dsc\Controller
         // remove the item
         try {
             $cart->removeGiftCard( $code );
+            
+            if ($this->app->get('AJAX')) {
+                return $this->outputJson( $this->getJsonResponse( array(
+                    'result'=>true
+                ) ) );
+            } else {
+                \Dsc\System::addMessage('Gift card removed from cart');
+                $this->app->reroute($redirect);
+            }
+            
+            
         } catch (\Exception $e) {
-            // TODO respond appropriately with failure message
-            // return;
+            if ($this->app->get('AJAX')) {
+                return $this->outputJson( $this->getJsonResponse( array(
+                    'result'=>false
+                ) ) );
+            } else {
+                \Dsc\System::addMessage($e->getMessage());
+                $this->app->reroute($redirect);
+            }
         }
     
-        //echo \Dsc\Debug::dump( $cart );
-    
-        // TODO respond appropriately
-        // ajax?  send response object
-        // otherwise redirect to cart
-    
-        if ($f3->get('AJAX')) {
-            return $this->outputJson( $this->getJsonResponse( array(
-                'result'=>true
-            ) ) );
-        } else {
-            \Dsc\System::addMessage('Gift card removed from cart');
-            $f3->reroute($redirect);
-        }
     }
 }

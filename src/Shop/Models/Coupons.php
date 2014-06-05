@@ -29,7 +29,7 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
     public $groups = array();
     public $groups_method = 'one';
     
-    protected $__is_validated = null;    
+    public $__is_validated = null;    
     protected $__collection_name = 'shop.coupons';
     protected $__type = 'shop.coupons';
     
