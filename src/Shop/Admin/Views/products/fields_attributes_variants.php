@@ -92,7 +92,8 @@
                             <div class="form-group">
                                 <div class="row">
                                     <div class="col-md-3">
-    
+                                        <label><small>Disable Until</small></label>
+                                        <input name="variants[<?php echo $key; ?>][start_date]" value="<?php echo $flash->old('variants.'.$key.'.start_date' ); ?>" class="input-sm ui-datepicker form-control" type="text" data-date-format="yyyy-mm-dd" data-date-today-highlight="true" data-date-today-btn="true">
                                     </div>
                                     <div class="col-md-9">
     

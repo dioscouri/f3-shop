@@ -22,6 +22,8 @@ class Variants extends \Dsc\Mongo\Collection
     public $image = null;
     public $title = null;          // e.g. Alternative Title for the product when this variant has been selected
     
+    public $start_date = null;      // date after which the variant can be automatically re-enabled
+    
     protected $__collection_name = 'shop.products';
     protected $__type = 'shop.products';
     
