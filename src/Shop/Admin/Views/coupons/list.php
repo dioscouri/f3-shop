@@ -98,6 +98,7 @@
         		    <th class="checkbox-column col-md-1"><input type="checkbox" class="icheck-input"></th>
         			<th>Title</th>
         			<th class="col-md-2">Code</th>
+        			<th class="col-md-1 text-center">Status</th>
         			<th class="col-md-1"></th>
         		</tr>
         	</thead>
@@ -121,6 +122,12 @@
                         <a href="./admin/shop/coupon/edit/<?php echo $item->_id; ?>">
                         <?php echo $item->code; ?>
                         </a>
+                    </td>
+                    
+                    <td class="text-center">
+                        <span class="label <?php echo $item->publishableStatusLabel(); ?>">
+                        <?php echo $item->{'publication.status'}; ?>
+                        </span>                        
                     </td>
                                     
                     <td class="text-center">

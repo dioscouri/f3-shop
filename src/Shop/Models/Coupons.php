@@ -3,6 +3,8 @@ namespace Shop\Models;
 
 class Coupons extends \Dsc\Mongo\Collections\Describable 
 {
+    use \Dsc\Traits\Models\Publishable;
+    
     public $code = null;
     public $discount_value = null; 
     public $discount_type = null;
@@ -25,15 +27,6 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
     public $geo_regions = array();
     public $groups = array();
     public $groups_method = 'one';
-    public $publication = array(
-        'status' => 'unpublished',
-        'start_date' => null,
-        'start_time' => null,
-        'end_date' => null,
-        'end_time' => null,
-        'start' => null,
-        'end' => null
-    );    
     
     protected $__is_validated = null;    
     protected $__collection_name = 'shop.coupons';
@@ -205,26 +198,7 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
             $this->set('groups', $groups);
         }
         
-        if (!empty($this->{'publication.start_date'})) {
-            $string = $this->{'publication.start_date'};
-            if (!empty($this->{'publication.start_time'})) {
-                $string .= ' ' . $this->{'publication.start_time'};
-            }
-            $this->{'publication.start'} = \Dsc\Mongo\Metastamp::getDate( trim( $string ) );
-        } else {
-            $this->{'publication.start'} = \Dsc\Mongo\Metastamp::getDate('now');
-        }
-        
-        if (empty($this->{'publication.end_date'})) {
-            unset($this->{'publication.end'});
-        }
-        elseif (!empty($this->{'publication.end_date'})) {
-            $string = $this->{'publication.end_date'};
-            if (!empty($this->{'publication.end_time'})) {
-                $string .= ' ' . $this->{'publication.end_time'};
-            }
-            $this->{'publication.end'} = \Dsc\Mongo\Metastamp::getDate( trim( $string ) );
-        }
+        $this->publishableBeforeSave();
     
         return parent::beforeSave();
     }
@@ -243,10 +217,7 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
         /**
          * is the coupon published?
          */
-        if ($this->{'publication.status'} != 'published'
-            || ($this->{'publication.start.time'} != null && $this->{'publication.start.time'} >= time())
-            || ($this->{'publication.end.time'} != null && $this->{'publication.end.time'} <= time())
-            ) 
+        if (!$this->published()) 
         {
             throw new \Exception('This coupon is not valid for today');
         }
