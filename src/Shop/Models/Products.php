@@ -498,7 +498,7 @@ class Products extends \Dsc\Mongo\Collections\Content
     	
     	// compare them, only acting if they're different
     	// the arrays need to be sorted for comparison, which is why we sort above
-    	if (!empty($this->__old_products) && is_array($this->__old_products) && $this->related_products != $this->__old_products)
+    	if (is_array($this->__old_products) && $this->related_products != $this->__old_products)
     	{
     		// we need two arrays:
     		// $new_relationships == the ones from $this->related_products that are NOT in $old_product->related_products
