@@ -185,7 +185,10 @@
                     </td>
                     
                     <td class="">
-                        <div><?php echo ucwords( $item->{'publication.status'} ); ?></div>
+                        <span class="label <?php echo $item->publishableStatusLabel(); ?>">
+                        <?php echo $item->{'publication.status'}; ?>
+                        </span>
+                                                
                         <div><?php if ($item->{'publication.start_date'}) { echo "Up: " . $item->{'publication.start_date'}; } ?></div>
                         <div><?php if ($item->{'publication.end_date'}) { echo "Down: " . $item->{'publication.end_date'}; } ?></div>
                     </td>
