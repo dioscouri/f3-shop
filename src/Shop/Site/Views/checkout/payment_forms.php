@@ -61,7 +61,7 @@
     
     <div class="input-group form-group">
         <button id="submit-order" type="submit" class="btn btn-default custom-button btn-lg pull-left">Submit Order</button>
-        <div class="working pull-left hidden">
+        <div id="submit-working" class="working pull-left hidden">
         	<img src="./minify/Shop/Assets/images/working.gif" alt="Working" />
         	Working ... Please wait
         </div>
@@ -81,10 +81,12 @@ jQuery(document).ready(function(){
         if (!window.checkout_payment_validation.validateForm()) {
             el.data('validated', false);
             ev.preventDefault();
+            jQuery('#submit-order').trigger('reset');
             return false;
         }
         if (el.data('locked')) {
         	ev.preventDefault();
+        	jQuery('#submit-order').trigger('reset');
             return false;
         }
         el.data('locked', true);
@@ -111,12 +113,20 @@ jQuery(document).ready(function(){
 
     }
 
-	var submit_order = jQuery('button#submit-order');
+	var submit_order = jQuery('#submit-order');
 	if (submit_order.size()) {
 		submit_order.on('click', function(e){
 			$this = jQuery( e.target );
 			// display working image
-			$this.addClass('hidden').next('div.working').removeClass('hidden');
+			$this.addClass('hidden');
+			jQuery('#submit-working').removeClass('hidden');
+		});
+
+		submit_order.on('reset', function(e){
+			$this = jQuery( e.target );
+			// hide working image
+			$this.removeClass('hidden');
+			jQuery('#submit-working').addClass('hidden');
 		});
 	}	
     
