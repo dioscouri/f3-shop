@@ -113,15 +113,17 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
                 $cart->save();
             }
             
-            // if there was a user cart and there is a session cart, merge them and delete the session cart
+            // if there was a user cart and there is a session cart, push all products in user cart to their wishlist
             // if we already did the merge, skip this
-            $session_cart_merged = \Dsc\System::instance()->get('session')->get('shop.session_cart_merged');
-            if (!empty($session_cart->id) && $session_cart->id != $cart->id && empty($session_cart_merged))
+            $cart_moved_wishlist = \Dsc\System::instance()->get('session')->get('shop.cart_moved_wishlist');
+            if (!empty($session_cart->id) && $session_cart->id != $cart->id && empty($cart_moved_wishlist))
             {
-                $cart->session_id = $session_id;
-                $cart->merge( $session_cart->cast() );
+		        // get the current user's wishlist, either based on session_id (visitor) or user_id (logged-in)
+		        $wishlist = \Shop\Models\Wishlists::fetch();
+            	
+                $wishlist->merge( $session_cart->cast() );
                 $session_cart->remove();
-                \Dsc\System::instance()->get('session')->set('shop.session_cart_merged', true);
+                \Dsc\System::instance()->get('session')->set('shop.cart_moved_wishlist', true);
             }
         }
     
