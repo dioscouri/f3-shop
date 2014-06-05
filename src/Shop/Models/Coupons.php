@@ -4,7 +4,7 @@ namespace Shop\Models;
 class Coupons extends \Dsc\Mongo\Collections\Describable 
 {
     use \Dsc\Traits\Models\Publishable;
-	use \Dsc\Traits\Models\ForSelect;
+	use \Dsc\Traits\Models\ForSelection;
         
     public $code = null;
     public $discount_value = null; 
@@ -200,7 +200,7 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
         }
         
         $this->publishableBeforeSave();
-        $this->ForSelectBeforeValidate('required_collections');
+        $this->forSelectionBeforeValidate('required_collections');
         
         return parent::beforeSave();
     }
@@ -553,7 +553,6 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
 		        break;
 	        case "product_subtotal":
 	            // if discount_target_products is empty, then for each product in the cart, apply the discount
-	            if( empty( $this->required_))
 	            if (empty($this->discount_target_products)) 
 	            {
 	            	foreach ($cart->items as $cartitem) 
