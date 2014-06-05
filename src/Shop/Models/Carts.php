@@ -123,6 +123,7 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
             	
                 $wishlist->merge( $session_cart->cast() );
                 $session_cart->remove();
+                \Dsc\System::addMessage( "All products from previous cart were moved to your wishlist!" );
                 \Dsc\System::instance()->get('session')->set('shop.cart_moved_wishlist', true);
             }
         }
