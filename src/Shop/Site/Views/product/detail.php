@@ -250,15 +250,17 @@ jQuery(document).ready(function(){
                     
                     	if ($n == 0 || ($n % 4 == 0)) { ?><div class="row"><?php } ?>
                     
-                    <div class="col-xs-6 col-sm-3 col-md-3 category-article category-grid text-center">
+                    <div class="col-xs-6 col-sm-3 col-md-3 category-article category-grid text-center related-product-shop">
                         
-                        <div class="">
+                        <div class="related-product-body">
                             <?php if ($image) { ?>
                             <a href="<?php echo $url; ?>">
                                 <img class="img-responsive" src="<?php echo $image ?>">
                             </a>
                             <?php } ?>
-                            <h4><?php echo $product->title; ?></h4>                
+                            <div class="title-line">
+                            	<h4><?php echo $product->title; ?></h4>                
+                            </div>
                         </div>
                         <div class="price-line">
                             <?php if (((int) $product->get('prices.list') > 0) && $product->get('prices.list') != $product->price() ) { ?>
