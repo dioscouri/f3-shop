@@ -57,7 +57,7 @@
                                     
                                     <div class="row">
                                         <div class="col-md-2">
-                                            <label><small>Enabled</small></label>
+                                            <label class="label <?php echo !$flash->old('variants.'.$key.'.enabled') ? 'label-danger' : 'label-success'; ?>"><small>Enabled</small></label>
                                             <div class="form-group">
                                                 <label class="radio-inline">
                                                     <input type="radio" name="variants[<?php echo $key; ?>][enabled]" value="1" <?php if ($flash->old('variants.'.$key.'.enabled')) { echo 'checked'; } ?>> Yes
