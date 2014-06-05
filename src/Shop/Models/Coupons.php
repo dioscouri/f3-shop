@@ -4,7 +4,8 @@ namespace Shop\Models;
 class Coupons extends \Dsc\Mongo\Collections\Describable 
 {
     use \Dsc\Traits\Models\Publishable;
-    
+	use \Dsc\Traits\Models\ForSelect;
+        
     public $code = null;
     public $discount_value = null; 
     public $discount_type = null;
@@ -199,7 +200,8 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
         }
         
         $this->publishableBeforeSave();
-    
+        $this->ForSelectBeforeValidate('required_collections');
+        
         return parent::beforeSave();
     }
 
@@ -290,6 +292,52 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
             }
         }
          
+        /**
+         * check that at least one of the products from $this->required_collections is in the cart
+         */
+        if (!empty($this->required_collections))
+        {
+        	// get the IDs of all products in this cart
+        	$product_ids = array();
+        	foreach ($cart->items as $cartitem)
+        	{
+        		$product_ids[] = (string) \Dsc\ArrayHelper::get($cartitem, 'product_id');
+        	}
+        	
+        	$required_products_collections = array();
+        	$found = false;
+        	foreach( $this->required_collections as $coll ) {
+        		$conditions = \Shop\Models\Collections::getProductQueryConditions($coll);
+        		if (empty($conditions)) { // this collection does not exist any more
+        			continue;
+        		}
+        		
+        		$products = (new \Shop\Models\Products)
+        							->setState( 'select.fields', array( '_id' ) )
+        							->setParam('conditions', $conditions )
+        							->getList();
+        		
+        		$act_product_ids = array();
+        		foreach ($products as $item)
+        		{
+        			$act_product_ids[] = (string) $item['_id'];
+        		}
+        		
+        		$intersection = array_intersect($act_product_ids, $product_ids);
+        		if (!empty($intersection))
+        		{
+        			$found = true;
+        		}
+        		$required_products_collections =  array_merge( $required_products_collections, $act_product_ids );        		
+        	}
+        	
+        	if (!$found)
+        	{
+        		throw new \Exception('Cart does not have any of the products from required collection');
+        	}
+        	$this->discount_target_products = array_unique( array_merge( $this->discount_target_products, $required_products_collections ) );
+        }
+        
         /**
          * evaluate shopper groups against $this->groups
          */
@@ -505,6 +553,7 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
 		        break;
 	        case "product_subtotal":
 	            // if discount_target_products is empty, then for each product in the cart, apply the discount
+	            if( empty( $this->required_))
 	            if (empty($this->discount_target_products)) 
 	            {
 	            	foreach ($cart->items as $cartitem) 

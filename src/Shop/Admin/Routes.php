@@ -62,6 +62,11 @@ class Routes extends \Dsc\Routes\Group
             'datatable_links' => true,
             'get_parent_link' => true
         ));
+        $this->add('/collections/forSelection [ajax]', 'GET|POST', array(
+        		'controller' => 'Collections',
+        		'action' => 'forSelection'
+        ));
+        
         
         $this->add('/categories/checkboxes [ajax]', array(
             'GET',

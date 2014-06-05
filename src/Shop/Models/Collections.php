@@ -3,7 +3,8 @@ namespace Shop\Models;
 
 class Collections extends \Dsc\Mongo\Collections\Describable
 {
-
+	use \Dsc\Traits\Models\ForSelect;
+	
     public $products = array();
 
     public $categories = array();

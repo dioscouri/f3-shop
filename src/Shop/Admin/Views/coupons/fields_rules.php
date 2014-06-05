@@ -34,6 +34,35 @@
 <div class="row">
     <div class="col-md-2">
         
+        <h3>Required Collection</h3>
+        <p class="help-block">This coupon will only be applied if the shopper has a product from this collection in their cart. Also, the coupon will be applied only on products from these collections.</p>
+                
+    </div>
+    <!-- /.col-md-2 -->
+                
+    <div class="col-md-10">
+    
+        <div class="form-group">
+            <label>Search</label>
+            <div class="input-group">
+                <input id="required_collections" name="required_collections" value="<?php echo implode(",", (array) $flash->old('required_collections') ); ?>" type="text" class="form-control" /> 
+            </div>
+            <!-- /.form-group -->        
+            
+        </div>
+        <!-- /.form-group -->
+        
+    </div>
+    <!-- /.col-md-10 -->
+    
+</div>
+<!-- /.row -->
+
+<hr />
+
+<div class="row">
+    <div class="col-md-2">
+        
         <h3>Required Coupons</h3>
         <p class="help-block">This coupon will only be applied if the shopper has one of these OTHER coupons already in their cart.</p>
                 
@@ -181,6 +210,32 @@ jQuery(document).ready(function() {
         }
         <?php } ?>
     });
+
+    jQuery("#required_collections").select2({
+        allowClear: true, 
+        placeholder: "Search...",
+        multiple: true,
+        minimumInputLength: 3,
+        ajax: {
+            url: "./admin/shop/collections/forSelection",
+            dataType: 'json',
+            data: function (term, page) {
+                return {
+                    q: term
+                };
+            },
+            results: function (data, page) {
+                return {results: data.results};
+            }
+        }
+        <?php if ($flash->old('required_collections')) { ?>
+        , initSelection : function (element, callback) {
+            var data = <?php echo json_encode( \Shop\Models\Collections::forSelection( array('_id'=>array('$in'=>array_map( function($input){ return new \MongoId($input); }, (array) $flash->old('required_collections') ) ) ) ) ); ?>;
+            callback(data);            
+        }
+        <?php } ?>
+    });
+    
         
     jQuery("#geo_countries").select2({
         allowClear: true, 
