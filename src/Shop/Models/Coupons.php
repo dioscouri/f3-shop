@@ -467,20 +467,39 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
     		        		    
     		    break;
 		    case "order_shipping":
-		        if ($this->discount_type == 'flat-rate')
+		        
+		        $cart_valid = true;
+		        
+		        // Is target_shipping method selected?
+		        if (!empty($this->discount_target_shipping_methods))
 		        {
-		            // TODO Take the discount_currency into account
-		            $value = $this->discount_value;
-		        }
-		        elseif ($this->discount_type == 'percentage')
-		        {
-		            $value = ($this->discount_value/100) * $cart->shippingTotal();
+		            $cart_valid = false;
+		            if ($shipping_method = $cart->shippingMethod())
+		            {
+                        if (in_array($shipping_method->id, $this->discount_target_shipping_methods)) 
+                        {
+                            $cart_valid = true;
+                        }
+		            }
 		        }
 		        
-		        // coupon value cannot be greater than order shipping cost
-		        if ($value > $cart->shippingTotal()) 
+		        if ($cart_valid) 
 		        {
-		            $value = $cart->shippingTotal();
+		            if ($this->discount_type == 'flat-rate')
+		            {
+		                // TODO Take the discount_currency into account
+		                $value = $this->discount_value;
+		            }
+		            elseif ($this->discount_type == 'percentage')
+		            {
+		                $value = ($this->discount_value/100) * $cart->shippingTotal();
+		            }
+		            
+		            // coupon value cannot be greater than order shipping cost
+		            if ($value > $cart->shippingTotal())
+		            {
+		                $value = $cart->shippingTotal();
+		            }		        	
 		        }
 		        
 		        break;
