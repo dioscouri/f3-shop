@@ -37,6 +37,12 @@ class Checkout extends \Dsc\Controller
     public function payment()
     {
         $cart = \Shop\Models\Carts::fetch();
+        // Update product fields stored in cart
+        foreach ($cart->validateProducts() as $change) {
+            \Dsc\System::addMessage($change);
+        }
+        $cart->applyCredit();
+                
         \Base::instance()->set( 'cart', $cart );
         
         $identity = $this->getIdentity();
