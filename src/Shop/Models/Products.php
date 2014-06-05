@@ -484,6 +484,11 @@ class Products extends \Dsc\Mongo\Collections\Content
             $this->{'prices.special'} = $special_prices;
         }
         
+        if (!$this->variantsInStock()) 
+        {
+        	$this->{'publication.status'} = 'unpublished';
+        }
+        
         return parent::beforeSave();
     }
     
