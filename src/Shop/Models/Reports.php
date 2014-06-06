@@ -40,6 +40,9 @@ class Reports extends \Dsc\Mongo\Collections\Nodes
         if (empty($report->id) || !empty($options['__update'])) 
         {
             try {
+                if (empty($report->id)) {
+                    $report = new static;
+                }
                 
                 $report->bind(array(
                     'namespace' => $namespace,
