@@ -162,6 +162,15 @@ class Routes extends \Dsc\Routes\Group
             'controller' => 'Collection',
             'action' => 'saveProductsOrder'
         ));
+
+        $this->add('/reports', 'GET', array(
+            'controller' => 'Reports',
+            'action' => 'index'
+        ));
         
+        $this->add('/reports/@slug', 'GET|POST', array(
+            'controller' => 'Reports',
+            'action' => 'read'
+        ));
     }
 }

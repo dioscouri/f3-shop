@@ -48,6 +48,11 @@ class Listener extends \Prefab
                     'icon' => 'fa fa-list'
                 ),
                 array(
+                    'title' => 'Reports',
+                    'route' => './admin/shop/reports',
+                    'icon' => 'fa fa-signal'
+                ),                
+                array(
                     'title' => 'Localization',
                     'route' => 'javascript:void(0);',
                     'icon' => 'fa fa-flag-o'
