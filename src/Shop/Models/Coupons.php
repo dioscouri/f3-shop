@@ -13,6 +13,7 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
     public $discount_applied = null;
     public $discount_target_products = array();
     public $discount_target_shipping_methods = array();
+    public $discount_target_collections = array();
     public $usage_max = null;
     public $usage_max_per_customer = null;
     public $usage_with_others = null;
@@ -304,38 +305,22 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
         		$product_ids[] = (string) \Dsc\ArrayHelper::get($cartitem, 'product_id');
         	}
         	
-        	$required_products_collections = array();
         	$found = false;
-        	foreach( $this->required_collections as $coll ) {
-        		$conditions = \Shop\Models\Collections::getProductQueryConditions($coll);
-        		if (empty($conditions)) { // this collection does not exist any more
-        			continue;
-        		}
-        		
-        		$products = (new \Shop\Models\Products)
-        							->setState( 'select.fields', array( '_id' ) )
-        							->setParam('conditions', $conditions )
-        							->getList();
-        		
-        		$act_product_ids = array();
-        		foreach ($products as $item)
-        		{
-        			$act_product_ids[] = (string) $item['_id'];
-        		}
-        		
-        		$intersection = array_intersect($act_product_ids, $product_ids);
-        		if (!empty($intersection))
-        		{
-        			$found = true;
-        		}
-        		$required_products_collections =  array_merge( $required_products_collections, $act_product_ids );        		
+        	foreach( $this->required_collections as $collection_id ) 
+        	{
+        	    $collection_product_ids = \Shop\Models\Collections::productIds( $collection_id );
+        	    $intersection = array_intersect($collection_product_ids, $product_ids);
+        	    if (!empty($intersection))
+        	    {
+        	        $found = true;
+        	        break; // if its found, break the foreach loop
+        	    }
         	}
         	
         	if (!$found)
         	{
         		throw new \Exception('Cart does not have any of the products from required collection');
         	}
-        	$this->discount_target_products = array_unique( array_merge( $this->discount_target_products, $required_products_collections ) );
         }
         
         /**
@@ -493,7 +478,7 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
     		$this->cartValid( $cart );
     	}
     	
-    	// TODO depending on where this coupon's discount is applied, get its corresponding value
+    	// depending on where this coupon's discount is applied, get its corresponding value
     	switch ($this->discount_applied) 
     	{
     		case "order_subtotal":
@@ -650,6 +635,43 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
                 {
                     $value = $cart->shippingTotal();
                 }
+                break;
+                
+            case "product_price_override":
+                
+                // if discount_target_products and discount_target_collections is empty, 
+                // then for each product in the cart, figure out how much the discount is.
+                // the discount is the difference between the product's price and the coupon's discount_value
+                if (empty($this->discount_target_products) && empty($this->discount_target_collections)) 
+                {
+                    foreach ($cart->items as $cartitem)
+                    {
+                        $value += (($cartitem['price'] - $this->discount_value) * $cartitem['quantity']);
+                    }
+                }
+                
+                // otherwise, get the array of target_product_ids.  loop thru each product and if it is in the array,
+                // figure out how much the discount is.
+                // the discount is the difference between the product's price and the coupon's discount_value
+                else 
+                {
+                    $discount_target_products = array();
+                    foreach( $this->required_collections as $collection_id )
+                    {
+                        $collection_product_ids = \Shop\Models\Collections::productIds( $collection_id );
+                        $discount_target_products = array_merge($discount_target_products, $collection_product_ids);
+                    }
+                    $discount_target_products = array_unique( $discount_target_products );
+                    
+                    foreach ($cart->items as $cartitem)
+                    {
+                        if (in_array((string) $cartitem['product_id'], $discount_target_products ))
+                        {
+                            $value += (($cartitem['price'] - $this->discount_value) * $cartitem['quantity']);
+                        }
+                    }
+                }
+                
                 break;
     	}
     	

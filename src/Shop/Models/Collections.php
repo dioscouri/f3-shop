@@ -257,7 +257,38 @@ class Collections extends \Dsc\Mongo\Collections\Describable
         
         return $result;
     }
+    
+    /**
+     * Gets all productIDs assigned to this collection
+     *
+     * @param string $category_id
+     * @return multitype: multitype:string
+     */
+    public static function productIds( $id = null )
+    {
+        $result = array();
+        if (empty( $id ))
+        {
+            return $result;
+        }
 
+        $conditions = static::getProductQueryConditions($id);
+        
+        $cursor = (new \Shop\Models\Products())->collection()->find( $conditions, array(
+            "_id" => 1
+        ) );
+    
+        foreach ( $cursor as $doc )
+        {
+            $result[] = (string) $doc['_id'];
+        }
+    
+        return $result;
+    }
+
+    /**
+     * 
+     */
     protected function beforeValidate()
     {
         if (!empty($this->categories))

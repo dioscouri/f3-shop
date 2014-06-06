@@ -11,7 +11,7 @@
     
         <div class="form-group">
             <label>Title</label>
-            <input type="text" name="title" placeholder="Title" value="<?php echo $flash->old('title'); ?>" class="form-control" />
+            <input type="text" name="title" placeholder="Title" value="<?php echo htmlspecialchars( $flash->old('title') ); ?>" class="form-control" />
         </div>
         <!-- /.form-group -->
         
@@ -76,9 +76,10 @@
                 <option value="order_shipping" <?php echo ($flash->old('discount_applied') == 'order_shipping') ? "selected='selected'" : null; ?>>Order Shipping Costs</option>
                 <option value="product_subtotal" <?php echo ($flash->old('discount_applied') == 'product_subtotal') ? "selected='selected'" : null; ?>>Product Subtotal</option>
                 <option value="product_shipping" <?php echo ($flash->old('discount_applied') == 'product_shipping') ? "selected='selected'" : null; ?>>Product Shipping Costs</option>
+                <option value="product_price_override" <?php echo ($flash->old('discount_applied') == 'product_price_override') ? "selected='selected'" : null; ?>>Override Product Price</option>
             </select>
                                 
-            <p class="help-block">If you have selected either of the Product options above, this discount will be applied to every product in the shopper's cart unless you select specific products below under "Target Products".</p>
+            <p class="help-block">If you have selected either of the Product options above, this discount will be applied to every product in the shopper's cart unless you select specific products below under "Target Products" or "Target Collections".</p>
 
         </div>
         <!-- /.form-group -->
@@ -94,6 +95,12 @@
             <input id="target_shipping_methods" type="text" name="discount_target_shipping_methods" placeholder="All shipping methods that receive this discount" value="<?php echo implode(",", (array) $flash->old('discount_target_shipping_methods') ); ?>" class="form-control" />
         </div>
         <!-- /.form-group -->
+        
+        <div class="form-group">
+            <label>Target Collections</label>
+            <input id="target_collections" name="discount_target_collections" placeholder="All products in these collections will receive this discount" value="<?php echo implode(",", (array) $flash->old('discount_target_collections') ); ?>" type="text" class="form-control" />
+        </div>
+        <!-- /.form-group -->        
         
     </div>
     <!-- /.col-md-10 -->
@@ -185,7 +192,6 @@
 <!-- /.row -->
 
 <script>
-target_products
 jQuery(document).ready(function() {
     
     jQuery("#target_products").select2({
@@ -219,5 +225,30 @@ jQuery(document).ready(function() {
         multiple: true,
         data: <?php echo json_encode( \Shop\Models\ShippingMethods::forSelection() ); ?>,
     });
+
+    jQuery("#target_collections").select2({
+        allowClear: true, 
+        placeholder: "Search...",
+        multiple: true,
+        minimumInputLength: 3,
+        ajax: {
+            url: "./admin/shop/collections/forSelection",
+            dataType: 'json',
+            data: function (term, page) {
+                return {
+                    q: term
+                };
+            },
+            results: function (data, page) {
+                return {results: data.results};
+            }
+        }
+        <?php if ($flash->old('discount_target_collections')) { ?>
+        , initSelection : function (element, callback) {
+            var data = <?php echo json_encode( \Shop\Models\Collections::forSelection( array('_id'=>array('$in'=>array_map( function($input){ return new \MongoId($input); }, (array) $flash->old('discount_target_collections') ) ) ) ) ); ?>;
+            callback(data);            
+        }
+        <?php } ?>
+    });    
 });
 </script>
