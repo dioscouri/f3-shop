@@ -11,7 +11,6 @@ class Reports extends \Admin\Controllers\BaseAuth
         $this->app->set('meta.title', 'Reports | Shop');
         
         echo $this->theme->render('Shop/Admin/Views::reports/index.php');
-        
     }
     
     public function read()
@@ -25,31 +24,32 @@ class Reports extends \Admin\Controllers\BaseAuth
                 throw new \Exception('Report not found');
             }
             
-            $class_name = $item->namespace . '\Report';
-            if (!class_exists($class_name)) {
-                throw new \Exception('Class not found');
-            }
+            $class = $item->getClass();
 
-            $class = new $class_name;
-            if (!method_exists($class, 'index')) 
-            {
-                throw new \Exception('Class must have an index method');
-            }
             
         } catch ( \Exception $e ) {
 
             \Dsc\System::instance()->addMessage( "Invalid Report", 'error');
             \Dsc\System::instance()->addMessage( $e->getMessage(), 'error');
-            $this->app->reroute( '/shop/reports' );
+            $this->app->reroute( '/admin/shop/reports' );
             return;
         }
         
-        $this->app->set('item', $item);
+        $this->app->set('report', $item);
         
         $this->app->set('meta.title', $item->name . ' | Reports | Shop');
         
-        // __construct bootstraps the report
-        // so display it
+        // display the report
         $class->index();
+    }
+    
+    protected function createClone()
+    {
+        // TODO make the slug == the parent's slug + a MongoID
+    }
+    
+    protected function TODOafterRemove()
+    {
+        // TODO Also delete any reports that are clones of this one
     }
 }

@@ -80,7 +80,7 @@
             <?php if (!empty($paginated->items)) { ?>
             
             <?php foreach($paginated->items as $item) { ?>
-            <div class="panel panel-default">
+            <div class="list-group-item">
                 <div class="panel-body">
                     <div class="row">
                         <div class="col-xs-2 col-md-1">

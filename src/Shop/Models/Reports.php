@@ -60,6 +60,19 @@ class Reports extends \Dsc\Mongo\Collections\Nodes
         return true;
     }
     
+    public static function bootstrap()
+    {
+        if ($reports = (new static)->getItems()) 
+        {
+        	foreach ($reports as $report) 
+        	{
+        		$report->getClass()->bootstrap();
+        	}
+        }
+        
+        return true;
+    }
+    
     protected function beforeValidate()
     {
         if (empty($this->slug)) 
@@ -95,6 +108,33 @@ class Reports extends \Dsc\Mongo\Collections\Nodes
         }
         
         return $grouped;
+    }
+
+    /**
+     * Gets an instance of the report's class
+     * 
+     * @throws \Exception
+     * @return unknown
+     */
+    public function getClass()
+    {
+        $class_name = $this->namespace . '\Report';
+        if (!class_exists($class_name)) {
+            throw new \Exception('Class not found');
+        }
+        
+        // get an instance of the class
+        // add this report item to the class
+        $class = new $class_name(array(
+        	'report' => $this
+        ));
+        
+        if (!is_a($class, '\Shop\Abstracts\Report'))
+        {
+            throw new \Exception('Class must be an instance of \Shop\Abstracts\Report');
+        }
+        
+        return $class;
     }
     
 }

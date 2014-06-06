@@ -108,8 +108,6 @@ class Routes extends \Dsc\Routes\Group
             'action' => 'forSelection'
         ));
         
-        $f3->route('GET /admin/shop/testing/@task', '\Shop\Admin\Controllers\Testing->@task');
-        
         $this->addCrudGroup('Coupons', 'Coupon');
         
         $this->addCrudGroup('Tags', 'Tag');
@@ -172,5 +170,12 @@ class Routes extends \Dsc\Routes\Group
             'controller' => 'Reports',
             'action' => 'read'
         ));
+        
+        $this->add('/reports/@slug/page/@page', 'GET|POST', array(
+            'controller' => 'Reports',
+            'action' => 'read'
+        ));
+        
+        $this->addCrudGroup('Carts', 'Cart');
     }
 }

@@ -40,6 +40,13 @@ class ShopBootstrap extends \Dsc\Bootstrap
             'type'=>'customers',
             'slug'=>'customers-expired-carts',
         ));
+        
+        $path = $this->app->hive()['PATH'];
+        if (strpos($path, '/admin/shop/reports') !== false)
+        {
+            // Bootstrap the reports
+            \Shop\Models\Reports::bootstrap();
+        }
     }
 
     protected function preSite()
@@ -63,6 +70,10 @@ class ShopBootstrap extends \Dsc\Bootstrap
         {
             \Minify\Factory::js($file);
         }
+    }
+    
+    protected function postAdmin()
+    {
     }
 }
 

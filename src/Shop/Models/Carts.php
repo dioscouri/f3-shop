@@ -46,6 +46,39 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
             $this->setCondition('user_id', new \MongoId((string) $filter_user));
         }
         
+        $filter_cart_type = $this->getState('filter.cart_type');
+        if (strlen($filter_cart_type))
+        {
+            if (!$and = $this->getCondition('$and'))
+            {
+                $and = array();
+            }
+            
+            switch ($filter_cart_type) 
+            {
+            	case "session":
+            	    
+            	    $and[] = array(
+            	        'user_id' => array( '$in' => array( '', null ) )
+            	    );
+            	    	
+            	    $this->setCondition('$and', $and);
+            	     
+            	    break;
+        	    case "user":
+        	        
+        	        $and[] = array(
+        	            'user_id' => array( '$nin' => array( '', null ) )
+        	        );
+        	        
+        	        $this->setCondition('$and', $and);
+        	                	        
+        	        break;
+        	    default:
+        	        break;            	    
+            }
+        }        
+        
         return $this;
     }
     
