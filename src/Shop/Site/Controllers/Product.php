@@ -44,7 +44,7 @@ class Product extends \Dsc\Controller
     		}
     	} catch ( \Exception $e ) {
     		\Dsc\System::instance()->addMessage( "Invalid Item", 'error');
-    		$this->app->reroute( '/shop' );
+    		$this->app->error( '404' );
     		return;
     	}
     	
