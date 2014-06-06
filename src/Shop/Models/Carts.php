@@ -104,6 +104,20 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
             $cart->user_id = $identity->id;
             
             $session_cart = static::fetchForSession();
+
+            // if there was a user cart and there is a session cart, push all products in user cart to their wishlist
+            if (!empty($session_cart->items) && !empty($cart->id) && $session_cart->id != $cart->id)
+            {
+                $wishlist = \Shop\Models\Wishlists::fetch();
+                $wishlist->merge( $cart->cast() );
+                $cart->remove();
+                
+                $cart = $session_cart;
+                $cart->user_id = $identity->id;
+                $cart->save();
+                
+                \Dsc\System::addMessage( "All products from your previous cart were moved to your wishlist" );
+            }
             
             // if there was no user cart but there IS a session cart, just add the user_id to the session cart and save it
             if (empty($cart->id) && !empty($session_cart->id))
@@ -111,20 +125,6 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
                 $cart = $session_cart;
                 $cart->user_id = $identity->id;
                 $cart->save();
-            }
-            
-            // if there was a user cart and there is a session cart, push all products in user cart to their wishlist
-            // if we already did the merge, skip this
-            $cart_moved_wishlist = \Dsc\System::instance()->get('session')->get('shop.cart_moved_wishlist');
-            if (!empty($session_cart->id) && $session_cart->id != $cart->id && empty($cart_moved_wishlist))
-            {
-		        // get the current user's wishlist, either based on session_id (visitor) or user_id (logged-in)
-		        $wishlist = \Shop\Models\Wishlists::fetch();
-            	
-                $wishlist->merge( $session_cart->cast() );
-                $session_cart->remove();
-                \Dsc\System::addMessage( "All products from previous cart were moved to your wishlist!" );
-                \Dsc\System::instance()->get('session')->set('shop.cart_moved_wishlist', true);
             }
         }
     
