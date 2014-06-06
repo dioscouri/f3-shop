@@ -67,13 +67,16 @@ class Checkout extends \Dsc\Controller
      */
     public function confirmation()
     {
-        $just_completed_order = \Dsc\System::instance()->get('session')->get('shop.just_completed_order' );
         $just_completed_order_id = \Dsc\System::instance()->get('session')->get('shop.just_completed_order_id' );
         
         if (!empty($just_completed_order_id)) 
         {
             try {
                 $order = (new \Shop\Models\Orders)->load(array('_id' => new \MongoId( (string) $just_completed_order_id ) ));
+                if (empty($order->id)) 
+                {
+                	throw new \Exception;
+                }
                 
                 // update kissmetrics, if you can
                 $settings = \Admin\Models\Settings::fetch();
@@ -123,7 +126,7 @@ class Checkout extends \Dsc\Controller
         $this->app->set('meta.title', 'Order Confirmation | Checkout');
         
         $view = \Dsc\System::instance()->get( 'theme' );
-        echo $view->render( 'Shop/Site/Views::checkout/confirmation.php' );
+        echo $view->render( 'Shop/Site/Views::confirmation/index.php' );
         
         \Dsc\System::instance()->get('session')->set('shop.just_completed_order', false );
         \Dsc\System::instance()->get('session')->set('shop.just_completed_order_id', null );
