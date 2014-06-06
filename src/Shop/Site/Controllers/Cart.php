@@ -184,7 +184,7 @@ class Cart extends \Dsc\Controller
         // -----------------------------------------------------
         // Start: validation
         // -----------------------------------------------------
-        $coupon_code = $this->input->get( 'coupon_code', null, 'string' );
+        $coupon_code = strtolower( $this->input->get( 'coupon_code', null, 'string' ) );
         
         // load the product
         try {
