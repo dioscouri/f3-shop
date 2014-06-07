@@ -113,4 +113,20 @@ class Customers extends \Users\Models\Users
         
         return (int) $this->{'shop.orders_count'};
     }
+    
+    /**
+     * 
+     * @return Ambigous <NULL, unknown>
+     */
+    public function primaryAddress()
+    {
+        $item = null;
+        
+        if ($items = (new \Shop\Models\CustomerAddresses)->setState('filter.user', (string) $this->id )->getItems()) 
+        {
+        	$item = $items[0];
+        }
+        
+        return $item;
+    }
 }

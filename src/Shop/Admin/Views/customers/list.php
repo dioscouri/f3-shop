@@ -11,7 +11,7 @@
 	<div class="col-xs-12 col-sm-5 col-md-5 col-lg-8">
         <ul id="sparks" class="list-actions list-unstyled list-inline">
             <li>
-                <a class="btn btn-default" href="./admin/shop/customer/create">Add New</a>
+                <a class="btn btn-default" href="./admin/user/create">Add New</a>
             </li>
         </ul>
 	</div>

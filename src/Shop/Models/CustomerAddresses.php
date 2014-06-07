@@ -4,12 +4,14 @@ namespace Shop\Models;
 class CustomerAddresses extends \Shop\Models\Address
 {
     public $user_id = null;
+    public $primary_billing = null;
+    public $primary_shipping = null;
     
     protected $__collection_name = 'shop.addresses';
     protected $__type = 'shop.addresses';
     protected $__config = array(
         'default_sort' => array(
-            'title' => 1
+            'metadata.last_modified.time' => -1
         )
     );
     

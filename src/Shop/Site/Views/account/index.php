@@ -41,7 +41,7 @@
             <div class="row">
                 <div class="col-xs-12 col-sm-12 col-md-4">
                     <legend>Store Credit</legend>
-                    <p class="help-block"><small>Store credits can be applied during checkout</small></p>
+                    <p class="help-block"><small>Store credits will be applied automatically during checkout</small></p>
                 </div>
                 <div class="col-xs-12 col-sm-12 col-md-8">
                     <h4>Available Balance: <span class="label label-success"><?php echo \Shop\Models\Currency::format( $balance ); ?></span></h4>                

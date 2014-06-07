@@ -14,6 +14,8 @@ class Customer extends \Users\Admin\Controllers\User
     {
         switch (strtolower($name))
         {
+            case "user":
+            case "users":
         	case "customer":
         	case "customers":
         	    $model = new \Shop\Models\Customers;
