@@ -1,7 +1,7 @@
 <?php
 namespace Shop\Models;
 
-class Customer extends \Users\Models\Users
+class Customers extends \Users\Models\Users
 {
     /**
      * Gets the customer's highest-ordered Users\Group

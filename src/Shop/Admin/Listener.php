@@ -148,12 +148,11 @@ class Listener extends \Prefab
             if (!empty($customers_item->id))
             {
                 $customers_children = array(
-                    /*
                     array(
                         'title' => 'List',
                         'route' => './admin/shop/customers',
                         'icon' => 'fa fa-list'
-                    ),*/
+                    ),
                     array(
                         'title' => 'Credits',
                         'route' => './admin/shop/credits',
