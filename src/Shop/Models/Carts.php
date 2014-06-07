@@ -1100,7 +1100,8 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
                     
                     // ensure that the coupon is still valid, removing it if not
                     try {
-                        $coupon = (new \Shop\Models\Coupons)->bind($item)->cartValid( $this );
+                        $coupon = (new \Shop\Models\Coupons)->bind($item)->reload();
+                        $coupon->cartValid( $this );                        
                     }
                     catch (\Exception $e) {
                         unset($this->coupons[$key]);
