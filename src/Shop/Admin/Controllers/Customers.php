@@ -23,7 +23,7 @@ class Customers extends \Admin\Controllers\BaseAuth
             'last_name' => $key
         );
         
-        $results = \Shop\Models\Customer::forSelection(array('$or'=>$where), $field);
+        $results = \Shop\Models\Customers::forSelection(array('$or'=>$where), $field);
     
         $response = new \stdClass;
         $response->more = false;

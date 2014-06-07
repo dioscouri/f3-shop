@@ -12,7 +12,7 @@ class Customer extends \Users\Admin\Controllers\User
     
     protected function getModel() 
     {
-        $model = new \Shop\Models\Customer;
+        $model = new \Shop\Models\Customers;
         return $model; 
     }
     

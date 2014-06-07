@@ -135,7 +135,7 @@ class Products extends \Dsc\Mongo\Collections\Content
         	    // Set which price field to use
         	    $price_field = 'prices.default';
         	    $user = \Dsc\System::instance()->get('auth')->getIdentity();
-        	    $primaryGroup = \Shop\Models\Customer::primaryGroup( $user );
+        	    $primaryGroup = \Shop\Models\Customers::primaryGroup( $user );
         	    if ($group_slug = $primaryGroup->{'slug'}) {
         	        if ($this->exists('prices.'.$group_slug)) {
         	            $price_field = 'prices.'.$group_slug;
@@ -987,7 +987,7 @@ class Products extends \Dsc\Mongo\Collections\Content
         
         // Get the product price for the user's primary group
         // primaryGroup defaults to the site-wide default user group
-        $primaryGroup = \Shop\Models\Customer::primaryGroup( $user );
+        $primaryGroup = \Shop\Models\Customers::primaryGroup( $user );
         if ($group_slug = $primaryGroup->{'slug'}) {
             if ($this->exists('prices.'.$group_slug)) {
             	$price = $this->get('prices.'.$group_slug);
