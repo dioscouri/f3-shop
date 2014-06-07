@@ -48,7 +48,10 @@ jQuery(document).ready(function(){
                 </li>
                 <li>
                     <a href="#tab-rules" data-toggle="tab"> Rules & Eligibility </a>
-                </li>                
+                </li>
+                <li>
+                    <a href="#tab-exclusions" data-toggle="tab"> Exclusions </a>
+                </li>
                 <?php if (!empty($this->event)) { foreach ((array) $this->event->getArgument('tabs') as $key => $title ) { ?>
                 <li>
                     <a href="#tab-<?php echo $key; ?>" data-toggle="tab"> <?php echo $title; ?> </a>
@@ -68,6 +71,13 @@ jQuery(document).ready(function(){
                 <div class="tab-pane" id="tab-rules">
                 
                     <?php echo $this->renderLayout('Shop/Admin/Views::coupons/fields_rules.php'); ?>
+                
+                </div>
+                <!-- /.tab-pane -->
+                
+                <div class="tab-pane" id="tab-exclusions">
+                
+                    <?php echo $this->renderLayout('Shop/Admin/Views::coupons/fields_exclusions.php'); ?>
                 
                 </div>
                 <!-- /.tab-pane -->

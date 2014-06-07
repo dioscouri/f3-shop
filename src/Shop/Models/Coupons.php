@@ -21,6 +21,7 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
     public $max_value = null;
     public $max_value_currency = null;
     public $required_products = array();
+    public $required_collections = array();
     public $required_coupons = array();
     public $min_order_amount = null;
     public $min_order_amount_currency = null;
@@ -29,7 +30,9 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
     public $geo_regions = array();
     public $groups = array();
     public $groups_method = 'one';
-    
+    public $excluded_products = array();
+    public $excluded_collections = array();
+        
     public $__is_validated = null;    
     protected $__collection_name = 'shop.coupons';
     protected $__type = 'shop.coupons';
@@ -202,6 +205,9 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
         
         $this->publishableBeforeSave();
         $this->forSelectionBeforeValidate('required_collections');
+        
+        $this->forSelectionBeforeValidate('excluded_products');
+        $this->forSelectionBeforeValidate('excluded_collections');
         
         return parent::beforeSave();
     }
@@ -537,39 +543,50 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
 		        
 		        break;
 	        case "product_subtotal":
+
 	            // if discount_target_products is empty, then for each product in the cart, apply the discount
 	            if (empty($this->discount_target_products)) 
 	            {
+	                $excluded_products = $this->excludedProducts();
+	                
 	            	foreach ($cart->items as $cartitem) 
 	            	{
-	            	    if ($this->discount_type == 'flat-rate')
+	            	    if (!in_array((string) $cartitem['product_id'], $excluded_products)) 
 	            	    {
-	            	        // TODO Take the discount_currency into account
-	            	        $value += $this->discount_value;
-	            	    }
-	            	    elseif ($this->discount_type == 'percentage')
-	            	    {
-	            	        $value += ($this->discount_value/100) * $cart->calcItemSubtotal( $cartitem );
-	            	    }	            		
+	            	        if ($this->discount_type == 'flat-rate')
+	            	        {
+	            	            // TODO Take the discount_currency into account
+	            	            $value += $this->discount_value;
+	            	        }
+	            	        elseif ($this->discount_type == 'percentage')
+	            	        {
+	            	            $value += ($this->discount_value/100) * $cart->calcItemSubtotal( $cartitem );
+	            	        }
+	            	    }	            	    
 	            	}
 	            }
 	            // else, apply it only to the products in discount_target_products
 	            else 
 	            {
+	                $excluded_products = $this->excludedProducts();
+	                
 	                foreach ($cart->items as $cartitem)
 	                {
 	                    // is this product a discount_target_product?
 	                    if (in_array((string) $cartitem['product_id'], $this->discount_target_products )) 
 	                    {
-	                        if ($this->discount_type == 'flat-rate')
+	                        if (!in_array((string) $cartitem['product_id'], $excluded_products))
 	                        {
-	                            // TODO Take the discount_currency into account
-	                            $value += $this->discount_value;
+	                            if ($this->discount_type == 'flat-rate')
+	                            {
+	                                // TODO Take the discount_currency into account
+	                                $value += $this->discount_value;
+	                            }
+	                            elseif ($this->discount_type == 'percentage')
+	                            {
+	                                $value += ($this->discount_value/100) * $cart->calcItemSubtotal( $cartitem );
+	                            }
 	                        }
-	                        elseif ($this->discount_type == 'percentage')
-	                        {
-	                            $value += ($this->discount_value/100) * $cart->calcItemSubtotal( $cartitem );
-	                        }	                    	
 	                    }
 	                }
 	            } 
@@ -586,46 +603,53 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
                 // if discount_target_products is empty, then this is just the same thing as an order shipping discount
                 if (empty($this->discount_target_products))
                 {
-                    if ($this->discount_type == 'flat-rate')
+                    $excluded_products = $this->excludedProducts();
+                    if (!in_array((string) $cartitem['product_id'], $excluded_products))
                     {
-                        // TODO Take the discount_currency into account
-                        $value = $this->discount_value;
-                    }
-                    elseif ($this->discount_type == 'percentage')
-                    {
-                        $value = ($this->discount_value/100) * $cart->shippingTotal();
-                    }
-                    
+                        if ($this->discount_type == 'flat-rate')
+                        {
+                            // TODO Take the discount_currency into account
+                            $value = $this->discount_value;
+                        }
+                        elseif ($this->discount_type == 'percentage')
+                        {
+                            $value = ($this->discount_value/100) * $cart->shippingTotal();
+                        }
+                    }                    
                 }
                 // else, apply it only to the products in discount_target_products
                 else
                 {
+                    $excluded_products = $this->excludedProducts();
+                    
                     foreach ($cart->items as $cartitem)
                     {
                         // is this product a discount_target_product?
                         if (in_array((string) $cartitem['product_id'], $this->discount_target_products ))
                         {
-                            
-                            if ($this->discount_type == 'flat-rate')
+                            if (!in_array((string) $cartitem['product_id'], $excluded_products))
                             {
-                                // TODO Take the discount_currency into account
-                                $value += $this->discount_value;
-                            }
-                            elseif ($this->discount_type == 'percentage')
-                            {
-                                // trigger an event with these arguments: (cartitem, selected shipping method, and cart)
-                                // and let the Listeners determine the shipping cost for that product
-                                $event = \Dsc\System::instance()->trigger( 'onFetchShippingRateForProduct', array(
-                                    'cart' => $cart,
-                                    'cartitem' => $cartitem,
-                                    'method' => $cart->shippingMethod(),
-                                    'rate' => 0
-                                ) );
-                                $rate = $event->getArgument('rate');
-
-                                // since this is a percentage-based coupon, calculate its value based on the rate                                
-                                $value = ($this->discount_value/100) * $rate;
-                            }
+                                if ($this->discount_type == 'flat-rate')
+                                {
+                                    // TODO Take the discount_currency into account
+                                    $value += $this->discount_value;
+                                }
+                                elseif ($this->discount_type == 'percentage')
+                                {
+                                    // trigger an event with these arguments: (cartitem, selected shipping method, and cart)
+                                    // and let the Listeners determine the shipping cost for that product
+                                    $event = \Dsc\System::instance()->trigger( 'onFetchShippingRateForProduct', array(
+                                        'cart' => $cart,
+                                        'cartitem' => $cartitem,
+                                        'method' => $cart->shippingMethod(),
+                                        'rate' => 0
+                                    ) );
+                                    $rate = $event->getArgument('rate');
+                                
+                                    // since this is a percentage-based coupon, calculate its value based on the rate
+                                    $value = ($this->discount_value/100) * $rate;
+                                }
+                            }                            
                         }
                     }
                 }                
@@ -644,10 +668,14 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
                 // the discount is the difference between the product's price and the coupon's discount_value
                 if (empty($this->discount_target_products) && empty($this->discount_target_collections)) 
                 {
-                    foreach ($cart->items as $cartitem)
+                    $excluded_products = $this->excludedProducts();
+                    if (!in_array((string) $cartitem['product_id'], $excluded_products))
                     {
-                        $value += (($cartitem['price'] - $this->discount_value) * $cartitem['quantity']);
-                    }
+                        foreach ($cart->items as $cartitem)
+                        {
+                            $value += (($cartitem['price'] - $this->discount_value) * $cartitem['quantity']);
+                        }
+                    }                    
                 }
                 
                 // otherwise, get the array of target_product_ids.  loop thru each product and if it is in the array,
@@ -655,7 +683,7 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
                 // the discount is the difference between the product's price and the coupon's discount_value
                 else 
                 {
-                    $discount_target_products = array();
+                    $discount_target_products = (array) $this->discount_target_products;
                     foreach( $this->required_collections as $collection_id )
                     {
                         $collection_product_ids = \Shop\Models\Collections::productIds( $collection_id );
@@ -663,11 +691,16 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
                     }
                     $discount_target_products = array_unique( $discount_target_products );
                     
+                    $excluded_products = $this->excludedProducts();
+                    
                     foreach ($cart->items as $cartitem)
                     {
                         if (in_array((string) $cartitem['product_id'], $discount_target_products ))
                         {
-                            $value += (($cartitem['price'] - $this->discount_value) * $cartitem['quantity']);
+                            if (!in_array((string) $cartitem['product_id'], $excluded_products))
+                            {
+                                $value += (($cartitem['price'] - $this->discount_value) * $cartitem['quantity']);                            
+                            }
                         }
                     }
                 }
@@ -742,5 +775,22 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
         }
     
         return $result;
+    }
+
+    /**
+     * 
+     * @return unknown
+     */
+    public function excludedProducts()
+    {
+        $excluded_products = (array) $this->excluded_products;
+        foreach( $this->excluded_collections as $collection_id )
+        {
+            $collection_product_ids = \Shop\Models\Collections::productIds( $collection_id );
+            $excluded_products = array_merge($excluded_products, $collection_product_ids);
+        }
+        $excluded_products = array_unique( $excluded_products );
+        
+        return $excluded_products;
     }
 }
