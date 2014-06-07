@@ -10,68 +10,43 @@ class Customer extends \Users\Admin\Controllers\User
     protected $get_item_route = '/admin/shop/customer/read/{id}';
     protected $edit_item_route = '/admin/shop/customer/edit/{id}';
     
-    protected function getModel() 
+    protected function getModel($name='Users')
     {
-        $model = new \Shop\Models\Customers;
-        return $model; 
-    }
-    
-    protected function getItem() 
-    {
-        $f3 = \Base::instance();
-        $id = $this->inputfilter->clean( $f3->get('PARAMS.id'), 'alnum' );
-        $model = $this->getModel()
-            ->setState('filter.id', $id);
-
-        try {
-            $item = $model->getItem();
-        } catch ( \Exception $e ) {
-            \Dsc\System::instance()->addMessage( "Invalid Item: " . $e->getMessage(), 'error');
-            $f3->reroute( $this->list_route );
-            return;
+        switch (strtolower($name))
+        {
+        	case "customer":
+        	case "customers":
+        	    $model = new \Shop\Models\Customers;
+        	    break;
+        	default:
+        	    $model = parent::getModel($name);
+        	    break;
         }
-
-        return $item;
-    }
+    
+        return $model;
+    }    
     
     protected function displayCreate() 
     {
-        $f3 = \Base::instance();
-
-        $model = new \Shop\Models\Coupons;
+        $this->app->set('meta.title', 'Create Customer | Shop');
         
-        $this->app->set('meta.title', 'Issue a Credit | Shop');
-        
-        $view = \Dsc\System::instance()->get('theme');
-        $view->event = $view->trigger( 'onDisplayShopCustomersEdit', array( 'item' => $this->getItem(), 'tabs' => array(), 'content' => array() ) );
-        echo $view->render('Shop/Admin/Views::credits/create.php');        
+        $this->theme->event = $this->theme->trigger( 'onDisplayShopCustomersEdit', array( 'item' => $this->getItem(), 'tabs' => array(), 'content' => array() ) );
+        echo $this->theme->render('Shop/Admin/Views::customers/create.php');        
     }
     
     protected function displayEdit()
     {
-        $f3 = \Base::instance();
-
-        $model = new \Shop\Models\Coupons;
+        $this->app->set('meta.title', 'Edit Customer | Shop');
         
-        $flash = \Dsc\Flash::instance();
-
-        $this->app->set('meta.title', 'Edit a Credit | Shop');
-        
-        $view = \Dsc\System::instance()->get('theme');
-        $view->event = $view->trigger( 'onDisplayShopCustomersEdit', array( 'item' => $this->getItem(), 'tabs' => array(), 'content' => array() ) );        
-        echo $view->render('Shop/Admin/Views::credits/edit.php');
+        $this->theme->event = $this->theme->trigger( 'onDisplayShopCustomersEdit', array( 'item' => $this->getItem(), 'tabs' => array(), 'content' => array() ) );        
+        echo $this->theme->render('Shop/Admin/Views::customers/edit.php');
     }
     
-    /**
-     * This controller doesn't allow reading, only editing, so redirect to the edit method
-     */
-    protected function doRead(array $data, $key=null) 
+    protected function displayRead() 
     {
-        $f3 = \Base::instance();
-        $id = $this->getItem()->get( $this->getItemKey() );
-        $route = str_replace('{id}', $id, $this->edit_item_route );
-        $f3->reroute( $route );
+        $this->app->set('meta.title', 'Customer | Shop');
+        
+        $this->theme->event = $this->theme->trigger( 'onDisplayShopCustomers', array( 'item' => $this->getItem(), 'tabs' => array(), 'content' => array() ) );
+        echo $this->theme->render('Shop/Admin/Views::customers/read.php');    	
     }
-    
-    protected function displayRead() {}
 }

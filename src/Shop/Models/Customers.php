@@ -59,4 +59,58 @@ class Customers extends \Users\Models\Users
     
         return $result;
     }
+    
+    /**
+     * Gets the total amount a customer has spent
+     * 
+     * @param string $refresh
+     * @return number
+     */
+    public function totalSpent($refresh=false)
+    {
+        if (empty($refresh))
+        {
+            return (float) $this->{'shop.total_spent'};
+        }
+                
+        $this->{'shop.total_spent'} = 0;
+        
+        $conditions = (new \Shop\Models\Orders)->setState('filter.user', $this->id)->setState('filter.financial_status', \Shop\Constants\OrderFinancialStatus::paid)->conditions();
+        
+        $agg = \Shop\Models\Orders::collection()->aggregate(array(
+        	array( 
+        	    '$match' => $conditions 
+            ),
+            array( 
+                '$group' => array(
+            	   '_id' => '$user_id',
+                   'total' => array( '$sum' => '$grand_total' )
+                ) 
+            )
+        ));
+        
+        if (!empty($agg['ok']) && !empty($agg['result'])) 
+        {
+            $this->{'shop.total_spent'} = (float) $agg['result'][0]['total'];
+        }
+        
+        return (float) $this->{'shop.total_spent'};
+    }
+    
+    /**
+     * Gets the number of orders the customer has made
+     * 
+     * @param string $refresh
+     */
+    public function ordersCount($refresh=false)
+    {
+        if (empty($refresh)) 
+        {
+        	return (int) $this->{'shop.orders_count'};
+        }
+        
+        $this->{'shop.orders_count'} = (new \Shop\Models\Orders)->setState('filter.user', $this->id)->setState('filter.financial_status', \Shop\Constants\OrderFinancialStatus::paid)->getCount();
+        
+        return (int) $this->{'shop.orders_count'};
+    }
 }
