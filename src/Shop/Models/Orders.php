@@ -466,6 +466,27 @@ class Orders extends \Dsc\Mongo\Collections\Taggable
     }
     
     /**
+     * If this order has a credit_total and then gets cancelled, 
+     * refund it to the customer's shop.credits.balance
+     * by immediately issuing a positive credit
+     *
+     * @return \Shop\Models\Orders
+     */
+    public function refundCredit()
+    {
+        if ($this->credit_total) {
+            $credit = (new \Shop\Models\Credits)->bind(array(
+                'user_id' => $this->user_id,
+                'amount' => (float) $this->credit_total,
+                'order_id' => $this->id
+            ));
+            $credit->__issue_to_user = true;
+            $credit->save();
+        }
+        return $this;
+    }
+    
+    /**
      * Fulfilling an order is the act of delivering the product to the customer
      * and marking the order as closed.
      * Even digital products (subscriptions, downloads, gift cards) are delivered upon fulfillment
@@ -556,6 +577,12 @@ class Orders extends \Dsc\Mongo\Collections\Taggable
         $this->save();
     
         // TODO send status update notification emails [optional]
+        
+        $this->refundCredit();
+        
+        $this->__cancel_event = \Dsc\System::instance()->trigger( 'onShopCancelOrder', array(
+            'order' => $this
+        ) );
     
         return $this;
     }
