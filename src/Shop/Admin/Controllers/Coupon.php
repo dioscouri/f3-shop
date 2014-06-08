@@ -88,9 +88,23 @@ class Coupon extends \Admin\Controllers\BaseAuth
     		return;
     	}
     	
-    	$prefix = 'bro-';
-    	$len = 10;
-    	$num = 50;
+    	$prefix = $this->input->get( 'prefix', '', 'cmd' );
+    	$len = $this->input->get( 'length', null, 'int' );
+    	$num = $this->input->get( 'count', null, 'int' );
+    	
+    	if( empty( $len ) ) {
+    		if( empty( $num ) ){
+    		\Dsc\System::addMessage( 'Missing length of codes and number of codes to generate.', 'error' );
+    		} else {
+    			\Dsc\System::addMessage( 'Missing length of codes.', 'error' );
+    		}
+    		$this->app->reroute('/admin/shop/coupon/'.$id.'/codes');
+    		return;
+    	} elseif( empty( $num ) ) {
+    		\Dsc\System::addMessage( 'Missing number of codes to generate.', 'error' );
+    		$this->app->reroute('/admin/shop/coupon/'.$id.'/codes');
+    		return;
+    	}
     	
     	try{
     		$item = $this->getItem();
@@ -103,21 +117,21 @@ class Coupon extends \Admin\Controllers\BaseAuth
     }
     
     public function deleteCode(){
-    	$id = $this->app->get("PARAMS.id" );
-    	$code = $this->app->get('PARAMS.code');
+    	$id = $this->inputfilter->clean( $this->app->get("PARAMS.id" ), 'ALNUM' );
+    	$code = $this->inputfilter->clean( $this->app->get('PARAMS.code'), 'CMD' );
     	
     	if( empty( $id ) || empty( $code ) ){
     		\Dsc\System::addMessage( 'Missing coupon ID', 'error' );
-    		$this->app->redirect( '/admin/shop/coupons' );
+    		$this->app->reroute( '/admin/shop/coupons' );
     		return;
     	}
     	 
     	try{
     		\Shop\Models\Coupons::collection()->update( 
-    								array( '_id' => new \MongoId( $id ),
+    								array( '_id' => new \MongoId( (string)$id ),
     										'codes.list.code' => $code
     								),
-    								array( '$pull' => 'codes.list.$'));
+    								array( '$pull' => array( 'codes.list' => '$') ), array("upset" => true));
     		\Dsc\System::addMessage( 'Codes was successfuly deleted.' );
     	} catch(\Exception $e){
     		\Dsc\System::addMessage( $e->getMessage(), 'error' );

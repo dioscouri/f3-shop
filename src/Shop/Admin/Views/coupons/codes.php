@@ -12,14 +12,14 @@
 		<div class="pull-right">
 			<a class="btn btn-success" href="./admin/shop/coupon/<?php echo $item->_id; ?>/codes/download">Download Codes</a>
 			&nbsp;
-			<a class="btn btn-danger" href="./admin/shop/coupon/<?php echo $item->_id; ?>/codes/generate">Generate Codes</a>
+			<a class="btn btn-danger"  href="javascript:void(0);" onclick="document.getElementById('couponsForm').submit();">Generate Codes</a>
 			&nbsp;
 			<a class="btn btn-default" href="./admin/shop/coupon/edit/<?php echo $item->_id; ?>">Back to Coupon</a>
 		</div>
 	</div>
 </div>
 
-<form class="searchForm" method="post">
+<form id="couponsForm" method="post" action="./admin/shop/coupon/<?php echo $item->_id; ?>/codes/generate">
 
     <div class="no-padding">
         
@@ -39,7 +39,7 @@
             	</div>
             	<div class="col-lg-4 col-mg-4 col-xs-6">
             		<label>Number of Coupons</label>
-            		<input type="text" class="form-control" name="count" value="" placeholder="How many coupons you want to generate ..." />
+            		<input type="text" class="form-control" name="count" value="50" placeholder="How many coupons you want to generate ..." />
             	</div>
             	<div class="col-lg-4 col-mg-12 col-xs-12">
             		<br />

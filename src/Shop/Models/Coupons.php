@@ -797,7 +797,17 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
     
     public function countUsedCodes()
     {
-    	return 5;
+		$result = \Shop\Models\Coupons::collection()->aggregate(
+						array( '$match' => array( '_id' => new \MongoId( (string) $this->id )) ),
+						array( '$unwind' => '$codes.list' ),
+						array( '$match' => array( "codes.list.used" => 1 ) ),
+    					array( '$group' => array( '_id' => '$title', 'used_codes' => array( '$sum' => '$codes.list.used' ) ) ) );
+
+		if( count( $result['result'] ) ){
+			return $result['result'][0]['used_codes'];
+		} else {
+			return 0;
+		}
     }
     
     public function generateCodes($prefix, $len, $num) {
@@ -807,7 +817,7 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
     	$possible_codes = $num_chars * $len;
     	if( $possible_codes < $num ){
     		$min = ceil( $num / $num_chars );
-    		throw new \Exception("With length of ".$len.' you can generate only '.$possible_codes.'. Length of suffix has to be at least '.$min.'.' );
+    		throw new \Exception("With length of ".$len.' you can generate only '.$possible_codes.'. Code length has to be at least '.$min.'.' );
     	}
     	
     	$codes = array_values( (array)$this->{'codes.list'} );

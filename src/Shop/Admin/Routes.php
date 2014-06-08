@@ -171,7 +171,7 @@ class Routes extends \Dsc\Routes\Group
         		'action' => 'displayCodes'
         ));
 
-        $this->add('/coupon/@id/codes/generate', 'GET', array(
+        $this->add('/coupon/@id/codes/generate', 'POST', array(
         		'controller' => 'Coupon',
         		'action' => 'generateCodes'
         ));
