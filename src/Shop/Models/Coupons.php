@@ -36,6 +36,7 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
     public $__is_validated = null;    
     protected $__collection_name = 'shop.coupons';
     protected $__type = 'shop.coupons';
+    protected $__chars = array('c','n','u','m','r','s','e','w','h','b','k','f','z','v','x','p','j','t','q','y','g','a','d');
     
     protected function fetchConditions()
     {
@@ -792,5 +793,70 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
         $excluded_products = array_unique( $excluded_products );
         
         return $excluded_products;
+    }
+    
+    public function countUsedCodes()
+    {
+    	return 5;
+    }
+    
+    public function generateCodes($prefix, $len, $num) {
+    	//since event bands are all generated at once we don't want  all the bands at the event to be in a guessible order.
+
+    	$num_chars = count( $this->__chars );
+    	$possible_codes = $num_chars * $len;
+    	if( $possible_codes < $num ){
+    		$min = ceil( $num / $num_chars );
+    		throw new \Exception("With length of ".$len.' you can generate only '.$possible_codes.'. Length of suffix has to be at least '.$min.'.' );
+    	}
+    	
+    	$codes = array_values( (array)$this->{'codes.list'} );
+    	
+    	for( $i = 0; $i < $num; $i++ ){
+    		$suffix = '';
+			$notUnique = true;
+    		while( $notUnique ){
+    			for( $j = 0; $j < $len; $j++ ){
+    				$suffix .= $this->__chars[rand( 0, $num_chars-1)];
+    			}
+    			
+    			$all_codes = \Joomla\Utilities\ArrayHelper::getColumn( $codes, 'code' );
+    			$notUnique = in_array( $prefix.$suffix, $all_codes );
+    		}
+    		
+    		$codes []= array( 'code' => $prefix.$suffix, 'used' => 0 );
+    	}
+    	$this->{'codes.list'} = $codes;
+    	$this->{'codes.prefix'} = $prefix;
+    	$this->{'codes.length'} = $len;
+    	$this->save();
+    }
+
+    private function generateCodeSuffix( $prefix, $len, $str ){
+    	if(empty($str))  {
+    		//Check with frontend model so we don't get event.id check
+    		$band =  (new \Rystband\Site\Models\Tags)->setParam('sort', array('_id' => -1))->setCondition('sysgentag', 1)->fetchItem();
+    		$last = $band->tagid;
+    	} else {
+    		$last = $string;
+    	}
+    	
+    	$length = strlen($last);
+    	
+    	//IF the entire string consists of all the last char in the array, add a row and repeat first char
+    	$match = "/^".end($this->__chars)."*$/";
+    	if (preg_match($match, $last)) {
+    		return str_repeat($this->__chars[0], $length + 1);
+    	}
+    	
+    	$tagid = $this->updatePosition($last);
+    	
+    	$check = (new \Rystband\Site\Models\Tags)->setCondition('tagid',$tagid)->fetchItem();
+    	
+    	if(!empty($check->_id)) {
+    		$tagid = $this->generateUUID($check->tagid);
+    	}
+    	 
+    	return $code;
     }
 }
