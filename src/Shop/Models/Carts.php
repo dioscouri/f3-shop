@@ -734,6 +734,23 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
     }
     
     /**
+     * Gets the total of all the applied discounts
+     * that only apply to shipping
+     *
+     * @return number
+     */
+    public function shippingDiscountTotal()
+    {
+        $discount = 0;
+    
+        $discount = $this->userShippingDiscountTotal();
+    
+        $discount = $discount + $this->autoShippingDiscountTotal();
+    
+        return (float) $discount;
+    }
+    
+    /**
      * Gets the total of all automatically-applied discounts,
      * optionally excluding the discounts that apply to shipping 
      * 
@@ -1099,9 +1116,11 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
                     }
                     
                     // ensure that the coupon is still valid, removing it if not
+                    // and set its value to 0
                     try {
                         $coupon = (new \Shop\Models\Coupons)->bind($item)->reload();
-                        $coupon->cartValid( $this );                        
+                        $coupon->cartValid( $this );
+                        $this->{'coupons.' . $key . '.amount'} = 0;
                     }
                     catch (\Exception $e) {
                         unset($this->coupons[$key]);
@@ -1112,6 +1131,7 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
                 // now that user coupons have been validated, ensure the autoCoupons
                 $this->ensureAutoCoupons();
                 
+                // now get all the coupon values
                 foreach ((array) $this->coupons as $key=>$item)
                 {
                     $this->{'coupons.' . $key . '.amount'} = $this->calcCouponValue( $item );

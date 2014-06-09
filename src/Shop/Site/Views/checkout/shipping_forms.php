@@ -242,3 +242,5 @@ jQuery(document).ready(function(){
     jQuery('#checkout-shipping-methods').trigger('reload');
 });
 </script>
+
+<?php // echo \Dsc\Debug::dump( $cart->autoCoupons() ); ?>

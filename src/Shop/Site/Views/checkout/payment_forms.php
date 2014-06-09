@@ -132,3 +132,5 @@ jQuery(document).ready(function(){
     
 });
 </script>
+
+<?php // echo \Dsc\Debug::dump( $cart->autoCoupons() ); ?>

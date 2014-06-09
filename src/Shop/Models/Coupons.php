@@ -535,10 +535,11 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
 		            }
 		            
 		            // coupon value cannot be greater than order shipping cost
-		            if ($value > $cart->shippingTotal())
+		            $current_shipping_discount_total = $cart->shippingDiscountTotal();
+		            if ($value > ($cart->shippingTotal() - $current_shipping_discount_total))
 		            {
-		                $value = $cart->shippingTotal();
-		            }		        	
+		                $value = ($cart->shippingTotal() - $current_shipping_discount_total);
+		            }
 		        }
 		        
 		        break;
@@ -600,28 +601,26 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
 	            break;
             case "product_shipping":
 
+                $excluded_products = $this->excludedProducts();
+                $excluded_products = array_merge( $excluded_products, $this->discount_target_products );
+                
                 // if discount_target_products is empty, then this is just the same thing as an order shipping discount
-                if (empty($this->discount_target_products))
+                if (empty($excluded_products))
                 {
-                    $excluded_products = $this->excludedProducts();
-                    if (!in_array((string) $cartitem['product_id'], $excluded_products))
+                    if ($this->discount_type == 'flat-rate')
                     {
-                        if ($this->discount_type == 'flat-rate')
-                        {
-                            // TODO Take the discount_currency into account
-                            $value = $this->discount_value;
-                        }
-                        elseif ($this->discount_type == 'percentage')
-                        {
-                            $value = ($this->discount_value/100) * $cart->shippingTotal();
-                        }
-                    }                    
+                        // TODO Take the discount_currency into account
+                        $value = $this->discount_value;
+                    }
+                    elseif ($this->discount_type == 'percentage')
+                    {
+                        $value = ($this->discount_value/100) * $cart->shippingTotal();
+                    }
+                    
                 }
                 // else, apply it only to the products in discount_target_products
                 else
                 {
-                    $excluded_products = $this->excludedProducts();
-                    
                     foreach ($cart->items as $cartitem)
                     {
                         // is this product a discount_target_product?
@@ -655,9 +654,10 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
                 }                
                 
                 // coupon value cannot be greater than order shipping cost
-                if ($value > $cart->shippingTotal())
+                $current_shipping_discount_total = $cart->shippingDiscountTotal();
+                if ($value > ($cart->shippingTotal() - $current_shipping_discount_total))
                 {
-                    $value = $cart->shippingTotal();
+                    $value = ($cart->shippingTotal() - $current_shipping_discount_total);
                 }
                 break;
                 
