@@ -1128,9 +1128,6 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
                 }
                 $this->coupons = array_values(array_filter($this->coupons));
                 
-                // now that user coupons have been validated, ensure the autoCoupons
-                $this->ensureAutoCoupons();
-                
                 // now get all the coupon values
                 foreach ((array) $this->coupons as $key=>$item)
                 {
@@ -1141,6 +1138,9 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
                 {
                     $this->{'giftcards.' . $key . '.amount'} = $this->calcGiftCardValue( $item );
                 }
+
+                // now that user coupons have been validated, ensure the autoCoupons
+                $this->ensureAutoCoupons();
             }
         }
         
