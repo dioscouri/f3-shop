@@ -48,7 +48,10 @@ jQuery(document).ready(function(){
                 </li>                
                 <li>
                     <a href="#tab-rewards" data-toggle="tab"> Rewards </a>
-                </li>                                
+                </li>
+                <li>
+                    <a href="#tab-expiration" data-toggle="tab"> Expiration </a>
+                </li>
                 <?php if (!empty($this->event)) { foreach ((array) $this->event->getArgument('tabs') as $key => $title ) { ?>
                 <li>
                     <a href="#tab-<?php echo $key; ?>" data-toggle="tab"> <?php echo $title; ?> </a>
@@ -78,6 +81,13 @@ jQuery(document).ready(function(){
                 
                 </div>
                 <!-- /.tab-pane -->
+                
+                <div class="tab-pane" id="tab-expiration">
+                
+                    <?php echo $this->renderLayout('Shop/Admin/Views::campaigns/fields_expiration.php'); ?>
+                
+                </div>
+                <!-- /.tab-pane -->                
 
                 <?php if (!empty($this->event)) { foreach ((array) $this->event->getArgument('content') as $key => $content ) { ?>
                 <div class="tab-pane" id="tab-<?php echo $key; ?>">
