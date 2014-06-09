@@ -209,6 +209,8 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
         $this->forSelectionBeforeValidate('excluded_products');
         $this->forSelectionBeforeValidate('excluded_collections');
         
+        $this->forSelectionBeforeValidate('discount_target_collections');
+        
         return parent::beforeSave();
     }
 
@@ -669,13 +671,16 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
                 if (empty($this->discount_target_products) && empty($this->discount_target_collections)) 
                 {
                     $excluded_products = $this->excludedProducts();
-                    if (!in_array((string) $cartitem['product_id'], $excluded_products))
+                    foreach ($cart->items as $cartitem)
                     {
-                        foreach ($cart->items as $cartitem)
+                        if (!in_array((string) $cartitem['product_id'], $excluded_products))
                         {
-                            $value += (($cartitem['price'] - $this->discount_value) * $cartitem['quantity']);
+                            foreach ($cart->items as $cartitem)
+                            {
+                                $value += (($cartitem['price'] - $this->discount_value) * $cartitem['quantity']);
+                            }
                         }
-                    }                    
+                    }
                 }
                 
                 // otherwise, get the array of target_product_ids.  loop thru each product and if it is in the array,
@@ -684,13 +689,12 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
                 else 
                 {
                     $discount_target_products = (array) $this->discount_target_products;
-                    foreach( $this->required_collections as $collection_id )
+                    foreach( (array) $this->discount_target_collections as $collection_id )
                     {
                         $collection_product_ids = \Shop\Models\Collections::productIds( $collection_id );
                         $discount_target_products = array_merge($discount_target_products, $collection_product_ids);
                     }
                     $discount_target_products = array_unique( $discount_target_products );
-                    
                     $excluded_products = $this->excludedProducts();
                     
                     foreach ($cart->items as $cartitem)
