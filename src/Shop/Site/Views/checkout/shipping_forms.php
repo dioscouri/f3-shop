@@ -133,7 +133,8 @@ jQuery(document).ready(function(){
         if (!validation.validateForm()) {
             return false;
         }
-        el.submit();    
+        //el.submit();
+        return true;
     });
 
     jQuery('#select-address').on('change', function(){

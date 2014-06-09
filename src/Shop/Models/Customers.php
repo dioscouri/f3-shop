@@ -109,9 +109,9 @@ class Customers extends \Users\Models\Users
         	return (int) $this->{'shop.orders_count'};
         }
         
-        $this->{'shop.orders_count'} = (new \Shop\Models\Orders)->setState('filter.user', $this->id)->setState('filter.financial_status', \Shop\Constants\OrderFinancialStatus::paid)->getCount();
+        $this->{'shop.orders_count'} = (int) (new \Shop\Models\Orders)->setState('filter.user', $this->id)->setState('filter.financial_status', \Shop\Constants\OrderFinancialStatus::paid)->getCount();
         
-        return (int) $this->{'shop.orders_count'};
+        return $this->{'shop.orders_count'};
     }
     
     /**

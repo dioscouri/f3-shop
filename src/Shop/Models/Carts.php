@@ -1014,7 +1014,7 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
         if (empty($this->taxes) || $refresh)
         {
             $this->taxes = $this->fetchTaxItems();
-            $this->save();
+            //$this->save();
         }
     
         return $this->taxes;
@@ -1514,10 +1514,10 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
      */
     public function ensureAutoCoupons()
     {
+        $this->auto_coupons = array();
+        
         // get all potential auto-coupons (published auto coupons)
         // check each one against $this cart for validity
-        
-        $valid_auto_coupons = array();
         
         $coupons = (new \Shop\Models\Coupons)
             ->setState('filter.publication_status', 'published')
@@ -1531,22 +1531,15 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
             // otherwise, ensure it is removed
             try {
             	$coupon->cartValid( $this );
-            	$valid_auto_coupons[$coupon->code] = $coupon;
+            	$cast = $coupon->cast();
+            	$cast['amount'] = $this->calcCouponValue( $coupon );
+            	$this->auto_coupons[] = $cast;            	
+
             }
             catch (\Exception $e) {
             	// REMOVE IT
             }
         }
-
-        $this->auto_coupons = array();        
-        foreach ($valid_auto_coupons as $valid_auto_coupon) 
-        {
-            $cast = $valid_auto_coupon->cast();
-            $cast['amount'] = $this->calcCouponValue( $valid_auto_coupon );
-            $this->auto_coupons[] = $cast;        	
-        }
-        
-        $this->auto_coupons = array_values($this->auto_coupons);
         
         return $this;
     }

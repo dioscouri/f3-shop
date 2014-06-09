@@ -298,7 +298,7 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
                 throw new \Exception('Cart does not have any of the required coupons');
             }
         }
-         
+        
         /**
          * check that at least one of the products from $this->required_collections is in the cart
          */
