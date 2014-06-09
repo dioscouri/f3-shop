@@ -1,8 +1,7 @@
 <div class="row">
     <div class="col-md-2">
         
-        <h3>Publication and Visibility</h3>
-        <p class="help-block">Some helpful text</p>
+        <h3>Publication</h3>
                 
     </div>
     <!-- /.col-md-2 -->
@@ -11,13 +10,6 @@
     
         <div class="portlet">
 
-            <div class="portlet-header">
-    
-                <h3>Publication</h3>
-    
-            </div>
-            <!-- /.portlet-header -->
-    
             <div class="portlet-content">
             
                 <div class="form-group">
@@ -26,7 +18,6 @@
                     <select name="publication[status]" class="form-control">
                         <option value="published" <?php if ($flash->old('publication.status') == 'published') { echo "selected='selected'"; } ?>>Published</option>
                         <option value="unpublished" <?php if ($flash->old('publication.status') == 'unpublished') { echo "selected='selected'"; } ?>>Unpublished</option>
-                        <option value="inactive" <?php if ($flash->old('publication.status') == 'inactive') { echo "selected='selected'"; } ?>>Inactive</option>
                     </select>
                 
                 </div>
@@ -61,8 +52,6 @@
     
         </div>
         <!-- /.portlet -->
-        
-        <hr />
         
     </div>
     <!-- /.col-md-10 -->

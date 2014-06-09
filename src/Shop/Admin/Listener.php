@@ -36,11 +36,11 @@ class Listener extends \Prefab
                     'title' => 'Customers',
                     'route' => 'javascript:void(0);',
                     'icon' => 'fa fa-users'
-                ),                
+                ),
                 array(
-                    'title' => 'Coupons',
-                    'route' => './admin/shop/coupons',
-                    'icon' => 'fa fa-barcode'
+                    'title' => 'Marketing',
+                    'route' => 'javascript:void(0);',
+                    'icon' => 'fa fa-paper-plane-o'
                 ),
                 array(
                     'title' => 'Media Assets',
@@ -163,6 +163,31 @@ class Listener extends \Prefab
                 $customers_item->addChildren($customers_children);
             }
             
+            // Find the Marketing Item
+            $marketing_item = (new \Admin\Models\Nav\Primary())->load(array(
+                'type' => 'admin.nav',
+                'parent' => $shop->id,
+                'title' => 'Marketing'
+            ));
+            
+            // add its children
+            if (!empty($marketing_item->id))
+            {
+                $marketing_children = array(
+                    array(
+                        'title' => 'Coupons',
+                        'route' => './admin/shop/coupons',
+                        'icon' => 'fa fa-barcode'
+                    ),
+                    array(
+                        'title' => 'Campaigns',
+                        'route' => './admin/shop/campaigns',
+                        'icon' => 'fa fa-bullhorn'
+                    ),
+                );
+            
+                $marketing_item->addChildren($marketing_children);
+            }            
             
             // Find the Localization Menu Item 
             $locale_item = (new \Admin\Models\Nav\Primary())->load(array(
