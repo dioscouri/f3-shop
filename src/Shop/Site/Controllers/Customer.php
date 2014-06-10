@@ -5,6 +5,9 @@ class Customer extends \Dsc\Controller
 {    
     public function checkCampaigns()
     {
+        // Disabled for now
+        return; 
+        
         $user = $this->getIdentity();
         
         if (empty($user->id) || empty($user->email))

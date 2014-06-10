@@ -2,7 +2,7 @@
     <div class="col-md-2">
         
         <h3>Spend</h3>
-        <p class="help-block">The amount the customer must spend during the Publication period in order to qualify.</p>
+        <p class="help-block">The amount the customer must spend during the Qualifying Period in order to earn the rewards.</p>
                 
     </div>
     <!-- /.col-md-2 -->

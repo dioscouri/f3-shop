@@ -2,6 +2,7 @@
     <div class="col-md-2">
         
         <h3>Publication</h3>
+        <p class="help-block">Schedule this campaign for future publication.</p>
                 
     </div>
     <!-- /.col-md-2 -->
