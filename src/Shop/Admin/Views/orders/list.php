@@ -238,10 +238,14 @@
                                 
                                 } ?>
                                 
-                                <p class="pull-right label <?php echo $label_class; ?>">
+                                <span class="pull-right label <?php echo $label_class; ?>">
                                 <?php echo $order->{'status'}; ?>
-                                </p>
-                                
+                                </span>
+                                                                
+                            </legend>
+                            <div><label>#</label><a href="./admin/shop/order/edit/<?php echo $order->id; ?>"><?php echo $order->{'number'}; ?></a></div>
+                            <div><label>Total:</label> <?php echo \Shop\Models\Currency::format( $order->{'grand_total'} ); ?></div>
+                            <div>
                                 <?php switch($order->{'financial_status'}) {
                                 	case \Shop\Constants\OrderFinancialStatus::voided:
                                 	    $label_class = 'label-danger';
@@ -264,14 +268,11 @@
                                 
                                 } ?>
                                 
-                                <p class="pull-right label <?php echo $label_class; ?>">
+                                Financial status: 
+                                <span class="label <?php echo $label_class; ?>">
                                 <?php echo $order->{'financial_status'}; ?>
-                                </p>
-                                
-                                                                
-                            </legend>
-                            <div><label>#</label><a href="./admin/shop/order/edit/<?php echo $order->id; ?>"><?php echo $order->{'number'}; ?></a></div>
-                            <div><label>Total:</label> <?php echo \Shop\Models\Currency::format( $order->{'grand_total'} ); ?></div>
+                                </span>                            
+                            </div>
                         </div>
                         <div class="col-xs-12 col-sm-12 col-md-8">
                             <legend>
