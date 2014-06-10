@@ -116,17 +116,17 @@
                     <div class="row">                        
                         <div class="col-md-3">
                             <label>Period</label>
-                            <input name="expiration_period_variable" value="<?php echo $flash->old('variable_period_days'); ?>" placeholder="7" class="form-control" type="text" />
+                            <input name="duration_period_variable" value="<?php echo $flash->old('duration_period_variable'); ?>" placeholder="7" class="form-control" type="text" />
                         </div>
                         <div class="col-md-9">
                             <label>Period Type</label>
-                            <select name="expiration_period_type" class="form-control" style="min-width: 150px;">
-                                <option value="days" <?php echo ($flash->old('expiration_period_type') == 'days') ? "selected='selected'" : null; ?>>Days</option>
-                                <option value="weeks" <?php echo ($flash->old('expiration_period_type') == 'weeks') ? "selected='selected'" : null; ?>>Weeks</option>
-                                <option value="months" <?php echo ($flash->old('expiration_period_type') == 'months') ? "selected='selected'" : null; ?>>Months</option>
-                                <option value="years" <?php echo ($flash->old('expiration_period_type') == 'years') ? "selected='selected'" : null; ?>>Years</option>
-                                <option value="orders" <?php echo ($flash->old('expiration_period_type') == 'orders') ? "selected='selected'" : null; ?>>Completed Orders</option>
-                                <option value="forever" <?php echo ($flash->old('expiration_period_type') == 'forever') ? "selected='selected'" : null; ?>>Forever</option>                
+                            <select name="duration_period_type" class="form-control">
+                                <option value="days" <?php echo ($flash->old('duration_period_type') == 'days') ? "selected='selected'" : null; ?>>Days</option>
+                                <option value="weeks" <?php echo ($flash->old('duration_period_type') == 'weeks') ? "selected='selected'" : null; ?>>Weeks</option>
+                                <option value="months" <?php echo ($flash->old('duration_period_type') == 'months') ? "selected='selected'" : null; ?>>Months</option>
+                                <option value="years" <?php echo ($flash->old('duration_period_type') == 'years') ? "selected='selected'" : null; ?>>Years</option>
+                                <?php /* ?><option value="orders" <?php echo ($flash->old('duration_period_type') == 'orders') ? "selected='selected'" : null; ?>>Completed Orders</option> */ ?>
+                                <option value="forever" <?php echo ($flash->old('duration_period_type') == 'forever') ? "selected='selected'" : null; ?>>Forever</option>                
                             </select>                        
                         </div>
                     </div>

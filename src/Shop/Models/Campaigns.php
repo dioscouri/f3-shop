@@ -8,6 +8,12 @@ class Campaigns extends \Dsc\Mongo\Collections\Describable
     use\Dsc\Traits\Models\ForSelection;
     
     public $campaign_type = 'lto';
+    public $period_type = null;
+    public $variable_period_days = null;
+    public $fixed_period_start = null;
+    public $fixed_period_end = null;
+    public $duration_period_variable = null;
+    public $duration_period_type = 'days';
     
     public $rule_min_spent = null;
     public $reward_groups = array();
@@ -63,6 +69,29 @@ class Campaigns extends \Dsc\Mongo\Collections\Describable
     }
     
     /**
+     * if started today, when would this campaign's benefits expire?
+     * 
+     * @return unknown
+     */
+    public function expires() 
+    {
+        switch($this->duration_period_type) 
+        {
+        	case "forever":
+        	    $expires = null;
+        	    break;
+    	    case "days":
+	        case "weeks":
+            case "months":
+            case "years":
+                $expires = date('Y-m-d', strtotime( 'today +' . (int) $this->duration_period_variable . ' ' . $this->duration_period_type ) );
+    	        break;        	    
+        }
+        
+        return $expires;
+    }
+    
+    /**
      * Determines whether or not a user qualifies for this campaign
      * 
      * @param \Users\Models\Users $user
@@ -82,14 +111,31 @@ class Campaigns extends \Dsc\Mongo\Collections\Describable
             throw new \Exception('This campaign is not valid for today');
         }
         
-        // has the minimum spend amount for the publication period been met?
+        $period_start = null;
+        $period_end = null;
+        switch ($this->period_type) 
+        {
+        	case "variable":
+        	    $period_start = date('Y-m-d', strtotime( 'today -' . (int) $this->variable_period_days . ' days'));
+        	    $period_end = date('Y-m-d', strtotime('tomorrow'));        	    
+        	    break;
+    	    case "fixed":
+    	        $period_start = $this->fixed_period_start;
+    	        $period_end = $this->fixed_period_end;    	        
+    	        break;
+    	    default:
+    	        throw new \Exception('Invalid period type');
+    	        break;
+        }
+        
+        // has the minimum spend amount for the qualification period been met?
         if (!empty($this->rule_min_spent)) 
         {
-        	// Get the total amount spent by the customer during the publication period
-            $total = $customer->fetchTotalSpent($this->{'publication.start.local'}, $this->{'publication.end.local'});            
+        	// Get the total amount spent by the customer during the qualification period
+            $total = $customer->fetchTotalSpent($period_start, $period_end);
             if ($total < $this->rule_min_spent) 
             {
-                throw new \Exception('Customer has not spent enough during the publication period');
+                throw new \Exception('Customer has not spent enough during the qualification period');
             }
         }
 

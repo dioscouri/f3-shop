@@ -205,9 +205,9 @@ class Customers extends \Users\Models\Users
             $next_match = $indexed_campaign;
             
         	// Does the campaign have descendants?
-            if ($descendants = $indexed_campaign->ancestorsGetDescendants()) 
+            if ($indexed_campaign->__descendants = $indexed_campaign->ancestorsGetDescendants()) 
             {
-            	foreach ($descendants as $descendant) 
+            	foreach ($indexed_campaign->__descendants as $descendant) 
             	{
             		if (isset($indexed_campaigns[(string)$descendant->id])) 
             		{
@@ -216,47 +216,88 @@ class Customers extends \Users\Models\Users
             	}
             }
             
+            $indexed_campaign->__replace_with = null;
+            if ($next_match->id != $indexed_campaign->id) 
+            {
+                $indexed_campaign->__replace_with = $next_match;
+            }
+            
             if (!array_key_exists((string) $next_match->id, $matches))
             {
                 $matches[(string) $next_match->id] = $next_match;
             }            
             
-            //echo $indexed_campaign->title . " (which has " . count($descendants) . " descendants) <br/>";            
+            //echo $indexed_campaign->title . " (which has " . count($indexed_campaign->__descendants) . " descendants) <br/>";            
         }
         
-        // Check all of the customer's current campaigns, and if they no longer match them, expire the benefits
-        $active_campaigns = (array) $this->{'shop.active_campaigns'};
+        // Check all of the customer's current campaigns, 
+        // and if they have expired 
+        // OR if they are being replaced by a descendant,
+        // expire the benefits
+        $active_campaign_ids = array();
+        if ($active_campaigns = (array) $this->{'shop.active_campaigns'}) 
+        {
+        	foreach ($active_campaigns as $key=>$active_campaign_cast) 
+        	{
+        		$active_campaign_id = (string) \Dsc\ArrayHelper::get($active_campaign_cast, 'id');
+        		$active_campaign_expires_time = \Dsc\ArrayHelper::get($active_campaign_cast, 'expires.time');
+        		$active_campaign = (new \Shop\Models\Campaigns)->setState('filter.id', $active_campaign_id)->getItem();
+
+        		$replacing_with_descendant = false;
+        		// Does the campaign have descendants?
+        		if ($active_campaign->__descendants = $active_campaign->ancestorsGetDescendants())
+        		{
+        		    foreach ($active_campaign->__descendants as $descendant)
+        		    {
+        		        if (isset($matches[(string)$descendant->id]))
+        		        {
+        		            $replacing_with_descendant = true;
+        		        }
+        		    }
+        		}        		
+        		
+        		// are we replacing this?  Has it expired?
+        		if ($active_campaign_expires_time < time() || $replacing_with_descendant) 
+        		{
+        		    // echo "Removing customer from: " . $active_campaign->title . "<br/>";
+        		    $active_campaign->expireCustomerRewards( $this );
+        		    unset($active_campaigns[$key]);
+        		} 
+        		else 
+        		{
+        		    // Only track this if it really is active
+        		    $active_campaign_ids[] = $active_campaign_id;        			
+        		}
+        	}
+        }
+        
+        
         //echo "Customer's active campaigns: <br/>";
         //echo \Dsc\Debug::dump($active_campaigns);
-        
-        foreach ($active_campaigns as $active_campaign_id) 
-        {
-            $active_campaign = (new \Shop\Models\Campaigns)->setState('filter.id', $active_campaign_id)->getItem();
-            if (!empty($active_campaign->id) && !array_key_exists((string) $active_campaign->id, $matches))
-            {
-                // echo "Removing customer from: " . $active_campaign->title . "<br/>";
-                $active_campaign->expireCustomerRewards( $this );
-            }
-        }
 
-        //echo "Customer should only be in these campaigns: <br/>";        
-        // Track current campaigns in the user object, shop.active_campaigns
-        $match_ids = array();
+        //echo "Customer should only be in these campaigns: <br/>";
+
+        // Now add the customer to any new campaigns they qualify for
         foreach ($matches as $match)
         {
             //echo $match->title . "<br/>";
             
-            if (!in_array((string) $match->id, $active_campaigns)) 
+            if (!in_array((string) $match->id, $active_campaign_ids)) 
             {
                 $match->rewardCustomer( $this );
-                //echo "so Adding customer to: " . $match->title . "<br/>";            	
+                //echo "so Adding customer to: " . $match->title . "<br/>";
+                $active_campaigns[] = array(
+                	'id' => (string) $match->id,
+                    'title' => (string) $match->title,
+                    'activated' => \Dsc\Mongo\Metastamp::getDate('now'),
+                    'expires' => \Dsc\Mongo\Metastamp::getDate( $match->expires() ),
+                );
             }
-            
-            $match_ids[] = (string) $match->id;
         }
 
-        //return $this;
-        $this->{'shop.active_campaigns'} = $match_ids;
+        // Track current campaigns in the user object, shop.active_campaigns
+        $this->{'shop.active_campaigns'} = array_values($active_campaigns);
+        
         return $this->save();
     }
     

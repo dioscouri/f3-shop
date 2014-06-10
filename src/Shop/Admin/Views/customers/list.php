@@ -32,7 +32,7 @@
                     <select id="group_filter" name="filter[group]" class="form-control" onchange="this.form.submit();">
                         <option value="">All Groups</option>
                         <?php foreach (\Users\Models\Groups::find() as $group) : ?>
-                            <option <?php if($state->get('filter.group') == $group->id) { echo 'selected'; } ?> value="<?php echo $group->_id; ?>"><?php echo $group->name; ?></option>
+                            <option <?php if($state->get('filter.group') == $group->id) { echo 'selected'; } ?> value="<?php echo $group->_id; ?>"><?php echo $group->title; ?></option>
                         <?php endforeach; ?>
                     </select>
                 </li>
@@ -168,12 +168,6 @@
                         <input type="checkbox" class="icheck-input icheck-id" name="ids[]" value="<?php echo $item->id; ?>">
                     </div>
                     <div class="col-xs-10 col-md-3">
-                        <?php if ($item->groups) { ?>
-                        <div class="pull-right">
-                            <span class='label label-default'><?php echo implode("</span> <span class='label label-default'>", \Joomla\Utilities\ArrayHelper::getColumn( (array) $item->groups, 'title' ) ); ?></span>
-                        </div>
-                        <?php } ?>                        
-                        
                         <h4>
                             <a href="./admin/shop/customer/read/<?php echo $item->id; ?>">
                                 <?php echo $item->fullName(); ?>
@@ -185,6 +179,12 @@
                                 <?php echo date( 'Y-m-d', $item->{'metadata.created.time'} ); ?>
                             </a>
                         </div>
+                        <?php if ($item->groups) { ?>
+                        <div class="">
+                            <span class='label label-default'><?php echo implode("</span> <span class='label label-default'>", \Joomla\Utilities\ArrayHelper::getColumn( (array) $item->groups, 'title' ) ); ?></span>
+                        </div>
+                        <?php } ?>                        
+                        
                     </div>
                     <div class="col-md-2">
                         <h4>

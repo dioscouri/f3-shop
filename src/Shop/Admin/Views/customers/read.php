@@ -23,6 +23,23 @@
     <div class="col-md-9">
     
         <div class="panel panel-default">
+            <div class="panel-heading">Campaigns</div>
+            <div class="panel-body">
+                <?php $item->checkCampaigns(); ?>
+                <div class="list-group">
+                <?php foreach ((array) $item->{'shop.active_campaigns'} as $active_campaign) { ?>
+                    <div class="list-group-item">
+                        <?php echo \Dsc\ArrayHelper::get( $active_campaign, 'title'); ?> 
+                        as of <span class="label label-default"><?php echo date( 'Y-m-d', \Dsc\ArrayHelper::get( $active_campaign, 'activated.time') ); ?></span>
+                        expiring on <span class="label label-default"><?php echo date( 'Y-m-d', \Dsc\ArrayHelper::get( $active_campaign, 'expires.time') ); ?></span>  
+                    </div>    
+                <?php } ?>
+                </div>
+            </div>
+        </div>
+    
+        <?php  /* ?>
+        <div class="panel panel-default">
             <div class="panel-heading">[List of Customer Orders?]</div>
             <div class="panel-body">
                 List of X recent orders with a link to complete orders list filtered for user
@@ -49,20 +66,24 @@
                 Add tags to customer
             </div>
         </div>
+        */ ?>
     </div>
     
     <div class="col-md-3">
         <div class="panel panel-default">
             <div class="panel-heading">Details</div>
             <div class="panel-body">
-                <ul class="list-unstyled">
-                    <li><label>Total spent:</label> <?php echo \Shop\Models\Currency::format( $item->totalSpent() ); ?></li>
-                    <li><label>Total orders:</label> <?php echo (int) $item->ordersCount(); ?></li>
-                    <li><label>Total credit:</label> <?php echo \Shop\Models\Currency::format( $item->{'shop.credits.balance'} ); ?></li>
-                    <li><hr/></li>
-                    <li><label>Last Visit:</label> <?php echo date( 'Y-m-d', $item->{'last_visit.time'} ); ?></li>                    
-                    <li><label>Registered:</label> <?php echo date( 'Y-m-d', $item->{'metadata.created.time'} ); ?></li>
-                </ul>
+                <div class="list-group">
+                    <div class="list-group-item list-group-item-success">
+                        <label>Total spent:</label> <b><?php echo \Shop\Models\Currency::format( $item->totalSpent() ); ?></b>
+                    </div>
+                    <div class="list-group-item">
+                        <label>Total orders:</label> <?php echo (int) $item->ordersCount(); ?>
+                    </div>
+                    <div class="list-group-item"><label>Total credit:</label> <?php echo \Shop\Models\Currency::format( $item->{'shop.credits.balance'} ); ?></div>
+                    <div class="list-group-item"><label>Last Visit:</label> <?php echo date( 'Y-m-d', $item->{'last_visit.time'} ); ?></div>                    
+                    <div class="list-group-item"><label>Registered:</label> <?php echo date( 'Y-m-d', $item->{'metadata.created.time'} ); ?></div>
+                </div>
             </div>
         </div>
             
@@ -87,21 +108,9 @@
     </div>
 </div>
 
-<div class="row">
-    <div class="col-md-12">
-    
-        <div class="panel panel-default">
-            <div class="panel-heading">Campaigns</div>
-            <div class="panel-body">
-                <?php $item->checkCampaigns(); ?>
-            </div>
-        </div>
-    
-    </div>
-</div>
-
 <hr/>
 
+<?php /* ?>
 <div class="row">
     <div class="col-md-12">
     
@@ -109,3 +118,4 @@
     
     </div>
 </div>
+*/ ?>
