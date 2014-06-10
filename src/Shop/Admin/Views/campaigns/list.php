@@ -205,6 +205,10 @@
                     </div>
                     <div class="hidden-xs hidden-sm col-md-2">
                         <span class="pull-right">
+                            <a class="btn btn-xs btn-warning" href="./admin/shop/campaign/edit/<?php echo $item->id; ?>">
+                                <i class="fa fa-pencil"></i>
+                            </a>
+                            &nbsp;                        
     	                    <a class="btn btn-xs btn-danger" data-bootbox="confirm" href="./admin/shop/campaign/delete/<?php echo $item->id; ?>">
     	                        <i class="fa fa-times"></i>
     	                    </a>

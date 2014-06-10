@@ -42,7 +42,7 @@ class Customers extends \Users\Models\Users
     public static function forSelection(array $query=array(), $id_field='_id' )
     {
         $model = new static;
-    
+        \FB::log($query);    
         $cursor = $model->collection()->find($query, array("last_name"=>1, "first_name"=>1, "email"=>1) );
         $cursor->sort(array(
             "last_name"=>1, "first_name"=>1
@@ -56,7 +56,7 @@ class Customers extends \Users\Models\Users
             );
             $result[] = $array;
         }
-    
+    \FB::log($result);
         return $result;
     }
     
@@ -96,6 +96,50 @@ class Customers extends \Users\Models\Users
         
         return (float) $this->{'shop.total_spent'};
     }
+    
+    /**
+     * Calculates the total amount a customer has spent
+     * during the specified time period
+     *
+     * @param string $refresh
+     * @return number
+     */
+    public function fetchTotalSpent($start=null, $end=null)
+    {
+        $model = (new \Shop\Models\Orders)
+            ->setState('filter.user', $this->id)
+            ->setState('filter.financial_status', \Shop\Constants\OrderFinancialStatus::paid);
+        
+        if (!empty($start)) {
+        	$model->setState('filter.created_after', $start);
+        }
+        
+        if (!empty($end)) {
+            $model->setState('filter.created_before', $end);
+        }
+        
+        $conditions = $model->conditions();
+    
+        $agg = \Shop\Models\Orders::collection()->aggregate(array(
+            array(
+                '$match' => $conditions
+            ),
+            array(
+                '$group' => array(
+                	'_id' => '$user_id',
+                    'total' => array( '$sum' => '$grand_total' )
+                )
+            )
+        ));
+    
+        $total = 0;
+        if (!empty($agg['ok']) && !empty($agg['result']))
+        {
+            $total = (float) $agg['result'][0]['total'];
+        }
+    
+        return (float) $total;
+    }    
     
     /**
      * Gets the number of orders the customer has made

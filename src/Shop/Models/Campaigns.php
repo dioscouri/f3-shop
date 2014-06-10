@@ -49,6 +49,8 @@ class Campaigns extends \Dsc\Mongo\Collections\Describable
         $this->publishableBeforeSave();
         $this->ancestorsBeforeSave();
         
+        $this->rule_min_spent = (float) $this->rule_min_spent;
+        
         return parent::beforeSave();
     }
 
@@ -57,5 +59,44 @@ class Campaigns extends \Dsc\Mongo\Collections\Describable
         $this->ancestorsAfterUpdate();
         
         return parent::afterUpdate();
+    }
+    
+    /**
+     * Determines whether or not a user qualifies for this campaign
+     * 
+     * @param \Users\Models\Users $user
+     * @throws \Exception
+     * @return \Shop\Models\Campaigns
+     */
+    public function userQualifies( \Shop\Models\Customers $customer )
+    {
+        // Set $this->__is_validated = true if YES, user qualifies for this campaign.
+        // throw an Exception if NO, user does not qualify.
+
+        /**
+         * is the campaign published?
+         */
+        if (!$this->published()) 
+        {
+            throw new \Exception('This campaign is not valid for today');
+        }
+        
+        // has the minimum spend amount for the publication period been met?
+        if (!empty($this->rule_min_spent)) 
+        {
+        	// Get the total amount spent by the customer during the publication period
+            $total = $customer->fetchTotalSpent($this->{'publication.start.local'}, $this->{'publication.end.local'});            
+            if ($total < $this->rule_min_spent) 
+            {
+                throw new \Exception('Customer has not spent enough during the publication period');
+            }
+        }
+
+        /**
+         * if we made it this far, the user qualifies
+         */        
+        $this->__is_validated = true;
+        
+        return $this;
     }
 }

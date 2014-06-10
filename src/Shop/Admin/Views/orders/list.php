@@ -26,6 +26,9 @@
             
                 <ul class="list-filters list-unstyled list-inline">
                     <li>
+                        <a class="btn btn-link" href="javascript:void(0);" onclick="ShopToggleAdvancedFilters();">Advanced Filters</a>
+                    </li>                
+                    <li>
                         <select name="filter[status]" class="form-control" onchange="this.form.submit();">
                             <option value="">All Statuses</option>
                             <?php foreach (\Shop\Constants\OrderStatus::fetch() as $status) { ?>
@@ -40,7 +43,15 @@
                                 <option <?php if($state->get('filter.fulfillment_status') == $status) { echo 'selected'; } ?> value="<?php echo $status; ?>"><?php echo $status; ?></option>
                             <?php } ?>
                         </select>
-                    </li>                
+                    </li>        
+                    <li>
+                        <select name="filter[financial_status]" class="form-control" onchange="this.form.submit();">
+                            <option value="">All Financial Statuses</option>
+                             <?php foreach (\Shop\Constants\OrderFinancialStatus::fetch() as $status) { ?>
+                                <option <?php if($state->get('filter.financial_status') == $status) { echo 'selected'; } ?> value="<?php echo $status; ?>"><?php echo $status; ?></option>
+                            <?php } ?>
+                        </select>
+                    </li>                            
 				</ul>
 				           
             </div>
@@ -56,6 +67,111 @@
                 </div>
             </div>
         </div>
+        
+    <div id="advanced-filters" class="panel panel-default" 
+    <?php 
+    if (!$state->get('filter.last_modified_after')
+        && !$state->get('filter.last_modified_before')
+        && !$state->get('filter.created_after')
+        && !$state->get('filter.created_before')
+        && !$state->get('filter.user')            
+    ) { ?>
+        style="display: none;"
+    <?php } ?>
+    >
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-10">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <h4>Customer</h4>
+                        </div>
+                        <div class="col-md-10">
+                            <div class="form-group">
+                                <input id="filter_user" type="text" name="filter[user]" placeholder="Search..." class="form-control" value="<?php echo (string) $state->get('filter.user'); ?>" />
+                            </div>
+                        </div>                
+                    </div>
+                    
+                    <script>
+                    jQuery(document).ready(function() {
+                        
+                        jQuery("#filter_user").select2({
+                            allowClear: true, 
+                            placeholder: "Search...",
+                            multiple: false,
+                            minimumInputLength: 3,
+                            ajax: {
+                                url: "./admin/shop/customers/forSelection",
+                                dataType: 'json',
+                                data: function (term, page) {
+                                    return {
+                                        q: term
+                                    };
+                                },
+                                results: function (data, page) {
+                                    return {results: data.results};
+                                }
+                            }
+                            <?php if ($state->get('filter.user')) { ?>
+                            , initSelection : function (element, callback) {
+                                var data = <?php echo json_encode( \Shop\Models\Customers::forSelection( array('_id'=>new \MongoId( $state->get('filter.user') ) ) ) ); ?>;
+                                callback(data);            
+                            }
+                            <?php } ?>                        
+                        });
+                    
+                    });
+                    </script>
+                                    
+                    <div class="row">
+                        <div class="col-md-2">
+                            <h4>Last Modified</h4>
+                        </div>
+                        <div class="col-md-10">
+                            <div class="form-group">
+                                <div class="input-daterange input-group" id="datepicker">
+                                    <input type="text" name="filter[last_modified_after]" value="<?php echo $state->get('filter.last_modified_after'); ?>" class="input-sm ui-datepicker form-control" data-date-format="yyyy-mm-dd" data-date-today-highlight="true" data-date-today-btn="true" />
+                                    <span class="input-group-addon">to</span>
+                                    <input type="text" name="filter[last_modified_before]" value="<?php echo $state->get('filter.last_modified_before'); ?>" class="input-sm ui-datepicker form-control" data-date-format="yyyy-mm-dd" data-date-today-highlight="true" data-date-today-btn="true" />
+                                </div>
+                            </div>
+                        </div>                
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-2">
+                            <h4>Created</h4>
+                        </div>
+                        <div class="col-md-10">
+                            <div class="form-group">
+                                <div class="input-daterange input-group" id="datepicker">
+                                    <input type="text" name="filter[created_after]" value="<?php echo $state->get('filter.created_after'); ?>" class="input-sm ui-datepicker form-control" data-date-format="yyyy-mm-dd" data-date-today-highlight="true" data-date-today-btn="true" />
+                                    <span class="input-group-addon">to</span>
+                                    <input type="text" name="filter[created_before]" value="<?php echo $state->get('filter.created_before'); ?>" class="input-sm ui-datepicker form-control" data-date-format="yyyy-mm-dd" data-date-today-highlight="true" data-date-today-btn="true" />
+                                </div>
+                            </div>
+                        </div>                
+                    </div>                    
+                    
+                </div>
+                <div class="col-md-2">
+                    <button class="btn btn-primary pull-right">Go</button>
+                </div>
+            </div>   
+        </div> 
+    </div>
+    
+    <script>
+    ShopToggleAdvancedFilters = function(el) {
+        var filters = jQuery('#advanced-filters');
+        if (filters.is(':hidden')) {
+            filters.slideDown();        
+        } else {
+        	filters.slideUp();
+        }
+    }
+    </script>                 
         
         <div class="widget-body-toolbar">    
     
@@ -121,9 +237,36 @@
                                 
                                 } ?>
                                 
-                                <span class="pull-right label <?php echo $label_class; ?>">
+                                <p class="pull-right label <?php echo $label_class; ?>">
                                 <?php echo $order->{'status'}; ?>
-                                </span>
+                                </p>
+                                
+                                <?php switch($order->{'financial_status'}) {
+                                	case \Shop\Constants\OrderFinancialStatus::voided:
+                                	    $label_class = 'label-danger';
+                                	    break;
+                                	     
+                                	case \Shop\Constants\OrderFinancialStatus::refunded:
+                                	case \Shop\Constants\OrderFinancialStatus::partially_refunded:
+                                	    $label_class = 'label-info';
+                                	    break;
+                                	     
+                                	case \Shop\Constants\OrderFinancialStatus::partially_paid:
+                                	case \Shop\Constants\OrderFinancialStatus::authorized:
+                                	case \Shop\Constants\OrderFinancialStatus::pending:
+                                	    $label_class = 'label-warning';
+                                	    break;
+                                	case \Shop\Constants\OrderFinancialStatus::paid:
+                                	default:
+                                	    $label_class = 'label-default';
+                                	    break;
+                                
+                                } ?>
+                                
+                                <p class="pull-right label <?php echo $label_class; ?>">
+                                <?php echo $order->{'financial_status'}; ?>
+                                </p>
+                                
                                                                 
                             </legend>
                             <div><label>#</label><a href="./admin/shop/order/edit/<?php echo $order->id; ?>"><?php echo $order->{'number'}; ?></a></div>
