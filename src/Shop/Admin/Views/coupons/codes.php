@@ -1,3 +1,13 @@
+<script type="text/javascript">
+
+	jQuery( function(){
+		jQuery('a[data-task="generate"]').on('click', function(){
+				jQuery( '#couponsForm' ).prop( 'action', './admin/shop/coupon/<?php echo $item->_id; ?>/codes/generate' );
+				jQuery( '#couponsForm' ).submit();
+			});
+		});
+</script>
+
 <div class="row">
 	<div class="col-xs-12 col-sm-7 col-md-7 col-lg-4">
 		<h1 class="page-title txt-color-blueDark">
@@ -12,14 +22,14 @@
 		<div class="pull-right">
 			<a class="btn btn-success" href="./admin/shop/coupon/<?php echo $item->_id; ?>/codes/download">Download Codes</a>
 			&nbsp;
-			<a class="btn btn-danger"  href="javascript:void(0);" onclick="document.getElementById('couponsForm').submit();">Generate Codes</a>
+			<a class="btn btn-danger"  data-task="generate" href="javascript:void(0);">Generate Codes</a>
 			&nbsp;
 			<a class="btn btn-default" href="./admin/shop/coupon/edit/<?php echo $item->_id; ?>">Back to Coupon</a>
 		</div>
 	</div>
 </div>
 
-<form id="couponsForm" method="post" action="./admin/shop/coupon/<?php echo $item->_id; ?>/codes/generate">
+<form id="couponsForm" method="post" >
 
     <div class="no-padding">
         
@@ -47,7 +57,24 @@
             		<label>Already used coupons</label> <span class="badge"><?php echo $item->countUsedCodes(); ?></span>
             	</div>
             </div>
-        
+            <div class="row">
+                <div class="col-xs-12 col-sm-7 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3">
+                    <div class="row text-align-right">
+                        <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10">
+                        <?php if (!empty($paginated->total_pages) && $paginated->total_pages > 1) { ?>
+                            <?php echo $paginated->serve(); ?>
+                        <?php } ?>
+                        </div>
+                        <?php if (!empty($codes)) { ?>
+                        <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+                            <span class="pagination">
+                            <?php echo $paginated->getLimitBox( $state->get('list.limit') ); ?>
+                            </span>
+                        </div>
+                        <?php } ?>
+                    </div>            
+                </div>
+            </div>
         </div>
         <!-- /.widget-body-toolbar -->
         
@@ -56,20 +83,16 @@
             <table class="table table-striped table-bordered table-hover table-highlight table-checkable">
         	<thead>
         		<tr>
-        		    <th class="checkbox-column col-md-1"><input type="checkbox" class="icheck-input"></th>
         			<th>Code</th>
         			<th class="col-md-1"></th>
         		</tr>
         	</thead>
         	<tbody>    
         
-            <?php if (!empty($item->{'codes.list'} )) { ?>
+            <?php if (!empty($codes )) { ?>
             
-            <?php foreach($item->{'codes.list'} as $code) { ?>
+            <?php foreach($codes as $code) { ?>
                 <tr>
-                    <td class="checkbox-column">
-                        <input type="checkbox" class="icheck-input" name="codes[]" value="<?php echo $code['code']; ?>">
-                    </td>
                     <td>
                     	<?php
                     		echo $code['code'];
@@ -102,6 +125,23 @@
             </table>
             
         </div>
+        <div class="dt-row dt-bottom-row">
+            <div class="row">
+                <div class="col-sm-10">
+                    <?php if (!empty($paginated->total_pages) && $paginated->total_pages > 1) { ?>
+                        <?php echo $paginated->serve(); ?>
+                    <?php } ?>
+                </div>
+                <div class="col-sm-2">
+                    <div class="datatable-results-count pull-right">
+                        <span class="pagination">
+                            <?php echo (!empty($paginated->total_pages)) ? $paginated->getResultsCounter() : null; ?>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
     </div>
 
 </form>

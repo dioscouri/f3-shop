@@ -192,7 +192,14 @@ class Cart extends \Dsc\Controller
             $coupon = (new \Shop\Models\Coupons)->load(array('code'=>$coupon_code));
             if (empty($coupon->id)) 
             {
-            	throw new \Exception('Invalid Coupon Code');
+            	// check, if it isn't a generated code
+            	$coupon = (new \Shop\Models\Coupons)->load(array('codes.list.code'=>$coupon_code));
+            	if (empty($coupon->id))
+            	{
+            		throw new \Exception('Invalid Coupon Code');
+            	} else {
+            		$coupon->generated_code = $coupon_code;
+            	}
             }
                 
         } catch (\Exception $e) {

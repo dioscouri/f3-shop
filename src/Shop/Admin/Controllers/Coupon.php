@@ -74,8 +74,32 @@ class Coupon extends \Admin\Controllers\BaseAuth
     
     public function displayCodes(){
 		$item = $this->getItem();
+		$model = $this->getModel()->populateState();
 		$view = \Dsc\System::instance()->get('theme');
+		
+		$offset = $model->getState('list.offset', 0, 'int');
+    	if( $offset < 0 ){
+			$offset = 0;
+		}
+		$model->setState('list.offset', $offset );
+		
+		$size = $model->getState('list.limit', 50, 'int');
+    	if( empty( $size ) ){
+			$size = 50;
+		}
+		$model->setState('list.limit', $size );
+		
+		$total = count( (array)$item->{'codes.list'});
+
+		$pagination = new \Dsc\Pagination( $total, $size );
+		$origin_codes = array_values( (array)$item->{'codes.list'} );
+		$codes = array_slice( $origin_codes, $offset * $size, $size );
+		
 		$this->app->set( 'item', $item );
+		$this->app->set( 'codes', $codes );
+		$this->app->set( 'paginated', $pagination );
+		$this->app->set( 'state', $model->getState() );
+		
         $this->app->set('meta.title', 'Coupon Codes | Shop');
 		echo $view->render('Shop/Admin/Views::coupons/codes.php');
     }
@@ -129,9 +153,8 @@ class Coupon extends \Admin\Controllers\BaseAuth
     	try{
     		\Shop\Models\Coupons::collection()->update( 
     								array( '_id' => new \MongoId( (string)$id ),
-    										'codes.list.code' => $code
     								),
-    								array( '$pull' => array( 'codes.list' => '$') ), array("upset" => true));
+    								array( '$pull' => array( 'codes.list' => array( 'code' => $code ) ) ), array("upset" => true));
     		\Dsc\System::addMessage( 'Codes was successfuly deleted.' );
     	} catch(\Exception $e){
     		\Dsc\System::addMessage( $e->getMessage(), 'error' );

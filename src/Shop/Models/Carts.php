@@ -139,6 +139,7 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
             $session_cart = static::fetchForSession();
 
             // if there was a user cart and there is a session cart, push all products in user cart to their wishlist
+            /*
             if (!empty($session_cart->items) && !empty($cart->id) && $session_cart->id != $cart->id)
             {
                 $wishlist = \Shop\Models\Wishlists::fetch();
@@ -151,7 +152,7 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
                 
                 \Dsc\System::addMessage( "All products from your previous cart were moved to your wishlist" );
             }
-            
+            */
             // if there was no user cart but there IS a session cart, just add the user_id to the session cart and save it
             if (empty($cart->id) && !empty($session_cart->id))
             {
@@ -663,12 +664,12 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
      */
     public function total()
     {
-        $total = $this->subtotal();
-        
+    	$total = $this->subtotal();
+    	 
         if ($shippingMethod = $this->shippingMethod()) 
         {
-            $total = $total + $shippingMethod->total();
-            $total = $total + $this->taxTotal();
+        	$total = $total + $shippingMethod->total();
+        	$total = $total + $this->taxTotal();
         } 
         else 
         {
@@ -742,7 +743,6 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
     public function autoDiscountTotal($exclude_shipping=false)
     {
         $discount = 0;
-        
         foreach ($this->auto_coupons as $coupon)
         {
             if ($exclude_shipping && \Shop\Models\Coupons::givesShippingDiscount( $coupon ))
@@ -1014,7 +1014,7 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
         if (empty($this->taxes) || $refresh)
         {
             $this->taxes = $this->fetchTaxItems();
-            $this->save();
+//            $this->save();
         }
     
         return $this->taxes;
@@ -1027,7 +1027,6 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
     protected function fetchTaxItems()
     {
         $taxes = array(); // TODO Set this to an array of tax items decided upon by the core?
-        
         $event = \Dsc\System::instance()->trigger( 'onFetchTaxItemsForCart', array(
             'cart' => $this,
             'taxes' => $taxes
@@ -1348,6 +1347,11 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
                 $exists = true;
                 break;
             }
+            
+            if( !empty( $coupon->generated_code ) && $coupon->generated_code == $item['generated_code'] ) {
+           		$exists = true;
+           		break;
+            }
         }
     
         if (!$exists) 
@@ -1518,7 +1522,6 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
         // check each one against $this cart for validity
         
         $valid_auto_coupons = array();
-        
         $coupons = (new \Shop\Models\Coupons)
             ->setState('filter.publication_status', 'published')
             ->setState('filter.published_today', true)

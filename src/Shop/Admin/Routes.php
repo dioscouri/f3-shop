@@ -161,12 +161,12 @@ class Routes extends \Dsc\Routes\Group
             'action' => 'saveProductsOrder'
         ));
         
-        $this->add('/coupon/@id/codes', 'GET', array(
+        $this->add('/coupon/@id/codes', array( 'GET', 'POST' ), array(
         		'controller' => 'Coupon',
         		'action' => 'displayCodes'
         ));
 
-        $this->add('/coupon/@id/codes/page/@page', 'GET', array(
+        $this->add('/coupon/@id/codes/page/@page', array( 'GET', 'POST' ), array(
         		'controller' => 'Coupon',
         		'action' => 'displayCodes'
         ));

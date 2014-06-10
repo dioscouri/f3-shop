@@ -32,6 +32,7 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
     public $groups_method = 'one';
     public $excluded_products = array();
     public $excluded_collections = array();
+    public $generated_code = null;
         
     public $__is_validated = null;    
     protected $__collection_name = 'shop.coupons';
@@ -74,7 +75,7 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
         {
             $this->setCondition('code', $filter_code);
         }
-        
+
         $filter_automatic = $this->getState('filter.automatic');
         if (strlen($filter_automatic))
         {
@@ -221,7 +222,7 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
      */
     public function cartValid( \Shop\Models\Carts $cart )
     {
-        // Set $this->__is_validated = true if YES, cart can use this coupon
+    	// Set $this->__is_validated = true if YES, cart can use this coupon
         // throw an Exception if NO, cart cannot use this coupon
 
         /**
@@ -461,6 +462,25 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
         }
         
         /**
+         * Check, if this isn't generated code
+         */
+        if( !empty($this->generated_code) ){
+        	$result = \Shop\Models\Coupons::collection()->aggregate(
+        			array( '$match' => array( '_id' => new \MongoId( (string) $this->id )) ),
+        			array( '$unwind' => '$codes.list' ),
+        			array( '$match' => array( "codes.list.code" => $this->generated_code ) ),
+        			array( '$group' => array( '_id' => '$title', 'used_code' => array( '$sum' => '$codes.list.used' ) ) ) );
+        	
+        	if( count( $result['result'] ) ){
+        		if( $result['result'][0]['used_code'] ){
+        			throw new \Exception('You cannot use this coupon any more');
+        		}
+        	} else {
+        		throw new \Exception('Coupon "'.$this->generated_code.'" does not exist anymore.');
+        	}
+        }
+        
+        /**
          * if we made it this far, the cart is valid for this coupon
          */
         $this->__is_validated = true;
@@ -605,18 +625,21 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
                 if (empty($this->discount_target_products))
                 {
                     $excluded_products = $this->excludedProducts();
-                    if (!in_array((string) $cartitem['product_id'], $excluded_products))
-                    {
-                        if ($this->discount_type == 'flat-rate')
-                        {
-                            // TODO Take the discount_currency into account
-                            $value = $this->discount_value;
-                        }
-                        elseif ($this->discount_type == 'percentage')
-                        {
-                            $value = ($this->discount_value/100) * $cart->shippingTotal();
-                        }
-                    }                    
+	                foreach ($cart->items as $cartitem)
+	                {
+	                    if (!in_array((string) $cartitem['product_id'], $excluded_products))
+	                    {
+	                        if ($this->discount_type == 'flat-rate')
+	                        {
+	                            // TODO Take the discount_currency into account
+	                            $value = $this->discount_value;
+	                        }
+	                        elseif ($this->discount_type == 'percentage')
+	                        {
+	                            $value = ($this->discount_value/100) * $cart->shippingTotal();
+	                        }
+	                    }
+	                }                   
                 }
                 // else, apply it only to the products in discount_target_products
                 else
@@ -670,13 +693,16 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
                 if (empty($this->discount_target_products) && empty($this->discount_target_collections)) 
                 {
                     $excluded_products = $this->excludedProducts();
-                    if (!in_array((string) $cartitem['product_id'], $excluded_products))
-                    {
-                        foreach ($cart->items as $cartitem)
-                        {
-                            $value += (($cartitem['price'] - $this->discount_value) * $cartitem['quantity']);
-                        }
-                    }                    
+	                foreach ($cart->items as $cartitem)
+	                {
+	                    if (!in_array((string) $cartitem['product_id'], $excluded_products))
+	                    {
+	                        foreach ($cart->items as $cartitem)
+	                        {
+	                            $value += (($cartitem['price'] - $this->discount_value) * $cartitem['quantity']);
+	                        }
+	                    }
+	                }
                 }
                 
                 // otherwise, get the array of target_product_ids.  loop thru each product and if it is in the array,
@@ -800,7 +826,6 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
 		$result = \Shop\Models\Coupons::collection()->aggregate(
 						array( '$match' => array( '_id' => new \MongoId( (string) $this->id )) ),
 						array( '$unwind' => '$codes.list' ),
-						array( '$match' => array( "codes.list.used" => 1 ) ),
     					array( '$group' => array( '_id' => '$title', 'used_codes' => array( '$sum' => '$codes.list.used' ) ) ) );
 
 		if( count( $result['result'] ) ){
@@ -840,33 +865,5 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
     	$this->{'codes.prefix'} = $prefix;
     	$this->{'codes.length'} = $len;
     	$this->save();
-    }
-
-    private function generateCodeSuffix( $prefix, $len, $str ){
-    	if(empty($str))  {
-    		//Check with frontend model so we don't get event.id check
-    		$band =  (new \Rystband\Site\Models\Tags)->setParam('sort', array('_id' => -1))->setCondition('sysgentag', 1)->fetchItem();
-    		$last = $band->tagid;
-    	} else {
-    		$last = $string;
-    	}
-    	
-    	$length = strlen($last);
-    	
-    	//IF the entire string consists of all the last char in the array, add a row and repeat first char
-    	$match = "/^".end($this->__chars)."*$/";
-    	if (preg_match($match, $last)) {
-    		return str_repeat($this->__chars[0], $length + 1);
-    	}
-    	
-    	$tagid = $this->updatePosition($last);
-    	
-    	$check = (new \Rystband\Site\Models\Tags)->setCondition('tagid',$tagid)->fetchItem();
-    	
-    	if(!empty($check->_id)) {
-    		$tagid = $this->generateUUID($check->tagid);
-    	}
-    	 
-    	return $code;
     }
 }
