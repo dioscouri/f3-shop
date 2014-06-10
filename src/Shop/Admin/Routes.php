@@ -160,7 +160,32 @@ class Routes extends \Dsc\Routes\Group
             'controller' => 'Collection',
             'action' => 'saveProductsOrder'
         ));
+        
+        $this->add('/coupon/@id/codes', array( 'GET', 'POST' ), array(
+        		'controller' => 'Coupon',
+        		'action' => 'displayCodes'
+        ));
 
+        $this->add('/coupon/@id/codes/page/@page', array( 'GET', 'POST' ), array(
+        		'controller' => 'Coupon',
+        		'action' => 'displayCodes'
+        ));
+
+        $this->add('/coupon/@id/codes/generate', 'POST', array(
+        		'controller' => 'Coupon',
+        		'action' => 'generateCodes'
+        ));
+
+        $this->add('/coupon/@id/codes/download', 'GET', array(
+        		'controller' => 'Coupon',
+        		'action' => 'downloadCodes'
+        ));
+        
+        $this->add('/coupon/@id/code/@code/delete', 'GET', array(
+        		'controller' => 'Coupon',
+        		'action' => 'deleteCode'
+        ));
+        
         $this->add('/reports', 'GET', array(
             'controller' => 'Reports',
             'action' => 'index'

@@ -133,7 +133,7 @@
                         <a href="./shop/collection/<?php echo $item->get('slug'); ?>" target="_blank">Preview</a>
                     </td>
                                     
-                    <td class="text-center">
+                    <td class="text-center col-lg-2 col-md-3">
 			        	<?php if( $allow_preview ) { ?>
 	                        <a class="btn btn-xs btn-warning" target="_blank" href="./shop/collection/<?php echo $item->slug; ?>?preview=1" title="Unpublished Preview">
 	                            <i class="fa fa-search"></i>

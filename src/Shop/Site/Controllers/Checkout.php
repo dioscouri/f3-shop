@@ -104,7 +104,7 @@ class Checkout extends \Dsc\Controller
                		}
                 		
                		if( count( $order->auto_coupons ) ){
-               			$data_km['Auto Coupons'] = implode( ', ', \Joomla\Utilities\ArrayHelper::getColumn( (array) $order->coupons, 'code' ) );
+               			$data_km['Auto Coupons'] = implode( ', ', \Joomla\Utilities\ArrayHelper::getColumn( (array) $order->auto_coupons, 'code' ) );
                		}
                 		
                	    if( !empty( $order->credit ) ){
@@ -113,6 +113,32 @@ class Checkout extends \Dsc\Controller
                 	
                 	\KM::record("Finished Checkout", $data_km);
                 }
+                // check coupons and discard used generated codes
+                if( count( $order->coupons ) ){
+                	foreach( $order->coupons as $coupon ){
+                		if( !empty( $coupon['generated_code'] ) ){
+                			\Shop\Models\Coupons::collection()->update( 
+                							array( 
+                								'_id' => new \MongoId( (string)$coupon['_id'] ),
+                								'codes.list.code' => (string)$coupon['generated_code']
+                								),
+                							array( '$set' => array( 'codes.list.$.used' => 1 ) ) );
+                		}
+                	}
+                }
+                if( count( $order->auto_coupons ) ){
+                	foreach( $order->auto_coupons as $coupon ){
+                		if( !empty( $coupon['generated_code'] ) ){
+                			\Shop\Models\Coupons::collection()->update( 
+                							array( 
+                								'_id' => new \MongoId( (string)$coupon['_id'] ),
+                								'codes.list.code' => (string)$coupon['generated_code']
+                								),
+                							array( '$set' => array( 'codes.list.$.used' => 1 ) ) );
+                		}
+                	}
+                }
+                
             } catch (\Exception $e) {
             	// TODO Handle when it's an invalid order
             }

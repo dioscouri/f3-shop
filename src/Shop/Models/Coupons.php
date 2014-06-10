@@ -32,10 +32,12 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
     public $groups_method = 'one';
     public $excluded_products = array();
     public $excluded_collections = array();
+    public $generated_code = null;
         
     public $__is_validated = null;    
     protected $__collection_name = 'shop.coupons';
     protected $__type = 'shop.coupons';
+    protected $__chars = array('c','n','u','m','r','s','e','w','h','b','k','f','z','v','x','p','j','t','q','y','g','a','d');
     
     protected function fetchConditions()
     {
@@ -73,7 +75,7 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
         {
             $this->setCondition('code', $filter_code);
         }
-        
+
         $filter_automatic = $this->getState('filter.automatic');
         if (strlen($filter_automatic))
         {
@@ -222,7 +224,7 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
      */
     public function cartValid( \Shop\Models\Carts $cart )
     {
-        // Set $this->__is_validated = true if YES, cart can use this coupon
+    	// Set $this->__is_validated = true if YES, cart can use this coupon
         // throw an Exception if NO, cart cannot use this coupon
 
         /**
@@ -463,6 +465,25 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
         }
         
         /**
+         * Check, if this isn't generated code
+         */
+        if( !empty($this->generated_code) ){
+        	$result = \Shop\Models\Coupons::collection()->aggregate(
+        			array( '$match' => array( '_id' => new \MongoId( (string) $this->id )) ),
+        			array( '$unwind' => '$codes.list' ),
+        			array( '$match' => array( "codes.list.code" => $this->generated_code ) ),
+        			array( '$group' => array( '_id' => '$title', 'used_code' => array( '$sum' => '$codes.list.used' ) ) ) );
+        	
+        	if( count( $result['result'] ) ){
+        		if( $result['result'][0]['used_code'] ){
+        			throw new \Exception('You cannot use this coupon any more');
+        		}
+        	} else {
+        		throw new \Exception('Coupon "'.$this->generated_code.'" does not exist anymore.');
+        	}
+        }
+        
+        /**
          * if we made it this far, the cart is valid for this coupon
          */
         $this->__is_validated = true;
@@ -619,7 +640,6 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
                     {
                         $value = ($this->discount_value/100) * $cart->shippingTotal();
                     }
-                    
                 }
                 // else, apply it only to the products in discount_target_products
                 else
@@ -797,5 +817,51 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
         $excluded_products = array_unique( $excluded_products );
         
         return $excluded_products;
+    }
+    
+    public function countUsedCodes()
+    {
+		$result = \Shop\Models\Coupons::collection()->aggregate(
+						array( '$match' => array( '_id' => new \MongoId( (string) $this->id )) ),
+						array( '$unwind' => '$codes.list' ),
+    					array( '$group' => array( '_id' => '$title', 'used_codes' => array( '$sum' => '$codes.list.used' ) ) ) );
+
+		if( count( $result['result'] ) ){
+			return $result['result'][0]['used_codes'];
+		} else {
+			return 0;
+		}
+    }
+    
+    public function generateCodes($prefix, $len, $num) {
+    	//since event bands are all generated at once we don't want  all the bands at the event to be in a guessible order.
+
+    	$num_chars = count( $this->__chars );
+    	$possible_codes = $num_chars * $len;
+    	if( $possible_codes < $num ){
+    		$min = ceil( $num / $num_chars );
+    		throw new \Exception("With length of ".$len.' you can generate only '.$possible_codes.'. Code length has to be at least '.$min.'.' );
+    	}
+    	
+    	$codes = array_values( (array)$this->{'codes.list'} );
+    	
+    	for( $i = 0; $i < $num; $i++ ){
+    		$suffix = '';
+			$notUnique = true;
+    		while( $notUnique ){
+    			for( $j = 0; $j < $len; $j++ ){
+    				$suffix .= $this->__chars[rand( 0, $num_chars-1)];
+    			}
+    			
+    			$all_codes = \Joomla\Utilities\ArrayHelper::getColumn( $codes, 'code' );
+    			$notUnique = in_array( $prefix.$suffix, $all_codes );
+    		}
+    		
+    		$codes []= array( 'code' => $prefix.$suffix, 'used' => 0 );
+    	}
+    	$this->{'codes.list'} = $codes;
+    	$this->{'codes.prefix'} = $prefix;
+    	$this->{'codes.length'} = $len;
+    	$this->save();
     }
 }
