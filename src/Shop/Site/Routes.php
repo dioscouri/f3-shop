@@ -310,5 +310,10 @@ class Routes extends \Dsc\Routes\Group
             'controller' => 'OrderedGiftCard',
             'action' => 'email'
         ) );
+        
+        $this->add( '/customer/check-campaigns', 'GET', array(
+            'controller' => 'Customer',
+            'action' => 'checkCampaigns'
+        ) );
     }
 }

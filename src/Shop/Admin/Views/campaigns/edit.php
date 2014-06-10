@@ -115,6 +115,7 @@ jQuery(document).ready(function(){
         }
         ?>
         <?php echo $customer->fullName(); ?>: <?php echo $qualifies ? 'qualifies' : 'unqualified'; ?>
+        <div><?php echo $customer->fetchTotalSpent($item->{'publication.start.local'}, $item->{'publication.end.local'}); ?></div>
     </li>
 <?php } ?>
 </ul>

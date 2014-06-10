@@ -66,6 +66,11 @@ class ShopBootstrap extends \Dsc\Bootstrap
             'Shop/Assets/js/site.js'
         );
         
+        if ($check_campaigns = \Dsc\System::instance()->get('session')->get('shop.check_campaigns'))
+        {
+            $files[] = 'Shop/Assets/js/check_campaigns.js';
+        }        
+        
         foreach ($files as $file)
         {
             \Minify\Factory::js($file);

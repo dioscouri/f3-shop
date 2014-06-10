@@ -837,10 +837,9 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
     	//since event bands are all generated at once we don't want  all the bands at the event to be in a guessible order.
 
     	$num_chars = count( $this->__chars );
-    	$possible_codes = $num_chars * $len;
+    	$possible_codes = pow($num_chars, $len);
     	if( $possible_codes < $num ){
-    		$min = ceil( $num / $num_chars );
-    		throw new \Exception("With length of ".$len.' you can generate only '.$possible_codes.'. Code length has to be at least '.$min.'.' );
+    		throw new \Exception("With length of ".$len.' you can generate only '.$possible_codes.'.' );
     	}
     	
     	$codes = array_values( (array)$this->{'codes.list'} );

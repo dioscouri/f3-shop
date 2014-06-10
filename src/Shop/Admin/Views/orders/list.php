@@ -99,7 +99,8 @@
                         jQuery("#filter_user").select2({
                             allowClear: true, 
                             placeholder: "Search...",
-                            multiple: false,
+                            multiple: true,
+                            maximumSelectionSize: 1,
                             minimumInputLength: 3,
                             ajax: {
                                 url: "./admin/shop/customers/forSelection",
