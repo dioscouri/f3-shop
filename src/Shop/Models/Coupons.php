@@ -45,14 +45,6 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
         
         $this->publishableFetchConditions();
         
-        /*
-        $filter_code = $this->getState('filter.code');
-        if (strlen($filter_code))
-        {
-            $this->setCondition('code', $filter_code);
-        }
-        */
-        
         $filter_code = $this->getState('filter.code');
         if (strlen($filter_code))
         {

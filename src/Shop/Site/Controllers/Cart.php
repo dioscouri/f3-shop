@@ -186,7 +186,6 @@ class Cart extends \Dsc\Controller
         // -----------------------------------------------------
         $coupon_code = strtolower( $this->input->get( 'coupon_code', null, 'string' ) );
         
-        // load the product
         try {
             // load the coupon, and if it exists, try to add it to the cart
             $coupon = (new \Shop\Models\Coupons)->setState('filter.code', $coupon_code)->getItem();
