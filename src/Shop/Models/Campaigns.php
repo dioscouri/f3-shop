@@ -26,6 +26,7 @@ class Campaigns extends \Dsc\Mongo\Collections\Describable
         parent::fetchConditions();
         
         $this->ancestorsFetchConditions();
+        $this->publishableFetchConditions();
     }
 
     protected function beforeValidate()
@@ -68,7 +69,7 @@ class Campaigns extends \Dsc\Mongo\Collections\Describable
      * @throws \Exception
      * @return \Shop\Models\Campaigns
      */
-    public function userQualifies( \Shop\Models\Customers $customer )
+    public function customerQualifies( \Shop\Models\Customers $customer )
     {
         // Set $this->__is_validated = true if YES, user qualifies for this campaign.
         // throw an Exception if NO, user does not qualify.
@@ -97,6 +98,42 @@ class Campaigns extends \Dsc\Mongo\Collections\Describable
          */        
         $this->__is_validated = true;
         
+        return $this;
+    }
+    
+    /**
+     * 
+     * @param \Shop\Models\Customers $customer
+     * @return \Shop\Models\Campaigns
+     */
+    public function rewardCustomer( \Shop\Models\Customers &$customer )
+    {
+        /**
+         * Add customer to reward_groups
+         */
+        if (!empty($this->reward_groups)) 
+        {
+        	$customer = $customer->addToGroups($this->reward_groups);
+        }
+        
+        return $this;
+    }
+    
+    /**
+     * 
+     * @param \Shop\Models\Customers $customer
+     * @return \Shop\Models\Campaigns
+     */
+    public function expireCustomerRewards( \Shop\Models\Customers &$customer )
+    {
+        /**
+         * Remove customer from expire_groups
+         */
+        if (!empty($this->expire_groups))
+        {            
+            $customer = $customer->removeFromGroups($this->expire_groups);           
+        }
+                
         return $this;
     }
 }

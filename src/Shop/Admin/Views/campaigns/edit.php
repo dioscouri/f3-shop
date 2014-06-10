@@ -103,19 +103,3 @@ jQuery(document).ready(function(){
 </form>
 
 </div>
-
-<ul>
-<?php foreach (\Shop\Models\Customers::find() as $customer) { ?>
-    <li>
-        <?php 
-        try {
-            $qualifies = $item->userQualifies( $customer );
-        } catch (\Exception $e) {
-        	$qualifies = false;
-        }
-        ?>
-        <?php echo $customer->fullName(); ?>: <?php echo $qualifies ? 'qualifies' : 'unqualified'; ?>
-        <div><?php echo $customer->fetchTotalSpent($item->{'publication.start.local'}, $item->{'publication.end.local'}); ?></div>
-    </li>
-<?php } ?>
-</ul>

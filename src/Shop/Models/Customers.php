@@ -173,4 +173,140 @@ class Customers extends \Users\Models\Users
         
         return $item;
     }
+    
+    /**
+     * Check that customer has been rewarded all the appropriate campaigns 
+     */
+    public function checkCampaigns()
+    {
+        // get all the published campaigns and see if the customer satisfies any of them.
+        $campaigns = (new \Shop\Models\Campaigns)->setState('filter.published_today', true)->setState('filter.publication_status', 'published')->getList();
+        //echo "Published campaigns: " . count($campaigns) . "<br/>";
+        
+        $indexed_campaigns = array();
+        foreach ($campaigns as $campaign) 
+        {
+            try {
+                $campaign->__user_qualifies = $campaign->customerQualifies( $this );
+                $indexed_campaigns[(string) $campaign->id] = $campaign;
+            } catch (\Exception $e) {
+                continue;
+            }
+        }
+        
+        $matches = array();
+        
+        // if so, grant the customer the benefits, but only if the customer doesn't satisfy the rules of any descendants
+        
+        //echo "Customer qualifies for this many campaigns: " . count($indexed_campaigns) . "<br/>";
+        //echo "and they are: <br/>";        
+        foreach ($indexed_campaigns as $key=>$indexed_campaign) 
+        {
+            $next_match = $indexed_campaign;
+            
+        	// Does the campaign have descendants?
+            if ($descendants = $indexed_campaign->ancestorsGetDescendants()) 
+            {
+            	foreach ($descendants as $descendant) 
+            	{
+            		if (isset($indexed_campaigns[(string)$descendant->id])) 
+            		{
+            		    $next_match = $descendant;
+            		}
+            	}
+            }
+            
+            if (!array_key_exists((string) $next_match->id, $matches))
+            {
+                $matches[(string) $next_match->id] = $next_match;
+            }            
+            
+            //echo $indexed_campaign->title . " (which has " . count($descendants) . " descendants) <br/>";            
+        }
+        
+        // Check all of the customer's current campaigns, and if they no longer match them, expire the benefits
+        $active_campaigns = (array) $this->{'shop.active_campaigns'};
+        //echo "Customer's active campaigns: <br/>";
+        //echo \Dsc\Debug::dump($active_campaigns);
+        
+        foreach ($active_campaigns as $active_campaign_id) 
+        {
+            $active_campaign = (new \Shop\Models\Campaigns)->setState('filter.id', $active_campaign_id)->getItem();
+            if (!empty($active_campaign->id) && !array_key_exists((string) $active_campaign->id, $matches))
+            {
+                // echo "Removing customer from: " . $active_campaign->title . "<br/>";
+                $active_campaign->expireCustomerRewards( $this );
+            }
+        }
+
+        //echo "Customer should only be in these campaigns: <br/>";        
+        // Track current campaigns in the user object, shop.active_campaigns
+        $match_ids = array();
+        foreach ($matches as $match)
+        {
+            //echo $match->title . "<br/>";
+            
+            if (!in_array((string) $match->id, $active_campaigns)) 
+            {
+                $match->rewardCustomer( $this );
+                //echo "so Adding customer to: " . $match->title . "<br/>";            	
+            }
+            
+            $match_ids[] = (string) $match->id;
+        }
+
+        //return $this;
+        $this->{'shop.active_campaigns'} = $match_ids;
+        return $this->save();
+    }
+    
+    /**
+     * Adds an array of campaign ids to the user object
+     * indicating that the user is actively part of a marketing campaign
+     * 
+     * @param array $ids
+     * @return \Shop\Models\Customers
+     */
+    public function activateCampaigns(array $ids, $save=true)
+    {
+        $active_campaigns = (array) $this->{'shop.active_campaigns'};
+        
+        $new = false;
+        foreach ($ids as $id)
+        {
+            if (!in_array((string) $id, $active_campaigns)) 
+            {
+                $active_campaigns[] = $id;
+                $new = true;
+            }            
+        }
+        
+        $this->{'shop.active_campaigns'} = $active_campaigns;
+        
+        if ($new && $save) {
+            return $this->save();        
+        }
+        
+        return $this;
+    }
+    
+    /**
+     * Adds an array of campaign ids to the user object
+     * indicating that the user is actively part of a marketing campaign
+     *
+     * @param array $ids
+     * @return \Shop\Models\Customers
+     */
+    public function deactivateCampaigns(array $ids, $save=true)
+    {
+        $active_campaigns = (array) $this->{'shop.active_campaigns'};
+    
+        $this->{'shop.active_campaigns'} = array_diff($active_campaigns, $ids);
+    
+        if ($save) {
+            return $this->save();        
+        }
+        
+        return $this;
+    }
 }

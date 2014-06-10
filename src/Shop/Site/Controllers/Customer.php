@@ -11,19 +11,22 @@ class Customer extends \Dsc\Controller
         {
             return;
         }
-        
-        // TODO Only do this once a day
-        
-        // TODO Push this into a model method:
-        
-        // TODO get all the published campaigns and see if the customer satisfies any of them.  
-        // if so, grant the customer the benefits, but only if the customer doesn't satisfy the rules of any descendants
-        // optimize the loop by only checking each campaign once (including when making the descendant check above) 
-         
-        // TODO Check all of the customer's current campaigns, and if they no longer match them, expire the benefits
-        // TODO Track current campaigns in the user object, shop.campaigns 
-        
-        // TODO After running this, unset the session variable so the bootstrap file doesn't include the JS file
-        // \Dsc\System::instance()->get('session')->set('shop.check_campaigns', false);
+
+        // Only do this once a day
+        $last_campaign_check_datetime = $user->get('shop.last_campaign_check_datetime');
+        if (empty($last_campaign_check_datetime) || strtotime( $last_campaign_check_datetime ) < strtotime('today') )
+        {
+            $customer = (new \Shop\Models\Customers)->load(array('_id' => new \MongoId( (string) $user->_id ) ));
+            if (!empty($customer->id))
+            {
+                $customer->checkCampaigns();
+            
+                $customer->set('shop.last_campaign_check_datetime', date('Y-m-d', strtotime('now')) );
+                $customer->save();
+            
+                // After running this, unset the session variable so the bootstrap file doesn't include the JS file
+                \Dsc\System::instance()->get('session')->set('shop.check_campaigns', false);
+            }            
+        }
     }
 }

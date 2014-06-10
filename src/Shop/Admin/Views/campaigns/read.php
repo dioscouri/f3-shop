@@ -26,28 +26,37 @@
     <div class="col-md-9">
     
         <div class="panel panel-default">
-            <div class="panel-heading">[List of Customer Orders?]</div>
+            <div class="panel-heading">[List of Rules]</div>
             <div class="panel-body">
-                List of X recent orders with a link to complete orders list filtered for user
+                List of the campaign rules
             </div>            
         </div>
         
         <div class="panel panel-default">
-            <div class="panel-heading">[Admin-only notes about customer]</div>
+            <div class="panel-heading">[List of Rewards]</div>
             <div class="panel-body">
-                Add notes to customer
+                Rewards
             </div>            
         </div>        
         
         <div class="panel panel-default">
-            <div class="panel-heading">[Tags]</div>
+            <div class="panel-heading">[Expiration actions]</div>
             <div class="panel-body">
-                Add tags to customer
+                Expiration actions
             </div>
         </div>
     </div>
     
     <div class="col-md-3">
+    
+        <div class="panel panel-default">
+            <div class="panel-heading">[Customers in this campaign]</div>
+            <div class="panel-body">
+                COUNT + 
+                Link to a paginated list
+            </div>
+        </div>    
+    
         <div class="panel panel-default">
             <div class="panel-heading">Details</div>
             <div class="panel-body">
@@ -61,6 +70,7 @@
     </div>
 </div>
 
+<?php /* ?>
 <div class="row">
     <div class="col-md-12">
     
@@ -68,3 +78,4 @@
     
     </div>
 </div>
+*/ ?>

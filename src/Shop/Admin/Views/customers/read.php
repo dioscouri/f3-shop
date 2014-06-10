@@ -35,7 +35,14 @@
                 Add notes to customer
             </div>            
         </div>        
-        
+
+        <div class="panel panel-default">
+            <div class="panel-heading">[Groups]</div>
+            <div class="panel-body">
+                Add groups to customer
+            </div>
+        </div>
+                
         <div class="panel panel-default">
             <div class="panel-heading">[Tags]</div>
             <div class="panel-body">
@@ -79,6 +86,21 @@
         
     </div>
 </div>
+
+<div class="row">
+    <div class="col-md-12">
+    
+        <div class="panel panel-default">
+            <div class="panel-heading">Campaigns</div>
+            <div class="panel-body">
+                <?php $item->checkCampaigns(); ?>
+            </div>
+        </div>
+    
+    </div>
+</div>
+
+<hr/>
 
 <div class="row">
     <div class="col-md-12">

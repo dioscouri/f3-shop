@@ -310,7 +310,7 @@ jQuery(document).ready(function() {
                         <div class="checkbox">
                             <label>
                                 <input type="checkbox" name="groups[]" class="icheck-input" value="<?php echo $one->_id; ?>" <?php if (in_array($one->_id, (array) $flash->old('groups'))) { echo "checked='checked'"; } ?>>
-                                <?php echo $one->name;  ?>
+                                <?php echo $one->title;  ?>
                             </label>
                         </div>
                         <?php } ?> 
