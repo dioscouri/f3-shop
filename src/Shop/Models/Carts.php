@@ -139,7 +139,6 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
             $session_cart = static::fetchForSession();
 
             // if there was a user cart and there is a session cart, push all products in user cart to their wishlist
-            /*
             if (!empty($session_cart->items) && !empty($cart->id) && $session_cart->id != $cart->id)
             {
                 $wishlist = \Shop\Models\Wishlists::fetch();
@@ -152,7 +151,7 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
                 
                 \Dsc\System::addMessage( "All products from your previous cart were moved to your wishlist" );
             }
-            */
+
             // if there was no user cart but there IS a session cart, just add the user_id to the session cart and save it
             if (empty($cart->id) && !empty($session_cart->id))
             {
