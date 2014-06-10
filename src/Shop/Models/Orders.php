@@ -446,7 +446,7 @@ class Orders extends \Dsc\Mongo\Collections\Taggable
         // #. Increase total spent and orders count
         $this->updateCustomerTotals();
         
-        // TODO #. Increase hit counts on coupons used in order
+        // TODO #. Increase hit counts on coupons used in order, https://github.com/dioscouri/f3-shop/issues/90
         
         // #. Decrease value of any used gift certificates
         $this->redeemGiftCards();

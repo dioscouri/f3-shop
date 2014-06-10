@@ -189,18 +189,18 @@ class Cart extends \Dsc\Controller
         // load the product
         try {
             // load the coupon, and if it exists, try to add it to the cart
-            $coupon = (new \Shop\Models\Coupons)->load(array('code'=>$coupon_code));
-            if (empty($coupon->id) || ! empty( $coupon->{'codes.list'})) // either I didnt find the coupon, or this coupon has generated codes
+            $coupon = (new \Shop\Models\Coupons)->setState('filter.code', $coupon_code)->getItem();
+            
+            if (empty($coupon->id))
             {
-            	// check, if it isn't a generated code
-            	$coupon = (new \Shop\Models\Coupons)->load(array('codes.list.code'=>$coupon_code));
-            	if (empty($coupon->id))
-            	{
-            		throw new \Exception('Invalid Coupon Code');
-            	} else {
-            		$coupon->generated_code = $coupon_code;
-            	}
+            	throw new \Exception('Invalid Coupon Code');
             }
+            
+            // are we using a generated code?  or a primary code? 
+            if (strtolower($coupon->code) != $coupon_code) 
+            {
+                $coupon->generated_code = $coupon_code;
+            }            
                 
         } catch (\Exception $e) {
             if ($this->app->get('AJAX')) {

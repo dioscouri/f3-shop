@@ -43,37 +43,39 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
     {
         parent::fetchConditions();
         
-        $filter_published_today = $this->getState('filter.published_today');
-        if (strlen($filter_published_today))
-        {
-            // add $and conditions to the query stack
-            if (!$and = $this->getCondition('$and')) {
-                $and = array();
-            }
+        $this->publishableFetchConditions();
         
-            $and[] = array('$or' => array(
-                array('publication.start.time' => null),
-                array('publication.start.time' => array( '$lte' => time() )  )
-            ));
-        
-            $and[] = array('$or' => array(
-                array('publication.end.time' => null),
-                array('publication.end.time' => array( '$gt' => time() )  )
-            ));
-        
-            $this->setCondition('$and', $and);
-        }
-        
-        $filter_status = $this->getState('filter.publication_status');
-        if (strlen($filter_status))
-        {
-            $this->setCondition('publication.status', $filter_status);
-        }
-        
+        /*
         $filter_code = $this->getState('filter.code');
         if (strlen($filter_code))
         {
             $this->setCondition('code', $filter_code);
+        }
+        */
+        
+        $filter_code = $this->getState('filter.code');
+        if (strlen($filter_code))
+        {
+            $key = new \MongoRegex('/'.$filter_code.'/i');
+
+            // add $and conditions to the query stack
+            if (!$and = $this->getCondition('$and'))
+            {
+                $and = array();
+            }
+            
+            $and[] = array(
+                '$or' => array(
+                    array(
+                        'code' => $key
+                    ),
+                    array(
+                        'codes.list.code' => $key
+                    )
+                )
+            );
+            
+            $this->setCondition('$and', $and);
         }
 
         $filter_automatic = $this->getState('filter.automatic');
@@ -467,11 +469,14 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
         /**
          * Check, if this isn't generated code
          */
-        if( !empty($this->generated_code) ){
+        if ( !empty($this->generated_code) )
+        {
+            $key = new \MongoRegex('/'.$this->generated_code.'/i');
+            
         	$result = \Shop\Models\Coupons::collection()->aggregate(
         			array( '$match' => array( '_id' => new \MongoId( (string) $this->id )) ),
         			array( '$unwind' => '$codes.list' ),
-        			array( '$match' => array( "codes.list.code" => $this->generated_code ) ),
+        			array( '$match' => array( "codes.list.code" => $key ) ),
         			array( '$group' => array( '_id' => '$title', 'used_code' => array( '$sum' => '$codes.list.used' ) ) ) );
         	
         	if( count( $result['result'] ) ){
