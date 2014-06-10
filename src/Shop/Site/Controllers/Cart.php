@@ -190,7 +190,7 @@ class Cart extends \Dsc\Controller
         try {
             // load the coupon, and if it exists, try to add it to the cart
             $coupon = (new \Shop\Models\Coupons)->load(array('code'=>$coupon_code));
-            if (empty($coupon->id)) 
+            if (empty($coupon->id) || ! empty( $coupon->{'codes.list'})) // either I didnt find the coupon, or this coupon has generated codes
             {
             	// check, if it isn't a generated code
             	$coupon = (new \Shop\Models\Coupons)->load(array('codes.list.code'=>$coupon_code));
