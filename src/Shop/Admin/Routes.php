@@ -204,5 +204,7 @@ class Routes extends \Dsc\Routes\Group
         $this->addCrudGroup('Carts', 'Cart');
         
         $this->addCrudGroup('Customers', 'Customer');
+        
+        $this->addCrudGroup('Campaigns', 'Campaign');
     }
 }

@@ -2,7 +2,7 @@
 	<div class="col-xs-12 col-sm-7 col-md-7 col-lg-4">
 		<h1 class="page-title txt-color-blueDark">
 			<i class="fa fa-table fa-fw "></i> 
-				Customers 
+				Campaigns 
 			<span> > 
 				List
 			</span>
@@ -11,7 +11,7 @@
 	<div class="col-xs-12 col-sm-5 col-md-5 col-lg-8">
         <ul id="sparks" class="list-actions list-unstyled list-inline">
             <li>
-                <a class="btn btn-default" href="./admin/user/create">Add New</a>
+                <a class="btn btn-default" href="./admin/shop/campaign/create">Add New</a>
             </li>
         </ul>
 	</div>
@@ -29,12 +29,6 @@
                     <a class="btn btn-link" href="javascript:void(0);" onclick="ShopToggleAdvancedFilters();">Advanced Filters</a>
                 </li>
                 <li>
-                    <select id="group_filter" name="filter[group]" class="form-control" onchange="this.form.submit();">
-                        <option value="">All Groups</option>
-                        <?php foreach (\Users\Models\Groups::find() as $group) : ?>
-                            <option <?php if($state->get('filter.group') == $group->id) { echo 'selected'; } ?> value="<?php echo $group->_id; ?>"><?php echo $group->name; ?></option>
-                        <?php endforeach; ?>
-                    </select>
                 </li>
             </ul>        
         </div>
@@ -54,7 +48,9 @@
     <div id="advanced-filters" class="panel panel-default" 
     <?php 
     if (!$state->get('filter.last_modified_after')
-        && !$state->get('filter.last_modified_before')            
+        && !$state->get('filter.last_modified_before')
+        && !$state->get('filter.created_after')
+        && !$state->get('filter.created_before')            
     ) { ?>
         style="display: none;"
     <?php } ?>
@@ -76,6 +72,22 @@
                             </div>
                         </div>                
                     </div>
+                    
+                    <div class="row">
+                        <div class="col-md-2">
+                            <h4>Created</h4>
+                        </div>
+                        <div class="col-md-10">
+                            <div class="form-group">
+                                <div class="input-daterange input-group" id="datepicker">
+                                    <input type="text" name="filter[created_after]" value="<?php echo $state->get('filter.created_after'); ?>" class="input-sm ui-datepicker form-control" data-date-format="yyyy-mm-dd" data-date-today-highlight="true" data-date-today-btn="true" />
+                                    <span class="input-group-addon">to</span>
+                                    <input type="text" name="filter[created_before]" value="<?php echo $state->get('filter.created_before'); ?>" class="input-sm ui-datepicker form-control" data-date-format="yyyy-mm-dd" data-date-today-highlight="true" data-date-today-btn="true" />
+                                </div>
+                            </div>
+                        </div>                
+                    </div>                    
+                    
                 </div>
                 <div class="col-md-2">
                     <button class="btn btn-primary pull-right">Go</button>
@@ -105,7 +117,7 @@
                         <div class="input-group">
                             <select id="bulk-actions" name="bulk_action" class="form-control">
                                 <option value="null">-Bulk Actions-</option>
-                                <option value="delete" data-action="./admin/shop/customers/delete">Delete</option>
+                                <option value="delete" data-action="./admin/shop/campaigns/delete">Delete</option>
                             </select>
                             <span class="input-group-btn">
                                 <button class="btn btn-default bulk-actions" type="button" data-target="bulk-actions">Apply</button>
@@ -142,17 +154,17 @@
                     <div class="col-xs-2 col-md-1">
                         <input type="checkbox" class="icheck-toggle icheck-input" data-target="icheck-id">
                     </div>
-                    <div class="col-xs-10 col-md-3" data-sortable="last_name">
-                        <b>Customer</b>
+                    <div class="col-xs-10 col-md-3" data-sortable="title">
+                        <b>Title</b>
                     </div>
-                    <div class="col-md-2" data-sortable="shop.total_spent">
-                        <b>Total Spent</b>
+                    <div class="col-md-2 text-center" data-sortable="publication.start.time">
+                        <b>Starts</b>
                     </div>                    
-                    <div class="col-md-2" data-sortable="shop.orders_count">
-                        <b>Orders</b>
+                    <div class="col-md-2 text-center" data-sortable="publication.end.time">
+                        <b>Ends</b>
                     </div>
-                    <div class="col-md-2" data-sortable="shop.credits.balance">
-                        <b>Credit Balance</b>
+                    <div class="col-md-2 text-center" data-sortable="publication.status">
+                        <b>Status</b>
                     </div>
                     <div class="hidden-xs hidden-sm col-md-2">
                         
@@ -175,35 +187,25 @@
                         <?php } ?>                        
                         
                         <h4>
-                            <a href="./admin/shop/customer/read/<?php echo $item->id; ?>">
-                                <?php echo $item->fullName(); ?>
+                            <a href="./admin/shop/campaign/read/<?php echo $item->id; ?>">
+                                <?php echo $item->ancestorsIndentedTitle(); ?>
                             </a>
                         </h4>
-                        <div>
-                            <label>Joined:</label>
-                            <a href="./admin/shop/customer/read/<?php echo $item->id; ?>">
-                                <?php echo date( 'Y-m-d', $item->{'metadata.created.time'} ); ?>
-                            </a>
-                        </div>
                     </div>
-                    <div class="col-md-2">
-                        <h4>
-                            <?php echo \Shop\Models\Currency::format( $item->totalSpent() ); ?> 
-                        </h4>
+                    <div class="col-md-2 text-center">
+                        <?php echo $item->publishStarts(); ?>
                     </div>
-                    <div class="col-md-2">
-                        <h4>
-                            <?php echo (int) $item->ordersCount(); ?>
-                        </h4>                        
+                    <div class="col-md-2 text-center">
+                        <?php echo $item->publishEnds(); ?>                        
                     </div>
-                    <div class="col-md-2">
-                        <h4>
-                            <?php echo \Shop\Models\Currency::format( $item->{'shop.credits.balance'} ); ?>
-                        </h4>                        
+                    <div class="col-md-2 text-center">
+                        <span class="label <?php echo $item->publishableStatusLabel(); ?>">
+                        <?php echo $item->{'publication.status'}; ?>
+                        </span>
                     </div>
                     <div class="hidden-xs hidden-sm col-md-2">
                         <span class="pull-right">
-    	                    <a class="btn btn-xs btn-danger" data-bootbox="confirm" href="./admin/shop/customer/delete/<?php echo $item->id; ?>">
+    	                    <a class="btn btn-xs btn-danger" data-bootbox="confirm" href="./admin/shop/campaign/delete/<?php echo $item->id; ?>">
     	                        <i class="fa fa-times"></i>
     	                    </a>
 	                    </span>

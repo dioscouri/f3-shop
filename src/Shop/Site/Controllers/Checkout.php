@@ -167,34 +167,50 @@ class Checkout extends \Dsc\Controller
      */
     public function update()
     {
-    	$cart = \Shop\Models\Carts::fetch();
-    	 
-        // Do the selective update, saving the data to the Cart if it validates
-        $checkout = $this->input->get( 'checkout', array(), 'array' );
-        $cart_checkout = array_merge( (array) $cart->{'checkout'}, $checkout );
-        $cart->set('checkout', $cart_checkout);
-        $cart->save();
-        
         // TODO If the select data doesn't validate, return an error message while redirecting back to referring page (if http request)
         // or outputting json_encoded response with array of errrors
-        
-        $f3 = \Base::instance();
-        if ($f3->get( 'AJAX' ))
-        {
+        $custom_redirect = \Dsc\System::instance()->get( 'session' )->get( 'site.shop.checkout.redirect' );
+        $redirect = $custom_redirect ? $custom_redirect : '/shop/checkout/payment';
+
+        try {
+            $cart = \Shop\Models\Carts::fetch();
             
-            // TODO Update the cart and return a response object with success message and cart
-        }
-        else
-        {
+            // Do the selective update, saving the data to the Cart if it validates
+            $checkout = $this->input->get( 'checkout', array(), 'array' );
+            $cart_checkout = array_merge( (array) $cart->{'checkout'}, $checkout );
+            $cart->set('checkout', $cart_checkout);
             
-            $redirect = '/shop/checkout/payment';
-            if ($custom_redirect = \Dsc\System::instance()->get( 'session' )->get( 'site.shop.checkout.redirect' ))
+            $cart->save();
+            
+            if ($this->app->get( 'AJAX' ))
             {
-                $redirect = $custom_redirect;
+                return $this->outputJson( $this->getJsonResponse( array(
+                    'result'=>true
+                ) ) );                
+            }
+            else
+            {
+                $this->session->set( 'site.shop.checkout.redirect', null );
+                $this->app->reroute( $redirect );
             }
             
-            \Dsc\System::instance()->get( 'session' )->set( 'site.shop.checkout.redirect', null );
-            \Base::instance()->reroute( $redirect );
+        }
+        catch (\Exception $e) {
+        	
+            if ($this->app->get( 'AJAX' ))
+            {
+                return $this->outputJson( $this->getJsonResponse( array(
+                    'result'=>false,
+                    'message'=>$e->getMessage()
+                ) ) );                
+            }
+            else
+            {
+                \Dsc\System::addMessage($e->getMessage(), 'error');
+                $this->session->set( 'site.shop.checkout.redirect', null );
+                $this->app->reroute( $redirect );
+            }
+                        
         }
         
         return;

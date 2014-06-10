@@ -133,7 +133,8 @@ jQuery(document).ready(function(){
         if (!validation.validateForm()) {
             return false;
         }
-        el.submit();    
+        //el.submit();
+        return true;
     });
 
     jQuery('#select-address').on('change', function(){
@@ -241,3 +242,5 @@ jQuery(document).ready(function(){
     jQuery('#checkout-shipping-methods').trigger('reload');
 });
 </script>
+
+<?php // echo \Dsc\Debug::dump( $cart->autoCoupons() ); ?>

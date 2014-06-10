@@ -177,6 +177,18 @@ class Orders extends \Dsc\Mongo\Collections\Taggable
     }
     
     /**
+     * Gets the associated customer object
+     *
+     * @return unknown
+     */
+    public function customer()
+    {
+        $user = (new \Shop\Models\Customers)->load(array('_id'=>$this->user_id));
+    
+        return $user;
+    }
+    
+    /**
      * Gets a customer's full name,
      * defaulting to email
      * 
@@ -368,7 +380,7 @@ class Orders extends \Dsc\Mongo\Collections\Taggable
      */
     public function accept()
     {
-        // 1. Update quantities
+        // #. Update quantities
         foreach ($this->items as $item) 
         {
             $found = false;
@@ -396,17 +408,20 @@ class Orders extends \Dsc\Mongo\Collections\Taggable
         	}
         }
         
-        // 2. Add an email to the Mailer
+        // #. Add an email to the Mailer
         if ($this->user_email) {
             $this->sendEmailNewOrder();
         }
         
-        // TODO 3. Increase hit counts on coupons used in order
+        // #. Increase total spent and orders count
+        $this->updateCustomerTotals();
         
-        // 4. Decrease value of any used gift certificates
+        // TODO #. Increase hit counts on coupons used in order
+        
+        // #. Decrease value of any used gift certificates
         $this->redeemGiftCards();
 
-        // 5. Add a negative credit record for historical purposes
+        // #. Add a negative credit record for historical purposes
         $this->deductCredit();
         
         // trigger event
@@ -441,6 +456,25 @@ class Orders extends \Dsc\Mongo\Collections\Taggable
                 }                
             }
         }    
+        
+        return $this;
+    }
+    
+    /**
+     * Updates the customer summary totals
+     * including: total spent, total number of orders, etc
+     *
+     * @return \Shop\Models\Orders
+     */
+    public function updateCustomerTotals()
+    {
+        $customer = $this->customer();
+        if (!empty($customer->id)) 
+        {
+            $customer->totalSpent(true);
+            $customer->ordersCount(true);
+            $customer->save();
+        }
         
         return $this;
     }

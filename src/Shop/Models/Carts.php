@@ -735,6 +735,23 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
     }
     
     /**
+     * Gets the total of all the applied discounts
+     * that only apply to shipping
+     *
+     * @return number
+     */
+    public function shippingDiscountTotal()
+    {
+        $discount = 0;
+    
+        $discount = $this->userShippingDiscountTotal();
+    
+        $discount = $discount + $this->autoShippingDiscountTotal();
+    
+        return (float) $discount;
+    }
+    
+    /**
      * Gets the total of all automatically-applied discounts,
      * optionally excluding the discounts that apply to shipping 
      * 
@@ -1014,7 +1031,6 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
         if (empty($this->taxes) || $refresh)
         {
             $this->taxes = $this->fetchTaxItems();
-//            $this->save();
         }
     
         return $this->taxes;
@@ -1098,9 +1114,11 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
                     }
                     
                     // ensure that the coupon is still valid, removing it if not
+                    // and set its value to 0
                     try {
                         $coupon = (new \Shop\Models\Coupons)->bind($item)->reload();
-                        $coupon->cartValid( $this );                        
+                        $coupon->cartValid( $this );
+                        $this->{'coupons.' . $key . '.amount'} = 0;
                     }
                     catch (\Exception $e) {
                         unset($this->coupons[$key]);
@@ -1108,9 +1126,7 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
                 }
                 $this->coupons = array_values(array_filter($this->coupons));
                 
-                // now that user coupons have been validated, ensure the autoCoupons
-                $this->ensureAutoCoupons();
-                
+                // now get all the coupon values
                 foreach ((array) $this->coupons as $key=>$item)
                 {
                     $this->{'coupons.' . $key . '.amount'} = $this->calcCouponValue( $item );
@@ -1120,6 +1136,9 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
                 {
                     $this->{'giftcards.' . $key . '.amount'} = $this->calcGiftCardValue( $item );
                 }
+
+                // now that user coupons have been validated, ensure the autoCoupons
+                $this->ensureAutoCoupons();
             }
         }
         
@@ -1518,10 +1537,11 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
      */
     public function ensureAutoCoupons()
     {
+        $this->auto_coupons = array();
+        
         // get all potential auto-coupons (published auto coupons)
         // check each one against $this cart for validity
         
-        $valid_auto_coupons = array();
         $coupons = (new \Shop\Models\Coupons)
             ->setState('filter.publication_status', 'published')
             ->setState('filter.published_today', true)
@@ -1534,22 +1554,15 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
             // otherwise, ensure it is removed
             try {
             	$coupon->cartValid( $this );
-            	$valid_auto_coupons[$coupon->code] = $coupon;
+            	$cast = $coupon->cast();
+            	$cast['amount'] = $this->calcCouponValue( $coupon );
+            	$this->auto_coupons[] = $cast;            	
+
             }
             catch (\Exception $e) {
             	// REMOVE IT
             }
         }
-
-        $this->auto_coupons = array();        
-        foreach ($valid_auto_coupons as $valid_auto_coupon) 
-        {
-            $cast = $valid_auto_coupon->cast();
-            $cast['amount'] = $this->calcCouponValue( $valid_auto_coupon );
-            $this->auto_coupons[] = $cast;        	
-        }
-        
-        $this->auto_coupons = array_values($this->auto_coupons);
         
         return $this;
     }

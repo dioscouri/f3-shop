@@ -211,6 +211,8 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
         $this->forSelectionBeforeValidate('excluded_products');
         $this->forSelectionBeforeValidate('excluded_collections');
         
+        $this->forSelectionBeforeValidate('discount_target_collections');
+        
         return parent::beforeSave();
     }
 
@@ -254,7 +256,8 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
         }
         
         // TODO take min_order_amount_currency into account once we have currencies sorted
-        if ($this->min_order_amount !== null && $cart->total() < $this->min_order_amount) 
+        $total = $cart->total() + $cart->giftCardTotal();
+        if ($this->min_order_amount !== null && $total < $this->min_order_amount) 
         {
             throw new \Exception('Cart has not met the minimum required amount');
         }
@@ -300,7 +303,7 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
                 throw new \Exception('Cart does not have any of the required coupons');
             }
         }
-         
+        
         /**
          * check that at least one of the products from $this->required_collections is in the cart
          */
@@ -556,10 +559,11 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
 		            }
 		            
 		            // coupon value cannot be greater than order shipping cost
-		            if ($value > $cart->shippingTotal())
+		            $current_shipping_discount_total = $cart->shippingDiscountTotal();
+		            if ($value > ($cart->shippingTotal() - $current_shipping_discount_total))
 		            {
-		                $value = $cart->shippingTotal();
-		            }		        	
+		                $value = ($cart->shippingTotal() - $current_shipping_discount_total);
+		            }
 		        }
 		        
 		        break;
@@ -621,31 +625,25 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
 	            break;
             case "product_shipping":
 
+                $excluded_products = $this->excludedProducts();
+                $excluded_products = array_merge( $excluded_products, $this->discount_target_products );
+                
                 // if discount_target_products is empty, then this is just the same thing as an order shipping discount
-                if (empty($this->discount_target_products))
+                if (empty($excluded_products))
                 {
-                    $excluded_products = $this->excludedProducts();
-	                foreach ($cart->items as $cartitem)
-	                {
-	                    if (!in_array((string) $cartitem['product_id'], $excluded_products))
-	                    {
-	                        if ($this->discount_type == 'flat-rate')
-	                        {
-	                            // TODO Take the discount_currency into account
-	                            $value = $this->discount_value;
-	                        }
-	                        elseif ($this->discount_type == 'percentage')
-	                        {
-	                            $value = ($this->discount_value/100) * $cart->shippingTotal();
-	                        }
-	                    }
-	                }                   
+                    if ($this->discount_type == 'flat-rate')
+                    {
+                        // TODO Take the discount_currency into account
+                        $value = $this->discount_value;
+                    }
+                    elseif ($this->discount_type == 'percentage')
+                    {
+                        $value = ($this->discount_value/100) * $cart->shippingTotal();
+                    }
                 }
                 // else, apply it only to the products in discount_target_products
                 else
                 {
-                    $excluded_products = $this->excludedProducts();
-                    
                     foreach ($cart->items as $cartitem)
                     {
                         // is this product a discount_target_product?
@@ -679,9 +677,10 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
                 }                
                 
                 // coupon value cannot be greater than order shipping cost
-                if ($value > $cart->shippingTotal())
+                $current_shipping_discount_total = $cart->shippingDiscountTotal();
+                if ($value > ($cart->shippingTotal() - $current_shipping_discount_total))
                 {
-                    $value = $cart->shippingTotal();
+                    $value = ($cart->shippingTotal() - $current_shipping_discount_total);
                 }
                 break;
                 
@@ -693,16 +692,16 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
                 if (empty($this->discount_target_products) && empty($this->discount_target_collections)) 
                 {
                     $excluded_products = $this->excludedProducts();
-	                foreach ($cart->items as $cartitem)
-	                {
-	                    if (!in_array((string) $cartitem['product_id'], $excluded_products))
-	                    {
-	                        foreach ($cart->items as $cartitem)
-	                        {
-	                            $value += (($cartitem['price'] - $this->discount_value) * $cartitem['quantity']);
-	                        }
-	                    }
-	                }
+                    foreach ($cart->items as $cartitem)
+                    {
+                        if (!in_array((string) $cartitem['product_id'], $excluded_products))
+                        {
+                            foreach ($cart->items as $cartitem)
+                            {
+                                $value += (($cartitem['price'] - $this->discount_value) * $cartitem['quantity']);
+                            }
+                        }
+                    }
                 }
                 
                 // otherwise, get the array of target_product_ids.  loop thru each product and if it is in the array,
@@ -711,13 +710,12 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
                 else 
                 {
                     $discount_target_products = (array) $this->discount_target_products;
-                    foreach( $this->required_collections as $collection_id )
+                    foreach( (array) $this->discount_target_collections as $collection_id )
                     {
                         $collection_product_ids = \Shop\Models\Collections::productIds( $collection_id );
                         $discount_target_products = array_merge($discount_target_products, $collection_product_ids);
                     }
                     $discount_target_products = array_unique( $discount_target_products );
-                    
                     $excluded_products = $this->excludedProducts();
                     
                     foreach ($cart->items as $cartitem)
