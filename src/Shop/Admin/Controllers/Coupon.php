@@ -164,7 +164,29 @@ class Coupon extends \Admin\Controllers\BaseAuth
     
     
     public function downloadCodes(){
-    
+		$item = $this->getItem();
+		
+		if( empty( $item->{'codes.list'} ) ){
+			\Dsc\System::addMessage( 'No codes to download', 'error' );
+			if( empty( $item->id ) ){
+				$this->app->reroute( '/admin/shop/coupons' );
+			} else {
+				$this->app->reroute( '/admin/shop/coupon/'.(string)$item->id.'/codes' );
+			}
+			return;
+		} else{
+			$codes = array_values( $item->{'codes.list'} );
+			if( $this->input->get( 'only_available', 0, 'int' ) ){
+				$available_codes = array();
+				array_walk( $codes, function( &$item, $key ) use( &$available_codes ) {
+					if( !$item['used'] )
+						$available_codes []= $item;
+				});
+				$codes = $available_codes;
+			}
+			
+			$this->outputCsv( 'codes.csv', $codes, array( 'Code', 'Used?' ) );
+		}
     }
     
     protected function displayRead() {}

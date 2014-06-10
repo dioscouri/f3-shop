@@ -20,7 +20,9 @@
 	</div>
 	<div class="col-xs-12 col-sm-5 col-md-5 col-lg-8">
 		<div class="pull-right">
-			<a class="btn btn-success" href="./admin/shop/coupon/<?php echo $item->_id; ?>/codes/download">Download Codes</a>
+			<a class="btn btn-success" href="./admin/shop/coupon/<?php echo $item->_id; ?>/codes/download?only_available=1">Download Available Codes</a>
+			&nbsp;
+			<a class="btn btn-warning" href="./admin/shop/coupon/<?php echo $item->_id; ?>/codes/download">Download All Codes</a>
 			&nbsp;
 			<a class="btn btn-danger"  data-task="generate" href="javascript:void(0);">Generate Codes</a>
 			&nbsp;
