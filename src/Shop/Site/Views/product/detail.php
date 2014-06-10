@@ -267,7 +267,7 @@ jQuery(document).ready(function(){
                                 <span class="list-price"><strike><?php echo \Shop\Models\Currency::format( $product->{'prices.list'} ); ?></strike></span>
                             <?php } ?>
                             &nbsp;
-                            <div class="current-price">
+                            <div class="price">
                                 <?php echo \Shop\Models\Currency::format( $product->price() ); ?>
                             </div>
     
