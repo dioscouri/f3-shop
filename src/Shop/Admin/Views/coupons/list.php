@@ -96,9 +96,9 @@
         	<thead>
         		<tr>
         		    <th class="checkbox-column col-md-1"><input type="checkbox" class="icheck-input"></th>
-        			<th>Title</th>
-        			<th class="col-md-2">Code</th>
-        			<th class="col-md-1 text-center">Status</th>
+        			<th data-sortable="title">Title</th>
+        			<th class="col-md-2" data-sortable="code">Code</th>
+        			<th class="col-md-1 text-center" data-sortable="publication.status">Status</th>
         			<th class="col-md-1"></th>
         		</tr>
         	</thead>
