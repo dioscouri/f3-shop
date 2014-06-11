@@ -1097,6 +1097,7 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
             // If changed, empty the taxes
             // and update coupon & giftcard values
             if ($cart->items != $this->items
+                || $cart->quantity() != $this->quantity()
                 || $cart->coupons != $this->coupons
                 || $cart->auto_coupons != $this->auto_coupons
                 || $cart->giftcards != $this->giftcards
@@ -1441,6 +1442,16 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
         $value = $coupon->cartValue( $this );
         
         return $value;
+    }
+    
+    /**
+     * Get all the coupons in the cart
+     * 
+     * @return array
+     */
+    public function allCoupons()
+    {
+        return array_merge( array(), $this->userCoupons(), $this->autoCoupons() );
     }
     
     /**

@@ -101,7 +101,20 @@
     <div class="col-md-10">
     
         <div class="form-group">
-            <label>Order Amount</label>
+            <label>Subtotal (before discounts are applied)</label>
+            <div class="row">
+                <div class="col-md-6">
+                    <input type="text" name="min_subtotal_amount" placeholder="0.00" value="<?php echo $flash->old('min_subtotal_amount'); ?>" class="form-control" />
+                </div>
+                <div class="col-md-6">
+                    <input type="text" name="min_subtotal_amount_currency" placeholder="USD" value="<?php echo $flash->old('min_subtotal_amount_currency'); ?>" class="form-control" />
+                </div>                
+            </div>
+        </div>
+        <!-- /.form-group -->    
+    
+        <div class="form-group">
+            <label>Total (after all other discounts are applied)</label>
             <div class="row">
                 <div class="col-md-6">
                     <input type="text" name="min_order_amount" placeholder="0.00" value="<?php echo $flash->old('min_order_amount'); ?>" class="form-control" />

@@ -23,6 +23,8 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
     public $required_products = array();
     public $required_collections = array();
     public $required_coupons = array();
+    public $min_subtotal_amount = null;
+    public $min_subtotal_amount_currency = null;
     public $min_order_amount = null;
     public $min_order_amount_currency = null;
     public $geo_address_type = null;
@@ -249,8 +251,23 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
             throw new \Exception('This coupon cannot be combined with others');
         }
         
+        // TODO take min_subtotal_amount_currency into account once we have currencies sorted
+        if (!empty($this->min_subtotal_amount) && $cart->subtotal() < $this->min_subtotal_amount)
+        {
+            throw new \Exception('Cart has not met the minimum required subtotal');
+        }
+        
         // TODO take min_order_amount_currency into account once we have currencies sorted
         $total = $cart->total() + $cart->giftCardTotal();
+        // Add back the value of this coupon in case it is already applied
+        foreach ($cart->allCoupons() as $coupon) 
+        {
+        	if ((string) $coupon['_id'] == (string) $this->id) 
+        	{
+        	    $total = $total + $coupon['amount'];
+        		break;
+        	}
+        }
         if (!empty($this->min_order_amount) && $total < $this->min_order_amount) 
         {
             throw new \Exception('Cart has not met the minimum required amount');
