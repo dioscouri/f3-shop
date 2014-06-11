@@ -113,9 +113,15 @@
                     </td>
                     
                     <td class="">
-                        <a href="./admin/shop/coupon/edit/<?php echo $item->_id; ?>">
-                        <?php echo @str_repeat( "&ndash;", substr_count( @$item->path, "/" ) - 1 ) . " " . $item->title; ?>
-                        </a>
+                        <h4>
+                            <a href="./admin/shop/coupon/edit/<?php echo $item->_id; ?>">
+                            <?php echo @str_repeat( "&ndash;", substr_count( @$item->path, "/" ) - 1 ) . " " . $item->title; ?>
+                            </a>
+                        </h4>
+                        
+                        <p>
+                        Created by: <?php echo $item->{'metadata.creator.name'}; ?>
+                        </p>
                     </td>
                     
                     <td class="">
