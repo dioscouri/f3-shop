@@ -1110,6 +1110,7 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
                 {
                     if (!empty($item['usage_automatic'])) {
                         unset($this->coupons[$key]);
+                        continue;
                     }
                     
                     // ensure that the coupon is still valid, removing it if not
@@ -1120,6 +1121,8 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
                         $this->{'coupons.' . $key . '.amount'} = 0;
                     }
                     catch (\Exception $e) {
+                        \Dsc\System::addMessage( 'Removing coupon: ' . $this->coupons[$key]['code'], 'error' );
+                        \Dsc\System::addMessage( (string) $e->getMessage(), 'error' );                        
                         unset($this->coupons[$key]);
                     }
                 }

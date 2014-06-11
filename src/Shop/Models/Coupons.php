@@ -251,7 +251,7 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
         
         // TODO take min_order_amount_currency into account once we have currencies sorted
         $total = $cart->total() + $cart->giftCardTotal();
-        if ($this->min_order_amount !== null && $total < $this->min_order_amount) 
+        if (!empty($this->min_order_amount) && $total < $this->min_order_amount) 
         {
             throw new \Exception('Cart has not met the minimum required amount');
         }
