@@ -37,7 +37,7 @@ class Reports extends \Admin\Controllers\BaseAuth
         
         $this->app->set('report', $item);
         
-        $this->app->set('meta.title', $item->name . ' | Reports | Shop');
+        $this->app->set('meta.title', $item->title . ' | Reports | Shop');
         
         // display the report
         $class->index();
