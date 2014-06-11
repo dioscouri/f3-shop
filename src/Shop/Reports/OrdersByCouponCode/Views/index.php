@@ -20,29 +20,29 @@
 
     <div class="row">
         <div class="col-xs-12 col-sm-6">
+            <div class="form-group">
+                <div class="input-group">
+                    <input class="form-control" type="text" name="filter[keyword]" placeholder="Search..." maxlength="200" value="<?php echo $state->get('filter.keyword'); ?>"> 
+                    <span class="input-group-btn">
+                        <button class="btn btn-primary" type="button" onclick="this.form.submit();">Search</button>
+                    </span>
+                </div>
+            </div>
+        </div>
+    
+        <div class="col-xs-12 col-sm-6">
+            <div class="pull-right">
             <ul class="list-filters list-unstyled list-inline">
                 <li>
-                </li>
-                <li>
-                    <a class="btn btn-link" href="javascript:void(0);" onclick="ShopToggleAdvancedFilters();">Advanced Filters</a>
+                    <?php /* ?><a class="btn btn-link" href="javascript:void(0);" onclick="ShopToggleAdvancedFilters();">Advanced Filters</a> */ ?>
                 </li>
                 <li>
                     <button class="btn btn-sm btn-danger" type="button" onclick="Dsc.resetFormFilters(this.form);">Reset Filters</button>
                 </li>                
             </ul>
-        </div>
-
-        <div class="col-xs-12 col-sm-6">
-            <div class="text-align-right">
-                <ul class="list-filters list-unstyled list-inline">
-                    <li>
-                        <?php if (!empty($paginated->items)) { ?>
-                        <?php echo $paginated->getLimitBox( $state->get('list.limit') ); ?>
-                        <?php } ?>
-                    </li>
-                </ul>
             </div>
         </div>
+
     </div>
     
     <div id="advanced-filters" class="panel panel-default" 
@@ -91,14 +91,18 @@
         <div class="panel-heading">
             <div class="row">
                 <div class="col-xs-12 col-sm-6 col-lg-3">
-                    <span class="pagination"> </span>
+                    <span class="pagination">
+                        <?php if (!empty($paginated->items)) { ?>
+                            <?php echo $paginated->getLimitBox( $state->get('list.limit') ); ?>
+                        <?php } ?>    
+                    </span>
                 </div>
                 <div class="col-xs-12 col-sm-6 col-lg-6 col-lg-offset-3">
                     <div class="text-align-right">
-                            <?php if (!empty($paginated->total_pages) && $paginated->total_pages > 1) { ?>
-                                <?php echo $paginated->serve(); ?>
-                            <?php } ?>
-                        </div>
+                        <?php if (!empty($paginated->total_pages) && $paginated->total_pages > 1) { ?>
+                            <?php echo $paginated->serve(); ?>
+                        <?php } ?>
+                    </div>
                 </div>
             </div>
         </div>
@@ -108,19 +112,14 @@
                 <ul class="list-group">
                 <li class="list-group-item">
                     <div class="row">
-                        <div class="col-sm-4">
-                            <b>Customer</b>
+                        <div class="col-sm-6">
+                            <b>Coupon</b>
                         </div>
                         <div class="col-sm-2">
-                            <b>Items</b>
-                        </div>
-                        <div class="col-sm-2">
-                            <b>Subtotal</b>
+                            <b>Uses</b>
                         </div>
                         <div class="col-sm-3">
-                            <b>Last Modified</b>
-                        </div>
-                        <div class="col-sm-1">
+                            <b>Totals</b>
                         </div>
                     </div>
                 </li>
@@ -130,24 +129,16 @@
                 <?php foreach($paginated->items as $key=>$item) { ?>
                     <li class="list-group-item" data-id="<?php echo $item->id; ?>">
                     <div class="row">
-                        <div class="col-sm-4">
-                            <?php if (!empty($item->user_id)) { ?>
-                                <?php echo $item->user()->fullName(); ?>
-                            <?php } ?>
+                        <div class="col-sm-6">
+                            <a href="./admin/shop/coupon/edit/<?php echo $item->id; ?>">
+                            <?php echo $item->code; ?>
+                            </a>
                         </div>
                         <div class="col-sm-2">
-                            <?php echo count($item->items); ?>
-                        </div>
-                        <div class="col-sm-2">
-                            <?php echo \Shop\Models\Currency::format( $item->subtotal() ); ?>
+                            <?php echo (int) $item->countSales(); ?>
                         </div>
                         <div class="col-sm-3">
-                            <?php echo date( 'Y-m-d', $item->{'metadata.last_modified.time'} ); ?>
-                        </div>
-                        <div class="col-sm-1">
-                            <a class="btn btn-xs btn-danger" data-bootbox="confirm" href="./admin/shop/cart/delete/<?php echo $item->id; ?>">
-                                <i class="fa fa-times"></i>
-                            </a>                            
+                            <?php echo \Shop\Models\Currency::format( $item->totalSales() ); ?>
                         </div>
                     </div>
                 </li>

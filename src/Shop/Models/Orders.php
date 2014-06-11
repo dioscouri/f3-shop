@@ -133,6 +133,18 @@ class Orders extends \Dsc\Mongo\Collections\Taggable
         {
             $this->setCondition('financial_status', $filter_financial_status);
         }
+        
+        $filter_coupon_id = $this->getState('filter.coupon_id');
+        if (strlen($filter_coupon_id))
+        {
+            $this->setCondition('coupons._id', new \MongoId((string) $filter_coupon_id));
+        }
+                
+        $filter_coupon_code = $this->getState('filter.coupon_code');
+        if (strlen($filter_coupon_code))
+        {
+            $this->setCondition('coupons.code', $filter_coupon_code);
+        }
                 
         return $this;
     }
@@ -748,6 +760,25 @@ class Orders extends \Dsc\Mongo\Collections\Taggable
     }
     
     /**
+     * Gets the total number of items in the cart
+     */
+    public function quantity()
+    {
+        $quantity = 0;
+    
+        if (empty($this->items)) {
+            return $quantity;
+        }
+    
+        foreach ($this->items as $item)
+        {
+            $quantity += (int) $item['quantity'];
+        }
+    
+        return $quantity;
+    }
+    
+    /**
      * Gets the subtotal
      *
      * @return float
@@ -755,5 +786,15 @@ class Orders extends \Dsc\Mongo\Collections\Taggable
     public function subtotal()
     {
         return (float) $this->sub_total;
+    }
+    
+    /**
+     * Gets the total
+     *
+     * @return float
+     */
+    public function total()
+    {
+        return (float) $this->grand_total;
     }
 }

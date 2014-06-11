@@ -35,6 +35,8 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
     public $excluded_products = array();
     public $excluded_collections = array();
     public $generated_code = null;
+    // counters
+    public $total_sales = null;
         
     public $__is_validated = null;    
     protected $__collection_name = 'shop.coupons';
@@ -46,6 +48,21 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
         parent::fetchConditions();
         
         $this->publishableFetchConditions();
+        
+        $filter_keyword = $this->getState('filter.keyword');
+        if ($filter_keyword && is_string($filter_keyword))
+        {
+            $key =  new \MongoRegex('/'. $filter_keyword .'/i');
+        
+            $where = array();
+            $where[] = array('title'=>$key);
+            $where[] = array('slug'=>$key);
+            $where[] = array('description'=>$key);
+            $where[] = array('code'=>$key);
+            
+            $this->setCondition('$or', $where);
+        }
+        
         
         $filter_code = $this->getState('filter.code');
         if (strlen($filter_code))
@@ -877,4 +894,137 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
     	$this->{'codes.length'} = $len;
     	$this->save();
     }
+    
+    /**
+     * Gets the total sales using this coupon code
+     *
+     * @param string $refresh
+     * @return number
+     */
+    public function totalSales($refresh=false)
+    {
+        if (empty($refresh))
+        {
+            return (float) $this->total_sales;
+        }
+    
+        $this->total_sales = 0;
+    
+        $conditions = (new \Shop\Models\Orders)->setState('filter.coupon_id', $this->id)->setState('filter.financial_status', \Shop\Constants\OrderFinancialStatus::paid)->conditions();
+    
+        $agg = \Shop\Models\Orders::collection()->aggregate(array(
+            array(
+                '$match' => $conditions
+            ),
+            array(
+                '$group' => array(
+                	'_id' => '$coupons._id',
+                    'total' => array( '$sum' => '$grand_total' )
+                )
+            )
+        ));
+    
+        if (!empty($agg['ok']) && !empty($agg['result']))
+        {
+            $this->total_sales = (float) $agg['result'][0]['total'];
+        }
+    
+        return (float) $this->total_sales;
+    }
+    
+    /**
+     * Calculates the total sales involving this coupon
+     * during the specified time period
+     *
+     * @param string $refresh
+     * @return number
+     */
+    public function fetchTotalSales($start=null, $end=null)
+    {
+        $model = (new \Shop\Models\Orders)
+        ->setState('filter.coupon_id', $this->id)
+        ->setState('filter.financial_status', \Shop\Constants\OrderFinancialStatus::paid);
+    
+        if (!empty($start)) {
+            $model->setState('filter.created_after', $start);
+        }
+    
+        if (!empty($end)) {
+            $model->setState('filter.created_before', $end);
+        }
+    
+        $conditions = $model->conditions();
+    
+        $agg = \Shop\Models\Orders::collection()->aggregate(array(
+            array(
+                '$match' => $conditions
+            ),
+            array(
+                '$group' => array(
+                	'_id' => '$coupons._id',
+                    'total' => array( '$sum' => '$grand_total' )
+                )
+            )
+        ));
+    
+        $total = 0;
+        if (!empty($agg['ok']) && !empty($agg['result']))
+        {
+            $total = (float) $agg['result'][0]['total'];
+        }
+    
+        return (float) $total;
+    }
+    
+    /**
+     * Gets the count of sales using this coupon code
+     *
+     * @param string $refresh
+     * @return number
+     */
+    public function countSales($refresh=false)
+    {
+        if (empty($refresh))
+        {
+            return (float) $this->count_sales;
+        }
+    
+        $this->count_sales = 0;
+    
+        $conditions = (new \Shop\Models\Orders)->setState('filter.coupon_id', $this->id)->setState('filter.financial_status', \Shop\Constants\OrderFinancialStatus::paid)->conditions();
+    
+        $this->count_sales = \Shop\Models\Orders::collection()->count( $conditions );
+        
+        $this->save();
+    
+        return (float) $this->count_sales;
+    }
+    
+    /**
+     * Calculates the total sales involving this coupon
+     * during the specified time period
+     *
+     * @param string $refresh
+     * @return number
+     */
+    public function fetchCountSales($start=null, $end=null)
+    {
+        $model = (new \Shop\Models\Orders)
+        ->setState('filter.coupon_id', $this->id)
+        ->setState('filter.financial_status', \Shop\Constants\OrderFinancialStatus::paid);
+    
+        if (!empty($start)) {
+            $model->setState('filter.created_after', $start);
+        }
+    
+        if (!empty($end)) {
+            $model->setState('filter.created_before', $end);
+        }
+    
+        $conditions = $model->conditions();
+    
+        $total = \Shop\Models\Orders::collection()->count( $conditions );
+    
+        return (float) $total;
+    }    
 }

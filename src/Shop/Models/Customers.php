@@ -42,7 +42,7 @@ class Customers extends \Users\Models\Users
     public static function forSelection(array $query=array(), $id_field='_id' )
     {
         $model = new static;
-        \FB::log($query);    
+    
         $cursor = $model->collection()->find($query, array("last_name"=>1, "first_name"=>1, "email"=>1) );
         $cursor->sort(array(
             "last_name"=>1, "first_name"=>1
@@ -56,7 +56,7 @@ class Customers extends \Users\Models\Users
             );
             $result[] = $array;
         }
-    \FB::log($result);
+
         return $result;
     }
     

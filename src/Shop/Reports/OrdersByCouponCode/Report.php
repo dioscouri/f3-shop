@@ -7,9 +7,6 @@ class Report extends \Shop\Abstracts\Report
     {
         $this->theme->registerViewPath( __dir__ . '/Views/', 'Shop/Reports/OrdersByCouponCode/Views' );
         
-        // Register any custom routes that the report needs
-        $this->app->route( 'GET /admin/shop/reports/'.$this->slug().'/purge-expired', '\\' . __CLASS__ . '->purgeExpired' );
-        
         return parent::bootstrap();
     }
     
@@ -19,7 +16,7 @@ class Report extends \Shop\Abstracts\Report
      */
     public function index()
     {
-        $model = (new \Shop\Models\Orders)->emptyState()->populateState();
+        $model = (new \Shop\Models\Coupons)->emptyState()->populateState();
         
         try {
             $paginated = $model->paginate();
