@@ -746,4 +746,14 @@ class Orders extends \Dsc\Mongo\Collections\Taggable
         
         return $this;
     }
+    
+    /**
+     * Gets the subtotal
+     *
+     * @return float
+     */
+    public function subtotal()
+    {
+        return (float) $this->sub_total;
+    }
 }

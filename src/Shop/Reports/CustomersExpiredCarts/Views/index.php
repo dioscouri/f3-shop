@@ -1,8 +1,8 @@
 <div class="row">
     <div class="col-xs-12 col-sm-7 col-md-7 col-lg-4">
         <h1 class="page-title txt-color-blueDark">
-            <i class="fa fa-table fa-fw "></i> Expired Carts
-            <span> > Report </span>
+            <i class="fa fa-table fa-fw "></i> Reports
+            <span> > Expired Carts </span>
         </h1>
     </div>
     <div class="col-xs-12 col-sm-5 col-md-5 col-lg-8">
@@ -66,7 +66,7 @@
                 <div class="col-md-10">
                     <div class="row">
                         <div class="col-md-2">
-                            <h4>Last modified between</h4>
+                            <h4>Last Modified</h4>
                         </div>
                         <div class="col-md-10">
                             <div class="input-daterange input-group" id="datepicker">

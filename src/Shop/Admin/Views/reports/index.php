@@ -37,7 +37,7 @@
                     <i class="<?php echo $item->icon; ?>"></i>
                     <?php } ?>
                     <div class="">
-                        <?php echo $item->name; ?>
+                        <?php echo $item->title; ?>
                     </div>
                 </h4>            
             </a>

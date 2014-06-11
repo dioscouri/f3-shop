@@ -35,11 +35,18 @@ class ShopBootstrap extends \Dsc\Bootstrap
         }
         
         \Shop\Models\Reports::register('\Shop\Reports\CustomersExpiredCarts', array(
-            'name'=>'Expired Carts',
+            'title'=>'Expired Carts',
             'icon'=>'fa fa-shopping-cart',
             'type'=>'customers',
             'slug'=>'customers-expired-carts',
         ));
+        
+        \Shop\Models\Reports::register('\Shop\Reports\OrdersByCouponCode', array(
+            'title'=>'Orders - by Coupon Code',
+            'icon'=>'fa fa-inbox',
+            'type'=>'orders',
+            'slug'=>'orders-coupon-code',
+        ));        
         
         $path = $this->app->hive()['PATH'];
         if (strpos($path, '/admin/shop/reports') !== false)

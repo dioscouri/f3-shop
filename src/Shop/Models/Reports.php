@@ -1,12 +1,12 @@
 <?php
 namespace Shop\Models;
 
-class Reports extends \Dsc\Mongo\Collections\Nodes
+class Reports extends \Dsc\Mongo\Collections\Describable
 {
 	public $namespace = null;          // required, unique. Fully Qualified
 	public $slug = null;           // required, unique.
 	
-    public $name = null;           // human-readable      
+    public $title = null;           // human-readable      
     public $type = null;           // e.g. 'products', 'orders', 'customers', 'misc'
     public $icon = null;           // a font-awesome class name
 
@@ -16,7 +16,7 @@ class Reports extends \Dsc\Mongo\Collections\Nodes
     protected $__config = array(
         'default_sort' => array(
         	'type' => 1,
-            'name' => 1,
+            'title' => 1,
         ) 
     );
     
