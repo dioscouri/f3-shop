@@ -85,12 +85,32 @@
                                 <?php echo $this->renderLayout('Shop/Admin/Views::categories/list_parents.php'); ?>
                             </div>
                             <!-- /.form-group -->
+                            
+                            <div class="form-group">
+                                <label>Display</label>
+                                <select name="display[view]" class="form-control">
+                                    <option value="" <?php if (!$flash->old('display.view')) { echo "selected"; } ?>>-- Default --</option>
+                                    <?php $variants = \Dsc\System::instance()->get('theme')->variants( 'Shop/Site/Views::category/index.php' ); ?>
+                                    <?php foreach ($variants as $group=>$views) { ?>
+                                        <optgroup label="<?php echo $group; ?>">
+                                            <?php foreach ($views as $view) { ?>
+                                            <option value="<?php echo $view; ?>" <?php if ($flash->old('display.view') == $view) { echo "selected"; } ?>><?php echo $view; ?></option>
+                                            <?php } ?>
+                                        </optgroup>
+                                    <?php } ?>
+                                </select>
+                            </div>
+                            <!-- /.form-group -->
                                 
                         </div>
                         <!-- /.col-md-10 -->
                         
                     </div>
-                    <!-- /.row -->                
+                    <!-- /.row -->        
+                    
+                    <hr />
+                    
+                    <?php echo $this->renderLayout('Shop/Admin/Views::categories/fields_seo.php'); ?>
                     
                     <hr/>
                     

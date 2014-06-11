@@ -28,6 +28,10 @@
 
 <hr />
 
+<?php echo $this->renderLayout('Shop/Admin/Views::collections/fields_seo.php'); ?>
+
+<hr />
+
 <div class="row">
     <div class="col-md-2">
         

@@ -71,7 +71,9 @@ class Category extends \Dsc\Controller
     	$this->app->set('paginated', $paginated );
     	
     	$this->app->set('category', $category );
-    	$this->app->set('meta.title', $category->{'title'} . ' | Shop');
+    	
+        $this->app->set('meta.title', $category->seoTitle() . ' | Shop');
+        $this->app->set('meta.description', $category->seoDescription() );
 
     	$view = \Dsc\System::instance()->get('theme');
     	echo $view->render('Shop/Site/Views::category/index.php');

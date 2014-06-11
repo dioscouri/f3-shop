@@ -41,6 +41,10 @@
 
 <hr />
 
+<?php echo $this->renderLayout('Shop/Admin/Views::products/fields_seo.php'); ?>
+
+<hr />
+
 <?php echo $this->renderLayout('Shop/Admin/Views::products/fields_basics_manufacturer.php'); ?>
 
 <hr />
@@ -54,3 +58,4 @@
 <hr />
 
 <?php echo $this->renderLayout('Shop/Admin/Views::products/fields_basics_publication.php'); ?>
+
