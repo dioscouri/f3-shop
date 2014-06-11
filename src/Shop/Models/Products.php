@@ -1182,4 +1182,21 @@ class Products extends \Dsc\Mongo\Collections\Content
     	    
     	return $return;
     }
+    
+    public function findAttributeByTitle( $title ) 
+    {
+        $return = false;
+        
+    	foreach ($this->attributes as $attribute) 
+    	{
+    		$attribute_title = \Dsc\ArrayHelper::get($attribute, 'title');
+    		if (strtolower($title) == strtolower($attribute_title)) 
+    		{
+    			$return = $attribute;
+    			break; 
+    		}
+    	}
+    	
+    	return $return;
+    }
 }
