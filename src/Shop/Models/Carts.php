@@ -1675,16 +1675,40 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
     {
         $this->credit_total = 0;
         
-        if ($value = (float) $this->user()->{'shop.credits.balance'}) 
+        if (!$this->hasGiftCardProduct()) 
         {
-            if ($this->total() < $value)
+            if ($value = (float) $this->user()->{'shop.credits.balance'})
             {
-                $value = $this->total();
-            }
+                if ($this->total() < $value)
+                {
+                    $value = $this->total();
+                }
             
-        	$this->credit_total = $value;
+                $this->credit_total = $value;
+            }
         }
         
         return $this->save();
+    }
+    
+    /**
+     * Does this cart have a gift card product in it?
+     * 
+     * @return boolean
+     */
+    public function hasGiftCardProduct()
+    {
+        $return = false;
+        
+        foreach ($this->items as $item) 
+        {
+        	if (!empty($item['product']['product_type']) && $item['product']['product_type'] == 'giftcards') 
+        	{
+        		$return = true;
+        		break;
+        	}
+        }
+        
+        return $return;
     }
 }
