@@ -394,7 +394,7 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
         	        $intersection = array_intersect($this->groups, $group_ids);
         	        if (!empty($intersection))
         	        {
-        	            throw new \Exception('Customer is in one of the excluded user groups');
+        	            throw new \Exception('Your order does not qualify for this discount.');
         	        }
         	                	        
         	        break;
@@ -403,7 +403,7 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
         	        $missing_groups = array_diff($this->groups, $group_ids);
         	        if (empty($intersection))
         	        {
-        	            throw new \Exception('Customer is not in all of the required user groups');
+        	            throw new \Exception('Your order does not qualify for this discount.');
         	        }
         	        
         	        break;
@@ -412,7 +412,7 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
         		    $intersection = array_intersect($this->groups, $group_ids);
         		    if (empty($intersection))
         		    {
-        		        throw new \Exception('Customer is not in any of the required user groups');
+        		        throw new \Exception('Your order does not qualify for this discount.');
         		    }
         		    
         		    break;
