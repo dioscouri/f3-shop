@@ -229,7 +229,7 @@ class Cart extends \Dsc\Controller
                     'result'=>false
                 ) ) );
             } else {
-                \Dsc\System::addMessage('Coupon not added to cart', 'error');
+                \Dsc\System::addMessage('Discount not applied.', 'error');
                 \Dsc\System::addMessage($e->getMessage(), 'error');
                 $this->app->reroute($redirect);
                 return;

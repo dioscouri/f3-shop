@@ -245,7 +245,7 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
          */
         if (!$this->published()) 
         {
-            throw new \Exception('This coupon is not valid for today');
+            throw new \Exception('This coupon is expired.');
         }
 
         /**
