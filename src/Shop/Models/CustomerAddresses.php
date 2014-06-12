@@ -71,4 +71,54 @@ class CustomerAddresses extends \Shop\Models\Address
     
         return $items;
     }
+    
+    /**
+     * 
+     * @return \Shop\Models\CustomerAddresses
+     */
+    public function setAsPrimaryBilling()
+    {
+        // set primary_billing = null for all user's addresses
+        $this->__last_operation = $this->collection()->update(
+            array(
+                'user_id'=>$this->user_id
+            ),
+            array('$set' => array(
+                'primary_billing'=>null
+            )),
+            array('multiple'=>true)
+        );
+                
+        // set primary_billing = true for this address
+        $this->update(array(
+        	'primary_billing'=>true
+        ), array(
+            'overwrite'=>false
+        ));
+                
+        return $this;
+    }
+    
+    public function setAsPrimaryShipping()
+    {
+        // set primary_shipping = null for all user's addresses
+        $this->__last_operation = $this->collection()->update(
+            array(
+                'user_id'=>$this->user_id
+            ),
+            array('$set' => array(
+                'primary_shipping'=>null
+            )),
+            array('multiple'=>true)
+        );
+    
+        // set primary_shipping = true for this address
+        $this->update(array(
+            'primary_shipping'=>true
+        ), array(
+            'overwrite'=>false
+        ));
+    
+        return $this;
+    }
 }

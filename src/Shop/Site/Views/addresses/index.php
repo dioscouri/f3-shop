@@ -48,8 +48,27 @@
                     </a>                                        
                 </div>
                 <div class="panel-body">
-                    <p><?php echo $item; ?></p>
+                    <address><?php echo $item; ?></address>
                     <?php echo $item->phone_number; ?>
+                </div>                
+                <div class="panel-footer">
+                    <?php if (!empty($item->primary_billing)) { ?>
+                    <div class="alert alert-info">
+                        <i class="fa fa-star"></i> Default Billing
+                    </div>
+                    <?php } ?>
+                    <?php if (!empty($item->primary_shipping)) { ?>
+                    <div class="alert alert-success">
+                        <i class="fa fa-star"></i> Default Shipping
+                    </div>
+                    <?php } ?>
+                                    
+                    <?php if (empty($item->primary_billing)) { ?>
+                    <a class="btn btn-link" href="./shop/account/address/setprimarybilling/<?php echo $item->id; ?>"><small>Set as default billing</small></a>
+                    <?php } ?>
+                    <?php if (empty($item->primary_shipping)) { ?>
+                    <a class="btn btn-link" href="./shop/account/address/setprimaryshipping/<?php echo $item->id; ?>"><small>Set as default shipping</small></a>
+                    <?php } ?>                
                 </div>
             </div>
     

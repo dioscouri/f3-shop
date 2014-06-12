@@ -269,4 +269,70 @@ class Address extends \Dsc\Controller
     {
         // TODO Validate using the address model
     }
+    
+    public function setPrimaryBilling()
+    {
+        $id = $this->inputfilter->clean( $this->app->get('PARAMS.id'), 'alnum' );
+        
+        $identity = $this->getIdentity();
+        if (empty($identity->id))
+        {
+            \Dsc\System::instance()->get('session')->set('site.login.redirect', '/shop/account/addresses' );
+            \Base::instance()->reroute('/sign-in');
+            return;
+        }
+        
+        try {
+            $item = $this->getItem();
+            if (empty($item->id)) {
+                throw new \Exception;
+            }
+            if ((string) $item->user_id != (string) $identity->id) {
+                throw new \Exception;
+            }
+            
+            $item->setAsPrimaryBilling();
+            
+            $this->app->reroute( '/shop/account/addresses' );
+            
+        } catch ( \Exception $e ) {
+            \Dsc\System::instance()->addMessage( "Invalid Address", 'error');
+            \Dsc\System::instance()->addMessage( $e->getMessage(), 'error');
+            $this->app->reroute( '/shop/account/addresses' );
+            return;
+        }
+    }
+    
+    public function setPrimaryShipping()
+    {
+        $id = $this->inputfilter->clean( $this->app->get('PARAMS.id'), 'alnum' );
+    
+        $identity = $this->getIdentity();
+        if (empty($identity->id))
+        {
+            \Dsc\System::instance()->get('session')->set('site.login.redirect', '/shop/account/addresses' );
+            \Base::instance()->reroute('/sign-in');
+            return;
+        }
+    
+        try {
+            $item = $this->getItem();
+            if (empty($item->id)) {
+                throw new \Exception;
+            }
+            if ((string) $item->user_id != (string) $identity->id) {
+                throw new \Exception;
+            }
+    
+            $item->setAsPrimaryShipping();
+    
+            $this->app->reroute( '/shop/account/addresses' );
+    
+        } catch ( \Exception $e ) {
+            \Dsc\System::instance()->addMessage( "Invalid Address", 'error');
+            \Dsc\System::instance()->addMessage( $e->getMessage(), 'error');
+            $this->app->reroute( '/shop/account/addresses' );
+            return;
+        }
+    }
 }

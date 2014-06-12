@@ -295,6 +295,16 @@ class Routes extends \Dsc\Routes\Group
             'url_prefix' => '/account/addresses'
         ));
         
+        $this->add( '/account/address/setprimarybilling/@id', 'GET', array(
+            'controller' => 'Address',
+            'action' => 'setPrimaryBilling'
+        ) );
+
+        $this->add( '/account/address/setprimaryshipping/@id', 'GET', array(
+            'controller' => 'Address',
+            'action' => 'setPrimaryShipping'
+        ) );
+        
         $this->add( '/giftcard/@id/@token', 'GET', array(
             'controller' => 'OrderedGiftCard',
             'action' => 'read'
