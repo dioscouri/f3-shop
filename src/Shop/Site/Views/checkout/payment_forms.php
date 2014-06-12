@@ -89,10 +89,12 @@ jQuery(document).ready(function(){
         	jQuery('#submit-order').trigger('reset');
             return false;
         }
+        
         el.data('locked', true);
         el.data('validated', true);
         jQuery('#checkout-payment-methods').css({ opacity: 0.5 });
-        el.submit();    
+        //el.submit();
+        return true;    
     });
 
     if (!window.payment_methods_loaded)
@@ -114,22 +116,21 @@ jQuery(document).ready(function(){
     }
 
 	var submit_order = jQuery('#submit-order');
-	if (submit_order.size()) {
-		submit_order.on('click', function(e){
-			$this = jQuery( e.target );
-			// display working image
-			$this.addClass('hidden');
-			jQuery('#submit-working').removeClass('hidden');
-		});
-
-		submit_order.on('reset', function(e){
-			$this = jQuery( e.target );
-			// hide working image
-			$this.removeClass('hidden');
-			jQuery('#submit-working').addClass('hidden');
-		});
-	}	
-    
+	submit_order.on('click', function(e){
+		jQuery('.validation-errors').remove();
+		$this = jQuery( e.target );
+		// display working image
+		$this.addClass('hidden');
+		jQuery('#submit-working').removeClass('hidden');
+	});
+	
+	submit_order.on('reset', function(e){
+		$this = jQuery( e.target );
+		// hide working image
+		$this.removeClass('hidden');
+		jQuery('#submit-working').addClass('hidden');
+	});
+	
 });
 </script>
 
