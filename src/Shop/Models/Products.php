@@ -1226,4 +1226,46 @@ class Products extends \Dsc\Mongo\Collections\Content
         
         return $related_products;
     }
+    
+    /**
+     * Gets the pages associated with this product
+     *
+     * @return array
+     */
+    public function relatedPages()
+    {
+        $this->{'pages.related'} = (array) $this->{'pages.related'};
+        if (empty($this->{'pages.related'}))
+        {
+            return array();
+        }
+    
+        $related = (new \Pages\Models\Pages)->setState('filter.ids', $this->{'pages.related'})
+        ->setState('filter.published_today', true)
+        ->setState('filter.publication_status', 'published')
+        ->getList();
+    
+        return $related;
+    }
+    
+    /**
+     * Gets the posts associated with this product
+     *
+     * @return array
+     */
+    public function relatedPosts()
+    {
+        $this->{'blog.related'} = (array) $this->{'blog.related'};
+        if (empty($this->{'blog.related'}))
+        {
+            return array();
+        }
+    
+        $related = (new \Blog\Models\Posts)->setState('filter.ids', $this->{'blog.related'})
+        ->setState('filter.published_today', true)
+        ->setState('filter.publication_status', 'published')
+        ->getList();
+    
+        return $related;
+    }
 }

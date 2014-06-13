@@ -51,17 +51,17 @@ class Listener extends \Prefab
                     'title' => 'Reports',
                     'route' => './admin/shop/reports',
                     'icon' => 'fa fa-signal'
-                ),                
+                ),
                 array(
                     'title' => 'Localization',
                     'route' => 'javascript:void(0);',
                     'icon' => 'fa fa-flag-o'
-                ),                
+                ),
                 array(
                     'title' => 'Configuration',
                     'route' => 'javascript:void(0);',
                     'icon' => 'fa fa-cogs'
-                ),                
+                )
             );
             $shop->addChildren($children, $root);
             
@@ -105,9 +105,9 @@ class Listener extends \Prefab
                         'title' => 'Gift Cards',
                         'route' => './admin/shop/giftcards',
                         'icon' => 'fa fa-gift'
-                    ),                    
+                    )
                 );
-            
+                
                 $catalog_item->addChildren($catalog_children);
             }
             
@@ -131,7 +131,7 @@ class Listener extends \Prefab
                         'title' => 'Gift Cards',
                         'route' => './admin/shop/orders/giftcards',
                         'icon' => 'fa fa-gift'
-                    ),                    
+                    )
                 );
                 
                 $orders_item->addChildren($orders_children);
@@ -157,9 +157,9 @@ class Listener extends \Prefab
                         'title' => 'Credits',
                         'route' => './admin/shop/credits',
                         'icon' => 'fa fa-exchange'
-                    ),
+                    )
                 );
-            
+                
                 $customers_item->addChildren($customers_children);
             }
             
@@ -183,13 +183,13 @@ class Listener extends \Prefab
                         'title' => 'Campaigns',
                         'route' => './admin/shop/campaigns',
                         'icon' => 'fa fa-bullhorn'
-                    ),
+                    )
                 );
-            
+                
                 $marketing_item->addChildren($marketing_children);
-            }            
+            }
             
-            // Find the Localization Menu Item 
+            // Find the Localization Menu Item
             $locale_item = (new \Admin\Models\Nav\Primary())->load(array(
                 'type' => 'admin.nav',
                 'parent' => $shop->id,
@@ -209,12 +209,12 @@ class Listener extends \Prefab
                         'title' => 'Regions',
                         'route' => './admin/shop/regions',
                         'icon' => 'fa fa-list'
-                    ),
+                    )
                 );
-            
+                
                 $locale_item->addChildren($locale_children);
             }
-                        
+            
             // Find the Shop's Configuration menu item
             $settings_item = (new \Admin\Models\Nav\Primary())->load(array(
                 'type' => 'admin.nav',
@@ -293,7 +293,7 @@ class Listener extends \Prefab
         
         $view = \Dsc\System::instance()->get('theme');
         $view->item = $item;
-        $prefab = new \Shop\Models\Prefabs\UserGroupDetail;
+        $prefab = new \Shop\Models\Prefabs\UserGroupDetail();
         if (!isset($view->item['shop']))
         {
             $view->item = $prefab->cast();
@@ -310,7 +310,7 @@ class Listener extends \Prefab
         $event->setArgument('tabs', $tabs);
         $event->setArgument('content', $content);
     }
-    
+
     /**
      * Adds a Shop tab to the Pages\Page editing form
      */
@@ -319,7 +319,7 @@ class Listener extends \Prefab
         $item = $event->getArgument('item');
         $tabs = $event->getArgument('tabs');
         $content = $event->getArgument('content');
-
+        
         $view = \Dsc\System::instance()->get('theme');
         $shop_content = $view->renderLayout('Shop/Admin/Views::listeners/fields_related_products.php');
         
@@ -329,56 +329,169 @@ class Listener extends \Prefab
         $event->setArgument('tabs', $tabs);
         $event->setArgument('content', $content);
     }
-    
+
     /**
      * Add related products to the Pages model whenever it is saved
-     * 
-     * @param unknown $event
+     *
+     * @param unknown $event            
      * @return \MongoId
      */
-    public function beforeSavePagesModelsPages( $event ) 
+    public function beforeSavePagesModelsPages($event)
     {
         $model = $event->getArgument('model');
         
         // related_products could be a CSV of MongoIds
-        if( empty($model->{'shop.products'})){
-        	if( !is_array($model->{'shop.products'}) ){
-        		$model->{'shop.products'} = array();
-        	}
-        } else {
-        	if( !is_array( $model->{'shop.products'} ) ){
-        		$model->{'shop.products'} = trim( $model->{'shop.products'} );
-        		if (! empty( $model->{'shop.products'} ))
-        		{
-        			$model->{'shop.products'} = \Base::instance()->split( (string) $model->{'shop.products'} );
-        		}
-        		else
-        		{
-        			$model->{'shop.products'} = array();
-        		}
-        	}
-        	 
-        	if( !empty( $model->{'shop.products'} )  ){
-        		$products = array_values( $model->{'shop.products'} );
-        		 
-        		array_walk($products, function(&$item, $key){
-        			$item= new \MongoId( (string)$item);
-        		});
-        		sort($products);
-        		$model->{'shop.products'} = $products;
-        	}
+        if (empty($model->{'shop.products'}))
+        {
+            if (!is_array($model->{'shop.products'}))
+            {
+                $model->{'shop.products'} = array();
+            }
+        }
+        else
+        {
+            if (!is_array($model->{'shop.products'}))
+            {
+                $model->{'shop.products'} = trim($model->{'shop.products'});
+                if (!empty($model->{'shop.products'}))
+                {
+                    $model->{'shop.products'} = \Base::instance()->split((string) $model->{'shop.products'});
+                }
+                else
+                {
+                    $model->{'shop.products'} = array();
+                }
+            }
+            
+            if (!empty($model->{'shop.products'}))
+            {
+                $products = array_values($model->{'shop.products'});
+                
+                array_walk($products, function (&$item, $key)
+                {
+                    $item = new \MongoId((string) $item);
+                });
+                sort($products);
+                $model->{'shop.products'} = $products;
+            }
         }
         
         $old_products = array();
-        if( !empty( $model->id ) ){
-        	$old_product = (new \Pages\Models\Pages)->load( array('_id' => new \MongoId( (string) $model->id ) ));
-        	$old_products = array_values( (array)$old_product->{'shop.products'} );
-        	 
-        	if (!empty($old_products) ) {
-        		sort($old_products);
-        	}
+        if (!empty($model->id))
+        {
+            $old_product = (new \Pages\Models\Pages())->load(array(
+                '_id' => new \MongoId((string) $model->id)
+            ));
+            $old_products = array_values((array) $old_product->{'shop.products'});
+            
+            if (!empty($old_products))
+            {
+                sort($old_products);
+            }
         }
         $model->__old_products = $old_products;
+
+        $event->setArgument('model', $model);
+    }
+
+    /**
+     * Add related products to the Pages model whenever it is saved
+     *
+     * @param unknown $event            
+     * @return \MongoId
+     */
+    public function afterSavePagesModelsPages($event)
+    {
+        $model = $event->getArgument('model');
+        
+        if ($model->{'shop.products'})
+        {
+            \Shop\Models\Products::collection()->update(array(
+                '_id' => array(
+                    '$nin' => $model->{'shop.products'}
+                ),
+                'pages.related' => new \MongoId((string) $model->id)
+            ), array(
+                '$pull' => array(
+                    'pages.related' => new \MongoId((string) $model->id)
+                )
+            ), array(
+                'multiple' => true
+            ));
+            
+            \Shop\Models\Products::collection()->update(array(
+                '_id' => array(
+                    '$in' => $model->{'shop.products'}
+                )
+            ), array(
+                '$addToSet' => array(
+                    'pages.related' => new \MongoId((string) $model->id)
+                )
+            ), array(
+                'multiple' => true
+            ));
+        }
+        
+        $event->setArgument('model', $model);
+    }
+
+    /**
+     * Adds a Shop tab to the Blog\Post editing form
+     */
+    public function onDisplayBlogPostEdit($event)
+    {
+        $item = $event->getArgument('item');
+        $tabs = $event->getArgument('tabs');
+        $content = $event->getArgument('content');
+        
+        $view = \Dsc\System::instance()->get('theme');
+        $shop_content = $view->renderLayout('Shop/Admin/Views::listeners/fields_related_products.php');
+        
+        $tabs['shop'] = 'Shop';
+        $content['shop'] = $shop_content;
+        
+        $event->setArgument('tabs', $tabs);
+        $event->setArgument('content', $content);
+    }
+
+    /**
+     * Add related products to the Blog Posts model whenever it is saved
+     *
+     * @param unknown $event            
+     * @return \MongoId
+     */
+    public function beforeSaveBlogModelsPosts($event)
+    {
+        $model = $event->getArgument('model');
+        
+        if (!empty($model->{'shop.products'}))
+        {
+            if (!is_array($model->{'shop.products'}))
+            {
+                $model->{'shop.products'} = trim($model->{'shop.products'});
+                if (!empty($model->{'shop.products'}))
+                {
+                    $model->{'shop.products'} = \Base::instance()->split((string) $model->{'shop.products'});
+                }
+                else
+                {
+                    $model->{'shop.products'} = array();
+                }
+            }
+            
+            if (!empty($model->{'shop.products'}) && is_array($model->{'shop.products'}))
+            {
+                // convert the array of product ids into an array of MongoIds
+                $model->{'shop.products'} = array_map(function ($input)
+                {
+                    return new \MongoId($input);
+                }, $model->{'shop.products'});
+            }
+        }
+        elseif (!is_array($model->{'shop.products'}))
+        {
+            $model->{'shop.products'} = array();
+        }
         
         $event->setArgument('model', $model);
     }
@@ -389,116 +502,36 @@ class Listener extends \Prefab
      * @param unknown $event
      * @return \MongoId
      */
-    public function afterSavePagesModelsPages( $event ) {
-    	$model = $event->getArgument('model');
-    	
-    	// whether related_products is empty or not, we have to compare it to its previous state
-    	// and make updates if they aren't the same
-    	$old_products = array_values($model->__old_products );
-    	
-    	// compare them, only acting if they're different
-    	// the arrays need to be sorted for comparison, which is why we sort above
-    	if ($model->{'shop.products'} != $old_products)
-    	{
-    		// we need two arrays:
-    		// $new_relationships == the ones from $this->related_products that are NOT in $old_product->related_products
-    		// $deleted_relationships == the ones from $old_product->related_products that are NOT in $this->related_products
-    		$new_relationships = array_diff($model->{'shop.products'}, $old_products);
-    		$deleted_relationships = array_diff($old_products, $model->{'shop.products'});
-    	
-    		// remove all $deleted_relationships
-    		if (!empty($deleted_relationships))
-    		{
-    			\Shop\Models\Products::collection()->update(array(
-    					'_id' => array(
-    							'$in' => $deleted_relationships
-    					),
-    					'pages.related' => new \MongoId((string) $model->id)
-    			), array(
-    					'$pull' => array(
-    							'pages.related' => new \MongoId((string) $model->id)
-    					)
-    			), array(
-    					'multiple' => true
-    			));
-    		}
-    	
-    		// insert $new_relationships
-    		if (!empty($new_relationships))
-    		{
-    			\Shop\Models\Products::collection()->update(array(
-    					'_id' => array(
-    							'$in' => $new_relationships
-    					)
-    			), array(
-    					'$push' => array(
-    							'pages.related' => new \MongoId((string) $model->id)
-    					)
-    			), array(
-    					'multiple' => true
-    			));
-    		}
-    	}
-    	 
-        $event->setArgument('model', $model);
-	}
-    
-    /**
-     * Adds a Shop tab to the Blog\Post editing form
-     */
-    public function onDisplayBlogPostEdit($event)
-    {
-        $item = $event->getArgument('item');
-        $tabs = $event->getArgument('tabs');
-        $content = $event->getArgument('content');
-    
-        $view = \Dsc\System::instance()->get('theme');
-        $shop_content = $view->renderLayout('Shop/Admin/Views::listeners/fields_related_products.php');
-    
-        $tabs['shop'] = 'Shop';
-        $content['shop'] = $shop_content;
-    
-        $event->setArgument('tabs', $tabs);
-        $event->setArgument('content', $content);
-    }
-    
-    /**
-     * Add related products to the Blog Posts model whenever it is saved
-     * 
-     * @param unknown $event
-     * @return \MongoId
-     */
-    public function beforeSaveBlogModelsPosts( $event )
+    public function afterSaveBlogModelsPosts($event)
     {
         $model = $event->getArgument('model');
     
-        if (!empty($model->{'shop.products'}))
+        if ($model->{'shop.products'})
         {
-            if (!is_array( $model->{'shop.products'} ))
-            {
-                $model->{'shop.products'} = trim( $model->{'shop.products'} );
-                if (! empty( $model->{'shop.products'} ))
-                {
-                    $model->{'shop.products'} = \Base::instance()->split( (string) $model->{'shop.products'} );
-                }
-                else 
-                {
-                    $model->{'shop.products'} = array();
-                }
-            }
-             
-            if (!empty( $model->{'shop.products'} ) && is_array( $model->{'shop.products'} ))
-            {
-                // convert the array of product ids into an array of MongoIds
-                $model->{'shop.products'} = array_map( function ( $input )
-                {
-                    return new \MongoId( $input );
-                }, $model->{'shop.products'} );
-            }
-        }
-        elseif (!is_array($model->{'shop.products'})) 
-        {
-            $model->{'shop.products'} = array();
+            \Shop\Models\Products::collection()->update(array(
+                '_id' => array(
+                    '$nin' => $model->{'shop.products'}
+                ),
+                'blog.related' => new \MongoId((string) $model->id)
+            ), array(
+                '$pull' => array(
+                    'blog.related' => new \MongoId((string) $model->id)
+                )
+            ), array(
+                'multiple' => true
+            ));
+    
+            \Shop\Models\Products::collection()->update(array(
+                '_id' => array(
+                    '$in' => $model->{'shop.products'}
+                )
+            ), array(
+                '$addToSet' => array(
+                    'blog.related' => new \MongoId((string) $model->id)
+                )
+            ), array(
+                'multiple' => true
+            ));
         }
     
         $event->setArgument('model', $model);

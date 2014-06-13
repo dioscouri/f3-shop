@@ -244,8 +244,6 @@ jQuery(document).ready(function(){
 							$url .= $js;
 							$image .= $js;
 						}
-
-						if (empty($url) || !$product->isAvailable()) { continue; }
                     
                     	if ($n == 0 || ($n % 4 == 0)) { ?><div class="row"><?php } ?>
                     
@@ -277,14 +275,14 @@ jQuery(document).ready(function(){
                 <?php } ?>
                 </div>
             <?php } ?>
-            <?php if ($related_pages = (array) $item->{'pages.related'}) { ?>
+            
+            <?php if ($related_pages = $item->relatedPages()) { ?>
                 <div class="margin-top">
                 <h3>Related Pages</h3>
                 <?php $n=0; $count = count($related_pages); ?>
                 
                 <?php 
-                	$related_pages_db = (new \Pages\Models\Pages)->setState('filter.ids', $related_pages)->setState('filter.published_today',1)->getList();
-                	foreach ($related_pages_db as $page) { ?>
+                	foreach ($related_pages as $page) { ?>
                     
                     <?php if ($n == 0 || ($n % 4 == 0)) { ?><div class="row"><?php } ?>
                     
@@ -295,6 +293,33 @@ jQuery(document).ready(function(){
                         		<h4><?php echo $page->title; ?></h4>
                         		<?php if ($page->{'featured_image.slug'} ) { ?>
                                 	<img class="img-responsive" alt="<?php echo $page->title; ?>" src="./asset/thumb/<?php echo $page->{'featured_image.slug'}; ?>" />
+                            	<?php } ?>
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <?php $n++; if (($n % 4 == 0) || $n==$count) { ?></div> <hr/><?php } ?>
+                <?php } ?>
+                </div>
+            <?php } ?>
+            
+            <?php if ($related_posts = $item->relatedPosts()) { ?>
+                <div class="margin-top">
+                <h3>Related Blog Posts</h3>
+                <?php $n=0; $count = count($related_posts); ?>
+                
+                <?php 
+                	foreach ($related_posts as $post) { ?>
+                    
+                    <?php if ($n == 0 || ($n % 4 == 0)) { ?><div class="row"><?php } ?>
+                    
+                    <div class="col-xs-6 col-sm-3 col-md-3 category-article category-grid text-center">
+                        
+                        <div>
+                            <a href="./blog/post/<?php echo $post->slug; ?>">
+                        		<h4><?php echo $post->title; ?></h4>
+                        		<?php if ($post->{'featured_image.slug'} ) { ?>
+                                	<img class="img-responsive" alt="<?php echo $post->title; ?>" src="./asset/thumb/<?php echo $post->{'featured_image.slug'}; ?>" />
                             	<?php } ?>
                             </a>
                         </div>
