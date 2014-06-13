@@ -1183,6 +1183,11 @@ class Products extends \Dsc\Mongo\Collections\Content
     	return $return;
     }
     
+    /**
+     * 
+     * @param unknown $title
+     * @return Ambigous <boolean, unknown>
+     */
     public function findAttributeByTitle( $title ) 
     {
         $return = false;
@@ -1198,5 +1203,27 @@ class Products extends \Dsc\Mongo\Collections\Content
     	}
     	
     	return $return;
+    }
+    
+    /**
+     * Gets the products related to this one
+     * 
+     * @return array
+     */
+    public function relatedProducts()
+    {
+        $this->related_products = (array) $this->related_products;
+        if (empty($this->related_products)) 
+        {
+        	return array();
+        }
+        
+        $related_products = (new static)->setState('filter.ids', $this->related_products)
+            ->setState('filter.published_today', true)
+            ->setState('filter.publication_status', 'published')
+    		->setState('filter.inventory_status', 'in_stock')
+        ->getList();
+        
+        return $related_products;
     }
 }

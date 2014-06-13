@@ -228,14 +228,13 @@ jQuery(document).ready(function(){
                 </form>
 
                 <hr />
-            <?php if ($related_products = (array) $item->{'related_products'}) { ?>
+            <?php if ($related_products = $item->relatedProducts()) { ?>
                 <div class="margin-top">
                 <h3>Related Products</h3>
                 <?php $n=0; $count = count($related_products); ?>
                 
                 <?php 
-                	$related_products_db = (new \Shop\Models\Products)->setState('filter.ids', $related_products)->getList();
-                	foreach ($related_products_db as $product ) {
+                	foreach ($related_products as $product ) {
 						$image = (!empty($product->{'featured_image.slug'})) ? './asset/thumb/' . $product->{'featured_image.slug'} : null;
 						$url = './shop/product/' . $product->slug;
 						$js = '';
