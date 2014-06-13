@@ -12,6 +12,11 @@ class Checkout extends \Dsc\Controller
         }
         $cart->applyCredit();
         
+        if ($cart->quantity() <= 0) 
+        {
+        	$this->app->reroute('/shop/cart');
+        }
+        
         \Base::instance()->set( 'cart', $cart );
         
         $identity = $this->getIdentity();
@@ -217,14 +222,6 @@ class Checkout extends \Dsc\Controller
     }
 
     /**
-     * Validates a cart for checkout and returns either a "good to go" message
-     * or data on why the cart is not ready to be submitted
-     */
-    public function validate()
-    {
-    }
-
-    /**
      * Gets valid shipping methods for the cart
      */
     public function shippingMethods()
@@ -254,10 +251,26 @@ class Checkout extends \Dsc\Controller
      */
     public function submit()
     {
+        $cart = \Shop\Models\Carts::fetch();
+        if ($cart->quantity() <= 0)
+        {
+            $this->app->reroute('/shop/cart');
+        }
+        
+        $identity = $this->getIdentity();
+        if (empty( $identity->id ))
+        {
+            $flash = \Dsc\Flash::instance();
+            \Base::instance()->set('flash', $flash );
+        
+            $view = \Dsc\System::instance()->get( 'theme' );
+            echo $view->render( 'Shop/Site/Views::checkout/identity.php' );
+            return;
+        }
+                
         $f3 = \Base::instance();
 
         // Update the cart with checkout data from the form
-        $cart = \Shop\Models\Carts::fetch();
         $checkout_inputs = $this->input->get( 'checkout', array(), 'array' );
         if (!empty($checkout_inputs['billing_address']['same_as_shipping'])) {
             $checkout_inputs['billing_address']['same_as_shipping'] = true;
