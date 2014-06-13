@@ -47,7 +47,22 @@
 	             <input type="text" name="ordering" placeholder="Ordering" value="<?php echo $flash->old('ordering'); ?>" class="form-control" />
 	        </div>
 	        <!-- /.form-group -->
-	        </div>
+	    </div>
+	    
+	    <div class="row">
+	        <div class="form-group col-md-6">        
+	            <label>Requires Postal Code</label>
+	            <div class="form-group">
+	                <label class="radio-inline">
+	                    <input type="radio" name="requires_postal_code" value="1" <?php if ($flash->old('requires_postal_code')) { echo 'checked'; } ?>> Yes
+	                </label>
+	                <label class="radio-inline">
+	                    <input type="radio" name="requires_postal_code" value="0" <?php if (!$flash->old('requires_postal_code')) { echo 'checked'; } ?>> No
+	                </label>
+	            </div>
+	        </div>	    
+	    </div>
+	        
     </div>
     <!-- /.col-md-10 -->
     

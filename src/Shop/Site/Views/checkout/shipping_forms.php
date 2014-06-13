@@ -58,14 +58,14 @@
                 <div class="form-group col-xs-12 col-sm-12 col-md-6">
                     <select class="form-control country" data-required="true" name="checkout[shipping_address][country]" id="shipping-country" autocomplete="country">
                     <?php foreach (\Shop\Models\Countries::defaultList() as $country) { ?>
-                        <option value="<?php echo $country->isocode_2; ?>" <?php if ($cart->shippingCountry() == $country->isocode_2) { echo "selected"; } ?>><?php echo $country->name; ?></option>
+                        <option data-requires_postal_code="<?php echo $country->requires_postal_code; ?>" value="<?php echo $country->isocode_2; ?>" <?php if ($cart->shippingCountry() == $country->isocode_2) { echo "selected"; } ?>><?php echo $country->name; ?></option>
                     <?php } ?>
                     </select>
                 </div>            
             </div>            
             <div class="row">
                 <div class="form-group col-xs-12 col-sm-12 col-md-4">
-                    <input id="postal_code" type="text" class="form-control postal-code" data-required="true" name="checkout[shipping_address][postal_code]" value="<?php echo $cart->{'checkout.shipping_address.postal_code'}; ?>" placeholder="Postal Code" autocomplete="postal-code" >
+                    <input id="postal_code" type="text" class="form-control postal-code" data-required="<?php echo \Shop\Models\Countries::fromCode($cart->shippingCountry())->requires_postal_code ? 'true' : 'false'; ?>" name="checkout[shipping_address][postal_code]" value="<?php echo $cart->{'checkout.shipping_address.postal_code'}; ?>" placeholder="Postal Code" autocomplete="postal-code" >
                 </div>
                 <div class="form-group col-xs-12 col-sm-12 col-md-8">
                     <input id="phone_number" type="text" class="form-control phone" data-required="true" name="checkout[shipping_address][phone_number]" value="<?php echo $cart->{'checkout.shipping_address.phone_number'}; ?>" placeholder="Phone Number" autocomplete="tel">
@@ -117,13 +117,21 @@ jQuery(document).ready(function(){
         }).done(function(data){
             var lr = jQuery.parseJSON( JSON.stringify(data), false);
             if (lr.result) {
-                jQuery('#parents').html(lr.result);
                 regions.find('option').remove();
                 jQuery.each(lr.result, function(index,value){
                     regions.append(jQuery("<option></option>").text(jQuery('<span>').html(value.name).text()).val(value.code));
                 });
             }
-        });        
+        });
+
+        var selected = el.find('option:selected');
+        var requires_postal_code = selected.attr('data-requires_postal_code');
+        var postal_code = jQuery('#postal_code');
+        if (requires_postal_code == 0) {            
+            postal_code.attr('data-required', false);
+        } else {
+        	postal_code.attr('data-required', true);
+        }
     });
 
     var validation = new ShopValidation('#checkout-shipping-form');

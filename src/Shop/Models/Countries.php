@@ -9,7 +9,8 @@ class Countries extends \Dsc\Mongo\Collection
     public $isocode_2 = null;
     public $isocode_3 = null;
     public $enabled = null;
-    
+    public $requires_postal_code = 1;
+        
     protected $__collection_name = 'shop.countries';
     protected $__config = array(
         'default_sort' => array(
@@ -77,6 +78,7 @@ class Countries extends \Dsc\Mongo\Collection
     protected function beforeSave()
     {
         $this->enabled = (int) $this->enabled;
+        $this->requires_postal_code = (int) $this->requires_postal_code;
         
         return parent::beforeSave();
     }    
@@ -102,5 +104,18 @@ class Countries extends \Dsc\Mongo\Collection
         $result = \Shop\Models\Countries::find( $conditions );
         
         return $result;
+    }
+    
+    public static function fromCode( $isocode, $type='isocode_2' )
+    {
+        $model = new static;
+        
+        if ($doc = $model->collection()->findOne(array(
+            $type => $isocode
+        ))) {
+            $model = $model->bind($doc);
+        }
+        
+        return $model;
     }
 }

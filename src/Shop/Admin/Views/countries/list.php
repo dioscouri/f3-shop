@@ -51,18 +51,7 @@
         <div class="row">
             <div class="col-xs-12 col-sm-6">
                 <ul class="list-filters list-unstyled list-inline">
-                    <li>
-                        <select name="list[order]" class="form-control" onchange="this.form.submit();">
-                            <option value="ordering" <?php if ($state->get('list.order') == 'ordering') { echo "selected='selected'"; } ?>>Ordering</option>
-                        	<option value="name" <?php if ($state->get('list.order') == 'name') { echo "selected='selected'"; } ?>>Name</option>
-                        </select>
-                    </li>
-                    <li>
-                        <select name="list[direction]" class="form-control" onchange="this.form.submit();">
-                            <option value="1" <?php if ($state->get('list.direction') == '1') { echo "selected='selected'"; } ?>>ASC</option>
-                            <option value="-1" <?php if ($state->get('list.direction') == '-1') { echo "selected='selected'"; } ?>>DESC</option>
-                        </select>                        
-                    </li>
+                
                 </ul>            
             </div>
             
@@ -105,11 +94,20 @@
             </div>
         
         </div>
-        <!-- /.widget-body-toolbar -->        
+        <!-- /.widget-body-toolbar -->
+                
         <input type="hidden" name="list[order]" value="<?php echo $state->get('list.order'); ?>" />
         <input type="hidden" name="list[direction]" value="<?php echo $state->get('list.direction'); ?>" />
    
         <?php if (!empty($paginated->items)) { ?>
+            <div class="list-group-item">
+                <div>
+                    Sort by:
+                    <a class="btn btn-link" data-sortable="name">Name</a>
+                    <a class="btn btn-link" data-sortable="ordering">Manual Ordering</a>
+                    <a class="btn btn-link" data-sortable="enabled">Enabled Status</a>
+                </div>
+            </div>
         
             <?php foreach($paginated->items as $country) { ?>
             <div class="list-group-item">
@@ -121,9 +119,11 @@
                     
                         <div class="col-xs-11 col-sm-11 col-md-11">
                         	<div class="row">
-	                             <div class="col-xs-6 col-sm-7 col-md-7">
-	                            	<legend><a href="./admin/shop/country/edit/<?php echo $country->id; ?>"><?php echo $country->name; ?></a>
+                                <div class="col-xs-6 col-sm-7 col-md-7">
+	                            	<legend>
+	                            	  <a href="./admin/shop/country/edit/<?php echo $country->id; ?>"><?php echo $country->name; ?></a>
                                     </legend>
+                                    
 	                            </div>
 		                    	<div class="col-xs-2 col-sm-2 col-md-2">
 		                        		<a class="btn btn-xs" href="./admin/shop/countries/moveUp/<?php echo $country->id; ?>" title="Move Up">
@@ -152,8 +152,14 @@
 		                    	</div>
                         	</div>
                         	<div class="row">
-                        		<div class="col-xs-4 col-sm-4 col-md3">
-                        		<?php echo $country->isocode_2; ?> | <?php echo $country->isocode_3; ?>
+                        		<div class="col-xs-4 col-sm-4 col-md-3">
+                            		<?php echo $country->isocode_2; ?> | <?php echo $country->isocode_3; ?>
+                        		</div>
+                        		<div class="col-xs-4 col-sm-4 col-md-3">
+                                    <?php $label_class = ($country->requires_postal_code) ? 'label-success' : 'label-default'; ?>
+                                    <span class="label <?php echo $label_class; ?>">
+                                        <?php echo ($country->requires_postal_code) ? 'Requires Postal Code' : 'No Postal Code Necessary'; ?>
+                                    </span>
                         		</div>
                         	</div>
                         </div>
