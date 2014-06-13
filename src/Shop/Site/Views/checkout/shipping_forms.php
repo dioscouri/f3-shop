@@ -172,6 +172,8 @@ jQuery(document).ready(function(){
             jQuery('#phone_number').val( selected.attr('data-phone_number') );
             jQuery('#shipping-region').val( selected.attr('data-region') );
         }
+
+        jQuery('#shipping-country').trigger('change');
                 
     });
 
