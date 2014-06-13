@@ -112,8 +112,8 @@
         <?php if (!empty($paginated->items)) { ?>
         
             <?php foreach($paginated->items as $country) { ?>
-            <div class="panel panel-default">
-                <div class="panel-body">
+            <div class="list-group-item">
+                
                     <div class="row">
                         <div class="checkbox-column col-xs-1 col-sm-1 col-md-1">
 							<input type="checkbox" class="icheck-input" name="ids[]" value="<?php echo $country->id; ?>">
@@ -121,9 +121,11 @@
                     
                         <div class="col-xs-11 col-sm-11 col-md-11">
                         	<div class="row">
-	                             <div class="col-xs-9 col-sm-10 col-md-11">
+	                             <div class="col-xs-6 col-sm-7 col-md-7">
 	                            	<legend><a href="./admin/shop/country/edit/<?php echo $country->id; ?>"><?php echo $country->name; ?></a>
-		                        		|
+                                    </legend>
+	                            </div>
+		                    	<div class="col-xs-2 col-sm-2 col-md-2">
 		                        		<a class="btn btn-xs" href="./admin/shop/countries/moveUp/<?php echo $country->id; ?>" title="Move Up">
 		                        			<i class="fa fa-chevron-up"></i>
 		                        		</a>
@@ -131,25 +133,22 @@
 		                        		<a class="btn btn-xs" href="./admin/shop/countries/moveDown/<?php echo $country->id; ?>" title="Move Down">
 		                        			<i class="fa fa-chevron-down"></i>
 		                        		</a>
-		                        		</legend>
-	                            	</div>
-		                        <div class="col-xs-3 col-sm-2 col-md-1">
-		                        	<div class="pull-right">
-				                        <a class="btn btn-xs btn-danger" data-bootbox="confirm" href="./admin/shop/country/delete/<?php echo $country->id; ?>">
-				                            <i class="fa fa-times"></i>
-				                        </a>
-		                        	</div>
-		                        	<div class="pull-right col-xs-12 col-md-12">
+		                    	</div>	                            
+		                        <div class="col-xs-2 col-sm-2 col-md-2">
 										<?php if( $country->enabled ) { ?>
-		                        		<a class="btn btn-xs" href="./admin/shop/countries/disable/<?php echo $country->id; ?>" title="Disable">
+		                        		<a class="btn btn-success" href="./admin/shop/countries/disable/<?php echo $country->id; ?>" title="Disable">
 		                        			<i class="fa fa-check-square"></i> Enabled
 		                        		</a>
 		                        		<?php } else { ?>
-		                        		<a class="btn btn-xs" href="./admin/shop/countries/enable/<?php echo $country->id; ?>" title="Enable">
+		                        		<a class="btn btn-warning" href="./admin/shop/countries/enable/<?php echo $country->id; ?>" title="Enable">
 		                        			<i class="fa fa-square"></i> Disabled
 		                        		</a>
 		                        		<?php } ?>
-		                        	</div>
+		                    	</div>		                    	
+		                    	<div class="col-xs-2 col-sm-1 col-md-1">
+			                        <a class="btn btn-danger" data-bootbox="confirm" href="./admin/shop/country/delete/<?php echo $country->id; ?>">
+			                            <i class="fa fa-times"></i> Delete
+			                        </a>
 		                    	</div>
                         	</div>
                         	<div class="row">
@@ -159,7 +158,7 @@
                         	</div>
                         </div>
                     </div>
-                </div>
+                
             </div>
             <?php } ?>
             

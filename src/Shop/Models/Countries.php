@@ -38,7 +38,7 @@ class Countries extends \Dsc\Mongo\Collection
         $filter_only_enabled = $this->getState( 'filter.enabled', null );
     
         if( strlen( $filter_only_enabled ) ){
-        	$this->setCondition( "enabled", (int)$filter_only_enabled );
+        	$this->setCondition( "enabled", (int) $filter_only_enabled );
     	}
         return $this;
     }
@@ -74,10 +74,33 @@ class Countries extends \Dsc\Mongo\Collection
         return $result;
     }
     
+    protected function beforeSave()
+    {
+        $this->enabled = (int) $this->enabled;
+        
+        return parent::beforeSave();
+    }    
+    
     protected function afterSave()
     {
     	parent::afterSave();
+    	
     	$this->compressOrdering();
     }
     
+    public static function defaultList()
+    {
+        $conditions = array(
+        	'enabled' => 1
+        );
+        
+        $settings = \Shop\Models\Settings::fetch();
+        if ($settings->countries_sort == 'name') {
+            $conditions['sort'] = array('name'=> 1);
+        }
+        
+        $result = \Shop\Models\Countries::find( $conditions );
+        
+        return $result;
+    }
 }

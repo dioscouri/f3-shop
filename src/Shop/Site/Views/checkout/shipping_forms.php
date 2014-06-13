@@ -57,7 +57,7 @@
                 </div>
                 <div class="form-group col-xs-12 col-sm-12 col-md-6">
                     <select class="form-control country" data-required="true" name="checkout[shipping_address][country]" id="shipping-country" autocomplete="country">
-                    <?php foreach (\Shop\Models\Countries::find() as $country) { ?>
+                    <?php foreach (\Shop\Models\Countries::defaultList() as $country) { ?>
                         <option value="<?php echo $country->isocode_2; ?>" <?php if ($cart->shippingCountry() == $country->isocode_2) { echo "selected"; } ?>><?php echo $country->name; ?></option>
                     <?php } ?>
                     </select>

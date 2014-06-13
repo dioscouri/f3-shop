@@ -46,4 +46,6 @@ class Settings extends \Dsc\Mongo\Collections\Settings
         'postal_code' => null,
         'phone_number' => null,
     );
+    
+    public $countries_sort = 'name';
 }

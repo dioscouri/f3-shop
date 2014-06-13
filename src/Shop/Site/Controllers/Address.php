@@ -238,7 +238,7 @@ class Address extends \Dsc\Controller
      */
     public function countries()
     {
-        $result = \Shop\Models\Countries::find();
+        $result = \Shop\Models\Countries::defaultList();
         
         return $this->outputJson( $this->getJsonResponse( array(
             'message' => \Dsc\System::instance()->renderMessages(),
