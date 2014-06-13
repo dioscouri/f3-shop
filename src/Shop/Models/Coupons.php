@@ -305,7 +305,7 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
             $intersection = array_intersect($this->required_products, $product_ids);
             if (empty($intersection)) 
             {
-                throw new \Exception('Cart does not have any of the required products');
+                throw new \Exception('Coupon does not apply to any products in your cart.');
             }
         }
         
@@ -358,7 +358,7 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
         	
         	if (!$found)
         	{
-        		throw new \Exception('Cart does not have any of the products from required collection');
+        		throw new \Exception('Coupon does not apply to any products in your cart.');
         	}
         }
         
