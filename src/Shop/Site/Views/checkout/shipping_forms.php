@@ -107,7 +107,7 @@
 
 <script>
 jQuery(document).ready(function(){
-    jQuery('#shipping-country').on('change', function(){
+    jQuery('#shipping-country').on('change', function(event, callback){
         var el = jQuery('#shipping-country');
         var regions = jQuery('#shipping-region');
         var val = el.val();
@@ -118,8 +118,16 @@ jQuery(document).ready(function(){
             var lr = jQuery.parseJSON( JSON.stringify(data), false);
             if (lr.result) {
                 regions.find('option').remove();
+                var count = lr.result.length;
+                var n = 0;
                 jQuery.each(lr.result, function(index,value){
                     regions.append(jQuery("<option></option>").text(jQuery('<span>').html(value.name).text()).val(value.code));
+                    n++;
+                    if (n == count) {
+                        if (typeof callback === 'function') {
+                        	callback(lr);
+                        }                   
+                    }
                 });
             }
         });
@@ -148,33 +156,38 @@ jQuery(document).ready(function(){
     jQuery('#select-address').on('change', function(){
     	var el = jQuery(this);
         var val = el.val();
-        
-        if (el.children(":selected").attr('id') == 'new-address') {
-            // empty all fields
-            jQuery('#shipping-country').val( '<?php echo $cart->shippingCountry(); ?>' );
-            jQuery('#name').val( '' );
-            jQuery('#line_1').val( '' );
-            jQuery('#line_2').val( '' );
-            jQuery('#city').val( '' );
-            jQuery('#postal_code').val( '' );
-            jQuery('#phone_number').val( '' );
-            jQuery('#shipping-region').val( '' );
-            
-        } else {
-            // populate all fields
-            var selected = el.children(":selected");
-            jQuery('#shipping-country').val( selected.attr('data-country') );
-            jQuery('#name').val( selected.attr('data-name') );
-            jQuery('#line_1').val( selected.attr('data-line_1') );
-            jQuery('#line_2').val( selected.attr('data-line_2') );
-            jQuery('#city').val( selected.attr('data-city') );
-            jQuery('#postal_code').val( selected.attr('data-postal_code') );
-            jQuery('#phone_number').val( selected.attr('data-phone_number') );
-            jQuery('#shipping-region').val( selected.attr('data-region') );
-        }
+        var selected = el.children(":selected");
 
-        jQuery('#shipping-country').trigger('change');
+        if (selected.attr('id') == 'new-address') {
+        	jQuery('#shipping-country').val( '<?php echo $cart->shippingCountry(); ?>' );
+        } else {
+        	jQuery('#shipping-country').val( selected.attr('data-country') );
+        }
+        
+    	jQuery('#shipping-country').trigger('change', [ function(){
+            
+            if (selected.attr('id') == 'new-address') {
+                // empty all fields
+                jQuery('#name').val( '' );
+                jQuery('#line_1').val( '' );
+                jQuery('#line_2').val( '' );
+                jQuery('#city').val( '' );
+                jQuery('#postal_code').val( '' );
+                jQuery('#phone_number').val( '' );
+                jQuery('#shipping-region').val( '' );
                 
+            } else {
+                // populate all fields
+                jQuery('#name').val( selected.attr('data-name') );
+                jQuery('#line_1').val( selected.attr('data-line_1') );
+                jQuery('#line_2').val( selected.attr('data-line_2') );
+                jQuery('#city').val( selected.attr('data-city') );
+                jQuery('#postal_code').val( selected.attr('data-postal_code') );
+                jQuery('#phone_number').val( selected.attr('data-phone_number') );
+                jQuery('#shipping-region').val( selected.attr('data-region') );
+            }
+                        	
+        } ] );
     });
 
     if (!window.shipping_methods_loaded)
