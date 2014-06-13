@@ -88,7 +88,7 @@ class Collection extends \Dsc\Controller
     	 
     	$this->app->set('collection', $collection );    	
 
-    	$this->app->set('meta.title', $collection->seoTitle() . ' | Blog');
+    	$this->app->set('meta.title', $collection->seoTitle() . ' | Shop');
     	$this->app->set('meta.description', $collection->seoDescription() );    	
     	
     	$view = \Dsc\System::instance()->get('theme');
