@@ -663,8 +663,13 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
      */
     public function total()
     {
-    	$total = $this->subtotal();
-    	 
+    	// do these calculations before getting the taxes
+        $total = $this->subtotal();
+    	$discount_total = $this->discountTotal(); 
+    	$giftcard_total = $this->giftCardTotal(); 
+    	$credit_total = $this->creditTotal();
+    	
+    	// get taxes
         if ($shippingMethod = $this->shippingMethod()) 
         {
         	$total = $total + $shippingMethod->total();
@@ -676,6 +681,7 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
             $total = $total + $this->taxEstimate();
         }
         
+        // do these calculations again after getting taxes
         $total = $total - $this->discountTotal() - $this->giftCardTotal() - $this->creditTotal();
     
         return (float) $total;
@@ -889,6 +895,10 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
         
         $total = $total - $this->discountTotal();
         
+        if ($total < 0) {
+            $total = 0;
+        }
+        
         return (float) $total;
     }
     
@@ -1025,7 +1035,7 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
      *
      * @return array
      */
-    public function taxItems( $refresh=false )
+    public function taxItems( $refresh=true )
     {
         if (empty($this->taxes) || $refresh)
         {
