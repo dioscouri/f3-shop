@@ -6,7 +6,7 @@
         <div class="row">
             <div class="col-xs-12 col-sm-12 col-md-9">
                 <h1>
-                    Thank you for your order <br/> 
+                    Thank you for your order!<br/> 
                     <small>Your order number is <a href="./shop/order/<?php echo $order->id; ?>"><?php echo $order->number; ?></a>.</small>
                 </h1>
                 <p>You will receive an email confirmation shortly at <b><?php echo $order->user_email; ?></b></p>
