@@ -109,4 +109,16 @@ class Regions extends \Dsc\Mongo\Collection
         
         return array();
     }
+    
+    /**
+     * Gets the country model for this region
+     * 
+     * @return unknown
+     */
+    public function country()
+    {
+        $country = \Shop\Models\Countries::fromCode( $this->country_isocode_2 );
+        
+        return $country;
+    }
 }
