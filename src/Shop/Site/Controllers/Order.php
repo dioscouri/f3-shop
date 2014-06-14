@@ -20,7 +20,9 @@ class Order extends \Dsc\Controller
         $model = new \Shop\Models\Orders;
         $model->emptyState()->populateState()
             ->setState('list.limit', 10 )
-            ->setState('filter.user', (string) $identity->id );
+            ->setState('filter.user', (string) $identity->id )
+            ->setState('filter.status_excludes', \Shop\Constants\OrderStatus::cancelled)
+        ;
         $state = $model->getState();
                 
         try {

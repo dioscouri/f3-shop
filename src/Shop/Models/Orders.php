@@ -122,6 +122,26 @@ class Orders extends \Dsc\Mongo\Collections\Taggable
             $this->setCondition('status', $filter_status);
         }
         
+        $filter_status_excludes = $this->getState('filter.status_excludes');
+        if (strlen($filter_status_excludes))
+        {
+            // add $and conditions to the query stack
+            if (!$and = $this->getCondition('$and'))
+            {
+                $and = array();
+            }
+            
+            $and[] = array(
+                'status' => array(
+                    '$nin' => array(
+                        $filter_status_excludes
+                    )
+                )
+            );
+            
+            $this->setCondition('$and', $and);            
+        }
+        
         $filter_fulfillment_status = $this->getState('filter.fulfillment_status');
         if (strlen($filter_fulfillment_status))
         {
