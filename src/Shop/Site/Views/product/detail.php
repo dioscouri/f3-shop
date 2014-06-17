@@ -124,7 +124,7 @@ jQuery(document).ready(function(){
         <?php if (!empty($images)) { ?> 
         <div class="col-sm-6">
             <?php if ($item->{'featured_image.slug'}) { ?>
-            <div class="product-image product-image-big hidden-xs">
+            <div class="product-image product-image-big">
    	            <img id="product-image" class="imagezoom img-responsive" src="./asset/<?php echo $item->{'featured_image.slug'}; ?>" title="<?php echo htmlspecialchars_decode( $item->title ); ?>" data-big-image-src="./asset/<?php echo $item->{'featured_image.slug'}; ?>" />
             </div>
             <?php } ?>
