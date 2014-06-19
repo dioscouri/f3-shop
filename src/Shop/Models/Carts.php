@@ -683,8 +683,28 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
         
         // do these calculations again after getting taxes
         $total = $total - $this->discountTotal() - $this->giftCardTotal() - $this->creditTotal();
-    
+        
+        if ($total < 0) {
+            $total = 0;
+        }
+        
         return (float) $total;
+    }
+    
+    /**
+     * 
+     */
+    public function totals()
+    {
+        return array(
+        	'subtotal' => $this->subtotal(),
+            'discount_total' => $this->discountTotal(),
+            'giftcard_total' => $this->giftCardTotal(),
+            'credit_total' => $this->creditTotal(),
+            'tax_total' => $this->taxTotal(),
+            'shipping_total' => $this->shippingTotal(),
+            'total' => $this->total(),
+        );
     }
     
     /**
@@ -1142,6 +1162,7 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
                 // now get all the coupon values
                 foreach ((array) $this->coupons as $key=>$item)
                 {
+                    $this->{'coupons.' . $key . '.cart_totals_before_calculating_coupon_value'} = $this->totals();
                     $this->{'coupons.' . $key . '.amount'} = $this->calcCouponValue( $item );
                 }
                 
@@ -1389,6 +1410,7 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
         if (!$exists) 
         {
             $cast = $coupon->cast();
+            $cast['cart_totals_before_calculating_coupon_value'] = $this->totals();
             $cast['amount'] = $coupon->cartValue( $this );
             $this->coupons[] = $cast;
         }
@@ -1578,6 +1600,7 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
             try {
             	$coupon->cartValid( $this );
             	$cast = $coupon->cast();
+            	$cast['cart_totals_before_calculating_coupon_value'] = $this->totals();
             	$cast['amount'] = $this->calcCouponValue( $coupon );
             	$this->auto_coupons[] = $cast;            	
 

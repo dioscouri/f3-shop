@@ -299,3 +299,15 @@ jQuery(document).ready(function(){
 	jQuery('[data-toggle="tooltip"]').tooltip();
 });
 </script>
+
+<?php 
+/* Useful for debugging coupons 
+$dump_data = array();
+foreach ($cart->allCoupons() as $c) {
+	$dump_data[] = array(
+		'code' => $c['code'],
+        'amount' => $c['amount'],
+        'cart_totals_before_calculating_coupon_value' => $c['cart_totals_before_calculating_coupon_value'],
+	);
+}
+echo \Dsc\Debug::dump( $dump_data ); */ ?>

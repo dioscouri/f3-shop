@@ -275,7 +275,7 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
         }
         
         // TODO take min_order_amount_currency into account once we have currencies sorted
-        $total = $cart->total() + $cart->giftCardTotal();
+        $total = $cart->subtotal() - $cart->giftCardTotal() - $cart->discountTotal() - $cart->creditTotal();
         // Add back the value of this coupon in case it is already applied
         foreach ($cart->allCoupons() as $coupon) 
         {
@@ -510,7 +510,7 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
         			throw new \Exception('You cannot use this coupon any more');
         		}
         	} else {
-        		throw new \Exception('Coupon "'.$this->generated_code.'" does not exist anymore.');
+        		throw new \Exception('Coupon "'.$this->generated_code.'" is no longer available.');
         	}
         }
         

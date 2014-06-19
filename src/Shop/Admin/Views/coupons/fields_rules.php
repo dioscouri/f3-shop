@@ -101,7 +101,7 @@
     <div class="col-md-10">
     
         <div class="form-group">
-            <label>Subtotal (before discounts are applied)</label>
+            <label>Subtotal (before discounts, gift cards, store credits, taxes, and shipping totals are applied)</label>
             <div class="row">
                 <div class="col-md-6">
                     <input type="text" name="min_subtotal_amount" placeholder="0.00" value="<?php echo $flash->old('min_subtotal_amount'); ?>" class="form-control" />
@@ -114,7 +114,7 @@
         <!-- /.form-group -->    
     
         <div class="form-group">
-            <label>Total (after all other discounts are applied)</label>
+            <label>Total (after gift cards, store credits, and all other discounts are applied, but before taxes and shipping totals are applied)</label>
             <div class="row">
                 <div class="col-md-6">
                     <input type="text" name="min_order_amount" placeholder="0.00" value="<?php echo $flash->old('min_order_amount'); ?>" class="form-control" />
