@@ -177,10 +177,22 @@ class OrderedGiftCards extends \Dsc\Mongo\Collections\Nodes
     public function cartValue( \Shop\Models\Carts $cart )
     {
         $value = $this->balance();
-        
-        if ($cart->total() < $value) 
+
+        // exclude the giftcard total from the following comparison
+        $cart_total = $cart->subtotal()
+                    - $cart->discountTotal()
+                    - $cart->creditTotal()
+                    + $cart->taxTotal()
+                    + $cart->shippingTotal();                    
+                
+        if ($cart_total < $value) 
         {
-        	$value = $cart->total();
+        	$value = $cart_total;
+        }
+        
+        if ($value < 0) 
+        {
+            $value = 0;
         }
         
         return $value;

@@ -1166,13 +1166,13 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
                     $this->{'coupons.' . $key . '.amount'} = $this->calcCouponValue( $item );
                 }
                 
+                // now that user coupons have been validated, ensure the autoCoupons
+                $this->ensureAutoCoupons();
+                
                 foreach ((array) $this->giftcards as $key=>$item)
                 {
                     $this->{'giftcards.' . $key . '.amount'} = $this->calcGiftCardValue( $item );
                 }
-
-                // now that user coupons have been validated, ensure the autoCoupons
-                $this->ensureAutoCoupons();
             }
         }
         
@@ -1686,10 +1686,11 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
         if (is_object($giftcard) && is_a($giftcard, '\Shop\Models\OrderedGiftCards') )
         {
             // do nothing
+            $giftcard->reload();
         }
         elseif (is_array($giftcard) || is_object($giftcard))
         {
-            $giftcard = new \Shop\Models\OrderedGiftCards( $giftcard );
+            $giftcard = (new \Shop\Models\OrderedGiftCards( $giftcard ))->reload();
         }
         else
         {
@@ -1697,7 +1698,7 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
         }
 
         $value = $giftcard->cartValue( $this );
-    
+        
         return $value;
     }
     

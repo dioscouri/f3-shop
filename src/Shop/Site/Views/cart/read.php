@@ -302,7 +302,7 @@ jQuery(document).ready(function(){
 
 <?php
 //echo \Dsc\Debug::dump( $cart->id ); 
-/* Useful for debugging coupons 
+/* // Useful for debugging coupons 
 $dump_data = array();
 foreach ($cart->allCoupons() as $c) {
 	$dump_data[] = array(
@@ -311,4 +311,17 @@ foreach ($cart->allCoupons() as $c) {
         'cart_totals_before_calculating_coupon_value' => $c['cart_totals_before_calculating_coupon_value'],
 	);
 }
-echo \Dsc\Debug::dump( $dump_data ); */ ?>
+echo \Dsc\Debug::dump( $dump_data ); */
+/* // Useful for debugging giftcards  
+$dump_data = array();
+foreach ($cart->giftcards as $g) {
+    $dump_data[] = array(
+        'code' => $g['code'],
+        'amount' => $g['amount'],
+'balance' => $g['balance'],
+'_id' => $g['_id'],
+    );
+}
+echo \Dsc\Debug::dump( $dump_data );
+*/
+?>
