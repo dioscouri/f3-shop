@@ -300,7 +300,8 @@ jQuery(document).ready(function(){
 });
 </script>
 
-<?php 
+<?php
+//echo \Dsc\Debug::dump( $cart->id ); 
 /* Useful for debugging coupons 
 $dump_data = array();
 foreach ($cart->allCoupons() as $c) {

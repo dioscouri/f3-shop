@@ -1656,7 +1656,7 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
         $exists = false;
         foreach ($this->giftcards as $key=>$item)
         {
-            if ($item['_id'] == $code)
+            if ((string) $item['_id'] == (string) $code)
             {
                 $exists = true;
                 unset($this->giftcards[$key]);
@@ -1668,7 +1668,7 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
         if ($exists) {
             $this->save();
         }
-    
+        
         return $this;
     }
     

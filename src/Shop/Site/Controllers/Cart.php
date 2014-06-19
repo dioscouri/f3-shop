@@ -399,7 +399,7 @@ class Cart extends \Dsc\Controller
         // Start: validation
         // -----------------------------------------------------
         // validate the POST values
-        if (!$code = $this->inputfilter->clean( $this->app->get('PARAMS.code'), 'string' ))
+        if (!$code = $this->inputfilter->clean( $this->app->get('PARAMS.code'), 'alnum' ))
         {
             // if validation fails, respond appropriately
             if ($this->app->get('AJAX')) {
