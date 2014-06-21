@@ -28,6 +28,59 @@
             <div class="row">
                 <div class="col-md-2">
                     
+                    <h3>Issued To</h3>
+                            
+                </div>
+                <!-- /.col-md-2 -->
+                            
+                <div class="col-md-10">
+
+                    <?php if ($item->{'issued_id'}) { ?>
+                    <div>
+                        <label>Customer:</label>
+                        <a href="./admin/shop/customer/read/<?php echo $item->issued_id; ?>">
+                            <?php echo $item->{'issued_name'}; ?>
+                        </a>
+                    </div>
+                    <?php } ?>
+                
+                    <div><label>Email:</label> <?php echo $item->issued_email; ?></div>
+                    
+                </div>
+                <!-- /.col-md-10 -->
+                
+            </div>        
+            
+            <hr/>
+            
+            <div class="row">
+                <div class="col-md-2">
+                    
+                    <h3>Created</h3>
+                            
+                </div>
+                <!-- /.col-md-2 -->
+                            
+                <div class="col-md-10">
+
+                    <div>
+                        <?php echo date( 'Y-m-d g:ia', $item->{'metadata.created.time'} ); ?>
+                    </div>
+                    <div>
+                        <label>By:</label>
+                        <?php echo $item->{'metadata.creator.name'}; ?>
+                    </div>                            
+                    
+                </div>
+                <!-- /.col-md-10 -->
+                
+            </div>        
+            
+            <hr/>
+            
+            <div class="row">
+                <div class="col-md-2">
+                    
                     <h3>History</h3>
                     <p class="help-block">The activity log for this gift card.</p>
                             

@@ -94,7 +94,7 @@ class OrderedGiftCard extends \Admin\Controllers\BaseAuth
         $__customers = explode( ",", \Dsc\ArrayHelper::get($data, '__customers') );
         $__emails = explode( ",", \Dsc\ArrayHelper::get($data, '__emails') );
         
-        $emails = array_unique( array_merge(array(), $__customers, $__emails) );
+        $emails = array_filter( array_unique( array_merge(array(), $__customers, $__emails) ) );
         
         if (!empty($emails)) 
         {
@@ -136,6 +136,8 @@ class OrderedGiftCard extends \Admin\Controllers\BaseAuth
             $this->doAdd($data);
         }
     
+        \Dsc\System::addMessage('Gift cards issued');
+            
         if ($route = $this->getRedirect()) {
             \Base::instance()->reroute( $route );
         }
