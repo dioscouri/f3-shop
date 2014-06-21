@@ -231,13 +231,19 @@ class Listener extends \Prefab
                         'route' => './admin/shop/settings',
                         'icon' => 'fa fa-cogs'
                     ),
-                    /*                    
+                                        
                     array(
-                        'title' => 'Shipping',
+                        'title' => 'Shipping Methods',
                         'route' => '/admin/shop/shipping-methods',
                         'icon' => 'fa fa-truck'
-                    )
-                    */
+                    ),
+                	array(
+                				'title' => 'Payment Methods',
+                				'route' => '/admin/shop/payment-methods',
+                				'icon' => 'fa fa-money'
+                	),
+                		
+                    
                 );
                 
                 $settings_item->addChildren($settings_children);

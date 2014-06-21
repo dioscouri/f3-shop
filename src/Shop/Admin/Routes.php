@@ -206,5 +206,14 @@ class Routes extends \Dsc\Routes\Group
         $this->addCrudGroup('Customers', 'Customer');
         
         $this->addCrudGroup('Campaigns', 'Campaign');
+        
+        $this->add('/shipping-methods', 'GET|POST', array(
+        		'controller' => 'Settings',
+        		'action' => 'shippingMethods'
+        ));
+        $this->add('/payment-methods', 'GET|POST', array(
+        		'controller' => 'Settings',
+        		'action' => 'paymentMethods'
+        ));
     }
 }
