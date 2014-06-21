@@ -140,7 +140,7 @@ jQuery(document).ready(function(){
                         </a>
                     </div>
                 
-                    <div id="product-image-carousel" class="owl-carousel" data-lazy-load="true" data-scroll-per-page="true">
+                    <div id="product-image-carousel" class="owl-carousel" data-lazy-load="true" data-scroll-per-page="true" data-items-tablet="[600,3]" data-items-mobile="false">
                         <?php foreach ($images as $key=>$image) { ?>
                         <div id="<?php echo $image; ?>" class="slide">
                             <a href="javascript:void(0);" class="imagezoom-thumb btn btn-link" data-target="#product-image">
