@@ -10,7 +10,11 @@ class OrderedGiftCards extends \Dsc\Mongo\Collections\Nodes
     
     public $token;                  // a MongoId.  Used to make new-giftcard URLs unique    
     public $order_item = null;      // if from a purchase, this is the corresponding order.item
-   
+    
+    public $issued_id;              // a user's MongoId.  If issued to a customer directly, store the customer's id here.  
+    public $issued_name;            // their name
+    public $issued_email;           // email address of person to whom this is issued, whether a customer or not      
+    
     protected $__collection_name = 'shop.orders.giftcards';
     protected $__type = 'shop.orders.giftcards';
     protected $__config = array(
