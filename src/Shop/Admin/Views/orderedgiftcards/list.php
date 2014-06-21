@@ -80,27 +80,46 @@
             <?php if (!empty($paginated->items)) { ?>
             
             <?php foreach($paginated->items as $item) { ?>
-            <div class="panel panel-default">
-                <div class="panel-body">
+            <div class="list-group-item">
+                
                     <div class="row">
                         <div class="col-xs-2 col-md-1">
                             <input type="checkbox" class="icheck-input" name="ids[]" value="<?php echo $item->id; ?>">
                         </div>
                         <div class="col-xs-10 col-md-4">
                             <h4>
+                                <label>Code:</label>
                                 <a href="./admin/shop/orders/giftcard/edit/<?php echo $item->id; ?>">
                                     <?php echo $item->code; ?>
-                                </a>
+                                </a>                            
                             </h4>
                             <div>
-                                <label>Issued:</label>
+                                <label>Created:</label>
                                 <a href="./admin/shop/orders/giftcard/edit/<?php echo $item->id; ?>">
-                                    <?php echo date( 'Y-m-d', $item->{'metadata.created.time'} ); ?>
+                                    <?php echo date( 'Y-m-d g:ia', $item->{'metadata.created.time'} ); ?>
                                 </a>
                             </div>
+                            <div>
+                                <label>Created By:</label>
+                                <?php echo $item->{'metadata.creator.name'}; ?>
+                            </div>                            
                           
                         </div>
                         <div class="col-xs-10 col-xs-offset-2 col-md-6 col-md-offset-0">
+                            <?php if ($item->{'issued_id'}) { ?>
+                            <h4>
+                                <label>Issued To:</label>
+                                <a href="./admin/shop/customer/read/<?php echo $item->issued_id; ?>">
+                                    <?php echo $item->{'issued_name'}; ?>
+                                </a>
+                            </h4>
+                            <?php } elseif ($item->issued_email) { ?>
+                            <h4>
+                                <label>Issued To:</label>
+                                <?php echo $item->issued_email; ?>
+                            </h4>                            
+                            <?php } ?>
+                        
                             <div>
                                 <label>Initial Value:</label> <?php echo \Shop\Models\Currency::format( $item->{'initial_value'} ); ?> 
                             </div>
@@ -115,7 +134,7 @@
     	                    </a>                        
                         </div>
                     </div>
-                </div>
+                
             </div>
             <?php } ?>
             

@@ -48,11 +48,30 @@ class OrderedGiftCards extends \Dsc\Mongo\Collections\Nodes
     	
     	foreach ((array) $emails as $email) 
     	{
-    	    // TODO Put this in a try/catch and return details of successful/failed emails
-    		$model = (new static)->bind(array(
-    			'initial_value' => $data['initial_value'],
-    		    '__email_recipient' => $email
-    		))->save();
+    	    // TODO Put this in a try/catch and return details of successful/failed emails?
+    	    
+    	    // attempt to link a customer record to the email
+    	    $customer = (new \Shop\Models\Customers)->setState('filter.email', $email)->getItem();
+    	    if (!empty($customer->id)) 
+    	    {
+    	        $model = (new static)->bind(array(
+    	            'initial_value' => $data['initial_value'],
+    	            'issued_id' => $customer->id,
+    	            'issued_name' => $customer->fullName(),
+    	            'issued_email' => $email,
+    	            '__email_recipient' => $email
+    	        ))->save();
+    	    }
+    	    
+    	    else 
+    	    {
+    	        $model = (new static)->bind(array(
+    	            'initial_value' => $data['initial_value'],
+    	            'issued_name' => $email,
+    	            'issued_email' => $email,
+    	            '__email_recipient' => $email
+    	        ))->save();
+    	    }
     	}
     	
     	return true;
