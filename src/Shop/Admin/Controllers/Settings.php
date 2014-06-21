@@ -31,7 +31,7 @@ class Settings extends \Admin\Controllers\BaseAuth
     	$flash = \Dsc\Flash::instance();
     	$f3->set('flash', $flash );
     
-    	$settings = \Shop\Models\Settings\ShippingMethods::fetch();
+    	$settings = \Shop\Models\Settings::fetch();
     	$flash->store( $settings->cast() );
     
     	$this->app->set('meta.title', 'Shipping Methods | Shop');
@@ -56,7 +56,7 @@ class Settings extends \Admin\Controllers\BaseAuth
     	$flash = \Dsc\Flash::instance();
     	$f3->set('flash', $flash );
     
-    	$settings = \Shop\Models\Settings\PaymentMethods::fetch();
+    	$settings = \Shop\Models\Settings::fetch();
     	$flash->store( $settings->cast() );
     
     	$this->app->set('meta.title', 'Payment Methods | Shop');
