@@ -1,3 +1,12 @@
+<?php 
+	$no_yes = array(
+			array( 'value' => 0, 'text' => 'No' ),
+			array( 'value' => 1, 'text' => 'Yes' ),
+	);
+	$this->app->set('no_yes',$no_yes);
+
+?>
+
 <script src="./ckeditor/ckeditor.js"></script>
 <script>
 jQuery(document).ready(function(){

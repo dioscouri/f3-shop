@@ -45,18 +45,25 @@ $config['ups']['rate_type'] = '00';
 <?php */ ?>
 
 <div class="row">
+    <input type="hidden" name="name" required value="ups">
 
+	<div class="form-group">
+                    <label>Enabled?</label>
+                    <select name="shippingmethods[ups][enabled]" class="form-control">
+                    	<?php  echo \Dsc\Html\Select::options( $no_yes, $flash->old('shippingmethods.ups.enabled') ); ?>
+                    </select>
+    </div>
+    
 	<div class="form-group">
 		<div class="row">
 			<div class="col-md-3">
-				<label>Mode</label> <select name="shipping[ups][mode]"
+				<label>Mode</label> 
+				<select name="shippingmethods[ups][mode]"
 					class="form-control">
 					<option value="test"
-						<?php if ($flash->old('shipping.ups.mode') == 'off') { echo "selected='selected'"; } ?>>Disabled</option>
-					<option value="test"
-						<?php if ($flash->old('shipping.ups.mode') == 'test') { echo "selected='selected'"; } ?>>Test</option>
+						<?php if ($flash->old('shippingmethods.ups.mode') == 'test') { echo "selected='selected'"; } ?>>Test</option>
 					<option value="live"
-						<?php if ($flash->old('shipping.ups.mode') == 'live') { echo "selected='selected'"; } ?>>Live</option>
+						<?php if ($flash->old('shippingmethods.ups.mode') == 'live') { echo "selected='selected'"; } ?>>Live</option>
 				</select>
 			</div>
 			<div class="col-md-9"></div>
@@ -81,7 +88,7 @@ $config['ups']['rate_type'] = '00';
 <div class="col-md-6">
 
 	<div class="form-group">
-		<label>Daily Pickup</label> <select name="shipping[ups][pickup_type]">
+		<label>Daily Pickup</label> <select name="shippingmethods[ups][pickup_type]">
 			<?php
 			
 			$array = array ();
@@ -111,7 +118,7 @@ $config['ups']['rate_type'] = '00';
 					'text' => 'Air Service Center' 
 			);
 			
-			echo \Dsc\Html\Select::options ( $array, $flash->old ( 'shipping.ups.pickup_type' ) );
+			echo \Dsc\Html\Select::options ( $array, $flash->old ( 'shippingmethods.ups.pickup_type' ) );
 			?>
 			</select>
 	</div>
@@ -137,70 +144,70 @@ $config['ups']['rate_type'] = '00';
 
 		
 		<div class="form-group">
-		<label>Shipper Name</label> <input name="shipping[ups][shipper_name]"
+		<label>Shipper Name</label> <input name="shippingmethods[ups][shipper_name]"
 			class="form-control"
-			value="<?php echo $flash->old('shipping.ups.shipper_name'); ?>">
+			value="<?php echo $flash->old('shippingmethods.ups.shipper_name'); ?>">
 	</div>
 		<!-- /.form-group -->
 
 		<div class="form-group">
 			<label>Shipper Attention Name</label> <input
-				name="shipping[ups][shipper_attention_name]" class="form-control"
-				value="<?php echo $flash->old('shipping.ups.shipper_attention_name'); ?>">
+				name="shippingmethods[ups][shipper_attention_name]" class="form-control"
+				value="<?php echo $flash->old('shippingmethods.ups.shipper_attention_name'); ?>">
 		</div>
 		<!-- /.form-group -->
 		<div class="form-group">
 			<label>Shipper Phone</label> <input
-				name="shipping[ups][shipper_phone]" class="form-control"
-				value="<?php echo $flash->old('shipping.ups.shipper_phone'); ?>">
+				name="shippingmethods[ups][shipper_phone]" class="form-control"
+				value="<?php echo $flash->old('shippingmethods.ups.shipper_phone'); ?>">
 		</div>
 		<!-- /.form-group -->
 		<div class="form-group">
 			<label>Shipper Email</label> <input
-				name="shipping[ups][shipper_email]" class="form-control"
-				value="<?php echo $flash->old('shipping.ups.shipper_email'); ?>">
+				name="shippingmethods[ups][shipper_email]" class="form-control"
+				value="<?php echo $flash->old('shippingmethods.ups.shipper_email'); ?>">
 		</div>
 		<!-- /.form-group -->
 		<div class="form-group">
 			<label>Address 1</label> <input
-				name="shipping[ups][shipper_address1]" class="form-control"
-				value="<?php echo $flash->old('shipping.ups.shipper_address1'); ?>">
+				name="shippingmethods[ups][shipper_address1]" class="form-control"
+				value="<?php echo $flash->old('shippingmethods.ups.shipper_address1'); ?>">
 		</div>
 		<!-- /.form-group -->
 		<div class="form-group">
 			<label>Address 2</label> <input
-				name="shipping[ups][shipper_address2]" class="form-control"
-				value="<?php echo $flash->old('shipping.ups.shipper_address2'); ?>">
+				name="shippingmethods[ups][shipper_address2]" class="form-control"
+				value="<?php echo $flash->old('shippingmethods.ups.shipper_address2'); ?>">
 		</div>
 		<!-- /.form-group -->
 		<div class="form-group">
 			<label>Address 3</label> <input
-				name="shipping[ups][shipper_address3]" class="form-control"
-				value="<?php echo $flash->old('shipping.ups.shipper_address3'); ?>">
+				name="shippingmethods[ups][shipper_address3]" class="form-control"
+				value="<?php echo $flash->old('shippingmethods.ups.shipper_address3'); ?>">
 		</div>
 		<!-- /.form-group -->
 	<div class="form-group">
-		<label>City</label> <input name="shipping[ups][shipper_city]"
+		<label>City</label> <input name="shippingmethods[ups][shipper_city]"
 			class="form-control"
-			value="<?php echo $flash->old('shipping.ups.shipper_city'); ?>">
+			value="<?php echo $flash->old('shippingmethods.ups.shipper_city'); ?>">
 	</div>
 	<!-- /.form-group -->
 	<div class="form-group">
-		<label>State</label> <input name="shipping[ups][shipper_state]"
+		<label>State</label> <input name="shippingmethods[ups][shipper_state]"
 			class="form-control"
-			value="<?php echo $flash->old('shipping.ups.shipper_state'); ?>">
+			value="<?php echo $flash->old('shippingmethods.ups.shipper_state'); ?>">
 	</div>
 	<!-- /.form-group -->
 	<div class="form-group">
 		<label>Postal Code</label> <input
-			name="shipping[ups][shipper_postal_code]" class="form-control"
-			value="<?php echo $flash->old('shipping.ups.shipper_postal_code'); ?>">
+			name="shippingmethods[ups][shipper_postal_code]" class="form-control"
+			value="<?php echo $flash->old('shippingmethods.ups.shipper_postal_code'); ?>">
 	</div>
 	<!-- /.form-group -->
 	<div class="form-group">
 		<label>Country Code</label> <input
-			name="shipping[ups][shipper_country_code]" class="form-control"
-			value="<?php echo $flash->old('shipping.ups.shipper_country_code'); ?>">
+			name="shippingmethods[ups][shipper_country_code]" class="form-control"
+			value="<?php echo $flash->old('shippingmethods.ups.shipper_country_code'); ?>">
 	</div>
 		
 	</div>
@@ -219,33 +226,33 @@ $config['ups']['rate_type'] = '00';
 <div class="col-md-6">
 
 	<div class="form-group">
-			<label>Key</label> <input name="shipping[ups][key]"
+			<label>Key</label> <input name="shippingmethods[ups][key]"
 				class="form-control"
-				value="<?php echo $flash->old('shipping.ups.key'); ?>">
+				value="<?php echo $flash->old('shippingmethods.ups.key'); ?>">
 		</div>
 	<!-- /.form-group -->
 
 	<div class="form-group">
-		<label>User</label> <input name="shipping[ups][user]"
+		<label>User</label> <input name="shippingmethods[ups][user]"
 			class="form-control"
-			value="<?php echo $flash->old('shipping.ups.user'); ?>">
+			value="<?php echo $flash->old('shippingmethods.ups.user'); ?>">
 	</div>
 	<!-- /.form-group -->
 	<div class="form-group">
-		<label>Password</label> <input name="shipping[ups][password]"
+		<label>Password</label> <input name="shippingmethods[ups][password]"
 			class="form-control"
-			value="<?php echo $flash->old('shipping.ups.password'); ?>">
+			value="<?php echo $flash->old('shippingmethods.ups.password'); ?>">
 	</div>
 
 	<!-- /.form-group -->
 	<div class="form-group">
 		<label>Account Number</label> <input
-			name="shipping[ups][account_number]" class="form-control"
-			value="<?php echo $flash->old('shipping.ups.account_number'); ?>">
+			name="shippingmethods[ups][account_number]" class="form-control"
+			value="<?php echo $flash->old('shippingmethods.ups.account_number'); ?>">
 	</div>
-	<input type="hidden" name="shipping[ups][testing_url]"
+	<input type="hidden" name="shippingmethods[ups][testing_url]"
 			class="form-control" value="https://wwwcie.ups.com/webservices"> <input
-			type="hidden" name="shipping[ups][production_url]"
+			type="hidden" name="shippingmethods[ups][production_url]"
 			class="form-control" value="https://onlinetools.ups.com/webservices">
 	
 	

@@ -979,8 +979,21 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
      */
     protected function fetchShippingMethods()
     {
-        $methods = array(); // TODO Set this to an array of the enabled core shipping methods 
-
+        $methods = array(); 
+        
+        $settings = \Shop\Models\Settings::fetch();
+        
+        if ($enabledMethods = $settings->enabledShippingMethods())
+        {	
+        	//$enabledMethods are a class e.g \Shop\Shipping\Ups instance
+        	foreach($enabledMethods as $method) {
+        		if($method->validForCart($this)) {
+        			$methods[] = $method;
+        		}
+        	}
+        		
+        }
+        
         $event = \Dsc\System::instance()->trigger( 'onFetchShippingMethodsForCart', array(
             'cart' => $this,
             'methods' => $methods
@@ -1040,7 +1053,21 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
     protected function fetchPaymentMethods()
     {
         $methods = array(); // TODO Set this to an array of the enabled core payment methods 
-    
+    	
+        $settings = \Shop\Models\Settings::fetch();
+        
+        /*if ($enabledMethods = $settings->enabledPaymentMethods())
+        {
+        	//$enabledMethods are a class e.g \Shop\Shipping\Ups instance
+        	foreach($enabledMethods as $method) {
+        		if($method->validForCart($this)) {
+        			$methods[] = $method;
+        		}
+        	}
+        
+        }*/
+        
+        
         $event = \Dsc\System::instance()->trigger( 'onFetchPaymentMethodsForCart', array(
             'cart' => $this,
             'methods' => $methods

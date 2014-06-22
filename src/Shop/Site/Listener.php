@@ -7,4 +7,5 @@ class Listener extends \Prefab
 	{
 	    \Dsc\System::instance()->get('session')->set('shop.check_campaigns', true);
 	}
+	
 }

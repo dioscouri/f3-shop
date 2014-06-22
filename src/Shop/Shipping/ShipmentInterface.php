@@ -11,4 +11,5 @@ interface ShipperInterface {
     public function setConfig(array $config);
     public function getRate();
     public function createLabel();
+    public function validForCart();
 }
