@@ -63,10 +63,9 @@ class Routes extends \Dsc\Routes\Group
             'get_parent_link' => true
         ));
         $this->add('/collections/forSelection [ajax]', 'GET|POST', array(
-        		'controller' => 'Collections',
-        		'action' => 'forSelection'
+            'controller' => 'Collections',
+            'action' => 'forSelection'
         ));
-        
         
         $this->add('/categories/checkboxes [ajax]', array(
             'GET',
@@ -89,18 +88,18 @@ class Routes extends \Dsc\Routes\Group
             'controller' => 'Countries',
             'action' => 'forSelection'
         ));
-
+        
         $this->add('/countries/moveUp/@id', 'GET', array(
-        		'controller' => 'Countries',
-        		'action' => 'MoveUp'
+            'controller' => 'Countries',
+            'action' => 'MoveUp'
         ));
-
+        
         $this->add('/countries/moveDown/@id', 'GET', array(
-        		'controller' => 'Countries',
-        		'action' => 'MoveDown'
+            'controller' => 'Countries',
+            'action' => 'MoveDown'
         ));
-
-		$this->addChangeStateListRoutes( 'Countries', '/countries' );
+        
+        $this->addChangeStateListRoutes('Countries', '/countries');
         
         $this->addCrudGroup('Regions', 'Region');
         $this->add('/regions/forSelection [ajax]', 'GET|POST', array(
@@ -113,15 +112,16 @@ class Routes extends \Dsc\Routes\Group
         $this->addCrudGroup('Tags', 'Tag');
         
         $this->addCrudGroup('GiftCards', 'GiftCard');
-            
+        
         $this->addCrudGroup('OrderedGiftCards', 'OrderedGiftCard', array(
-        	'url_prefix' => '/orders/giftcards'
+            'url_prefix' => '/orders/giftcards'
         ), array(
             'url_prefix' => '/orders/giftcard'
         ));
         
-        $f3->route('GET /admin/shop/uniqueid', function(){
-        	echo (string) new \MongoId;
+        $f3->route('GET /admin/shop/uniqueid', function ()
+        {
+            echo (string) new \MongoId();
         });
         
         $this->add('/customers/forSelection [ajax]', 'GET|POST', array(
@@ -135,7 +135,7 @@ class Routes extends \Dsc\Routes\Group
         ));
         
         $this->addCrudGroup('Credits', 'Credit');
-
+        
         $this->add('/credit/issue/@id', 'GET', array(
             'controller' => 'Credit',
             'action' => 'issue'
@@ -161,29 +161,35 @@ class Routes extends \Dsc\Routes\Group
             'action' => 'saveProductsOrder'
         ));
         
-        $this->add('/coupon/@id/codes', array( 'GET', 'POST' ), array(
-        		'controller' => 'Coupon',
-        		'action' => 'displayCodes'
+        $this->add('/coupon/@id/codes', array(
+            'GET',
+            'POST'
+        ), array(
+            'controller' => 'Coupon',
+            'action' => 'displayCodes'
         ));
-
-        $this->add('/coupon/@id/codes/page/@page', array( 'GET', 'POST' ), array(
-        		'controller' => 'Coupon',
-        		'action' => 'displayCodes'
+        
+        $this->add('/coupon/@id/codes/page/@page', array(
+            'GET',
+            'POST'
+        ), array(
+            'controller' => 'Coupon',
+            'action' => 'displayCodes'
         ));
-
+        
         $this->add('/coupon/@id/codes/generate', 'POST', array(
-        		'controller' => 'Coupon',
-        		'action' => 'generateCodes'
+            'controller' => 'Coupon',
+            'action' => 'generateCodes'
         ));
-
+        
         $this->add('/coupon/@id/codes/download', 'GET', array(
-        		'controller' => 'Coupon',
-        		'action' => 'downloadCodes'
+            'controller' => 'Coupon',
+            'action' => 'downloadCodes'
         ));
         
         $this->add('/coupon/@id/code/@code/delete', 'GET', array(
-        		'controller' => 'Coupon',
-        		'action' => 'deleteCode'
+            'controller' => 'Coupon',
+            'action' => 'deleteCode'
         ));
         
         $this->add('/reports', 'GET', array(
@@ -208,12 +214,18 @@ class Routes extends \Dsc\Routes\Group
         $this->addCrudGroup('Campaigns', 'Campaign');
         
         $this->add('/shipping-methods', 'GET|POST', array(
-        		'controller' => 'Settings',
-        		'action' => 'shippingMethods'
+            'controller' => 'Settings',
+            'action' => 'shippingMethods'
         ));
+        
         $this->add('/payment-methods', 'GET|POST', array(
-        		'controller' => 'Settings',
-        		'action' => 'paymentMethods'
+            'controller' => 'Settings',
+            'action' => 'paymentMethods'
         ));
+        
+        $this->add('/settings/notifications', 'GET|POST', array(
+            'controller' => 'Settings',
+            'action' => 'notifications'
+        ));        
     }
 }

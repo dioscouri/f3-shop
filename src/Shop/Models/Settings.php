@@ -49,6 +49,11 @@ class Settings extends \Dsc\Mongo\Collections\Settings
     
     public $countries_sort = 'name';
     
+    public $notifications = array(
+    	'orders' => array(
+    	   'emails' => array()
+        ),
+    );
     
     public function isShippingMethodEnabled($method=null)
     {
