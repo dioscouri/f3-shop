@@ -95,6 +95,9 @@ class Orders extends \Dsc\Mongo\Collections\Taggable
                 );
             }
             $where[] = array(
+                'number' => $key
+            );            
+            $where[] = array(
                 'customer_name' => $key
             );
             $where[] = array(
