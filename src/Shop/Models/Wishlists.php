@@ -451,4 +451,26 @@ class Wishlists extends \Dsc\Mongo\Collections\Nodes
         
         return $this;
     }
+    
+    /**
+     * Load the product for the specified wishlist item
+     * 
+     * @param unknown $wishlistitem
+     * @return \Shop\Models\Products
+     */
+    public static function product( $wishlistitem )
+    {
+        $variant_id = \Dsc\ArrayHelper::get( $wishlistitem, 'variant_id' );
+        
+        try
+        {
+            $return = (new \Shop\Models\Variants())->getById( $variant_id );
+        }
+        catch ( \Exception $e )
+        {
+            $return = new \Shop\Models\Products;
+        }
+        
+        return $return;
+    }
 }

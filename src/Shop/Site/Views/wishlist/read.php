@@ -72,7 +72,15 @@
                                     </span>
                                     <?php } ?>                            
                                 </div>
-                                <div class="price"><?php echo \Shop\Models\Currency::format( \Dsc\ArrayHelper::get($item, 'price') ); ?></div>
+                                
+                                <?php $product = $wishlist->product( $item ); ?>
+                                
+                                <?php if (((int) $product->get('prices.list') > 0) && (float) $product->get('prices.list') != (float) $product->price() ) { ?>
+                                    <span class="list-price"><strike><?php echo \Shop\Models\Currency::format( $product->{'prices.list'} ); ?></strike></span>
+                                    &nbsp;
+                                <?php } ?>                                
+                                <div class="price"><?php echo \Shop\Models\Currency::format( $product->price() ); ?></div>
+                                                                
                             </div>                
                         </div>
                     </div>
