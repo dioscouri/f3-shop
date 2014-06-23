@@ -321,6 +321,60 @@
             <div class="row">
                 <div class="col-md-2">
                     
+                    <h3>Discounts</h3>
+                    <p class="help-block">The discounts applied to this order.</p>
+                            
+                </div>
+                <!-- /.col-md-2 -->
+                            
+                <div class="col-md-10">
+                    <?php if ($userCoupons = $item->userCoupons()) { ?>
+                    <h5>User-submitted Coupons</h5>
+                    <ul class="list-group">
+                    <?php foreach ($userCoupons as $coupon) { ?>
+                        <li class="list-group-item">
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <?php echo \Dsc\ArrayHelper::get( $coupon, 'code' ); ?>
+                                </div>
+                                <div class="col-md-10">
+                                    <span class="price"><?php echo \Shop\Models\Currency::format( $price = \Dsc\ArrayHelper::get($coupon, 'amount') ); ?></span>
+                                </div>
+                            </div>
+                        </li>
+                    <?php } ?>
+                    </ul>
+                    <?php } ?>
+                    
+                    <?php if ($autoCoupons = $item->autoCoupons()) { ?>
+                    <h5>Automatic Coupons</h5>
+                    <ul class="list-group">
+                    <?php foreach ($autoCoupons as $coupon) { ?>
+                        <li class="list-group-item">
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <?php echo \Dsc\ArrayHelper::get( $coupon, 'code' ); ?>
+                                </div>
+                                <div class="col-md-10">
+                                    <span class="price"><?php echo \Shop\Models\Currency::format( $price = \Dsc\ArrayHelper::get($coupon, 'amount') ); ?></span>
+                                </div>
+                            </div>
+                        </li>
+                    <?php } ?>
+                    </ul>
+                    <?php } ?>
+                    
+                </div>
+                <!-- /.col-md-10 -->
+                
+            </div>        
+        </div>
+        <!-- /.well -->
+        
+        <div class="well">
+            <div class="row">
+                <div class="col-md-2">
+                    
                     <h3>History</h3>
                     <p class="help-block">The activity log for this order.</p>
                             
@@ -360,6 +414,7 @@
                 
             </div>        
         </div>
+        <!-- /.well -->
         
     </div>
     <div class="col-md-3">

@@ -856,4 +856,102 @@ class Orders extends \Dsc\Mongo\Collections\Taggable
     {
         return (float) $this->grand_total;
     }
+    
+    /**
+     * Get all the coupons in the order
+     *
+     * @return array
+     */
+    public function allCoupons()
+    {
+        return array_merge( array(), $this->userCoupons(), $this->autoCoupons() );
+    }
+    
+    /**
+     * Gets the user-submitted coupons from the order
+     *
+     * @return multitype:
+     */
+    public function userCoupons($shipping=null)
+    {
+        if (empty($this->coupons))
+        {
+            return array();
+        }
+    
+        $coupons = array();
+        foreach ($this->coupons as $coupon)
+        {
+            $gives_shipping_discount = \Shop\Models\Coupons::givesShippingDiscount( $coupon );
+            if ($shipping === false)
+            {
+                // only the non-shipping coupons
+                if ($gives_shipping_discount) {
+                    continue;
+                } else {
+                    $coupons[] = $coupon;
+                }
+            }
+    
+            elseif ($shipping === true)
+            {
+                // only the shipping ones
+                if ($gives_shipping_discount) {
+                    $coupons[] = $coupon;
+                }
+            }
+    
+            else
+            {
+                // $shipping = null, so give me all of the user coupons
+                $coupons[] = $coupon;
+            }
+        }
+    
+        return $coupons;
+    }
+    
+    /**
+     * Gets the automatic coupons from the order
+     *
+     * @return multitype:
+     */
+    public function autoCoupons($shipping=null)
+    {
+        if (empty($this->auto_coupons))
+        {
+            return array();
+        }
+    
+        $coupons = array();
+        foreach ($this->auto_coupons as $coupon)
+        {
+            $gives_shipping_discount = \Shop\Models\Coupons::givesShippingDiscount( $coupon );
+            if ($shipping === false)
+            {
+                // only the non-shipping coupons
+                if ($gives_shipping_discount) {
+                    continue;
+                } else {
+                    $coupons[] = $coupon;
+                }
+            }
+    
+            elseif ($shipping === true)
+            {
+                // only the shipping ones
+                if ($gives_shipping_discount) {
+                    $coupons[] = $coupon;
+                }
+            }
+    
+            else
+            {
+                // $shipping = null, so give me all of the user coupons
+                $coupons[] = $coupon;
+            }
+        }
+    
+        return $coupons;
+    }
 }
