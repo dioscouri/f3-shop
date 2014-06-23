@@ -178,6 +178,7 @@
                             <ul class="list-unstyled">
                                 <li><a href="./affiliate/dashboard">Your affiliate account</a></li>
                                 <li><a href="./affiliate/invite-friends">Invite friends</a></li>
+                                <li><a href="./affiliate/invite-history">Your invite history</a></li>
                             </ul>
                             <?php } ?>
                             <?php /* ?>
