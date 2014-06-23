@@ -96,6 +96,13 @@ Coupons applied to this order:
  
 <?php } ?>
 <?php } ?>
+<?php if ($autoCoupons = $order->autoCoupons()) { ?>
+Automatic Coupons applied to this order: 
+<?php foreach ($autoCoupons as $coupon) { ?>
+  <?php echo \Dsc\ArrayHelper::get( $coupon, 'code' ); ?>: <?php echo \Shop\Models\Currency::format( $price = \Dsc\ArrayHelper::get($coupon, 'amount') ); ?> 
+ 
+<?php } ?>
+<?php } ?>
 -------------
 
 Items:

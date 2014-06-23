@@ -159,7 +159,27 @@
         <?php } ?>
         </ul>
     </p>
-    <?php } ?>    
+    <?php } ?>
+    
+    <?php if ($autoCoupons = $order->autoCoupons()) { ?>
+    <p>
+        <label class="strong">Automatic Coupons applied to this order:</label>
+        <ul class="list-group">
+        <?php foreach ($autoCoupons as $coupon) { ?>
+            <li class="list-group-item">
+                <div class="row">
+                    <div class="col-md-2">
+                        <?php echo \Dsc\ArrayHelper::get( $coupon, 'code' ); ?>
+                    </div>
+                    <div class="col-md-10">
+                        <span class="price"><?php echo \Shop\Models\Currency::format( $price = \Dsc\ArrayHelper::get($coupon, 'amount') ); ?></span>
+                    </div>
+                </div>
+            </li>
+        <?php } ?>
+        </ul>
+    </p>
+    <?php } ?>
     
 </div>
 

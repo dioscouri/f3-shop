@@ -793,8 +793,8 @@ class Orders extends \Dsc\Mongo\Collections\Taggable
         \Base::instance()->set('order', $this);
         \Base::instance()->set('settings', \Shop\Models\Settings::fetch());
         
-        $html = \Dsc\System::instance()->get( 'theme' )->renderView( 'Shop/Views::emails_html/new_order.php' );
-        $text = \Dsc\System::instance()->get( 'theme' )->renderView( 'Shop/Views::emails_text/new_order.php' );
+        $html = \Dsc\System::instance()->get( 'theme' )->renderView( 'Shop/Views::emails_html/new_order_notification.php' );
+        $text = \Dsc\System::instance()->get( 'theme' )->renderView( 'Shop/Views::emails_text/new_order_notification.php' );
         
         $order_number = $this->number;
         $subject = 'New Order #' . $order_number;
