@@ -475,6 +475,8 @@ class Orders extends \Dsc\Mongo\Collections\Taggable
             $this->sendEmailNewOrder();
         }
         
+        $this->sendEmailNewOrderNotifications();
+        
         // #. Increase total spent and orders count
         $this->updateCustomerTotals();
         
@@ -754,6 +756,11 @@ class Orders extends \Dsc\Mongo\Collections\Taggable
      */
     public function sendEmailNewOrder( array $recipients=array() )
     {
+        if (empty($recipients)) 
+        {
+            $recipients = array( $this->user_email );
+        }
+        
         \Base::instance()->set('order', $this);
         \Base::instance()->set('settings', \Shop\Models\Settings::fetch());
         
@@ -763,7 +770,39 @@ class Orders extends \Dsc\Mongo\Collections\Taggable
         $order_number = $this->number;
         $subject = 'Order Confirmation #' . $order_number;
 
-        $this->__sendEmailNewOrder = \Dsc\System::instance()->get('mailer')->send($this->user_email, $subject, array($html, $text) );
+        foreach ($recipients as $recipient) 
+        {
+            $this->__sendEmailNewOrder = \Dsc\System::instance()->get('mailer')->send($recipient, $subject, array($html, $text) );
+        }
+        
+        return $this;
+    }
+    
+    /**
+     * Send out new order emails to admins
+     *
+     * @param array $recipients
+     */
+    public function sendEmailNewOrderNotifications( array $recipients=array() )
+    {
+        if (empty($recipients))
+        {
+            $recipients = (array) \Shop\Models\Settings::fetch()->{'notifications.orders.emails'};
+        }
+        
+        \Base::instance()->set('order', $this);
+        \Base::instance()->set('settings', \Shop\Models\Settings::fetch());
+        
+        $html = \Dsc\System::instance()->get( 'theme' )->renderView( 'Shop/Views::emails_html/new_order.php' );
+        $text = \Dsc\System::instance()->get( 'theme' )->renderView( 'Shop/Views::emails_text/new_order.php' );
+        
+        $order_number = $this->number;
+        $subject = 'New Order #' . $order_number;
+        
+        foreach ($recipients as $recipient)
+        {
+            $this->__sendEmailNewOrder = \Dsc\System::instance()->get('mailer')->send($recipient, $subject, array($html, $text) );
+        }
         
         return $this;
     }
