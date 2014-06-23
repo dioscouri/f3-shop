@@ -135,10 +135,10 @@
                             </a>
                         </div>
                         <div class="col-sm-2">
-                            <?php echo (int) $item->countSales(); ?>
+                            <?php echo (int) $item->countSales(true); ?>
                         </div>
                         <div class="col-sm-3">
-                            <?php echo \Shop\Models\Currency::format( $item->totalSales() ); ?>
+                            <?php echo \Shop\Models\Currency::format( $item->totalSales(true) ); ?>
                         </div>
                     </div>
                 </li>
