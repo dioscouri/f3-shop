@@ -957,4 +957,18 @@ class Orders extends \Dsc\Mongo\Collections\Taggable
     
         return $coupons;
     }
+    
+    public function fail()
+    {
+        if (!empty($this->errors)) 
+        {
+        	foreach ($this->errors as $key=>$error) 
+        	{
+        		$this->{'errors.' . $key} = $error->getMessage();
+        	}
+        }
+        $failure = (new \Shop\Models\OrderFailures)->bind($this->cast())->save();
+        
+        return $this;
+    }
 }
