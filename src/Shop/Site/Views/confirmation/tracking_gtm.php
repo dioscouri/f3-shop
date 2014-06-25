@@ -3,8 +3,12 @@ dataLayer.push({
 	'event': 'transaction',
     'transactionId': '<?php echo $this->order->number; ?>',
     'transactionTotal': <?php echo (float) $this->order->grand_total; ?>,
+<?php if (!empty($this->order->tax_total)) { ?>    	    
     'transactionTax': <?php echo (float) $this->order->tax_total; ?>,
+<?php } ?>
+<?php if (!empty($this->order->shipping_total)) { ?>
     'transactionShipping': <?php echo (float) $this->order->shipping_total; ?>,
+<?php } ?>
     'transactionProducts': [
     <?php $n=0; foreach ($this->order->items as $item) { ?>
     <?php if ($n > 0) { echo ", "; } ?>
