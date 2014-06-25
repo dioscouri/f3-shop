@@ -73,9 +73,8 @@ class Collection extends \Dsc\Controller
     	} 
     	catch ( \Exception $e ) 
     	{
-    	    // TODO Change to a normal 404 error
-    		\Dsc\System::instance()->addMessage( "Invalid Items: " . (string) $e, 'error');
-    		$f3->reroute( '/shop' );
+    	    \Dsc\System::instance()->addMessage( $e->getMessage(), 'error');
+    	    $this->app->error( '404' );    	    
     		return;
     	}
     	
