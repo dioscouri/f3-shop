@@ -139,8 +139,16 @@ jQuery(document).ready(function(){
                              <i class="glyphicon glyphicon-chevron-right"></i>
                         </a>
                     </div>
-                
-                    <div id="product-image-carousel" class="owl-carousel" data-lazy-load="true" data-scroll-per-page="true" data-items-tablet="[600,3]" data-items-mobile="false">
+                    <script>
+                	ShopAfterAction = function(){
+                    	if (this.owl.owlItems.length <= this.owl.visibleItems.length) {
+                        	jQuery('.owl-nav').hide();
+                        } else {
+                        	jQuery('.owl-nav').show();
+                        }
+                    }
+                    </script>                
+                    <div id="product-image-carousel" class="owl-carousel" data-lazy-load="true" data-scroll-per-page="true" data-items-tablet="[600,3]" data-items-mobile="false" data-after-action="ShopAfterAction">
                         <?php foreach ($images as $key=>$image) { ?>
                         <div id="<?php echo $image; ?>" class="slide">
                             <a href="javascript:void(0);" class="imagezoom-thumb btn btn-link" data-target="#product-image">
@@ -149,6 +157,7 @@ jQuery(document).ready(function(){
                         </div>
                         <?php } ?>
                     </div>
+
                 </div>
             <?php } ?>
             
