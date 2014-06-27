@@ -1,6 +1,6 @@
 <div class="container">
     <h2>
-        <small>Hello, <?php echo $this->auth->getIdentity()->username; ?><br/></small>
+        <small>Hello <?php echo $this->auth->getIdentity()->fullName(); ?><br/></small>
         Your Account
     </h2>
     
