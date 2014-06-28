@@ -765,6 +765,27 @@ class Products extends \Dsc\Mongo\Collections\Content
     }
     
     /**
+     * Converts this to a search item, used in the search template when displaying each search result
+     */
+    public function toAdminSearchItem()
+    {
+        $image = (!empty($this->{'featured_image.slug'})) ? './asset/thumb/' . $this->{'featured_image.slug'} : null;
+    
+        $item = new \Search\Models\Item(array(
+            'url' => './admin/shop/product/edit/' . $this->id,
+            'title' => $this->title,
+            'subtitle' => $this->{'tracking.sku'},
+            'image' => $image,
+            'summary' => $this->description,
+            'datetime' => null,
+            'price' => $this->price(),
+            'prices' => $this->{'prices'},
+        ));
+    
+        return $item;
+    }    
+    
+    /**
      *
      * @param array $types
      * @return unknown

@@ -54,6 +54,12 @@ class ShopBootstrap extends \Dsc\Bootstrap
             // Bootstrap the reports
             \Shop\Models\Reports::bootstrap();
         }
+        
+        \Search\Factory::registerSource(new \Search\Models\Source(array(
+            'id' => 'shop.products',
+            'title' => 'Products',
+            'class' => '\Shop\Models\Products'
+        )));        
     }
 
     protected function preSite()
