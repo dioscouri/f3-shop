@@ -44,7 +44,16 @@
             
             <div class="col-md-6">
                 <div class="form-group">        
-
+                    <label>Hide Price?</label>
+                    <div class="input-group">
+                        <label class="radio-inline">
+                            <input type="radio" name="policies[hide_price]" value="1" <?php if ($flash->old('policies.hide_price')) { echo 'checked'; } ?>> Yes
+                        </label>
+                        <label class="radio-inline">
+                            <input type="radio" name="policies[hide_price]" value="0" <?php if (!$flash->old('policies.hide_price')) { echo 'checked'; } ?>> No
+                        </label>
+                    </div>
+                    <p class="help-block">If the price is hidden, "Call for price" is displayed instead.  Customers will not be able to add the item to their cart.</p>
                 </div>
             </div>
         </div>

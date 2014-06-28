@@ -17,7 +17,7 @@
 	</div>
 </div>
 
-<form class="searchForm" method="post">
+<form class="searchForm" method="post" action="./admin/shop/countries">
 
     <div class="no-padding">
         

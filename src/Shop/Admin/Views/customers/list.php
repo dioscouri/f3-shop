@@ -17,7 +17,7 @@
 	</div>
 </div>
 
-<form class="searchForm" method="post">
+<form class="searchForm" method="post" action="./admin/shop/customers">
 
     <input type="hidden" name="list[order]" value="<?php echo $state->get('list.order'); ?>" />
     <input type="hidden" name="list[direction]" value="<?php echo $state->get('list.direction'); ?>" />

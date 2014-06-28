@@ -181,60 +181,66 @@ jQuery(document).ready(function(){
                 </div>
                 <?php } ?>
                 
-                <form action="./shop/cart/add" method="post">
-                    <div id="validation-cart-add" class="validation-message"></div>
-                    
-                    <div class="buttons">
-                        <div class="row">
-                            <?php if (!empty($item->variantsInStock()) && count($item->variantsInStock()) > 1) { ?>
-                            <div class="col-sm-8">
+                <?php if ($item->{'policies.hide_price'}) { ?>
+                    <div class="price"><p>Call for price.</p></div>
+                <?php } else { ?>
                                 
-                                <select name="variant_id" class="chosen-select select-variant variant_id" data-callback="Shop.selectVariant">
-                                    <?php foreach ($variantsInStock as $key=>$variant) {
-                                    	$wishlist_state = \Shop\Models\Wishlists::hasAddedVariant($variant['id'], (string) $this->auth->getIdentity()->id) ? '0' : '1';
-                                    	?>
-                                        <option value="<?php echo $variant['id']; ?>" data-variant='<?php echo htmlspecialchars( json_encode( array(
-                                            'id' => $variant['id'],
-                                            'key' => $variant['key'],
-                                        	'image' => $variant['image'],
-                                            'quantity' => $variant['quantity'],
-                                            'price' => \Shop\Models\Currency::format( $item->price( $variant['id'] ) ),
-                                        ) ) ); ?>'
-                                        	data-wishlist="<?php echo $wishlist_state; ?>"><?php echo $variant['attribute_title'] ? $variant['attribute_title'] : $item->title; ?> </option>
-                                    <?php } ?>
-                                </select>
-                            </div>
-                            <?php } elseif (count($item->variantsInStock()) == 1) { ?>
-                                <input type="hidden" name="variant_id" value="<?php echo $item->variantsInStock()[0]['id']; ?>" class="variant_id" />
-                            <?php } ?> 
+                    <form action="./shop/cart/add" method="post">
+                        <div id="validation-cart-add" class="validation-message"></div>
                         
-                            <div class="col-sm-4">
-                                <div class="input-group">
-                                    <input type="text" class="form-control" value="1" placeholder="Quantity" name="quantity" id="quantity" />
-                                    <span class="input-group-btn">
-                                        <button onclick="jQuery('#quantity').val(parseInt(jQuery('#quantity').val())+1);" class="btn btn-default" type="button"><i class="glyphicon glyphicon-plus"></i></button>
-                                    </span>                                    
+                        <div class="buttons">
+                            <div class="row">
+                                <?php if (!empty($item->variantsInStock()) && count($item->variantsInStock()) > 1) { ?>
+                                <div class="col-sm-8">
+                                    
+                                    <select name="variant_id" class="chosen-select select-variant variant_id" data-callback="Shop.selectVariant">
+                                        <?php foreach ($variantsInStock as $key=>$variant) {
+                                        	$wishlist_state = \Shop\Models\Wishlists::hasAddedVariant($variant['id'], (string) $this->auth->getIdentity()->id) ? '0' : '1';
+                                        	?>
+                                            <option value="<?php echo $variant['id']; ?>" data-variant='<?php echo htmlspecialchars( json_encode( array(
+                                                'id' => $variant['id'],
+                                                'key' => $variant['key'],
+                                            	'image' => $variant['image'],
+                                                'quantity' => $variant['quantity'],
+                                                'price' => \Shop\Models\Currency::format( $item->price( $variant['id'] ) ),
+                                            ) ) ); ?>'
+                                            	data-wishlist="<?php echo $wishlist_state; ?>"><?php echo $variant['attribute_title'] ? $variant['attribute_title'] : $item->title; ?> </option>
+                                        <?php } ?>
+                                    </select>
+                                </div>
+                                <?php } elseif (count($item->variantsInStock()) == 1) { ?>
+                                    <input type="hidden" name="variant_id" value="<?php echo $item->variantsInStock()[0]['id']; ?>" class="variant_id" />
+                                <?php } ?> 
+                            
+                                <div class="col-sm-4">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" value="1" placeholder="Quantity" name="quantity" id="quantity" />
+                                        <span class="input-group-btn">
+                                            <button onclick="jQuery('#quantity').val(parseInt(jQuery('#quantity').val())+1);" class="btn btn-default" type="button"><i class="glyphicon glyphicon-plus"></i></button>
+                                        </span>                                    
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="price-line">
-                        <?php if (((int) $item->get('prices.list') > 0) && (float) $item->get('prices.list') != (float) $item->price() ) { ?>
-                            <span class="list-price"><strike><?php echo \Shop\Models\Currency::format( $item->{'prices.list'} ); ?></strike></span>
-                        <?php } ?>
-                        &nbsp;
-                        <div class="price product-price">
-                            <?php echo \Shop\Models\Currency::format( $item->price() ); ?>
-                        </div>
-                        <button class="btn btn-default custom-button custom-button-inverted" data-button="add-to-bag">Add to bag</button>
-                        
-                        <div class="small-buttons">
-                            <div class="add-to-wishlist-container">
+                        <div class="price-line">
+                            <?php if (((int) $item->get('prices.list') > 0) && (float) $item->get('prices.list') != (float) $item->price() ) { ?>
+                                <span class="list-price"><strike><?php echo \Shop\Models\Currency::format( $item->{'prices.list'} ); ?></strike></span>
+                            <?php } ?>
+                            &nbsp;
+                            <div class="price product-price">
+                                <?php echo \Shop\Models\Currency::format( $item->price() ); ?>
                             </div>
+                            <button class="btn btn-default custom-button custom-button-inverted" data-button="add-to-bag">Add to bag</button>
+                            
+                            <div class="small-buttons">
+                                <div class="add-to-wishlist-container">
+                                </div>
+                            </div>
+    
                         </div>
-
-                    </div>
-                </form>
+                    </form>
+                    
+                <?php } ?>
 
                 <hr />
             <?php if ($related_products = $item->relatedProducts()) { ?>

@@ -17,7 +17,7 @@ class Products extends \Admin\Controllers\BaseAuth
 	public function index()
     {
         $model = $this->getModel();
-        $state = $model->populateState()->getState();
+        $state = $model->emptyState()->populateState()->getState();
         $this->app->set('state', $state );
         
         $paginated = $model->paginate();     

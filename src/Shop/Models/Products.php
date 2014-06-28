@@ -74,7 +74,8 @@ class Products extends \Dsc\Mongo\Collections\Content
         ),
         'variant_pricing'=>array(
             'enabled'=>false,
-        )
+        ),
+        'hide_price'=>false,
     );
     
     public $display = array(
@@ -100,13 +101,17 @@ class Products extends \Dsc\Mongo\Collections\Content
         parent::populateState();
         
         $system = \Dsc\System::instance();
-        $input = $system->get('input');
         
-        /**
-         * Handle the sort_by value, which users use to sort the list of products
-         */
-        $sort_by = $input->get('sort_by', null, 'string');
-        $this->handleSortBy($sort_by);
+        if ($system->app->get('APP_NAME') == 'site') 
+        {
+            $input = $system->get('input');
+            
+            /**
+             * Handle the sort_by value, which users use to sort the list of products
+            */
+            $sort_by = $input->get('sort_by', null, 'string');
+            $this->handleSortBy($sort_by);            
+        }
         
         return $this;
     }
