@@ -3,8 +3,6 @@ namespace Shop\Models;
 
 class Products extends \Dsc\Mongo\Collections\Content
 {
-	use \Search\Traits\SearchItem;
-	
 	public $product_type = null;
 	
 	public $categories = array();

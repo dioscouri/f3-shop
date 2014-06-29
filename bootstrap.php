@@ -13,25 +13,27 @@ class ShopBootstrap extends \Dsc\Bootstrap
         
         \Dsc\Apps::registerPath($this->dir . "/src/Shop/MassUpdate", 'massupdate');
         
-        // add the css & js files to the minifier
-        \Minify\Factory::registerPath($this->dir . "/src/");
-        
-        $files = array(
-            'Shop/Assets/js/jquery.sortable.css'
-        );
-        
-        foreach ($files as $file)
+        if (class_exists('\Minify\Factory'))
         {
-            \Minify\Factory::css($file);
-        }
-        
-        $files = array(
-            'Shop/Assets/js/jquery.sortable.min.js'
-        );
-        
-        foreach ($files as $file)
-        {
-            \Minify\Factory::js($file);
+            \Minify\Factory::registerPath($this->dir . "/src/");
+            
+            $files = array(
+                'Shop/Assets/js/jquery.sortable.css'
+            );
+            
+            foreach ($files as $file)
+            {
+                \Minify\Factory::css($file);
+            }
+            
+            $files = array(
+                'Shop/Assets/js/jquery.sortable.min.js'
+            );
+            
+            foreach ($files as $file)
+            {
+                \Minify\Factory::js($file);
+            }
         }
         
         \Shop\Models\Reports::register('\Shop\Reports\CustomersExpiredCarts', array(
@@ -54,45 +56,55 @@ class ShopBootstrap extends \Dsc\Bootstrap
             // Bootstrap the reports
             \Shop\Models\Reports::bootstrap();
         }
-        
-        \Search\Factory::registerSource(new \Search\Models\Source(array(
-            'id' => 'shop.products',
-            'title' => 'Products',
-            'class' => '\Shop\Models\Products'
-        )));
 
-        \Search\Factory::registerSource(new \Search\Models\Source(array(
-            'id' => 'shop.orders',
-            'title' => 'Orders',
-            'class' => '\Shop\Models\Orders'
-        )));
+        if (class_exists('\Search\Factory'))
+        {
+            \Search\Factory::registerSource(new \Search\Models\Source(array(
+                'id' => 'shop.products',
+                'title' => 'Products',
+                'class' => '\Shop\Models\Products'
+            )));
+            
+            \Search\Factory::registerSource(new \Search\Models\Source(array(
+                'id' => 'shop.orders',
+                'title' => 'Orders',
+                'class' => '\Shop\Models\Orders'
+            )));
+            
+        }
     }
 
     protected function preSite()
     {
-        \Search\Factory::registerSource(new \Search\Models\Source(array(
-            'id' => 'shop.products',
-            'title' => 'Products',
-            'class' => '\Shop\Models\Products'
-        )));
-        
-        // add the css & js files to the minifier
-        \Minify\Factory::registerPath($this->dir . "/src/");
-        
-        $files = array(
-            'Shop/Assets/js/class.js',
-            'Shop/Assets/js/validation.js',
-            'Shop/Assets/js/site.js'
-        );
-        
-        if ($check_campaigns = \Dsc\System::instance()->get('session')->get('shop.check_campaigns'))
+        if (class_exists('\Search\Factory'))
         {
-            $files[] = 'Shop/Assets/js/check_campaigns.js';
+            \Search\Factory::registerSource(new \Search\Models\Source(array(
+                'id' => 'shop.products',
+                'title' => 'Products',
+                'class' => '\Shop\Models\Products'
+            )));
+            
         }        
         
-        foreach ($files as $file)
+        if (class_exists('\Minify\Factory'))
         {
-            \Minify\Factory::js($file);
+            \Minify\Factory::registerPath($this->dir . "/src/");
+            
+            $files = array(
+                'Shop/Assets/js/class.js',
+                'Shop/Assets/js/validation.js',
+                'Shop/Assets/js/site.js'
+            );
+            
+            if ($check_campaigns = \Dsc\System::instance()->get('session')->get('shop.check_campaigns'))
+            {
+                $files[] = 'Shop/Assets/js/check_campaigns.js';
+            }
+            
+            foreach ($files as $file)
+            {
+                \Minify\Factory::js($file);
+            }            
         }
     }
     
