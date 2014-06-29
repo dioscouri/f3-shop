@@ -769,6 +769,7 @@ class Products extends \Dsc\Mongo\Collections\Content
     {
         $image = (!empty($this->{'featured_image.slug'})) ? './asset/thumb/' . $this->{'featured_image.slug'} : null;
         $sku = ($this->{'tracking.sku'}) ? ' - ' . $this->{'tracking.sku'} : null; 
+        $published_status = '<span class="label ' . $this->publishableStatusLabel() . '">' . $this->{'publication.status'} . '</span>';
         
         $item = new \Search\Models\Item(array(
             'url' => './admin/shop/product/edit/' . $this->id,
@@ -776,7 +777,7 @@ class Products extends \Dsc\Mongo\Collections\Content
             'subtitle' => \Shop\Models\Currency::format( $this->price() ),
             'image' => $image,
             'summary' => $this->getAbstract(),
-            'datetime' => 'Published: ' . date('Y-m-d', $this->{'publication.start.time'} ),
+            'datetime' => $published_status . ' ' . date('Y-m-d', $this->{'publication.start.time'} ),
             'price' => $this->price(),
             'prices' => $this->{'prices'},
         ));
