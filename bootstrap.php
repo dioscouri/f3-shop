@@ -59,7 +59,13 @@ class ShopBootstrap extends \Dsc\Bootstrap
             'id' => 'shop.products',
             'title' => 'Products',
             'class' => '\Shop\Models\Products'
-        )));        
+        )));
+
+        \Search\Factory::registerSource(new \Search\Models\Source(array(
+            'id' => 'shop.orders',
+            'title' => 'Orders',
+            'class' => '\Shop\Models\Orders'
+        )));
     }
 
     protected function preSite()

@@ -770,14 +770,15 @@ class Products extends \Dsc\Mongo\Collections\Content
     public function toAdminSearchItem()
     {
         $image = (!empty($this->{'featured_image.slug'})) ? './asset/thumb/' . $this->{'featured_image.slug'} : null;
-    
+        $sku = ($this->{'tracking.sku'}) ? ' - ' . $this->{'tracking.sku'} : null; 
+        
         $item = new \Search\Models\Item(array(
             'url' => './admin/shop/product/edit/' . $this->id,
-            'title' => $this->title,
-            'subtitle' => $this->{'tracking.sku'},
+            'title' => $this->title . $sku,
+            'subtitle' => \Shop\Models\Currency::format( $this->price() ),
             'image' => $image,
-            'summary' => $this->description,
-            'datetime' => null,
+            'summary' => $this->getAbstract(),
+            'datetime' => 'Published: ' . date('Y-m-d', $this->{'publication.start.time'} ),
             'price' => $this->price(),
             'prices' => $this->{'prices'},
         ));

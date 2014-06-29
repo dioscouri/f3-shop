@@ -971,4 +971,56 @@ class Orders extends \Dsc\Mongo\Collections\Taggable
         
         return $this;
     }
+    
+    /**
+     * Gets the first product's image
+     * 
+     * @return unknown
+     */
+    public function image()
+    {
+        foreach ($this->items as $item) 
+        {
+            if ($image = \Dsc\ArrayHelper::get($item, 'image')) 
+            {
+                break;
+            }
+        }
+        
+        return $image;
+    }
+    
+    /**
+     * Converts this to a search item, used in the search template when displaying each search result
+     */
+    public function toAdminSearchItem()
+    {
+        $image = $this->image() ? './asset/thumb/' . $this->image() : null;
+        
+        switch ($this->{'status'}) 
+        {
+            case \Shop\Constants\OrderStatus::cancelled:
+                $label_class = 'label-danger';
+                break;
+            case \Shop\Constants\OrderStatus::closed:
+                $label_class = 'label-default';
+                break;
+            case \Shop\Constants\OrderStatus::open:
+            default:
+                $label_class = 'label-success';
+                break;        
+        }
+        $order_status = '<div>Order status: <span class="label ' . $label_class . '">' . $this->{'status'} . '</span></div>';        
+        
+        $item = new \Search\Models\Item(array(
+            'url' => './admin/shop/order/edit/' . $this->id,
+            'title' => '#' . $this->number,
+            'subtitle' => '<div>' . $this->customerName() . '</div><div>' . \Shop\Models\Currency::format( $this->{'grand_total'} ) . '</div>',
+            'image' => $image,
+            'summary' => $order_status . '<div>Items: ' . $this->quantity() . '</div>',
+            'datetime' => (new \DateTime($this->{'metadata.created.local'}))->format('F j, Y')
+        ));
+    
+        return $item;
+    }
 }
