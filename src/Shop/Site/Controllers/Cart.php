@@ -184,9 +184,14 @@ class Cart extends \Dsc\Controller
         // -----------------------------------------------------
         // Start: validation
         // -----------------------------------------------------
-        $coupon_code = strtolower( $this->input->get( 'coupon_code', null, 'string' ) );
+        $coupon_code = trim( strtolower( $this->input->get( 'coupon_code', null, 'string' ) ) );
         
         try {
+            if (empty($coupon_code)) 
+            {
+                throw new \Exception('Please provide a coupon code');
+            }
+            
             // load the coupon, and if it exists, try to add it to the cart
             $coupon = (new \Shop\Models\Coupons)->setState('filter.code', $coupon_code)->getItem();
             
@@ -194,7 +199,7 @@ class Cart extends \Dsc\Controller
             {
             	throw new \Exception('Invalid Coupon Code');
             }
-            
+
             // are we using a generated code?  or a primary code? 
             if (strtolower($coupon->code) != $coupon_code) 
             {
@@ -325,9 +330,14 @@ class Cart extends \Dsc\Controller
         // -----------------------------------------------------
         // Start: validation
         // -----------------------------------------------------
-        $giftcard_code = $this->input->get( 'giftcard_code', null, 'alnum' );
+        $giftcard_code = trim( $this->input->get( 'giftcard_code', null, 'alnum' ) );
     
         try {
+            if (empty($giftcard_code))
+            {
+                throw new \Exception('Please provide a gift card code');
+            }
+                        
             // load the giftcard, and if it exists, try to add it to the cart
             $giftcard = (new \Shop\Models\OrderedGiftCards)->load(array('_id'=>new \MongoId($giftcard_code)));
             if (empty($giftcard->id))

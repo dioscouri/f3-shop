@@ -67,8 +67,8 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
         $filter_code = $this->getState('filter.code');
         if (strlen($filter_code))
         {
-            $key = new \MongoRegex('/'.$filter_code.'/i');
-
+            //$key = new \MongoRegex('/'.$filter_code.'/i');
+            $key = strtolower( $filter_code );
             // add $and conditions to the query stack
             if (!$and = $this->getCondition('$and'))
             {
@@ -864,8 +864,9 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
 		}
     }
     
-    public function generateCodes($prefix, $len, $num) {
-    	//since event bands are all generated at once we don't want  all the bands at the event to be in a guessible order.
+    public function generateCodes($prefix, $len, $num) 
+    {
+    	$prefix = strtolower($prefix);
 
     	$num_chars = count( $this->__chars );
     	$possible_codes = pow($num_chars, $len);
