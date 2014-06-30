@@ -62,13 +62,15 @@ class ShopBootstrap extends \Dsc\Bootstrap
             \Search\Factory::registerSource(new \Search\Models\Source(array(
                 'id' => 'shop.products',
                 'title' => 'Products',
-                'class' => '\Shop\Models\Products'
+                'class' => '\Shop\Models\Products',
+                'priority' => 20,
             )));
             
             \Search\Factory::registerSource(new \Search\Models\Source(array(
                 'id' => 'shop.orders',
                 'title' => 'Orders',
-                'class' => '\Shop\Models\Orders'
+                'class' => '\Shop\Models\Orders',
+                'priority' => 20,
             )));
             
         }
