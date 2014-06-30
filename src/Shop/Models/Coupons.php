@@ -876,20 +876,24 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
     	
     	$codes = array_values( (array)$this->{'codes.list'} );
     	
-    	for( $i = 0; $i < $num; $i++ ){
+    	for( $i = 0; $i < $num; $i++ )
+    	{
     		$suffix = '';
 			$notUnique = true;
-    		while( $notUnique ){
+    		while( $notUnique )
+    		{
     			for( $j = 0; $j < $len; $j++ ){
     				$suffix .= $this->__chars[rand( 0, $num_chars-1)];
     			}
+    			$code = strtolower($prefix.$suffix);
     			
     			$all_codes = \Joomla\Utilities\ArrayHelper::getColumn( $codes, 'code' );
-    			$notUnique = in_array( $prefix.$suffix, $all_codes );
+    			$notUnique = in_array( $code, $all_codes );
     		}
     		
-    		$codes []= array( 'code' => $prefix.$suffix, 'used' => 0 );
+    		$codes[] = array( 'code' => $code, 'used' => 0 );
     	}
+    	
     	$this->{'codes.list'} = $codes;
     	$this->{'codes.prefix'} = $prefix;
     	$this->{'codes.length'} = $len;
