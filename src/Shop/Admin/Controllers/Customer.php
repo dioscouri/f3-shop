@@ -51,4 +51,33 @@ class Customer extends \Users\Admin\Controllers\User
         $this->theme->event = $this->theme->trigger( 'onDisplayShopCustomers', array( 'item' => $this->getItem(), 'tabs' => array(), 'content' => array() ) );
         echo $this->theme->render('Shop/Admin/Views::customers/read.php');    	
     }
+    
+    public function refreshTotals()
+    {
+        $customer = $this->getItem();
+        
+        if (empty($customer->id)) 
+        {
+            \Dsc\System::addMessage('Invalid ID', 'error');
+            $this->app->reroute('/admin/shop/customers');
+        }
+        
+        $customer->{'shop.total_spent'} = $customer->totalSpent(true);
+        $customer->{'shop.orders_count'} = $customer->ordersCount(true);
+        
+        try 
+        {
+            $customer->save();
+            $customer->checkCampaigns();
+            
+            \Dsc\System::addMessage('Totals refreshed', 'success');
+        }
+        
+        catch (\Exception $e) 
+        {
+            \Dsc\System::addMessage($e->getMessage(), 'error');
+        }
+        
+        $this->app->reroute('/admin/shop/customer/read/' . $customer->id);
+    }
 }

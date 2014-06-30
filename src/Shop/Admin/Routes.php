@@ -211,6 +211,11 @@ class Routes extends \Dsc\Routes\Group
         
         $this->addCrudGroup('Customers', 'Customer');
         
+        $this->add('/customer/refreshtotals/@id', 'GET', array(
+            'controller' => 'Customer',
+            'action' => 'refreshTotals'
+        ));        
+        
         $this->addCrudGroup('Campaigns', 'Campaign');
         
         $this->add('/shipping-methods', 'GET|POST', array(

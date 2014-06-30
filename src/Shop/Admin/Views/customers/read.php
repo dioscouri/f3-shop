@@ -85,6 +85,9 @@
                     <div class="list-group-item"><label>Registered:</label> <?php echo date( 'Y-m-d', $item->{'metadata.created.time'} ); ?></div>
                 </div>
             </div>
+            <div class="panel-footer">
+                <a class="btn btn-xs btn-warning" href="./admin/shop/customer/refreshtotals/<?php echo $item->id; ?>">Refresh Totals</a>
+            </div>
         </div>
             
         <div class="panel panel-default">
