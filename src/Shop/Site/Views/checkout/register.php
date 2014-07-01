@@ -57,7 +57,7 @@
                 
                     <div id="email-password" class="form-group">
                         <label>Email Address</label>
-                        <input type="text" name="email_address" class="form-control" required />
+                        <input type="email" name="email_address" class="form-control" required />
                         <p id="guest-email-message" class="help-block">Will only be used for order-related communication.</p>
                     </div>
                     
