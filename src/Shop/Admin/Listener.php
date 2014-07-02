@@ -131,7 +131,13 @@ class Listener extends \Prefab
                         'title' => 'Gift Cards',
                         'route' => './admin/shop/orders/giftcards',
                         'icon' => 'fa fa-gift'
-                    )
+                    ),
+                    array(
+                        'title' => 'Failed Checkouts',
+                        'route' => './admin/shop/orderfailures',
+                        'icon' => 'fa fa-thumbs-down'
+                    ),
+                    
                 );
                 
                 $orders_item->addChildren($orders_children);

@@ -350,4 +350,23 @@ class Customers extends \Users\Models\Users
         
         return $this;
     }
+    
+    /**
+     * 
+     * @param unknown $id
+     * @return \Shop\Models\Customers
+     */
+    public static function recalculateTotals( $id ) 
+    {
+        $model = new static;
+        $model = $model->setState('filter.id', $id)->getItem();
+        if (!empty($model->id)) 
+        {
+            $model->{'shop.total_spent'} = $model->totalSpent(true);
+            $model->{'shop.orders_count'} = $model->ordersCount(true);
+            $model->save()->checkCampaigns();
+        }
+        
+        return $model;
+    }
 }
