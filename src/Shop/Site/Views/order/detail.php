@@ -164,10 +164,10 @@
                             <label class="strong">Subtotal:</label>
                             <span class="price"><?php echo \Shop\Models\Currency::format( $order->sub_total ); ?></span>
                         </div>
-                        <?php if ($order->discount_total > 0) { ?>
+                        <?php if ($order->discount_total - $order->shipping_discount_total > 0) { ?>
                         <div>
                             <label class="strong">Discount:</label>
-                            <span class="price">-<?php echo \Shop\Models\Currency::format( $order->discount_total ); ?></span>
+                            <span class="price">-<?php echo \Shop\Models\Currency::format( $order->discount_total - $order->shipping_discount_total ); ?></span>
                         </div>
                         <?php } ?>                
                         <?php if ($order->shipping_total > 0) { ?>
@@ -176,6 +176,12 @@
                             <span class="price"><?php echo \Shop\Models\Currency::format( $order->shipping_total ); ?></span>
                         </div>
                         <?php } ?>
+                        <?php if ($order->shipping_discount_total > 0) { ?>
+                        <div>
+                            <label class="strong">Shipping Discount:</label>
+                            <span class="price">-<?php echo \Shop\Models\Currency::format( $order->shipping_discount_total ); ?></span>
+                        </div>
+                        <?php } ?>                        
                         <?php if ($order->tax_total > 0) { ?>
                         <div>
                             <label class="strong">Tax:</label>

@@ -542,6 +542,37 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
     	// depending on where this coupon's discount is applied, get its corresponding value
     	switch ($this->discount_applied) 
     	{
+    	    case "order_total":
+    	        if ($this->discount_type == 'flat-rate')
+    	        {
+    	            // TODO Take the discount_currency into account
+    	            $value = $this->discount_value;
+    	        }
+    	        elseif ($this->discount_type == 'percentage')
+    	        {
+    	            // TODO take min_order_amount_currency into account once we have currencies sorted
+    	            $total = $cart->subtotal() - $cart->giftCardTotal() - $cart->discountTotal() - $cart->creditTotal();
+    	            // Add back the value of this coupon in case it is already applied
+    	            foreach ($cart->allCoupons() as $coupon)
+    	            {
+    	                if ((string) $coupon['_id'] == (string) $this->id)
+    	                {
+    	                    $total = $total + $coupon['amount'];
+    	                    break;
+    	                }
+    	            }
+    	    
+    	            $value = ($this->discount_value/100) * $total;
+    	        }
+    	    
+    	        // coupon value cannot be greater than order value
+    	        if ($value > $cart->subtotal())
+    	        {
+    	            $value = $cart->subtotal();
+    	        }
+    	    
+    	        break;
+    	        	
     		case "order_subtotal":
     		    if ($this->discount_type == 'flat-rate') 
     		    {

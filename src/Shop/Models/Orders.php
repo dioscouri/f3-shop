@@ -12,7 +12,8 @@ class Orders extends \Dsc\Mongo\Collections\Taggable
     public $tax_total = 0;
     public $shipping_total = 0;
     public $shipping_tax = 0;
-    public $discount_total = 0;
+    public $discount_total = 0;             // the sum of all discounts, including shipping
+    public $shipping_discount_total = 0;    // the portion of discount_total that applies to shipping 
     public $credit_total = 0;
     public $giftcard_total = 0;
 
@@ -298,6 +299,7 @@ class Orders extends \Dsc\Mongo\Collections\Taggable
         $order->tax_total = $cart->taxTotal();
         $order->shipping_total = $cart->shippingTotal();
         $order->discount_total = $cart->discountTotal();
+        $order->shipping_discount_total = $cart->shippingDiscountTotal();
         $order->credit_total = $cart->creditTotal();
         $order->giftcard_total = $cart->giftCardTotal();
 

@@ -70,16 +70,33 @@
         <!-- /.form-group -->
         
         <div class="form-group">
-            <label>Applied To</label>
-            <select name="discount_applied" class="form-control">
-                <option value="order_subtotal" <?php echo ($flash->old('discount_applied') == 'order_subtotal') ? "selected='selected'" : null; ?>>Order Subtotal</option>
-                <option value="order_shipping" <?php echo ($flash->old('discount_applied') == 'order_shipping') ? "selected='selected'" : null; ?>>Order Shipping Costs</option>
-                <option value="product_subtotal" <?php echo ($flash->old('discount_applied') == 'product_subtotal') ? "selected='selected'" : null; ?>>Product Subtotal</option>
-                <option value="product_shipping" <?php echo ($flash->old('discount_applied') == 'product_shipping') ? "selected='selected'" : null; ?>>Product Shipping Costs</option>
-                <option value="product_price_override" <?php echo ($flash->old('discount_applied') == 'product_price_override') ? "selected='selected'" : null; ?>>Override Product Price</option>
-            </select>
-                                
-            <p class="help-block">If you have selected either of the Product options above, this discount will be applied to every product in the shopper's cart unless you select specific products below under "Target Products" or "Target Collections".</p>
+            <div class="row">
+                <div class="col-md-4">
+                    <label>Applied To</label>
+                    <select name="discount_applied" class="form-control">
+                        <option value="order_total" <?php echo ($flash->old('discount_applied') == 'order_total') ? "selected='selected'" : null; ?>>Order Total</option>
+                        <option value="order_subtotal" <?php echo ($flash->old('discount_applied') == 'order_subtotal') ? "selected='selected'" : null; ?>>Order Subtotal</option>
+                        <option value="order_shipping" <?php echo ($flash->old('discount_applied') == 'order_shipping') ? "selected='selected'" : null; ?>>Order Shipping Costs</option>
+                        <option value="product_subtotal" <?php echo ($flash->old('discount_applied') == 'product_subtotal') ? "selected='selected'" : null; ?>>Product Subtotal</option>
+                        <option value="product_shipping" <?php echo ($flash->old('discount_applied') == 'product_shipping') ? "selected='selected'" : null; ?>>Product Shipping Costs</option>
+                        <option value="product_price_override" <?php echo ($flash->old('discount_applied') == 'product_price_override') ? "selected='selected'" : null; ?>>Override Product Price</option>
+                    </select>
+                </div>
+                <div class="col-md-8">
+                    <div class="help-block">
+                        <ul class="list-unstyled">
+                            <li>
+                                Order Total = After gift cards, store credits, and all other discounts are applied, but before taxes and shipping totals are applied.
+                            </li>
+                            <li>
+                                Order Subtotal = Before discounts, gift cards, store credits, taxes, and shipping totals are applied.
+                            </li>
+                        </ul>
+                    </div>                                
+                    <p class="help-block">If you have selected either of the Product options, this discount will be applied to every product in the shopper's cart unless you select specific products below under "Target Products" or "Target Collections".</p>
+                </div>                
+            </div>
+            
 
         </div>
         <!-- /.form-group -->
