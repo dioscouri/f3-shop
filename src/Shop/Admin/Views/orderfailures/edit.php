@@ -418,8 +418,16 @@
         
     </div>
     <div class="col-md-3">
-        <ul class="list-group">
-            
-        </ul>
+        <?php if (!empty($item->errors)) { ?>
+        <div>
+            <label>Errors:</label>
+            <ul class="list-group">
+            <?php foreach ($item->errors as $error) { ?>
+                <li class="list-group-item"><?php echo $error; ?></li>
+            <?php } ?>
+            </ul>
+        </div>
+        <?php } ?>
+
     </div>
 </div>

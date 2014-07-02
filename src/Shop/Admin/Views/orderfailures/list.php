@@ -2,7 +2,7 @@
 	<div class="col-xs-12 col-sm-7 col-md-7 col-lg-4">
 		<h1 class="page-title txt-color-blueDark">
 			<i class="fa fa-table fa-fw "></i> 
-				Orders 
+				Failed Checkouts 
 			<span> > 
 				List
 			</span>
@@ -268,6 +268,19 @@
                                 <?php echo $order->{'financial_status'}; ?>
                                 </span>                            
                             </div>
+                            
+                            <?php if (!empty($order->errors)) { ?>
+                            <hr/>
+                            <div>
+                                <label>Errors:</label>
+                                <ul class="list-group">
+                                <?php foreach ($order->errors as $error) { ?>
+                                    <li class="list-group-item"><?php echo $error; ?></li>
+                                <?php } ?>
+                                </ul>
+                            </div>
+                            <?php } ?>
+                            
                         </div>
                         <div class="col-xs-12 col-sm-12 col-md-8">
                             <legend>
