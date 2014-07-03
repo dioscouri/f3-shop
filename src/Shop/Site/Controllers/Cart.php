@@ -28,6 +28,12 @@ class Cart extends \Dsc\Controller
      */
     public function add()
     {
+        $redirect = '/shop/cart';
+        if ($custom_redirect = \Dsc\System::instance()->get( 'session' )->get( 'shop.add_to_cart.product.redirect' ))
+        {
+            $redirect = $custom_redirect;
+        }
+                
         // -----------------------------------------------------
         // Start: validation
         // -----------------------------------------------------
@@ -43,7 +49,7 @@ class Cart extends \Dsc\Controller
                 ) ) );
             } else {
                 \Dsc\System::addMessage('Item not added to cart - Invalid product', 'error');
-                $this->app->reroute('/shop/cart');
+                $this->app->reroute($redirect);
                 return;
             }
         }
@@ -65,7 +71,7 @@ class Cart extends \Dsc\Controller
             } else {
                 \Dsc\System::addMessage('Item not added to cart', 'error');
                 \Dsc\System::addMessage($e->getMessage(), 'error');
-                $this->app->reroute('/shop/cart');
+                $this->app->reroute($redirect);
                 return;
             }
         }
@@ -76,7 +82,7 @@ class Cart extends \Dsc\Controller
             ) ) );
         } else {
             \Dsc\System::addMessage('Item added to cart');
-        	$this->app->reroute('/shop/cart');
+        	$this->app->reroute($redirect);
         }
     }
     

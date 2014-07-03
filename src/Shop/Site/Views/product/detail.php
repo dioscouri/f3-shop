@@ -231,6 +231,7 @@ jQuery(document).ready(function(){
                                 <?php echo \Shop\Models\Currency::format( $item->price() ); ?>
                             </div>
                             <button class="btn btn-default custom-button custom-button-inverted" data-button="add-to-bag">Add to bag</button>
+                            <?php \Dsc\System::instance()->get('session')->set('shop.add_to_cart.product.redirect', '/shop/product/' . $item->slug ); ?>
                             
                             <div class="small-buttons">
                                 <div class="add-to-wishlist-container">
