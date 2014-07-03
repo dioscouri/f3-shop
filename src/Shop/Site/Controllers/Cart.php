@@ -337,9 +337,15 @@ class Cart extends \Dsc\Controller
             {
                 throw new \Exception('Please provide a gift card code');
             }
+            
+            $regex = '/^[0-9a-z]{24}$/';
+            if (!preg_match($regex, (string) $giftcard_code))
+            {
+                throw new \Exception('Please enter a valid gift card code');
+            }            
                         
             // load the giftcard, and if it exists, try to add it to the cart
-            $giftcard = (new \Shop\Models\OrderedGiftCards)->load(array('_id'=>new \MongoId($giftcard_code)));
+            $giftcard = (new \Shop\Models\OrderedGiftCards)->setState('filter.id', $giftcard_code)->getItem();
             if (empty($giftcard->id))
             {
                 throw new \Exception('Invalid Gift Card Code');
