@@ -111,14 +111,26 @@
     </div>
 </div>
 
-<hr/>
-
-<?php /* ?>
-<div class="row">
-    <div class="col-md-12">
+<?php if ($this->event->getArgument('tabs')) { ?>
+    <hr />
     
-        [display tabbed data from plugin event]
+    <ul class="nav nav-tabs">
+        <?php foreach ((array) $this->event->getArgument('tabs') as $key => $title ) { ?>
+        <li class="<?php if (empty($key)) { echo "active"; } ?>">
+            <a href="#tab-<?php echo $key; ?>" data-toggle="tab"> <?php echo $title; ?> </a>
+        </li>
+        <?php } ?>
+    </ul>
     
+    <div class="tab-content">
+        
+        <?php foreach ((array) $this->event->getArgument('content') as $key => $content ) { ?>
+        <div class="tab-pane <?php if (empty($key)) { echo "active"; } ?>" id="tab-<?php echo $key; ?>">
+            <?php echo $content; ?>
+        </div>
+        <?php } ?>
+        
     </div>
-</div>
-*/ ?>
+    <!-- /.tab-content -->
+    
+<?php } ?>
