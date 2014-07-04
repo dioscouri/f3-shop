@@ -325,5 +325,10 @@ class Routes extends \Dsc\Routes\Group
             'controller' => 'Customer',
             'action' => 'checkCampaigns'
         ) );
+        
+        $this->add( '/google-merchant/products.xml', 'GET', array(
+            'controller' => 'GoogleMerchant',
+            'action' => 'productsXml'
+        ) );
     }
 }
