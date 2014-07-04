@@ -6,8 +6,8 @@ dataLayer.push({
 <?php if (!empty($this->order->tax_total)) { ?>    	    
     'transactionTax': <?php echo (float) $this->order->tax_total; ?>,
 <?php } ?>
-<?php if (!empty($this->order->shipping_total)) { ?>
-    'transactionShipping': <?php echo (float) $this->order->shipping_total; ?>,
+<?php if ($this->order->shipping_total - $this->order->shipping_discount_total > 0) { ?>
+    'transactionShipping': <?php echo (float) $this->order->shipping_total - $this->order->shipping_discount_total; ?>,
 <?php } ?>
     'transactionProducts': [
     <?php $n=0; foreach ($this->order->items as $item) { ?>
