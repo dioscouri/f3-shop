@@ -1,8 +1,7 @@
 <div class="row">
     <div class="col-md-2">
         
-        <h3>Products</h3>
-        <p class="help-block">You can manually pick the products to be included in this collection.  If you use this field, <b>only</b> these products will be part of the collection.</p>
+        <h3>Google Product Categorization</h3>
                 
     </div>
     <!-- /.col-md-2 -->
@@ -10,12 +9,9 @@
     <div class="col-md-10">
     
         <div class="form-group">
-            <label>Search</label>
-            <div class="input-group">
-                <input id="products" name="products" value="<?php echo implode(",", (array) $flash->old('products') ); ?>" type="text" class="form-control" /> 
-            </div>
-            <!-- /.form-group -->        
-            
+            <label>Product Category</label>
+            <input id="gm_product_category" name="gm_product_category" value="<?php echo htmlspecialchars( $flash->old('gm_product_category') ); ?>" type="text" class="form-control" />
+            <p class="help-block">You should not select one of the top-level categories.  Only 1 product category is allowed.</p>            
         </div>
         <!-- /.form-group -->
         
@@ -28,13 +24,13 @@
 <script>
 jQuery(document).ready(function() {
     
-    jQuery("#products").select2({
+    jQuery("#gm_product_category").select2({
         allowClear: true, 
         placeholder: "Search...",
-        multiple: true,
+        multiple: false,
         minimumInputLength: 3,
         ajax: {
-            url: "./admin/shop/products/forSelection",
+            url: "./admin/shop/categories/google-merchant/forSelection",
             dataType: 'json',
             data: function (term, page) {
                 return {
@@ -45,12 +41,12 @@ jQuery(document).ready(function() {
                 return {results: data.results};
             }
         }
-        <?php if ($flash->old('products')) { ?>
+        <?php if ($flash->old('gm_product_category')) { ?>
         , initSelection : function (element, callback) {
-        	var data = {id: element.val(), text: element.val()};
-            callback(data);            
+            var data = <?php echo json_encode( \Shop\Models\GoogleMerchantTaxonomy::forSelection( $flash->old('gm_product_category') ) ); ?>;
+            callback(data[0]);            
         }
-        <?php } ?>
+        <?php } ?>    
     });
 
 });

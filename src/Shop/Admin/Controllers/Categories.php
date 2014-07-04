@@ -105,4 +105,17 @@ class Categories extends \Admin\Controllers\BaseAuth
         $view = \Dsc\System::instance()->get('theme');
         echo $view->renderLayout('Shop/Admin/Views::categories/list_parents.php');
     }
+    
+    public function gmTaxonomyForSelection()
+    {
+        $term = $this->input->get('q', null, 'default');
+        $results = \Shop\Models\GoogleMerchantTaxonomy::forSelection($term);
+    
+        $response = new \stdClass;
+        $response->more = false;
+        $response->term = $term;
+        $response->results = $results;
+    
+        return $this->outputJson($response);
+    }    
 }

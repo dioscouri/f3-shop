@@ -75,6 +75,11 @@ class Routes extends \Dsc\Routes\Group
             'action' => 'getCheckboxes'
         ));
         
+        $this->add('/categories/google-merchant/forSelection [ajax]', 'GET|POST', array(
+            'controller' => 'Categories',
+            'action' => 'gmTaxonomyForSelection'
+        ));        
+        
         $this->add('/manufacturers/checkboxes [ajax]', array(
             'GET',
             'POST'

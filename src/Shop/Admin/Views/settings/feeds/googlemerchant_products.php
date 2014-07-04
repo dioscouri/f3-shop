@@ -33,7 +33,45 @@ If enabled, you can access your XML feed at this URL: <a href="./shop/google-mer
             <label>Brief description</label>
             <input name="feeds[gm_products][description]" placeholder="A brief, brief description of the feed." value="<?php echo $flash->old('feeds.gm_products.description'); ?>" class="form-control" type="text" />
         </div>        
-        <!-- /.form-group -->        
+        <!-- /.form-group -->
+        
+        <div class="form-group">
+            <label>Brand</label>
+            <input name="feeds[gm_products][brand]" placeholder="Your 'brand'. This is attached to every product in your feed." value="<?php echo $flash->old('feeds.gm_products.brand'); ?>" class="form-control" type="text" />
+        </div>        
+        <!-- /.form-group -->
+        
+        <div class="form-group">
+            <div class="row">
+                <div class="col-md-6">
+                    <label>Default Gender</label>
+                    <select name="feeds[gm_products][gender]" class="form-control">
+                        <?php echo Dsc\Html\Select::options(array(
+                            array('value'=>'female', 'text'=>'Female'),
+                            array('value'=>'male', 'text'=>'Male'),
+                            array('value'=>'unisex', 'text'=>'Unisex'),
+                        ), $flash->old('feeds.gm_products.gender')); ?>
+                    </select>                
+                </div>                
+                <div class="col-md-6">
+                    <label>Default Age Group</label>
+                    <select name="feeds[gm_products][age_group]" class="form-control">
+                        <?php echo Dsc\Html\Select::options(array(
+                            array('value'=>'adult', 'text'=>'Adult'),
+                            array('value'=>'kids', 'text'=>'Kids'),
+                            array('value'=>'toddler', 'text'=>'Toddler'),
+                            array('value'=>'infant', 'text'=>'Infant'),
+                            array('value'=>'newborn', 'text'=>'Newborn'),
+                        ), $flash->old('feeds.gm_products.age_group')); ?>
+                    </select>                
+                </div>
+            </div>
+
+        </div>        
+        <!-- /.form-group -->       
+        
+        adult (or newborn, infanct, toddler, kids) 
+                        
     </div>
     <!-- /.col-md-10 -->
 </div>

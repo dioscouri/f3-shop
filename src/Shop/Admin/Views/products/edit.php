@@ -55,7 +55,10 @@ jQuery(document).ready(function(){
         </li>
         <li>
             <a href="#tab-display" data-toggle="tab"> Display </a>
-        </li>        
+        </li>
+        <li>
+            <a href="#tab-gm" data-toggle="tab"> Google Merchant </a>
+        </li>                
         <?php if (!empty($this->event)) { foreach ((array) $this->event->getArgument('tabs') as $key => $title ) { ?>
         <li>
             <a href="#tab-<?php echo $key; ?>" data-toggle="tab"> <?php echo $title; ?> </a>
@@ -99,6 +102,13 @@ jQuery(document).ready(function(){
                                 
         </div>
         <!-- /.tab-pane -->
+        
+        <div class="tab-pane" id="tab-gm">
+
+            <?php echo $this->renderLayout('Shop/Admin/Views::products/fields_gm.php'); ?>
+                                
+        </div>
+        <!-- /.tab-pane -->        
         
         <?php if (!empty($this->event)) { foreach ((array) $this->event->getArgument('content') as $key => $content ) { ?>
         <div class="tab-pane" id="tab-<?php echo $key; ?>">

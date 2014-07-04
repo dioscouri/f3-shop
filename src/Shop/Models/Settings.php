@@ -59,7 +59,10 @@ class Settings extends \Dsc\Mongo\Collections\Settings
         'gm_products' => array(
             'enabled' => 1,
             'title' => null,
-            'description' => null
+            'description' => null,
+            'brand' => null,
+            'gender' => null,
+            'age_group' => null,
         )
     );
     

@@ -80,7 +80,9 @@ class Products extends \Dsc\Mongo\Collections\Content
     	'stickers' => array()
     );
     
-    public $related_products = null;
+    public $related_products = array();
+    
+    public $gm_product_category = null;
     
     protected $__collection_name = 'shop.products';
     protected $__type = 'shop.products';

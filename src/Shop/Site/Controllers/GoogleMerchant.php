@@ -21,7 +21,8 @@ class GoogleMerchant extends \Dsc\Controller
     		->setState('filter.publication_status', 'published');
         
         $conditions = $model->conditions();
-        $cursor = \Shop\Models\Products::collection()->find($conditions)->limit(10);
+        $conditions['product_type'] = array('$nin'=>array('giftcard', 'giftcards'));
+        $cursor = \Shop\Models\Products::collection()->find($conditions)->sort(array('title'=>1));//->limit(10);
 
         /**
          * Generate XML
@@ -60,7 +61,13 @@ class GoogleMerchant extends \Dsc\Controller
             $product = new \Shop\Models\Products($product_doc);
             foreach ($product->variantsInStock() as $variant) 
             {
-                // TODO Skip products where price == 0.00
+                $price = $product->price( $variant['id'] );
+                
+                // Skip products where price == 0.00                
+                if (empty($price)) 
+                {
+                    continue;
+                }
                 
                 $x->startElement('item');
                     $x->startElement('title');
@@ -83,13 +90,43 @@ class GoogleMerchant extends \Dsc\Controller
                         $x->endElement(); // g:image_link                        
                     }
                     
-                    // TODO google_product_category
-                    // TODO product_type
-                    // TODO brand = $brand from settings
+                    // google_product_category
+                    if ($product->{'gm_product_category'})
+                    {
+                        $x->startElement('g:google_product_category');
+                            $x->text($product->{'gm_product_category'});
+                        $x->endElement(); // g:google_product_category
+                    }
                     
-                    // Apparel requires:
-                    // TODO gender = female (or male, unisex)
-                    // TODO age_group = adult (or newborn, infanct, toddler, kids)
+                    // TODO product_type
+                    
+                    // gender = female (or male, unisex)
+                    $gender = $settings->{'feeds.gm_products.gender'};
+                    if ($product->{'gm_products.gender'}) 
+                    {
+                        $gender = $product->{'gm_products.gender'};
+                    }
+                    
+                    if ($gender)
+                    {
+                        $x->startElement('g:gender');
+                            $x->text($gender);
+                        $x->endElement(); // g:gender
+                    }
+                                        
+                    // age_group = adult (or newborn, infanct, toddler, kids)
+                    $age_group = $settings->{'feeds.gm_products.age_group'};
+                    if ($product->{'gm_products.age_group'})
+                    {
+                        $age_group = $product->{'gm_products.age_group'};
+                    }
+                    
+                    if ($age_group)
+                    {
+                        $x->startElement('g:age_group');
+                           $x->text($age_group);
+                        $x->endElement(); // g:age_group
+                    }                    
                     
                     // following handles color, size, pattern, material (if they are set as attributes)
                     foreach ($product->attributes as $attribute) 
@@ -125,17 +162,27 @@ class GoogleMerchant extends \Dsc\Controller
                         $x->text($product->{'tracking.sku'});
                     $x->endElement(); // g:item_group_id                    
                                         
-                    $sku = $variant['sku'] ? $variant['sku'] : $product->{'tracking.sku'};                    
+                    $sku = $variant['sku'] ? $variant['sku'] : $product->{'tracking.sku'};
+                    if (!$sku) {
+                        $sku = $variant['id'];
+                    }                    
                     $x->startElement('g:id');
                         $x->text($sku);
                     $x->endElement(); // g:id
+                    
+                    if ($brand = $settings->{'feeds.gm_products.brand'})
+                    {
+                        $x->startElement('g:brand');
+                            $x->text($brand);
+                        $x->endElement(); // g:brand
+                    }
                     
                     $x->startElement('g:mpn');
                         $x->text($sku);
                     $x->endElement(); // g:mpn                    
                     
                     $x->startElement('g:price');
-                        $x->text( $product->price( $variant['id'] ) . ' USD');
+                        $x->text( $price . ' USD');
                     $x->endElement(); // g:price
                     
                     $x->startElement('g:condition');
