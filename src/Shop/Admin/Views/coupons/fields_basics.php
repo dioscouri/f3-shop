@@ -77,27 +77,31 @@
                         <option value="order_total" <?php echo ($flash->old('discount_applied') == 'order_total') ? "selected='selected'" : null; ?>>Order Total</option>
                         <option value="order_subtotal" <?php echo ($flash->old('discount_applied') == 'order_subtotal') ? "selected='selected'" : null; ?>>Order Subtotal</option>
                         <option value="order_shipping" <?php echo ($flash->old('discount_applied') == 'order_shipping') ? "selected='selected'" : null; ?>>Order Shipping Costs</option>
+                        <option value="product_total" <?php echo ($flash->old('discount_applied') == 'product_total') ? "selected='selected'" : null; ?>>Product Total</option>
                         <option value="product_subtotal" <?php echo ($flash->old('discount_applied') == 'product_subtotal') ? "selected='selected'" : null; ?>>Product Subtotal</option>
                         <option value="product_shipping" <?php echo ($flash->old('discount_applied') == 'product_shipping') ? "selected='selected'" : null; ?>>Product Shipping Costs</option>
                         <option value="product_price_override" <?php echo ($flash->old('discount_applied') == 'product_price_override') ? "selected='selected'" : null; ?>>Override Product Price</option>
                     </select>
+                    
+                    <p class="help-block">Product targeting and exclusions only apply when you select one of the Product options above.</p>
                 </div>
                 <div class="col-md-8">
                     <div class="help-block">
-                        <ul class="list-unstyled">
-                            <li>
-                                Order Total = After gift cards, store credits, and all other discounts are applied, but before taxes and shipping totals are applied.
-                            </li>
-                            <li>
-                                Order Subtotal = Before discounts, gift cards, store credits, taxes, and shipping totals are applied.
-                            </li>
-                        </ul>
+                        <p>
+                            <b>Order Subtotal</b> = The sum of every product line item.
+                        </p>                    
+                        <p>
+                            <b>Order Total</b> = The sum of every product line item, minus gift cards, store credits, and all other discounts.
+                        </p>
+                        <p>
+                            <b>Product Subtotal</b> = Each included product's line item subtotal.
+                        </p>
+                        <p>
+                            <b>Product Total</b> = The sum of all included product line items, minus gift cards, store credits, and all other discounts.
+                        </p>                        
                     </div>                                
-                    <p class="help-block">If you have selected either of the Product options, this discount will be applied to every product in the shopper's cart unless you select specific products below under "Target Products" or "Target Collections".</p>
                 </div>                
             </div>
-            
-
         </div>
         <!-- /.form-group -->
         

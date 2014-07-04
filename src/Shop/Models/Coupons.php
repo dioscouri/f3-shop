@@ -629,6 +629,74 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
 		        }
 		        
 		        break;
+		    case "product_total":
+		        
+		        $total = 0;
+		        
+		        // if discount_target_products is empty, then get the sum of all product line items,
+		        if (empty($this->discount_target_products))
+		        {
+		            $excluded_products = $this->excludedProducts();
+		            foreach ($cart->items as $cartitem)
+		            {
+		                if (!in_array((string) $cartitem['product_id'], $excluded_products))
+		                {
+		                    $total = $total + $cart->calcItemSubtotal( $cartitem );
+		                }	
+		            }
+		        }
+		        // if discount_target_products is not empty, then get the sum of all products targeted
+		        else 
+		        {
+		            $excluded_products = $this->excludedProducts();
+		            foreach ($cart->items as $cartitem)
+		            {
+		                // is this product a discount_target_product?
+		                if (in_array((string) $cartitem['product_id'], $this->discount_target_products ))
+		                {
+		                    if (!in_array((string) $cartitem['product_id'], $excluded_products))
+		                    {
+		                        $total = $total + $cart->calcItemSubtotal( $cartitem );
+		                    }
+		                }
+		            }		            
+		        }		        
+		        
+		        // then subtract gift cards, store credits, and all discount totals,
+		        $total = $total - $cart->giftCardTotal() - $cart->discountTotal() - $cart->creditTotal();
+		        // Add back the value of this coupon in case it is already applied
+		        foreach ($cart->allCoupons() as $coupon)
+		        {
+		            if ((string) $coupon['_id'] == (string) $this->id)
+		            {
+		                $total = $total + $coupon['amount'];
+		                break;
+		            }
+		        }
+		        
+		        // and apply the coupon amount to the result
+		        if ($this->discount_type == 'flat-rate')
+		        {
+		            // TODO Take the discount_currency into account
+		            $value = $this->discount_value;
+		        }
+		        elseif ($this->discount_type == 'percentage')
+		        {
+		            $value = ($this->discount_value/100) * $total;
+		        }
+		        
+		        // coupon value cannot be greater than order value
+		        if ($value > $cart->subtotal())
+		        {
+		            $value = $cart->subtotal();
+		        }
+		        
+		        if ($value < 0) 
+		        {
+		            $value = 0;
+		        }
+		        		        
+		        break;		        
 	        case "product_subtotal":
 
 	            // if discount_target_products is empty, then for each product in the cart, apply the discount

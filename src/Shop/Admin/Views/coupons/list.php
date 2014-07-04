@@ -23,19 +23,17 @@
         
         <div class="row">
             <div class="col-xs-12 col-sm-5 col-md-5 col-lg-8">
-                <?php /* ?>
+
                 <ul class="list-filters list-unstyled list-inline">
                     <li>
-                        <a class="btn btn-link">Advanced Filtering</a>
+                        <select name="filter[publication_status]" class="form-control" onchange="this.form.submit();">
+                            <option value="">All Statuses</option>
+                            <option value="published" <?php if ($state->get('filter.publication_status') == 'published') { echo "selected='selected'"; } ?>>Published</option>
+                            <option value="unpublished" <?php if ($state->get('filter.publication_status') == 'unpublished') { echo "selected='selected'"; } ?>>Unpublished</option>
+                        </select>                        
                     </li>                
-                    <li>
-                        <a class="btn btn-link">Quicklink Filter</a>
-                    </li>
-                    <li>
-                        <a class="btn btn-link">Quicklink Filter</a>
-                    </li>                    
                 </ul>
-                */ ?>
+
             </div>
             <div class="col-xs-12 col-sm-7 col-md-7 col-lg-4">
                 <div class="form-group">

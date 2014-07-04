@@ -17,6 +17,12 @@ class Coupons extends \Admin\Controllers\BaseAuth
     {
         $model = $this->getModel();
         $state = $model->emptyState()->populateState()->getState();
+        
+        if (!$state->exists('filter.publication_status')) {
+            $model->setState('filter.publication_status', 'published');
+            $state->set('filter.publication_status', 'published');
+        }
+        
         \Base::instance()->set('state', $state );
         $paginated = $model->paginate();
         \Base::instance()->set('paginated', $paginated );
