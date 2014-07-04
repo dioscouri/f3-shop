@@ -69,8 +69,6 @@ If enabled, you can access your XML feed at this URL: <a href="./shop/google-mer
 
         </div>        
         <!-- /.form-group -->       
-        
-        adult (or newborn, infanct, toddler, kids) 
                         
     </div>
     <!-- /.col-md-10 -->
