@@ -77,6 +77,9 @@
                     <div class="list-group-item list-group-item-success">
                         <label>Total spent:</label> <b><?php echo \Shop\Models\Currency::format( $item->totalSpent() ); ?></b>
                     </div>
+                    <div class="list-group-item list-group-item-info">
+                        <label>Last 365 days:</label> <b><?php echo \Shop\Models\Currency::format( $item->fetchTotalSpent( date('Y-m-d', strtotime( 'today -1 year') ) ) ); ?></b>
+                    </div>                    
                     <div class="list-group-item">
                         <label>Total orders:</label> <?php echo (int) $item->ordersCount(); ?>
                     </div>
