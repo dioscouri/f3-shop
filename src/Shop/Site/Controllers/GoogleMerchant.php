@@ -5,6 +5,12 @@ class GoogleMerchant extends \Dsc\Controller
 {
     public function productsXml()
     {
+        $settings = \Shop\Models\Settings::fetch();
+        if (!$settings->{'feeds.gm_products.enabled'}) 
+        {
+            return;
+        }
+        
         $base = \Dsc\Url::base();
         
         $model = (new \Shop\Models\Products)
@@ -15,7 +21,7 @@ class GoogleMerchant extends \Dsc\Controller
     		->setState('filter.publication_status', 'published');
         
         $conditions = $model->conditions();
-        $cursor = \Shop\Models\Products::collection()->find($conditions); //->limit(10);
+        $cursor = \Shop\Models\Products::collection()->find($conditions)->limit(10);
 
         /**
          * Generate XML
@@ -32,20 +38,22 @@ class GoogleMerchant extends \Dsc\Controller
         
         $x->startElement('channel');
         
-        $title = 'Title of the feed';
+        $title = $settings->{'feeds.gm_products.title'} ? $settings->{'feeds.gm_products.title'} : 'Product Feed';
         $x->startElement('title');
             $x->text($title);
         $x->endElement(); // title
         
-        $link = 'http://domain.com/link/to/feed.xml';
+        $link = $base;
         $x->startElement('link');
             $x->text($link);
         $x->endElement(); // link
 
-        $description = 'Description of the feed';
-        $x->startElement('description');
-            $x->text($description);
-        $x->endElement(); // description
+        if ($description = $settings->{'feeds.gm_products.description'}) 
+        {
+            $x->startElement('description');
+                $x->text($description);
+            $x->endElement(); // description            
+        }
         
         foreach ($cursor as $product_doc) 
         {

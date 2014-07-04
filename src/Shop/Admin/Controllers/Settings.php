@@ -102,4 +102,28 @@ class Settings extends \Admin\Controllers\BaseAuth
     	echo $view->renderTheme('Shop/Admin/Views::settings/payments.php');
     }
     
+    public function feeds()
+    {
+        $this->settings_route = '/admin/shop/settings/feeds';
+    
+        switch ($this->app->get('VERB')) 
+        {
+            case "POST":
+            case "post":
+                // do the save and redirect to $this->settings_route
+                return $this->save();
+                break;
+        }
+    
+        $flash = \Dsc\Flash::instance();
+        $this->app->set('flash', $flash );
+    
+        $settings = \Shop\Models\Settings::fetch();
+        $flash->store( $settings->cast() );
+    
+        $this->app->set('meta.title', 'Feeds | Shop');
+    
+        echo $this->theme->render('Shop/Admin/Views::settings/feeds.php');
+    }    
+    
 }

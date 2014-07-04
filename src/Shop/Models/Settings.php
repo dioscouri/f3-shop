@@ -55,6 +55,14 @@ class Settings extends \Dsc\Mongo\Collections\Settings
         ),
     );
     
+    public $feeds = array(
+        'gm_products' => array(
+            'enabled' => 1,
+            'title' => null,
+            'description' => null
+        )
+    );
+    
     public function isShippingMethodEnabled($method=null)
     {
     	$result = false;

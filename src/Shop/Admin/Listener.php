@@ -250,8 +250,13 @@ class Listener extends \Prefab
                     array(
                         'title' => 'Notifications',
                         'route' => '/admin/shop/settings/notifications',
-                        'icon' => 'fa fa-rss'
+                        'icon' => 'fa fa-envelope'
                     ),
+                    array(
+                        'title' => 'Feeds',
+                        'route' => '/admin/shop/settings/feeds',
+                        'icon' => 'fa fa-rss'
+                    ),                    
                 );
                 
                 $settings_item->addChildren($settings_children);

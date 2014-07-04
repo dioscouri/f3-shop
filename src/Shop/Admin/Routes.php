@@ -232,6 +232,11 @@ class Routes extends \Dsc\Routes\Group
             'controller' => 'Settings',
             'action' => 'notifications'
         ));
+        
+        $this->add('/settings/feeds', 'GET|POST', array(
+            'controller' => 'Settings',
+            'action' => 'feeds'
+        ));
 
         $this->addCrudGroup('OrderFailures', 'OrderFailure');
         
