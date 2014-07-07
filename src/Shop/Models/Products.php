@@ -1191,6 +1191,27 @@ class Products extends \Dsc\Mongo\Collections\Content
     }
     
     /**
+     *
+     * @return boolean
+     */
+    public function variantsInStockWithImages()
+    {
+        if (empty($this->__variants_in_stock_with_images))
+        {
+            $this->__variants_in_stock_with_images = array();
+            foreach ($this->variantsInStock() as $variant) 
+            {
+                if (!empty($variant['image'])) 
+                {
+                    $this->__variants_in_stock_with_images[] = $variant;
+                }
+            }
+        }
+    
+        return $this->__variants_in_stock_with_images;
+    }    
+    
+    /**
      * Determines if a product is available for purchase
      * by checking multiple things, including variant inventory
      * publication dates, etc
