@@ -47,7 +47,7 @@ jQuery(document).ready(function() {
         }
         <?php if ($flash->old('products')) { ?>
         , initSelection : function (element, callback) {
-        	var data = {id: element.val(), text: element.val()};
+        	var data = <?php echo json_encode( \Shop\Models\Products::forSelection( array('_id'=>array('$in'=>array_map( function($input){ return new \MongoId($input); }, $flash->old('products') ) ) ) ) ); ?>;
             callback(data);            
         }
         <?php } ?>
