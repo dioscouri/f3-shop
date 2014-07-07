@@ -42,6 +42,16 @@ class Routes extends \Dsc\Routes\Group
         $this->add( '/category/*/page/@page', 'GET|POST', array(
             'controller' => 'Category',
             'action' => 'index' 
+        ) );
+
+        $this->add( '/category/*/view-all', 'GET', array(
+            'controller' => 'Category',
+            'action' => 'viewAll'
+        ) );
+
+        $this->add( '/category/*/view-all/page/@page [ajax]', 'GET', array(
+            'controller' => 'Category',
+            'action' => 'viewAllPaginate'
         ) );        
         
         $this->add( '/collection/@slug', 'GET|POST', array(
@@ -53,6 +63,16 @@ class Routes extends \Dsc\Routes\Group
             'controller' => 'Collection',
             'action' => 'index' 
         ) );
+        
+        $this->add( '/collection/@slug/view-all', 'GET', array(
+            'controller' => 'Collection',
+            'action' => 'viewAll'
+        ) );
+        
+        $this->add( '/collection/@slug/view-all/page/@page [ajax]', 'GET', array(
+            'controller' => 'Collection',
+            'action' => 'viewAllPaginate'
+        ) );        
         
         $this->add( '/cart', 'GET', array(
             'controller' => 'Cart',
