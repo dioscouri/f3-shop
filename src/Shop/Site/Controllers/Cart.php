@@ -19,6 +19,10 @@ class Cart extends \Dsc\Controller
         
         $this->app->set('meta.title', 'Shopping Cart');
         
+        \Shop\Models\Activities::track('Viewed Cart', array(
+            'cart_id' => (string) $cart->id,
+        ));
+        
         $view = \Dsc\System::instance()->get('theme');
         echo $view->renderTheme('Shop/Site/Views::cart/read.php');        
     }
@@ -74,6 +78,27 @@ class Cart extends \Dsc\Controller
                 $this->app->reroute($redirect);
                 return;
             }
+        }
+        
+        // Track it
+        if ($variant = $product->variant($variant_id)) 
+        {
+            \Shop\Models\Activities::track('Added to Cart', array(
+                'SKU' => $product->{'tracking.sku'},
+                'Variant Title' => !empty($variant['attribute_title']) ? $variant['attribute_title'] : $product->title,
+                'Product Name' => $product->title,
+                'variant_id' => (string) $variant_id,
+                'product_id' => (string) $product->id,
+            ));            
+        }        
+        else 
+        {
+            \Shop\Models\Activities::track('Added to Cart', array(
+                'SKU' => $product->{'tracking.sku'},
+                'Product Name' => $product->title,
+                'variant_id' => (string) $variant_id,
+                'product_id' => (string) $product->id,                
+            ));            
         }
 
         if ($this->app->get('AJAX')) {

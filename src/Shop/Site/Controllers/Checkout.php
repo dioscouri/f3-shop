@@ -34,6 +34,8 @@ class Checkout extends \Dsc\Controller
         
         $this->app->set('meta.title', 'Shipping | Checkout');
         
+        \Shop\Models\Activities::track('Started Checkout');
+                
         $view = \Dsc\System::instance()->get( 'theme' );
         echo $view->render( 'Shop/Site/Views::checkout/index.php' );
     }
@@ -87,6 +89,34 @@ class Checkout extends \Dsc\Controller
                 	throw new \Exception;
                 }
                 
+                /**
+                 * Start Activity Tracking
+                 */
+                $properties = array(
+                    'order_id' => (string) $order->id,
+                    'order_number' => (string) $order->number,
+                    'Grand Total' => $order->grand_total,
+                    'Products' => array(),
+                    'Coupons' => \Joomla\Utilities\ArrayHelper::getColumn( (array) $order->coupons, 'code' ),
+                    'Auto Coupons' => \Joomla\Utilities\ArrayHelper::getColumn( (array) $order->auto_coupons, 'code' ),
+                );
+                
+                foreach ( $order->items as $item )
+                {
+                    $product = array();
+                    $product['Product Name'] = \Dsc\ArrayHelper::get($item, 'product.title');
+                    if ( \Dsc\ArrayHelper::get($item, 'attribute_title') ) 
+                    {
+                        $product['Variant'] =  \Dsc\ArrayHelper::get($item, 'attribute_title');
+                    }
+                    $properties['Products'][] = $product;
+                }                
+                
+                \Shop\Models\Activities::track('Completed Checkout', $properties);
+                /**
+                 * END Activity Tracking
+                 */
+                
                 // update kissmetrics, if you can
                 $settings = \Admin\Models\Settings::fetch();
                 if( class_exists( '\KM' ) && $settings->enabledIntegration('kissmetrics')){
@@ -122,6 +152,7 @@ class Checkout extends \Dsc\Controller
                 	
                 	\KM::record("Finished Checkout", $data_km);
                 }
+                
                 // check coupons and discard used generated codes
                 if( count( $order->coupons ) ){
                 	foreach( $order->coupons as $coupon ){
@@ -135,6 +166,7 @@ class Checkout extends \Dsc\Controller
                 		}
                 	}
                 }
+                
                 if( count( $order->auto_coupons ) ){
                 	foreach( $order->auto_coupons as $coupon ){
                 		if( !empty( $coupon['generated_code'] ) ){

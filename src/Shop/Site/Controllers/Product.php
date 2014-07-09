@@ -62,7 +62,12 @@ class Product extends \Dsc\Controller
     	\Base::instance()->set('item', $item );
 
     	$this->app->set('meta.title', $item->seoTitle() . ' | Shop');
-    	$this->app->set('meta.description', $item->seoDescription() );    	
+    	$this->app->set('meta.description', $item->seoDescription() );
+
+        \Shop\Models\Activities::track('Viewed Potential Purchase', array(
+            'SKU' => $item->{'tracking.sku'},
+            'Product Name' => $item->title,            
+        ));
     	
     	$view = \Dsc\System::instance()->get('theme');
     	echo $view->render('Shop/Site/Views::product/detail.php');

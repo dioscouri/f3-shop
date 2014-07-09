@@ -52,6 +52,10 @@ class Wishlist extends \Dsc\Controller
         
         $this->app->set('meta.title', 'My Wishlist');
         
+        \Shop\Models\Activities::track('Viewed Wishlist', array(
+            'wishlist_id' => (string) $wishlist->id,
+        ));        
+        
         $view = \Dsc\System::instance()->get('theme');
         echo $view->renderTheme('Shop/Site/Views::wishlist/read.php');        
     }
@@ -146,6 +150,27 @@ class Wishlist extends \Dsc\Controller
                 return;
             }        	
         }
+        
+        // Track it
+        if ($variant = $product->variant($variant_id)) 
+        {
+            \Shop\Models\Activities::track('Added to Wishlist', array(
+                'SKU' => $product->{'tracking.sku'},
+                'Variant Title' => !empty($variant['attribute_title']) ? $variant['attribute_title'] : $product->title,
+                'Product Name' => $product->title,
+                'variant_id' => (string) $variant_id,
+                'product_id' => (string) $product->id,
+            ));            
+        }        
+        else 
+        {
+            \Shop\Models\Activities::track('Added to Wishlist', array(
+                'SKU' => $product->{'tracking.sku'},
+                'Product Name' => $product->title,
+                'variant_id' => (string) $variant_id,
+                'product_id' => (string) $product->id,                
+            ));            
+        }        
         
         if ($f3->get('AJAX')) {
             return $this->outputJson( $this->getJsonResponse( array(

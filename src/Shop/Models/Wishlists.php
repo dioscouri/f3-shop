@@ -446,6 +446,27 @@ class Wishlists extends \Dsc\Mongo\Collections\Nodes
         $product = (new \Shop\Models\Variants)->getById($variant_id);
         if ($cart->addItem( $variant_id, $product )) 
         {
+            // Track it
+            if ($variant = $product->variant($variant_id))
+            {
+                \Shop\Models\Activities::track('Moved product from wishlist to cart', array(
+                    'SKU' => $product->{'tracking.sku'},
+                    'Variant Title' => !empty($variant['attribute_title']) ? $variant['attribute_title'] : $product->title,
+                    'Product Name' => $product->title,
+                    'variant_id' => (string) $variant_id,
+                    'product_id' => (string) $product->id,
+                ));
+            }
+            else
+            {
+                \Shop\Models\Activities::track('Moved product from wishlist to cart', array(
+                    'SKU' => $product->{'tracking.sku'},
+                    'Product Name' => $product->title,
+                    'variant_id' => (string) $variant_id,
+                    'product_id' => (string) $product->id,
+                ));
+            }
+            
         	$this->removeItem( $wishlistitem_hash );
         }
         
