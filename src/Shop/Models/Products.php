@@ -1194,8 +1194,10 @@ class Products extends \Dsc\Mongo\Collections\Content
      *
      * @return boolean
      */
-    public function variantsInStockWithImages()
+    public function variantsInStockWithImages($unique_images_only=false)
     {
+        $done = array();
+        
         if (empty($this->__variants_in_stock_with_images))
         {
             $this->__variants_in_stock_with_images = array();
@@ -1203,7 +1205,11 @@ class Products extends \Dsc\Mongo\Collections\Content
             {
                 if (!empty($variant['image'])) 
                 {
-                    $this->__variants_in_stock_with_images[] = $variant;
+                    if (!$unique_images_only || ($unique_images_only && !in_array($variant['image'], $done))) 
+                    {
+                        $this->__variants_in_stock_with_images[] = $variant;
+                        $done[] = $variant['image'];
+                    }
                 }
             }
         }
