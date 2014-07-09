@@ -28,7 +28,7 @@ class Yesterday extends \Shop\Models\Dashboard
         {
             $result = $this->fetchTotalSales(date('Y-m-d '.$n.':00:00', strtotime('yesterday')), date('Y-m-d '.$n.':59:59', strtotime('yesterday')));
             $results[] =  array(
-                $n,
+                date('g a', strtotime( '2014-01-01 '.$n.':00:00' ) ),
                 $result['total'],
                 $result['count'],
             );
