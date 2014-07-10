@@ -66,7 +66,8 @@ class Product extends \Dsc\Controller
 
         \Shop\Models\Activities::track('Viewed Potential Purchase', array(
             'SKU' => $item->{'tracking.sku'},
-            'Product Name' => $item->title,            
+            'Product Name' => $item->title,
+            'product_id' => (string) $item->id            
         ));
     	
     	$view = \Dsc\System::instance()->get('theme');
