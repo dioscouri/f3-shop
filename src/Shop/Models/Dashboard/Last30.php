@@ -3,15 +3,14 @@ namespace Shop\Models\Dashboard;
 
 class Last30 extends \Shop\Models\Dashboard
 {
-
     public function totalSales()
     {
-        return $this->fetchTotalSales(date('Y-m-d 00:00:00', strtotime('today -30 days')));
+        return $this->fetchTotalSales(date('Y-m-d 00:00:00', strtotime('today -29 days')));
     }
 
     public function topSellers()
     {
-        return $this->fetchtopSellers(date('Y-m-d 00:00:00', strtotime('today -30 days')));
+        return $this->fetchtopSellers(date('Y-m-d 00:00:00', strtotime('today -29 days')));
     }
 
     public function salesData()
@@ -21,18 +20,20 @@ class Last30 extends \Shop\Models\Dashboard
         $results = array();
         $results[] = array(
             'M/D',
-            'Total',
-            'Orders'
+            'Total'
         );
         
-        $start = date('Y-m-d', strtotime('today -30 days'));
+        $start = date('Y-m-d', strtotime('today -29 days'));
         for ($n = 0; $n < 30; $n++)
         {
-            $result = $this->fetchTotalSales(date('Y-m-d 00:00:00', strtotime($start . ' +' . $n . ' days')), date('Y-m-d 00:00:00', strtotime($start . ' +' . $n + 1 . ' days')));
+            $start_date = (new \DateTime($start))->add( \DateInterval::createFromDateString( $n . ' days' ) );
+            $start_datetime = $start_date->format('Y-m-d 00:00:00');
+            $end_datetime = (new \DateTime($start))->add( \DateInterval::createFromDateString( ($n + 1) . ' days' ) )->format('Y-m-d 00:00:00');
+            
+            $result = $this->fetchTotalSales($start_datetime, $end_datetime);
             $results[] = array(
-                date('m/d', strtotime($start . ' +' . $n . ' days')),
-                $result['total'],
-                $result['count']
+                $start_date->format('m/d'),
+                $result['total']
             );
         }
         

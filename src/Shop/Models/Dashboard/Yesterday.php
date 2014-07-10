@@ -20,8 +20,7 @@ class Yesterday extends \Shop\Models\Dashboard
         $results = array();
         $results[] = array(
             'Hour',
-            'Total',
-            'Orders'
+            'Total'
         );
         
         for ($n=0; $n<24; $n++) 
@@ -29,8 +28,7 @@ class Yesterday extends \Shop\Models\Dashboard
             $result = $this->fetchTotalSales(date('Y-m-d '.$n.':00:00', strtotime('yesterday')), date('Y-m-d '.$n.':59:59', strtotime('yesterday')));
             $results[] =  array(
                 date('g a', strtotime( '2014-01-01 '.$n.':00:00' ) ),
-                $result['total'],
-                $result['count'],
+                $result['total']
             );
         }
         
