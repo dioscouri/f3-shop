@@ -95,28 +95,35 @@
                                         <label><small>Disable Until</small></label>
                                         <input name="variants[<?php echo $key; ?>][start_date]" value="<?php echo $flash->old('variants.'.$key.'.start_date' ); ?>" class="input-sm ui-datepicker form-control" type="text" data-date-format="yyyy-mm-dd" data-date-today-highlight="true" data-date-today-btn="true">
                                     </div>
-                                    <div class="col-md-9">
-    
-                                        <div class="row">
-                                            <div class="col-md-3">
-                                                <label><small>Model</small></label>
-                                                <input type="text" name="variants[<?php echo $key; ?>][model_number]" class="form-control input-sm" value="<?php echo $flash->old('variants.'.$key.'.model_number'); ?>" />
-                                            </div>
-                                            <div class="col-md-2">
-                                                <label><small>UPC</small></label>
-                                                <input type="text" name="variants[<?php echo $key; ?>][upc]" class="form-control input-sm" value="<?php echo $flash->old('variants.'.$key.'.upc'); ?>" />
-                                            </div>
-                                            <div class="col-md-2">
-                                                <label><small>Weight</small></label>
-                                                <input type="text" name="variants[<?php echo $key; ?>][weight]" class="form-control input-sm" value="<?php echo $flash->old('variants.'.$key.'.weight'); ?>" />
-                                            </div>
-                                            <div class="col-md-5">
-                                                <label><small>Image Slug</small></label>
-                                                <?php echo \Assets\Admin\Controllers\Assets::instance()->fetchElementImage( 'variants_'. preg_replace('/[^\da-z]/i', '', $key) .'_image', $flash->old('variants.'.$key.'.image'), array('field'=>'variants['.$key.'][image]') ); ?>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <label><small>Model</small></label>
+                                                    <input type="text" name="variants[<?php echo $key; ?>][model_number]" class="form-control input-sm" value="<?php echo $flash->old('variants.'.$key.'.model_number'); ?>" />
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label><small>UPC</small></label>
+                                                    <input type="text" name="variants[<?php echo $key; ?>][upc]" class="form-control input-sm" value="<?php echo $flash->old('variants.'.$key.'.upc'); ?>" />
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label><small>Weight</small></label>
+                                                    <input type="text" name="variants[<?php echo $key; ?>][weight]" class="form-control input-sm" value="<?php echo $flash->old('variants.'.$key.'.weight'); ?>" />
+                                                </div>
                                             </div>
                                         </div>
-                                            
-                                    
+                                        <div class="form-group">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <label><small>Tags</small></label>
+                                                    <input name="variants[<?php echo $key; ?>][tags]" data-tags='<?php echo json_encode( $all_tags ); ?>' value="<?php echo implode(",", (array) $flash->old('variants.'.$key.'.tags') ); ?>" type="text" class="form-control ui-select2-tags" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label><small>Image Slug</small></label>
+                                        <?php echo \Assets\Admin\Controllers\Assets::instance()->fetchElementImage( 'variants_'. preg_replace('/[^\da-z]/i', '', $key) .'_image', $flash->old('variants.'.$key.'.image'), array('field'=>'variants['.$key.'][image]') ); ?>                                    
                                     </div>
                                 </div>
                             </div>

@@ -264,6 +264,101 @@ class Products extends \Dsc\Mongo\Collections\Content
         {
             $this->setCondition('prices.default', array('$lte' => (float) $filter_price_default_max) );
         }
+        
+        $filter_tags = (array) $this->getState('filter.vtags');
+        if (!empty($filter_tags))
+        {
+            $filter_tags = array_filter( array_values( $filter_tags ), function( $var ) {return !empty( trim($var) ); } );
+        
+            if (!empty($filter_tags)) {
+                if( count( $filter_tags ) == 1 && $filter_tags[0] == '--' ) {
+                    $this->setCondition('variants.tags', array( '$size' => 0 ) );
+                } else {
+                    $this->setCondition('variants.tags', array( '$in' => $filter_tags ) );
+                }
+                 
+            }
+        }        
+        
+        // standard tag filtering searches both product-level and variant-level tags
+        $filter_tags = (array) $this->getState('filter.tags');
+        if (!empty($filter_tags))
+        {
+            // unset whatever \Dsc\Mongo\Collections\Taggable set
+            $this->unsetCondition( 'tags' );
+            
+            $filter_tags = array_filter( array_values( $filter_tags ), function( $var ) {return !empty( trim($var) ); } );
+            if (!empty($filter_tags)) 
+            {
+                if (!$and = $this->getCondition('$and'))
+                {
+                    $and = array();
+                }
+                
+                if( count( $filter_tags ) == 1 && $filter_tags[0] == '--' ) 
+                {
+                    $and[] = array(
+                        '$and' => array(
+                            array(
+                                'tags' => array( '$size' => 0 )
+                            ),
+                            array(
+                                'variants.tags' => array( '$size' => 0 )
+                            )
+                        )
+                    );                    
+                }
+                 
+                else 
+                {
+                    $and[] = array(
+                        '$or' => array(
+                            array(
+                                'tags' => array( '$in' => $filter_tags )
+                            ),
+                            array(
+                                'variants.tags' => array( '$in' => $filter_tags )
+                            )
+                        )
+                    );
+                    
+                }
+                
+                $this->setCondition('$and', $and);                
+            }
+        }        
+        
+        // variant-only tag filter
+        $filter_tags = (array) $this->getState('filter.vtags');
+        if (!empty($filter_tags))
+        {
+            $filter_tags = array_filter( array_values( $filter_tags ), function( $var ) {return !empty( trim($var) ); } );
+        
+            if (!empty($filter_tags)) {
+                if( count( $filter_tags ) == 1 && $filter_tags[0] == '--' ) {
+                    $this->setCondition('variants.tags', array( '$size' => 0 ) );
+                } else {
+                    $this->setCondition('variants.tags', array( '$in' => $filter_tags ) );
+                }
+                 
+            }
+        }
+
+        // product-level-only tag filter, filter.ptag
+        $filter_tags = (array) $this->getState('filter.ptags');
+        if (!empty($filter_tags))
+        {
+            $filter_tags = array_filter( array_values( $filter_tags ), function( $var ) {return !empty( trim($var) ); } );
+        
+            if (!empty($filter_tags)) {
+                if( count( $filter_tags ) == 1 && $filter_tags[0] == '--' ) {
+                    $this->setCondition('tags', array( '$size' => 0 ) );
+                } else {
+                    $this->setCondition('tags', array( '$in' => $filter_tags ) );
+                }
+                 
+            }
+        }        
     
         return $this;
     }
@@ -629,6 +724,19 @@ class Products extends \Dsc\Mongo\Collections\Content
             } elseif (empty($variant['attributes'])) {
                 $variant['attributes'] = array();
             }
+            if (!empty($variant['tags']) && !is_array($variant['tags']))
+            {
+                $variant['tags'] = trim($variant['tags']);
+                if (!empty($variant['tags'])) {
+                    $variant['tags'] = array_map(function($el){
+                        return strtolower($el);
+                    }, \Base::instance()->split( (string) $variant['tags'] ));
+                }
+            }
+            elseif(empty($variant['tags']) && !is_array($variant['tags']))
+            {
+                $variant['tags'] = array();
+            }            
                         
             $this->variants[0] = $variant;
             
@@ -655,6 +763,20 @@ class Products extends \Dsc\Mongo\Collections\Content
             	if (!empty($item['attributes']) && !is_array($item['attributes'])) {
             	    $item['attributes'] = json_decode( $item['attributes'] );
             	}
+            	
+            	if (!empty($item['tags']) && !is_array($item['tags']))
+            	{
+            	    $item['tags'] = trim($item['tags']);
+            	    if (!empty($item['tags'])) {
+            	        $item['tags'] = array_map(function($el){
+            	            return strtolower($el);
+            	        }, \Base::instance()->split( (string) $item['tags'] ));
+            	    }
+            	}
+            	elseif(empty($item['tags']) && !is_array($item['tags']))
+            	{
+            	    $item['tags'] = array();
+            	}            	
             });
             
         }
@@ -1097,6 +1219,39 @@ class Products extends \Dsc\Mongo\Collections\Content
         return $images;
     }
     
+    public function image($tags=array())
+    {
+        $image = null;
+        
+        if (!empty($this->featured_image['slug'])) {
+            $image = $this->featured_image['slug'];
+        }        
+        
+        if (empty($tags)) 
+        {
+            return $image;
+        }
+        
+        if (!is_array($tags)) 
+        {
+            $tags = array($tags);
+        }        
+        
+        foreach ($this->variantsInStockWithImages(true) as $variant)
+        {
+            if (!empty($variant['tags'])) 
+            {
+                if (array_intersect($variant['tags'], $tags)) 
+                {
+                    $image = $variant['image'];
+                    break;
+                }
+            }            
+        }
+        
+        return $image;
+    }
+    
     /**
      * Get a variant using its id
      * 
@@ -1323,4 +1478,20 @@ class Products extends \Dsc\Mongo\Collections\Content
     
         return $related;
     }
+    
+    /**
+     *
+     * @param array $types
+     * @return unknown
+     */
+    public static function distinctTags($query=array())
+    {
+        $model = new static();
+        $distinct = $model->collection()->distinct("tags", $query);
+        $vdistinct = $model->collection()->distinct("variants.tags", $query);
+        
+        $distinct = array_values( array_unique( array_filter( array_merge( $distinct, $vdistinct ) ) ) );
+    
+        return $distinct;
+    }    
 }

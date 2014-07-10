@@ -17,6 +17,7 @@ class Variant extends \Dsc\Prefabs
         'sku'=>null,        
         'price'=>null,                      // alternative base price.  FINAL price override for this variant.  given priority over attribute price_changes.        
         'quantity'=>null,
+        'tags'=>array(),
                     
         'model_number'=>null,        
         'upc'=>null,
