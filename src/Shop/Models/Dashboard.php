@@ -42,8 +42,7 @@ class Dashboard extends \Dsc\Models
         );
         if (!empty($agg['ok']) && !empty($agg['result']))
         {
-            $return['total'] = (float) number_format( $agg['result'][0]['total'], 2, ".", "," );
-            $return['count'] = $agg['result'][0]['count'];
+            $return = $agg['result'][0];
         }
 
         return $return;
