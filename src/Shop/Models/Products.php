@@ -265,21 +265,6 @@ class Products extends \Dsc\Mongo\Collections\Content
             $this->setCondition('prices.default', array('$lte' => (float) $filter_price_default_max) );
         }
         
-        $filter_tags = (array) $this->getState('filter.vtags');
-        if (!empty($filter_tags))
-        {
-            $filter_tags = array_filter( array_values( $filter_tags ), function( $var ) {return !empty( trim($var) ); } );
-        
-            if (!empty($filter_tags)) {
-                if( count( $filter_tags ) == 1 && $filter_tags[0] == '--' ) {
-                    $this->setCondition('variants.tags', array( '$size' => 0 ) );
-                } else {
-                    $this->setCondition('variants.tags', array( '$in' => $filter_tags ) );
-                }
-                 
-            }
-        }        
-        
         // standard tag filtering searches both product-level and variant-level tags
         $filter_tags = (array) $this->getState('filter.tags');
         if (!empty($filter_tags))
@@ -334,15 +319,55 @@ class Products extends \Dsc\Mongo\Collections\Content
         {
             $filter_tags = array_filter( array_values( $filter_tags ), function( $var ) {return !empty( trim($var) ); } );
         
-            if (!empty($filter_tags)) {
-                if( count( $filter_tags ) == 1 && $filter_tags[0] == '--' ) {
+            if (!empty($filter_tags)) 
+            {
+                if( count( $filter_tags ) == 1 && $filter_tags[0] == '--' ) 
+                {
                     $this->setCondition('variants.tags', array( '$size' => 0 ) );
-                } else {
+                } 
+                else 
+                {
                     $this->setCondition('variants.tags', array( '$in' => $filter_tags ) );
+                    
+                    // Only return products where the variants tagged with these tags are in stock,
+                    // so $aggregate to get a list of eligible product_ids
+                    
+                    $agg = static::collection()->aggregate(array(
+                        array(
+                            '$match' => array('variants.tags' => array( '$in' => $filter_tags ) )
+                        ),
+                        array(
+                            '$unwind' => '$variants'
+                        ),
+                        array(
+                            '$match' => array(
+                                'variants.enabled' => array( '$in' => array( 1, true, '1' ) ),
+                                'variants.quantity' => array( '$gt' => 0 ),
+                            )
+                        ),
+                        array(
+                            '$match' => array('variants.tags' => array( '$in' => $filter_tags ) )
+                        ),                            
+                        array(
+                            '$group' => array(
+                                '_id' => '$_id'
+                            )
+                        ),
+                    ));
+                    
+                    $ids = array( new \MongoId ); // if no variants are in stock, then filter against a fake product_id
+                    if (!empty($agg['ok']) && !empty($agg['result']))
+                    {
+                        foreach ($agg['result'] as $result)
+                        {
+                            $ids[] = $result['_id'];
+                        }
+                    }
+                    
+                    $this->setCondition('_id', array( '$in' => $ids ) );
                 }
-                 
             }
-        }
+        }   
 
         // product-level-only tag filter, filter.ptag
         $filter_tags = (array) $this->getState('filter.ptags');
