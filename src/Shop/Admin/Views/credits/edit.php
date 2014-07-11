@@ -13,7 +13,7 @@
         
             <div class="row">
                 <div class="col-md-3">
-                    <h2 class="text-center"><span class="label-lg label <?php echo $item->credit_issued_to_user ? 'label-default' : 'label-warning'; ?>"><?php echo $item->credit_issued_to_user ? 'Issued' : 'Not Issued'; ?></span></h2>
+                    <h2 class="text-center"><span class="label-lg label <?php echo $item->credit_issued_to_user ? 'label-success' : 'label-warning'; ?>"><?php echo $item->credit_issued_to_user ? 'Issued' : 'Not Issued'; ?></span></h2>
                 </div>            
                 <div class="col-md-3">
                     <div class="well well-sm well-light text-center"><h5><small>Amount</small><br/><?php echo \Shop\Models\Currency::format( $item->amount ); ?></h5></div>

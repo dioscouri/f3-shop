@@ -424,22 +424,20 @@
         
     </div>
     <div class="col-md-3">
-        <ul class="list-group">
-            <li class="list-group-item">
-                <a class="btn btn-success" href="./admin/shop/order/fulfill/<?php echo $item->id; ?>">Fulfill order and mark it as closed</a>
-            </li>
-            <li class="list-group-item">
-                <a class="btn btn-info" href="./admin/shop/order/fulfill-giftcards/<?php echo $item->id; ?>">Fulfill Gift Cards and leave order open</a>
-            </li>            
-            <li class="list-group-item">
-                <a class="btn btn-warning" href="./admin/shop/order/close/<?php echo $item->id; ?>">Close order without fulfilling it</a>
-            </li>
-            <li class="list-group-item">
-                <a class="btn btn-danger" href="./admin/shop/order/cancel/<?php echo $item->id; ?>">Cancel Order</a>
-            </li>
-            <li class="list-group-item">
-                <a class="btn btn-default" href="./admin/shop/order/open/<?php echo $item->id; ?>">Reopen</a>
-            </li>            
-        </ul>
+        <p>
+            <a class="btn btn-success" href="./admin/shop/order/fulfill/<?php echo $item->id; ?>">Fulfill order and mark it as closed</a>
+        </p>
+        <p>
+            <a class="btn btn-info" href="./admin/shop/order/fulfill-giftcards/<?php echo $item->id; ?>">Fulfill Gift Cards and leave order open</a>
+        </p>            
+        <p>
+            <a class="btn btn-warning" href="./admin/shop/order/close/<?php echo $item->id; ?>">Close order without fulfilling it</a>
+        </p>
+        <p>
+            <a class="btn btn-danger" href="./admin/shop/order/cancel/<?php echo $item->id; ?>">Cancel Order</a>
+        </p>
+        <p>
+            <a class="btn btn-default" href="./admin/shop/order/open/<?php echo $item->id; ?>">Reopen</a>
+        </p>            
     </div>
 </div>
