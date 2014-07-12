@@ -140,8 +140,9 @@
                     <div class="row">
                         <div class="col-sm-4">
                             <?php if (!empty($item->user_id)) { ?>
-                                <?php echo $item->user()->fullName(); ?>
+                                <div><?php echo $item->user()->fullName(); ?></div>
                             <?php } ?>
+                            <div><?php echo $item->user_email; ?></div>
                         </div>
                         <div class="col-sm-2">
                             <?php echo count($item->items); ?>

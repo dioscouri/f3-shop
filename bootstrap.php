@@ -108,10 +108,24 @@ class ShopBootstrap extends \Dsc\Bootstrap
                 \Minify\Factory::js($file);
             }            
         }
-    }
-    
-    protected function postAdmin()
-    {
+        
+        $app = \Base::instance();
+        $request_kmi = \Dsc\System::instance()->get('input')->get('kmi');
+        $cookie_kmi = $app->get('COOKIE.kmi');
+        if (!empty($request_kmi)) 
+        {
+            if ($cookie_kmi != $request_kmi) 
+            {
+                $app->set('COOKIE.kmi', $request_kmi);
+            }
+            
+            $cart = \Shop\Models\Carts::fetch();
+            if (empty($cart->user_email)) 
+            {
+                $cart->user_email = $request_kmi;
+                $cart->store();
+            }
+        }
     }
 }
 
