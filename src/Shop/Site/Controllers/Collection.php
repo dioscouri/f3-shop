@@ -93,7 +93,7 @@ class Collection extends \Dsc\Controller
     	\Shop\Models\Activities::track('Viewed Collection', array(
     	    'Collection Name' => $collection->seoTitle(),
     	    'collection_id' => (string) $collection->id,
-    	    'page' => $paginated->current_page
+    	    'page_number' => $paginated->current_page
     	));
     	
     	$view = \Dsc\System::instance()->get('theme');
@@ -183,7 +183,7 @@ class Collection extends \Dsc\Controller
         \Shop\Models\Activities::track('Viewed Collection', array(
             'Collection Name' => $collection->seoTitle(),
             'collection_id' => (string) $collection->id,
-            'page' => 'view_all'
+            'page_number' => 'view_all'
         ));        
          
         $view = \Dsc\System::instance()->get('theme');

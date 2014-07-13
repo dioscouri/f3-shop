@@ -78,7 +78,7 @@ class Category extends \Dsc\Controller
         \Shop\Models\Activities::track('Viewed Category', array(
             'Category Name' => $category->seoTitle(),
             'category_id' => (string) $category->id,
-            'page' => $paginated->current_page
+            'page_number' => $paginated->current_page
         ));
         
     	$view = \Dsc\System::instance()->get('theme');
@@ -141,7 +141,7 @@ class Category extends \Dsc\Controller
         \Shop\Models\Activities::track('Viewed Category', array(
             'Category Name' => $category->seoTitle(),
             'category_id' => (string) $category->id,
-            'page' => 'view_all'
+            'page_number' => 'view_all'
         ));
         
         $view = \Dsc\System::instance()->get('theme');

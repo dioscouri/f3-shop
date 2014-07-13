@@ -45,6 +45,10 @@ class Home extends \Dsc\Controller
     	
     	$this->app->set('meta.title', 'Shop');
     	
+    	\Shop\Models\Activities::track('Viewed Shop Home', array(
+    	    'page_number' => $paginated->current_page
+    	));    	
+    	
     	$view = \Dsc\System::instance()->get('theme');
     	echo $view->render('Shop/Site/Views::home/index.php');
     }
