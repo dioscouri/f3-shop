@@ -75,6 +75,12 @@ class Category extends \Dsc\Controller
         $this->app->set('meta.title', $category->seoTitle() . ' | Shop');
         $this->app->set('meta.description', $category->seoDescription() );
 
+        \Shop\Models\Activities::track('Viewed Category', array(
+            'Category Name' => $category->seoTitle(),
+            'category_id' => (string) $category->id,
+            'page' => $paginated->current_page
+        ));
+        
     	$view = \Dsc\System::instance()->get('theme');
     	echo $view->render('Shop/Site/Views::category/index.php');
     }
@@ -131,6 +137,12 @@ class Category extends \Dsc\Controller
          
         $this->app->set('meta.title', $category->seoTitle() . ' | Shop');
         $this->app->set('meta.description', $category->seoDescription() );
+        
+        \Shop\Models\Activities::track('Viewed Category', array(
+            'Category Name' => $category->seoTitle(),
+            'category_id' => (string) $category->id,
+            'page' => 'view_all'
+        ));
         
         $view = \Dsc\System::instance()->get('theme');
         echo $view->render('Shop/Site/Views::category/all.php');        

@@ -88,7 +88,13 @@ class Collection extends \Dsc\Controller
     	$this->app->set('collection', $collection );    	
 
     	$this->app->set('meta.title', $collection->seoTitle() . ' | Shop');
-    	$this->app->set('meta.description', $collection->seoDescription() );    	
+    	$this->app->set('meta.description', $collection->seoDescription() );
+
+    	\Shop\Models\Activities::track('Viewed Collection', array(
+    	    'Collection Name' => $collection->seoTitle(),
+    	    'collection_id' => (string) $collection->id,
+    	    'page' => $paginated->current_page
+    	));
     	
     	$view = \Dsc\System::instance()->get('theme');
     	echo $view->render('Shop/Site/Views::collection/index.php');
@@ -173,6 +179,12 @@ class Collection extends \Dsc\Controller
     
         $this->app->set('meta.title', $collection->seoTitle() . ' | Shop');
         $this->app->set('meta.description', $collection->seoDescription() );
+        
+        \Shop\Models\Activities::track('Viewed Collection', array(
+            'Collection Name' => $collection->seoTitle(),
+            'collection_id' => (string) $collection->id,
+            'page' => 'view_all'
+        ));        
          
         $view = \Dsc\System::instance()->get('theme');
         echo $view->render('Shop/Site/Views::collection/all.php');    
