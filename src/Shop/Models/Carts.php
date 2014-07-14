@@ -1207,6 +1207,7 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
         if (!empty($this->user_id)) 
         {
         	$this->session_id = null;
+        	$this->user_email = $this->user()->email;
         }
         
         return parent::beforeSave();
