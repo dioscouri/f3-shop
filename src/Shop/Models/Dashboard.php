@@ -52,6 +52,7 @@ class Dashboard extends \Dsc\Models
     public function fetchTopSellers($start=null, $end=null)
     {
         $model = (new \Shop\Models\Orders)
+        ->setState('filter.status_excludes', \Shop\Constants\OrderStatus::cancelled)
         ->setState('filter.financial_status', \Shop\Constants\OrderFinancialStatus::paid);
     
         if (!empty($start)) {
@@ -111,6 +112,7 @@ class Dashboard extends \Dsc\Models
     public function fetchSalesData($start=null, $end=null)
     {
         $model = (new \Shop\Models\Orders)
+        ->setState('filter.status_excludes', \Shop\Constants\OrderStatus::cancelled)
         ->setState('filter.financial_status', \Shop\Constants\OrderFinancialStatus::paid);
     
         if (!empty($start)) {
