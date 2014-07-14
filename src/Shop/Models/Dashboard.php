@@ -171,7 +171,7 @@ class Dashboard extends \Dsc\Models
             'properties.app' => 'shop'
         );                
         $count = count($model->collection()->distinct( 'actor_id', $cart_conditions ));
-        $perc = (($count / $total) * 100) . "%";
+        $perc = number_format((($count / $total) * 100), 1) . "%";
         $return['Added to Cart'] = array(
             'count' => $count,
             'perc' => $perc 
@@ -183,7 +183,7 @@ class Dashboard extends \Dsc\Models
             'properties.app' => 'shop'
         );
         $count = count($model->collection()->distinct( 'actor_id', $start_conditions ));
-        $perc = (($count / $total) * 100) . "%";
+        $perc = number_format((($count / $total) * 100), 1) . "%";
         $return['Started Checkout'] = array(
             'count' => $count,
             'perc' => $perc
@@ -195,7 +195,7 @@ class Dashboard extends \Dsc\Models
             'properties.app' => 'shop'
         );
         $count = count($model->collection()->distinct( 'actor_id', $payment_conditions ));
-        $perc = (($count / $total) * 100) . "%";
+        $perc = number_format((($count / $total) * 100), 1) . "%";
         $return['Reached Payment Step in Checkout'] = array(
             'count' => $count,
             'perc' => $perc
@@ -207,7 +207,7 @@ class Dashboard extends \Dsc\Models
             'properties.app' => 'shop'
         );
         $count = count($model->collection()->distinct( 'actor_id', $complete_checkout_conditions ));
-        $perc = (($count / $total) * 100) . "%";
+        $perc = number_format((($count / $total) * 100), 1) . "%";
         $return['Completed Checkout'] = array(
             'count' => $count,
             'perc' => $perc
