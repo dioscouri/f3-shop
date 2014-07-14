@@ -31,6 +31,7 @@ class Checkout extends \Dsc\Controller
             echo $view->render( 'Shop/Site/Views::checkout/identity.php' );
             return;
         }
+        $identity->reload();
         
         $this->app->set('meta.title', 'Shipping | Checkout');
         
@@ -66,6 +67,7 @@ class Checkout extends \Dsc\Controller
             echo $view->render( 'Shop/Site/Views::checkout/identity.php' );
             return;
         }
+        $identity->reload();
         
         \Shop\Models\Activities::track('Reached Payment Step in Checkout');
         
