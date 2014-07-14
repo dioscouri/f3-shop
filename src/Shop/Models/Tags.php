@@ -65,7 +65,10 @@ class Tags extends \Dsc\Models
         }
         
         $result = (new \Shop\Models\Products())->collection()->count( array(
-            'tags' => $tag 
+            '$or' => array(
+                array( 'tags' => $tag ),
+                array( 'variants.tags' => $tag )
+            )
         ) );
         
         return $result;
