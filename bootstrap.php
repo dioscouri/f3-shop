@@ -27,8 +27,7 @@ class ShopBootstrap extends \Dsc\Bootstrap
             }
             
             $files = array(
-                'Shop/Assets/js/jquery.sortable.min.js',
-                'Shop/Assets/js/jquery.popupoverlay.js'
+                'Shop/Assets/js/jquery.sortable.min.js'
             );
             
             foreach ($files as $file)
