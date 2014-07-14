@@ -307,7 +307,8 @@ class Orders extends \Dsc\Mongo\Collections\Taggable
         $order->customer = $user->cast();
         $order->customer_name = $user->fullName();
         
-        if (empty($order->user_email)) {
+        if (empty($order->user_email) || !\Audit::instance()->email($order->user_email)) 
+        {
         	if (!empty($user->email)) {
         		$order->user_email = $user->email;
         	}
