@@ -106,7 +106,7 @@ class Cart extends \Dsc\Controller
                 'result'=>true
             ) ) );
         } else {
-            \Dsc\System::addMessage('Item added to cart');
+            \Dsc\System::addMessage('Item added to cart.  <a href="./shop/checkout"><b>Click here to checkout now!</b></a>');
         	$this->app->reroute($redirect);
         }
     }
