@@ -36,5 +36,10 @@ class Today extends \Shop\Models\Dashboard
         $return['results'] = $results;
         
         return $return;
+    }
+
+    public function conversions()
+    {
+        return $this->fetchConversions(date('Y-m-d'));
     }    
 }

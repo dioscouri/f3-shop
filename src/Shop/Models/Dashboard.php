@@ -149,4 +149,103 @@ class Dashboard extends \Dsc\Models
         return (float) $total;
     }
     
+    public function fetchConversions($start=null, $end=null) 
+    {
+        $model = (new \Activity\Models\Actions);
+        
+        if (!empty($start)) {
+            $model->setState('filter.created_after', $start);
+        }
+        
+        if (!empty($end)) {
+            $model->setState('filter.created_before', $end);
+        }
+
+        $base_conditions = $model->conditions();
+        $total = $this->fetchTotalVisitors( $start, $end );
+        $return = array();
+        
+        //Added to Cart
+        $cart_conditions = $base_conditions + array(
+            'action' => new \MongoRegex('/Added to Cart/i'),
+            'properties.app' => 'shop'
+        );                
+        $count = count($model->collection()->distinct( 'actor_id', $cart_conditions ));
+        $perc = (($count / $total) * 100) . "%";
+        $return['Added to Cart'] = array(
+            'count' => $count,
+            'perc' => $perc 
+        );
+        
+        // Started Checkout
+        $start_conditions = $base_conditions + array(
+            'action' => new \MongoRegex('/Started Checkout/i'),
+            'properties.app' => 'shop'
+        );
+        $count = count($model->collection()->distinct( 'actor_id', $start_conditions ));
+        $perc = (($count / $total) * 100) . "%";
+        $return['Started Checkout'] = array(
+            'count' => $count,
+            'perc' => $perc
+        );
+        
+        // Reached Payment Step in Checkout
+        $payment_conditions = $base_conditions + array(
+            'action' => new \MongoRegex('/Reached Payment Step in Checkout/i'),
+            'properties.app' => 'shop'
+        );
+        $count = count($model->collection()->distinct( 'actor_id', $payment_conditions ));
+        $perc = (($count / $total) * 100) . "%";
+        $return['Reached Payment Step in Checkout'] = array(
+            'count' => $count,
+            'perc' => $perc
+        );      
+
+        // Completed Checkout
+        $complete_checkout_conditions = $base_conditions + array(
+            'action' => new \MongoRegex('/Completed Checkout/i'),
+            'properties.app' => 'shop'
+        );
+        $count = count($model->collection()->distinct( 'actor_id', $complete_checkout_conditions ));
+        $perc = (($count / $total) * 100) . "%";
+        $return['Completed Checkout'] = array(
+            'count' => $count,
+            'perc' => $perc
+        );        
+                
+        return $return;
+    }
+    
+    /**
+     * Actually returns total visitors.
+     * TODO Rename function
+     *
+     * @param string $start
+     * @param string $end
+     * @return multitype:number
+     */
+    public function fetchTotalVisitors($start=null, $end=null)
+    {
+        $conditions = array(
+            'action' => 'Visited Site'
+        );
+    
+        if (!empty($start)) {
+            $conditions['created'] = array('$gte' => strtotime($start));
+        }
+    
+        if (!empty($end)) {
+            if (empty($conditions['created'])) {
+                $conditions['created'] = array('$lt' => strtotime($end));
+            } else {
+                $conditions['created']['$lt'] = strtotime($end);
+            }
+    
+        }
+    
+        $return = \Activity\Models\Actions::collection()->count($conditions);
+    
+        return $return;
+    }    
+    
 }

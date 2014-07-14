@@ -37,4 +37,9 @@ class Yesterday extends \Shop\Models\Dashboard
         
         return $return;
     }
+    
+    public function conversions()
+    {
+        return $this->fetchConversions(date('Y-m-d 00:00:00', strtotime('yesterday')), date('Y-m-d 00:00:00', strtotime('today')));
+    }    
 }

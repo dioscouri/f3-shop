@@ -42,4 +42,9 @@ class Last30 extends \Shop\Models\Dashboard
         
         return $return;
     }
+    
+    public function conversions()
+    {
+        return $this->fetchConversions(date('Y-m-d 00:00:00', strtotime('today -29 days')));
+    }
 }

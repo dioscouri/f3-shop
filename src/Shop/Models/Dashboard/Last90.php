@@ -45,4 +45,9 @@ class Last90 extends \Shop\Models\Dashboard
         
         return $return;
     }
+    
+    public function conversions()
+    {
+        return $this->fetchConversions(date('Y-m-d 00:00:00', strtotime('today -89 days')));
+    }
 }
