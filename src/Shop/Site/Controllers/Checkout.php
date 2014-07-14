@@ -67,6 +67,8 @@ class Checkout extends \Dsc\Controller
             return;
         }
         
+        \Shop\Models\Activities::track('Reached Payment Step in Checkout');
+        
         $this->app->set('meta.title', 'Payment | Checkout');
         
         $view = \Dsc\System::instance()->get( 'theme' );
@@ -96,6 +98,7 @@ class Checkout extends \Dsc\Controller
                     'order_id' => (string) $order->id,
                     'order_number' => (string) $order->number,
                     'Grand Total' => $order->grand_total,
+                    'Credit Total' => $order->credit_total,
                     'Products' => array(),
                     'Coupons' => \Joomla\Utilities\ArrayHelper::getColumn( (array) $order->coupons, 'code' ),
                     'Auto Coupons' => \Joomla\Utilities\ArrayHelper::getColumn( (array) $order->auto_coupons, 'code' ),
@@ -118,7 +121,7 @@ class Checkout extends \Dsc\Controller
                  */
                 
                 // update kissmetrics, if you can
-                $settings = \Admin\Models\Settings::fetch();
+                /*$settings = \Admin\Models\Settings::fetch();
                 if( class_exists( '\KM' ) && $settings->enabledIntegration('kissmetrics')){
                 	\KM::init( $settings->{'integration.kissmetrics.key'} );
                 	 
@@ -146,12 +149,12 @@ class Checkout extends \Dsc\Controller
                			$data_km['Auto Coupons'] = implode( ', ', \Joomla\Utilities\ArrayHelper::getColumn( (array) $order->auto_coupons, 'code' ) );
                		}
                 		
-               	    if( !empty( $order->credit ) ){
-               			$data_km['Credit'] = $order->credit;
+               	    if( !empty( $order->credit_total ) ){
+               			$data_km['Credit'] = $order->credit_total;
                		}                	
                 	
                 	\KM::record("Finished Checkout", $data_km);
-                }
+                }*/
                 
                 // check coupons and discard used generated codes
                 if( count( $order->coupons ) ){
