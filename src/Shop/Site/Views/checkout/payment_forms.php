@@ -65,6 +65,16 @@
         	<img src="./minify/Shop/Assets/images/working.gif" alt="Working" />
         	Working ... Please wait
         </div>
+        <div class="hidden">
+            <div id="submit-working-modal">
+                <div class="container">
+                    <div class="well">
+                        <h3>Submitting your order</h3>
+                        <p>This can take up to one minute.  Please don't use your browser back button or it may submit your order twice. Thanks for your patience!</p>
+                    </div>
+                </div>
+            </div>        
+        </div>
         <?php \Dsc\System::instance()->get('session')->set('site.shop.checkout.redirect', '/shop/checkout/confirmation'); ?>
     </div>
 
@@ -122,6 +132,7 @@ jQuery(document).ready(function(){
 		// display working image
 		$this.addClass('hidden');
 		jQuery('#submit-working').removeClass('hidden');
+		jQuery('#submit-working-modal').popup('show');		
 	});
 	
 	submit_order.on('reset', function(e){
@@ -129,7 +140,16 @@ jQuery(document).ready(function(){
 		// hide working image
 		$this.removeClass('hidden');
 		jQuery('#submit-working').addClass('hidden');
+		jQuery('#submit-working-modal').popup('hide');
 	});
+
+	jQuery('#submit-working-modal').popup({
+	      color: 'white',
+	      opacity: 0.75,
+	      transition: '0.3s',
+	      scrolllock: true,
+	      pagecontainer: '#content-container'
+    });	
 	
 });
 </script>

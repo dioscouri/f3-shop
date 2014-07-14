@@ -27,7 +27,8 @@ class ShopBootstrap extends \Dsc\Bootstrap
             }
             
             $files = array(
-                'Shop/Assets/js/jquery.sortable.min.js'
+                'Shop/Assets/js/jquery.sortable.min.js',
+                'Shop/Assets/js/jquery.popupoverlay.js'
             );
             
             foreach ($files as $file)
@@ -95,7 +96,8 @@ class ShopBootstrap extends \Dsc\Bootstrap
             $files = array(
                 'Shop/Assets/js/class.js',
                 'Shop/Assets/js/validation.js',
-                'Shop/Assets/js/site.js'
+                'Shop/Assets/js/site.js',
+                'Shop/Assets/js/jquery.popupoverlay.js'
             );
             
             if ($check_campaigns = \Dsc\System::instance()->get('session')->get('shop.check_campaigns'))
