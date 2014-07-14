@@ -140,18 +140,37 @@
                     <div class="row">
                         <div class="col-sm-4">
                             <?php if (!empty($item->user_id)) { ?>
-                                <div><?php echo $item->user()->fullName(); ?></div>
+                                <div><?php echo $item->user()->fullName(); ?> <span class="label label-success">Registered User</span></div>
+                                <div><?php echo $item->user()->email; ?></div>
+                            <?php } else { ?>
+                                <div><?php echo $item->user_email; ?> <span class="label label-warning">Session Cart</span></div>
                             <?php } ?>
-                            <div><?php echo $item->user_email; ?></div>
                         </div>
                         <div class="col-sm-2">
-                            <?php echo count($item->items); ?>
+                            <p>Total: <?php echo count($item->items); ?></p>
+                            <?php if (!empty($item->items)) { ?>
+                            <ul>
+                            <?php foreach ($item->items as $cartitem) { ?>
+                                <li>
+                                    <?php echo \Dsc\ArrayHelper::get($cartitem, 'product.title'); ?>
+                                    <?php if (\Dsc\ArrayHelper::get($cartitem, 'attribute_title')) { ?>
+                                    <div><small><?php echo \Dsc\ArrayHelper::get($cartitem, 'attribute_title'); ?></small></div>
+                                    <?php } ?>                                            
+                                    <?php if (\Dsc\ArrayHelper::get($cartitem, 'sku')) { ?>
+                                    <div>
+                                        <small><label>SKU:</label> <?php echo \Dsc\ArrayHelper::get($cartitem, 'sku'); ?></small>
+                                    </div>
+                                    <?php } ?>                                    
+                                </li>
+                            <?php } ?>
+                            </ul>
+                            <?php } ?>
                         </div>
                         <div class="col-sm-2">
                             <?php echo \Shop\Models\Currency::format( $item->subtotal() ); ?>
                         </div>
                         <div class="col-sm-3">
-                            <?php echo date( 'Y-m-d', $item->{'metadata.last_modified.time'} ); ?>
+                            <?php echo date( 'Y-m-d g:i a', $item->{'metadata.last_modified.time'} ); ?>
                         </div>
                         <div class="col-sm-1">
                             <a class="btn btn-xs btn-danger" data-bootbox="confirm" href="./admin/shop/cart/delete/<?php echo $item->id; ?>">
