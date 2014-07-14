@@ -112,7 +112,7 @@ class ShopBootstrap extends \Dsc\Bootstrap
         }
         
         $app = \Base::instance();
-        $request_kmi = \Dsc\System::instance()->get('input')->get('kmi');
+        $request_kmi = \Dsc\System::instance()->get('input')->get('kmi', null, 'string');
         $cookie_kmi = $app->get('COOKIE.kmi');
         if (!empty($request_kmi)) 
         {
