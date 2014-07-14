@@ -307,11 +307,8 @@ class Orders extends \Dsc\Mongo\Collections\Taggable
         $order->customer = $user->cast();
         $order->customer_name = $user->fullName();
         
-        if (empty($order->user_email) || !\Audit::instance()->email($order->user_email)) 
-        {
-        	if (!empty($user->email)) {
-        		$order->user_email = $user->email;
-        	}
+        if (!empty($user->email)) {
+            $order->user_email = $user->email;
         }
         
         // $order->is_guest = $cart->isGuest(); ? or is that from the checkout object?
