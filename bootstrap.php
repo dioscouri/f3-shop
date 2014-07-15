@@ -96,7 +96,8 @@ class ShopBootstrap extends \Dsc\Bootstrap
                 'Shop/Assets/js/class.js',
                 'Shop/Assets/js/validation.js',
                 'Shop/Assets/js/site.js',
-                'Shop/Assets/js/jquery.popupoverlay.js'
+                'Shop/Assets/js/jquery.popupoverlay.js',
+                'Shop/Assets/js/jquery.scrollTo.js'
             );
             
             if ($check_campaigns = \Dsc\System::instance()->get('session')->get('shop.check_campaigns'))

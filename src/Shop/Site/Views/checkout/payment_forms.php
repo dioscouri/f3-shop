@@ -92,6 +92,8 @@ jQuery(document).ready(function(){
             el.data('validated', false);
             ev.preventDefault();
             jQuery('#submit-order').trigger('reset');
+            jQuery('<p id="validation-error" class="margin-top alert alert-danger validation-errors">Please complete all required fields.</p>').insertBefore('#checkout-payment-methods');
+            jQuery('body').scrollTo('body', 1000);        
             return false;
         }
         if (el.data('locked')) {
@@ -99,11 +101,12 @@ jQuery(document).ready(function(){
         	jQuery('#submit-order').trigger('reset');
             return false;
         }
-        
+
         el.data('locked', true);
         el.data('validated', true);
         jQuery('#checkout-payment-methods').css({ opacity: 0.5 });
         //el.submit();
+        jQuery('#submit-working-modal').popup('show');
         return true;    
     });
 
@@ -128,18 +131,20 @@ jQuery(document).ready(function(){
 	var submit_order = jQuery('#submit-order');
 	submit_order.on('click', function(e){
 		jQuery('.validation-errors').remove();
+		jQuery('#system-message-container').remove();
 		$this = jQuery( e.target );
 		// display working image
-		$this.addClass('hidden');
-		jQuery('#submit-working').removeClass('hidden');
-		jQuery('#submit-working-modal').popup('show');		
+		jQuery('#submit-order').addClass('hidden').hide();
+		jQuery('#submit-working').removeClass('hidden').show();
+		e.preventDefault();
+		jQuery('#checkout-payment-form').submit();	
 	});
 	
 	submit_order.on('reset', function(e){
 		$this = jQuery( e.target );
 		// hide working image
-		$this.removeClass('hidden');
-		jQuery('#submit-working').addClass('hidden');
+		jQuery('#submit-order').removeClass('hidden').show();
+		jQuery('#submit-working').addClass('hidden').hide();
 		jQuery('#submit-working-modal').popup('hide');
 	});
 
@@ -148,7 +153,9 @@ jQuery(document).ready(function(){
 	      opacity: 0.75,
 	      transition: '0.3s',
 	      scrolllock: true,
-	      pagecontainer: '#content-container'
+	      pagecontainer: '#content-container',
+	      escape: false,
+	      blur: false
     });	
 	
 });
