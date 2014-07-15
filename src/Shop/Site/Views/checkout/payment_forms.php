@@ -92,8 +92,8 @@ jQuery(document).ready(function(){
             el.data('validated', false);
             ev.preventDefault();
             jQuery('#submit-order').trigger('reset');
-            jQuery('<p class="margin-top alert alert-danger validation-errors">Please complete all required fields.</p>').insertBefore('#checkout-payment-methods');
-            jQuery('<p class="margin-top alert alert-danger validation-errors">Please complete all required fields.</p>').insertBefore('#submit-order');
+            jQuery('<p class="margin-top alert alert-danger validation-errors">Please complete all required fields highlighted in red.</p>').insertBefore('#checkout-payment-methods');
+            jQuery('<p class="margin-top alert alert-danger validation-errors">Please complete all required fields highlighted in red.</p>').insertBefore('#submit-order');
             jQuery('body').scrollTo('body', 1000);        
             return false;
         }
@@ -103,7 +103,7 @@ jQuery(document).ready(function(){
             return false;
         }
 
-        el.data('locked', true);
+        el.data('locked', false);
         el.data('validated', true);
         jQuery('#checkout-payment-methods').css({ opacity: 0.5 });
         //el.submit();
@@ -144,6 +144,7 @@ jQuery(document).ready(function(){
 	submit_order.on('reset', function(e){
 		$this = jQuery( e.target );
 		// hide working image
+		jQuery('#checkout-payment-methods').css({ opacity: '' });
 		jQuery('#submit-order').removeClass('hidden').show();
 		jQuery('#submit-working').addClass('hidden').hide();
 		jQuery('#submit-working-modal').popup('hide');
