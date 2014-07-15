@@ -92,7 +92,8 @@ jQuery(document).ready(function(){
             el.data('validated', false);
             ev.preventDefault();
             jQuery('#submit-order').trigger('reset');
-            jQuery('<p id="validation-error" class="margin-top alert alert-danger validation-errors">Please complete all required fields.</p>').insertBefore('#checkout-payment-methods');
+            jQuery('<p class="margin-top alert alert-danger validation-errors">Please complete all required fields.</p>').insertBefore('#checkout-payment-methods');
+            jQuery('<p class="margin-top alert alert-danger validation-errors">Please complete all required fields.</p>').insertBefore('#submit-order');
             jQuery('body').scrollTo('body', 1000);        
             return false;
         }
