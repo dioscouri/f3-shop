@@ -1,3 +1,10 @@
+<script src="./ckeditor/ckeditor.js"></script>
+<script>
+jQuery(document).ready(function(){
+    CKEDITOR.replaceAll( 'wysiwyg' );    
+});
+</script>
+
 <div class="well">
 
 <form id="detail-form" class="form" method="post">
@@ -39,11 +46,14 @@
                 <li class="active">
                     <a href="#tab-basics" data-toggle="tab"> Basics </a>
                 </li>
-                <?php foreach ((array) $this->event->getArgument('tabs') as $key => $title ) { ?>
+                <li>
+                    <a href="#tab-display" data-toggle="tab">Display</a>
+                </li>                                
+                <?php if (!empty($this->event)) { foreach ((array) $this->event->getArgument('tabs') as $key => $title ) { ?>
                 <li>
                     <a href="#tab-<?php echo $key; ?>" data-toggle="tab"> <?php echo $title; ?> </a>
                 </li>
-                <?php } ?>                
+                <?php } } ?>
             </ul>
             
             <div class="tab-content">
@@ -80,35 +90,23 @@
                     
                     <hr/>
                     
-                    <div class="row">
-                        <div class="col-md-2">
-                            
-                            <h3>Featured Image</h3>
-                            <p class="help-block">Some helpful text</p>
-                                    
-                        </div>
-                        <!-- /.col-md-2 -->
-                                    
-                        <div class="col-md-10">
-                        
-                            <div class="form-group">
-                                <label>Primary Image</label>
-                                <?php echo \Assets\Admin\Controllers\Assets::instance()->fetchElementImage('featured_image', $flash->old('featured_image.slug'), array('field'=>'featured_image[slug]') ); ?>
-                            </div>
-                            <!-- /.form-group -->
-                            
-                        </div>
-                        <!-- /.col-md-10 -->
-                        
-                    </div>
-                    <!-- /.row -->
-                    
-                    <hr/>
-                    
                     <?php echo $this->renderLayout('Shop/Admin/Views::categories/fields_basics_products.php'); ?>
                 
                 </div>
                 <!-- /.tab-pane -->
+                
+                <div class="tab-pane" id="tab-display">
+                
+                    <?php echo $this->renderLayout('Shop/Admin/Views::categories/fields_display.php'); ?>
+                
+                </div>
+                <!-- /.tab-pane -->                
+                
+                <?php if (!empty($this->event)) { foreach ((array) $this->event->getArgument('content') as $key => $content ) { ?>
+                <div class="tab-pane" id="tab-<?php echo $key; ?>">
+                    <?php echo $content; ?>
+                </div>
+                <?php } } ?>                
             
             </div>
 

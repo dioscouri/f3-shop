@@ -97,7 +97,7 @@
     <?php echo $this->renderView('Shop/Site/Views::checkout/before_continue_button.php'); ?>
 
     <div class="input-group form-group">
-        <button type="submit" class="btn btn-default custom-button btn-lg">Continue</button>
+        <button type="submit" class="btn btn-default custom-button btn-lg">Provide Payment</button>
         <?php \Dsc\System::instance()->get('session')->set('site.shop.checkout.redirect', '/shop/checkout/payment'); ?>
     </div>
     
