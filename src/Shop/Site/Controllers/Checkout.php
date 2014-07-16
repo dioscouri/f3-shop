@@ -99,8 +99,8 @@ class Checkout extends \Dsc\Controller
                 $properties = array(
                     'order_id' => (string) $order->id,
                     'order_number' => (string) $order->number,
-                    'Grand Total' => $order->grand_total,
-                    'Credit Total' => $order->credit_total,
+                    'Grand Total' => (string) $order->grand_total,
+                    'Credit Total' => (string) $order->credit_total,
                     'Products' => array(),
                     'Coupons' => \Joomla\Utilities\ArrayHelper::getColumn( (array) $order->coupons, 'code' ),
                     'Auto Coupons' => \Joomla\Utilities\ArrayHelper::getColumn( (array) $order->auto_coupons, 'code' ),
