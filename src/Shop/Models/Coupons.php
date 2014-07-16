@@ -1095,7 +1095,7 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
     
         $this->count_sales = 0;
     
-        $conditions = (new \Shop\Models\Orders)->setState('filter.coupon_id', $this->id)->setState('filter.financial_status', \Shop\Constants\OrderFinancialStatus::paid)->conditions();
+        $conditions = (new \Shop\Models\Orders)->setState('filter.coupon_id', $this->id)->setState('filter.status_excludes', \Shop\Constants\OrderStatus::cancelled)->setState('filter.financial_status', \Shop\Constants\OrderFinancialStatus::paid)->conditions();
     
         $this->count_sales = \Shop\Models\Orders::collection()->count( $conditions );
         
