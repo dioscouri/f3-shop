@@ -182,7 +182,7 @@ class Cart extends \Dsc\Controller
             if (isset($quantities[$item['hash']])) 
             {
                 $new_quantity = (int) $quantities[$item['hash']];
-                if ($new_quantity < 0) {
+                if ($new_quantity < 1) {
                     $cart->removeItem( $item['hash'] );
                 } else {
                     $cart->updateItemQuantity( $item['hash'], $new_quantity );
