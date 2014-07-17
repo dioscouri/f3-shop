@@ -1133,6 +1133,14 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
         
         if (!empty($this->items)) 
         {
+            foreach ($this->items as $key=>$item)
+            {
+                if ((int) $item['quantity'] < 1)
+                {
+                    unset($this->items[$key]);
+                }
+            }
+
             $this->items = array_values($this->items);
         }
         
