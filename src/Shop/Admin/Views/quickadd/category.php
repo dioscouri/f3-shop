@@ -5,7 +5,7 @@
 			<?php if ($__items = \Shop\Models\Categories::find()) { ?>
 			<select name="details[url]" class="form-control">
 			<?php foreach ($__items as $__item) { ?>
-			    <option value="./shop/category/<?php echo $__item->slug; ?>">
+			    <option value="./shop/category<?php echo $__item->path; ?>">
 			    	<?php echo @str_repeat( "&ndash;", substr_count( @$__item->path, "/" ) - 1 ) . " " . $__item->title; ?>
 			    </option>                    
 			<?php } ?> 
