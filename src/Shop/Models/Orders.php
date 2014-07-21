@@ -453,12 +453,12 @@ class Orders extends \Dsc\Mongo\Collections\Taggable
         	$product = (new \Shop\Models\Products)->setState('filter.id', $item['product_id'])->getItem();
         	if (!empty($product->id) && (string) $product->id == (string) $item['product_id']) 
         	{
-        		foreach ($product->variants as $variant) 
+        		foreach ($product->variants as $key=>$variant) 
         		{
         			if ((string) $variant['id'] == (string) $item['variant_id']) 
         			{
         			    $found = true;
-        				$variant['quantity'] = $variant['quantity'] - 1;
+        				$product->{'variants.'.$key.'.quantity'} = $variant['quantity'] - 1;
         				break; 
         			}
         		}
@@ -469,7 +469,9 @@ class Orders extends \Dsc\Mongo\Collections\Taggable
         	} 
         	else 
         	{
-        		$this->setError('Could not update variant quantities -- Invalid Product ID');
+        		$message = 'Could not update variant quantities -- Invalid Product ID';
+        		$message .= \Dsc\Debug::dump($item);
+        		$this->log($message);        		
         	}
         }
         
