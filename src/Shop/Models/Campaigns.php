@@ -19,6 +19,9 @@ class Campaigns extends \Dsc\Mongo\Collections\Describable
     public $reward_groups = array();
     public $expire_groups = array();
 
+    public $groups = array();
+    public $groups_method = 'one';
+    
     protected $__collection_name = 'shop.campaigns';
     protected $__type = 'campaigns';    
     protected $__config = array(
@@ -138,6 +141,64 @@ class Campaigns extends \Dsc\Mongo\Collections\Describable
                 throw new \Exception('Customer has not spent enough during the qualification period');
             }
         }
+        
+        /**
+         * evaluate shopper groups against $this->groups
+         */
+        if (!empty($this->groups))
+        {
+            $groups = array();
+
+            if (empty($customer->id))
+            {
+                // Get the default group
+                $group_id = \Shop\Models\Settings::fetch()->{'users.default_group'};
+                if (!empty($group_id)) {
+                    $groups[] = (new \Users\Models\Groups)->setState('filter.id', (string) $group_id)->getItem();
+                }
+            }
+            elseif (!empty($customer->id))
+            {
+                $groups = $customer->groups();
+            }
+             
+            $group_ids = array();
+            foreach ($groups as $group)
+            {
+                $group_ids[] = (string) $group->id;
+            }
+             
+            switch ($this->groups_method)
+            {
+                case "none":
+                    $intersection = array_intersect($this->groups, $group_ids);
+                    if (!empty($intersection))
+                    {
+                        // TODO Chagne the error messages!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                        throw new \Exception('You do not qualify for this campaign.');
+                    }
+        
+                    break;
+                case "all":
+                    // $missing_groups == the ones from $this->groups that are NOT in $group_ids
+                    $missing_groups = array_diff($this->groups, $group_ids);
+                    if (!empty($missing_groups))
+                    {
+                        throw new \Exception('You do not qualify for this campaign.');
+                    }
+                    	
+                    break;
+                case "one":
+                default:
+                    $intersection = array_intersect($this->groups, $group_ids);
+                    if (empty($intersection))
+                    {
+                        throw new \Exception('You do not qualify for this campaign.');
+                    }
+        
+                    break;
+            }
+        }        
 
         /**
          * if we made it this far, the user qualifies

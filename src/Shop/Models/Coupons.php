@@ -401,7 +401,7 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
         	    case "all":
         	        // $missing_groups == the ones from $this->groups that are NOT in $group_ids
         	        $missing_groups = array_diff($this->groups, $group_ids);
-        	        if (empty($intersection))
+        	        if (!empty($missing_groups))
         	        {
         	            throw new \Exception('Your order does not qualify for this discount.');
         	        }
