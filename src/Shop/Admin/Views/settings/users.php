@@ -9,4 +9,25 @@
         <?php } ?>
     </select>                        
 </div>
+
+<hr />
+
+<h3>Default Special Group Prices</h3>
+<div class="row">
+	<div class="col-lg-3 col-md-3 col-sd-4">
+		<b>Wholesale</b>
+	</div>
+	<div class="col-lg-9 col-md-9 col-sd-8">
+		<div class="form-group">
+			<label>Regular price discount (in percent)</label>
+			<input class="form-control" value="<?php echo $flash->old( 'special_group_default_prices.wholesale.regular', 0.6 ); ?>" name="special_group_default_prices[wholesale][regular]" type="text" placeholder="For 40% discount from regular price use 40" />
+		</div>
+		<div class="form-group">
+			<label>Sale price discount (in percent)</label>
+			<input class="form-control" value="<?php echo $flash->old( 'special_group_default_prices.wholesale.sale', 0.5 ); ?>" name="special_group_default_prices[wholesale][sale]" type="text" placeholder="For 50% discount from sale  price use 50" />
+		</div>
+	</div>
+</div>
+
+
 <!-- /.form-group -->                    

@@ -66,6 +66,13 @@ class Settings extends \Dsc\Mongo\Collections\Settings
         )
     );
     
+    public $special_group_default_prices = array(
+    	'wholesale' => array(
+    			'regular' => 40,
+    			'sale'	=> 50,
+		    ),
+    );
+    
     public function isShippingMethodEnabled($method=null)
     {
     	$result = false;

@@ -1160,11 +1160,31 @@ class Products extends \Dsc\Mongo\Collections\Content
         	}
         }
         
-        // Get the product price for the user's primary group
+        $settings = \Shop\Models\Settings::fetch();
+        
+        // find the first user group that has special price override in settings and use it
+        $settings_price_override = null;
+        $settings_override = false;
+        
+        if( !empty( $user ) ) {
+        	foreach( $user->groups() as $group ){
+        		$settings_override = $settings->exists( 'special_group_default_prices.'.$group['slug'] );
+        		if( $settings_override ){ // found it, so get the correct number and leave
+        			$type_price = 'sale';
+        			if( empty( $this->{'prices.list'} ) ) {
+        				$type_price = 'regular';
+        			}
+        			$settings_price_override = 'special_group_default_prices.'.$group['slug'].'.'.$type_price;
+        			break;
+        		}
+        	}
+        }
+        
+		// Get the product price for the user's primary group
         // primaryGroup defaults to the site-wide default user group
         $primaryGroup = \Shop\Models\Customers::primaryGroup( $user );
-        if ($group_slug = $primaryGroup->{'slug'}) {
-            if ($this->exists('prices.'.$group_slug)) {
+		if ($group_slug = $primaryGroup->{'slug'}) {
+            if (!$settings_override && $this->exists('prices.'.$group_slug)) {
             	$price = $this->get('prices.'.$group_slug);
             }
         }
@@ -1188,6 +1208,11 @@ class Products extends \Dsc\Mongo\Collections\Content
         			break;
         		}
         	}
+        }
+        
+        if( $settings_override ){
+        	$ratio = 1.0 - ((float)$settings->{$settings_price_override} / 100.0);
+        	$price = $price * $ratio;
         }
         
         return $price;
