@@ -97,8 +97,13 @@ class Collection extends \Dsc\Controller
     	));
     	
     	$view = \Dsc\System::instance()->get('theme');
-    	echo $view->render('Shop/Site/Views::collection/index.php');
-    	 
+    	
+    	$view_file = 'index.php';
+    	if ($collection->{'display.view'} && $view->findViewFile( 'Shop/Site/Views::collection/index/' . $collection->{'display.view'} )) {
+    	    $view_file = 'index/' . $collection->{'display.view'};
+    	}
+    	
+    	echo $view->renderTheme('Shop/Site/Views::collection/' . $view_file);
     }
     
     public function viewAll()

@@ -82,7 +82,13 @@ class Category extends \Dsc\Controller
         ));
         
     	$view = \Dsc\System::instance()->get('theme');
-    	echo $view->render('Shop/Site/Views::category/index.php');
+    	 
+    	$view_file = 'index.php';
+    	if ($category->{'display.view'} && $view->findViewFile( 'Shop/Site/Views::category/index/' . $category->{'display.view'} )) {
+    	    $view_file = 'index/' . $category->{'display.view'};
+    	}
+    	 
+    	echo $view->renderTheme('Shop/Site/Views::category/' . $view_file);
     }
     
     public function viewAll()
