@@ -47,7 +47,7 @@
         
     </div>
 
-    <div id="checkout-payment-methods" class="well well-sm">
+    <div id="checkout-payment-methods" class="clearfix">
     <?php // TODO Multiple payment methods configured?  If so, display select list that displays additional form on change.  If not, just display the form of the one payment method available. ?>
         <legend>
             <small>Payment</small>
