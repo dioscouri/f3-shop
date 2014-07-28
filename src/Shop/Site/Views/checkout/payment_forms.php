@@ -82,21 +82,33 @@
     
 </form>
 
+<div id="payment-methods-outer-container" class="hidden"></div>
+
 <script>
 jQuery(document).ready(function(){
-    window.checkout_payment_validation = new ShopValidation('#checkout-payment-form');
+    window.checkout_payment_validated = false;
     
     jQuery('#checkout-payment-form').on('submit.shop', function(ev){
-        var el = jQuery(this); 
-        if (!window.checkout_payment_validation.validateForm()) {
+        var el = jQuery(this);
+
+        selected_payment_method = el.find('input[name=payment_method]:checked').val();
+        var checkout_payment_validation = new ShopValidation('.payment-method-formfields[data-method="'+selected_payment_method+'"]');
+        if (!checkout_payment_validation.validateForm()) {
+            window.checkout_payment_validated = false;
+        } else {
+            window.checkout_payment_validated = true;
+        }
+        
+        if (!window.checkout_payment_validated) {
             el.data('validated', false);
             ev.preventDefault();
             jQuery('#submit-order').trigger('reset');
             jQuery('<p class="margin-top alert alert-danger validation-errors">Please complete all required fields highlighted in red.</p>').insertBefore('#checkout-payment-methods');
-            jQuery('<p class="margin-top alert alert-danger validation-errors">Please complete all required fields highlighted in red.</p>').insertBefore('#submit-order');
+            //jQuery('<p class="margin-top alert alert-danger validation-errors">Please complete all required fields highlighted in red.</p>').insertBefore('#submit-order');
             jQuery('body').scrollTo('body', 1000);        
             return false;
-        }
+        }        
+        
         if (el.data('locked')) {
         	ev.preventDefault();
         	jQuery('#submit-order').trigger('reset');

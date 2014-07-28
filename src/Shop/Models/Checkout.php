@@ -14,6 +14,9 @@ class Checkout extends \Dsc\Singleton
     protected $__cart = null;             // \Shop\Models\Carts object
     protected $__paymentData = array();
     protected $__order = null;             // \Shop\Models\Carts object
+    protected $__paymentMethod = null;
+    protected $__paymentResult = null;
+    protected $__validatePaymentResult = null;
     
     /**
      * Process a checkout and mark it as completed if successful.
@@ -137,4 +140,95 @@ class Checkout extends \Dsc\Singleton
     
         return $this->__paymentData;
     }
+    
+    /**
+     * What is the payment method selected for this checkout?
+     * 
+     */
+    public function paymentMethodId()
+    {
+        $paymentData = $this->paymentData();
+        
+        if (!empty($paymentData['payment_method'])) 
+        {
+            return $paymentData['payment_method'];
+        }
+        
+        return null;
+    }
+    
+    /**
+     * 
+     * @throws \Exception
+     * @return unknown
+     */
+    public function paymentMethod()
+    {
+        if (!empty($this->__paymentMethod)) 
+        {
+            return $this->__paymentMethod;
+        }
+        
+        if (!$payment_method = $this->paymentMethodId())
+        {
+            throw new \Exception('Missing payment method');
+        }
+        
+        $pm = (new \Shop\Models\PaymentMethods)->setState('filter.identifier', $payment_method)->setState('filter.enabled', true)->getItem();
+        
+        if (empty($pm->id))
+        {
+            throw new \Exception('Invalid payment method');
+        }
+        
+        $this->__paymentMethod = $pm;
+        
+        return $this->__paymentMethod;        
+    }    
+    
+    /**
+     * Process the checkout payment data
+     * 
+     * Throws an \Exception
+     * 
+     * @return \Shop\Models\Checkout
+     */
+    public function processPayment()
+    {
+        $paymentMethod = $this->paymentMethod();
+        
+        $this->__paymentResult = $paymentMethod->addCart( $this->cart() )->addPaymentData( $this->paymentData() )->getClass()->processPayment();
+        
+        return $this;
+    }
+    
+    /**
+     *
+     * @return NULL
+     */
+    public function paymentResult()
+    {
+        if (!empty($this->__paymentResult))
+        {
+            return $this->__paymentResult;
+        }
+    
+        return null;
+    }
+    
+    /**
+     * Validate the checkout payment data
+     *
+     * Throws an \Exception
+     *
+     * @return \Shop\Models\Checkout
+     */
+    public function validatePayment()
+    {
+        $paymentMethod = $this->paymentMethod();
+    
+        $this->__validatePaymentResult = $paymentMethod->addCart( $this->cart() )->addPaymentData( $this->paymentData() )->getClass()->validatePayment();
+    
+        return $this;
+    }    
 }

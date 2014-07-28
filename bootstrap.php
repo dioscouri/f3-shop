@@ -74,6 +74,11 @@ class ShopBootstrap extends \Dsc\Bootstrap
             )));
             
         }
+        
+        \Shop\Models\PaymentMethods::register('\Shop\PaymentMethods\OmnipayPaypalExpress', array(
+            'title'=>'Paypal Express (via Omnipay)',
+            'identifier'=>'omnipay.paypal_express',            
+        ));        
     }
 
     protected function preSite()

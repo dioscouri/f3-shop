@@ -375,6 +375,26 @@ class Checkout extends \Dsc\Controller
         {
             // the standard checkout process
             try {
+                // failed payment processing should throw an exception
+                $checkout->processPayment();
+            } 
+            catch (\Exception $e) 
+            {
+                \Dsc\System::addMessage( $e->getMessage(), 'error' );
+                
+                // redirect to the ./shop/checkout/payment page unless a failure redirect has been set in the session (site.shop.checkout.redirect.fail)
+                $redirect = '/shop/checkout/payment';
+                if ($custom_redirect = \Dsc\System::instance()->get( 'session' )->get( 'site.shop.checkout.redirect.fail' ))
+                {
+                    $redirect = $custom_redirect;
+                }
+                \Dsc\System::instance()->get( 'session' )->set( 'site.shop.checkout.redirect.fail', null );
+                $this->app->reroute( $redirect );
+                
+                return;                
+            }
+
+            try {
                 $checkout->acceptOrder();
             } catch (\Exception $e) {
                 $checkout->setError( $e->getMessage() );

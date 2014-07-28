@@ -239,10 +239,15 @@ class Routes extends \Dsc\Routes\Group
         // 'action' => 'submitPurchase'
         // ) );
         
-        // $this->add( '/checkout/gateway/@gateway_id/completePurchase', 'GET|POST', array(
-        // 'controller' => 'Gateway',
-        // 'action' => 'completePurchase'
-        // ) );
+        $this->add('/checkout/gateway/@gateway_id/completePurchase', 'GET|POST', array(
+            'controller' => 'Gateway',
+            'action' => 'completePurchase'
+        ));
+        
+        $this->add('/checkout/gateway/@gateway_id/completePurchase/@cart_id', 'GET|POST', array(
+            'controller' => 'Gateway',
+            'action' => 'completeCartPurchase'
+        ));        
         
         // $this->add( '/checkout/gateway/@gateway_id/create-card', 'GET', array(
         // 'controller' => 'Gateway',
