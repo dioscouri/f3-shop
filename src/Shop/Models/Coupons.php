@@ -634,7 +634,8 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
 		        $total = 0;
 		        
 		        // if discount_target_products is empty, then get the sum of all product line items,
-		        if (empty($this->discount_target_products))
+		        $target_products = $this->targetProducts();
+		        if (empty($target_products))
 		        {
 		            $excluded_products = $this->excludedProducts();
 		            foreach ($cart->items as $cartitem)
@@ -652,7 +653,7 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
 		            foreach ($cart->items as $cartitem)
 		            {
 		                // is this product a discount_target_product?
-		                if (in_array((string) $cartitem['product_id'], $this->discount_target_products ))
+		                if (in_array((string) $cartitem['product_id'], $target_products ))
 		                {
 		                    if (!in_array((string) $cartitem['product_id'], $excluded_products))
 		                    {
@@ -700,7 +701,8 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
 	        case "product_subtotal":
 
 	            // if discount_target_products is empty, then for each product in the cart, apply the discount
-	            if (empty($this->discount_target_products)) 
+	            $target_products = $this->targetProducts();
+	            if (empty($target_products)) 
 	            {
 	                $excluded_products = $this->excludedProducts();
 	                
@@ -728,7 +730,7 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
 	                foreach ($cart->items as $cartitem)
 	                {
 	                    // is this product a discount_target_product?
-	                    if (in_array((string) $cartitem['product_id'], $this->discount_target_products )) 
+	                    if (in_array((string) $cartitem['product_id'], $target_products )) 
 	                    {
 	                        if (!in_array((string) $cartitem['product_id'], $excluded_products))
 	                        {
@@ -774,10 +776,12 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
                 // else, apply it only to the products in discount_target_products
                 else
                 {
+                    $target_products = $this->targetProducts();
+                    
                     foreach ($cart->items as $cartitem)
                     {
                         // is this product a discount_target_product?
-                        if (in_array((string) $cartitem['product_id'], $this->discount_target_products ))
+                        if (in_array((string) $cartitem['product_id'], $target_products ))
                         {
                             if (!in_array((string) $cartitem['product_id'], $excluded_products))
                             {
@@ -839,18 +843,12 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
                 // the discount is the difference between the product's price and the coupon's discount_value
                 else 
                 {
-                    $discount_target_products = (array) $this->discount_target_products;
-                    foreach( (array) $this->discount_target_collections as $collection_id )
-                    {
-                        $collection_product_ids = \Shop\Models\Collections::productIds( $collection_id );
-                        $discount_target_products = array_merge($discount_target_products, $collection_product_ids);
-                    }
-                    $discount_target_products = array_unique( $discount_target_products );
+                    $target_products = $this->targetProducts();
                     $excluded_products = $this->excludedProducts();
                     
                     foreach ($cart->items as $cartitem)
                     {
-                        if (in_array((string) $cartitem['product_id'], $discount_target_products ))
+                        if (in_array((string) $cartitem['product_id'], $target_products ))
                         {
                             if (!in_array((string) $cartitem['product_id'], $excluded_products))
                             {
@@ -947,6 +945,24 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
         $excluded_products = array_unique( $excluded_products );
         
         return $excluded_products;
+    }
+    
+    /**
+     * Get all products targeted for this discount 
+     * 
+     * @return unknown
+     */
+    public function targetProducts()
+    {
+        $discount_target_products = (array) $this->discount_target_products;
+        foreach( (array) $this->discount_target_collections as $collection_id )
+        {
+            $collection_product_ids = \Shop\Models\Collections::productIds( $collection_id );
+            $discount_target_products = array_merge($discount_target_products, $collection_product_ids);
+        }
+        $discount_target_products = array_unique( $discount_target_products );
+        
+        return $discount_target_products;
     }
     
     public function countUsedCodes()
