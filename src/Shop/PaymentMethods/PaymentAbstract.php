@@ -13,11 +13,19 @@ abstract class PaymentAbstract extends \Dsc\Singleton
      * If payment processing fails, throw an exception.
      * If redirect is required, perform the redirect.
      * Otherwise, return the response object.
+     * 
+     * Throws \Exception
+     * 
+     * @return $this
      */
     abstract function processPayment();
     
     /**
-     * Validates a payment, typically by the transaction ID
+     * Validates a payment, typically by the transaction ID.
+     * 
+     * Throws \Exception
+     * 
+     * @return mixed 
      */
     abstract function validatePayment();
     

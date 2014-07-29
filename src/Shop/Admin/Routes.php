@@ -228,10 +228,25 @@ class Routes extends \Dsc\Routes\Group
             'action' => 'shippingMethods'
         ));
         
-        $this->add('/payment-methods', 'GET|POST', array(
-            'controller' => 'Settings',
-            'action' => 'paymentMethods'
+        $this->add('/payment-methods', 'GET', array(
+            'controller' => 'PaymentMethods',
+            'action' => 'index'
         ));
+        
+        $this->add('/payment-method/select', 'GET', array(
+            'controller' => 'PaymentMethods',
+            'action' => 'select'
+        ));        
+        
+        $this->add('/payment-method/edit/@id', 'GET', array(
+            'controller' => 'PaymentMethods',
+            'action' => 'edit'
+        ));
+        
+        $this->add('/payment-method/edit/@id', 'POST', array(
+            'controller' => 'PaymentMethods',
+            'action' => 'update'
+        ));        
         
         $this->add('/settings/notifications', 'GET|POST', array(
             'controller' => 'Settings',

@@ -227,8 +227,22 @@ class Checkout extends \Dsc\Singleton
     {
         $paymentMethod = $this->paymentMethod();
     
-        $this->__validatePaymentResult = $paymentMethod->addCart( $this->cart() )->addPaymentData( $this->paymentData() )->getClass()->validatePayment();
+        $this->__validatePaymentResult = $paymentMethod->addOrder( $this->order() )->addCart( $this->cart() )->addPaymentData( $this->paymentData() )->getClass()->validatePayment();
     
         return $this;
-    }    
+    }
+
+    /**
+     *
+     * @return NULL
+     */
+    public function validatePaymentResult()
+    {
+        if (!empty($this->__validatePaymentResult))
+        {
+            return $this->__validatePaymentResult;
+        }
+    
+        return null;
+    }
 }

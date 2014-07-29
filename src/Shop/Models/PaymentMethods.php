@@ -10,6 +10,7 @@ class PaymentMethods extends \Dsc\Mongo\Collection
     
     public $enabled = false;
     
+    protected $__order = null;             // \Shop\Models\Orders object
     protected $__cart = null;             // \Shop\Models\Carts object
     protected $__paymentData = array();    
     
@@ -44,7 +45,7 @@ class PaymentMethods extends \Dsc\Mongo\Collection
         {
             $this->setCondition('enabled', array('$in' => array( true, '1', 1 ) ) );
         } 
-        elseif (strlen($filter_enabled) && empty($filter_enabled)) 
+        elseif (isset($filter_enabled) && is_bool($filter_enabled)) 
         {
             $this->setCondition('enabled', array('$nin' => array( true, '1', 1 ) ) );
         }        
@@ -260,4 +261,26 @@ class PaymentMethods extends \Dsc\Mongo\Collection
     {
         return $this->__paymentData;
     }    
+    
+    /**
+     * Add an order to the model
+     *
+     * @param \Shop\Models\Orders $order
+     *
+     * @return \Shop\Models\PaymentMethods
+     */
+    public function addOrder(\Shop\Models\Orders $order)
+    {
+        $this->__order = $order;
+    
+        return $this;
+    }
+    
+    /**
+     * Get the order
+     */
+    public function order()
+    {
+        return $this->__order;
+    }
 }

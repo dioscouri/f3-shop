@@ -38,6 +38,9 @@ class Orders extends \Dsc\Mongo\Collections\Taggable
     public $financial_status = \Shop\Constants\OrderFinancialStatus::pending;
     public $payment_required = true;
     public $payment_method = null;          // a PaymentMethod model cast as an array
+    public $payment_method_id = null;
+    public $payment_method_result = null;
+    public $payment_method_validation_result = null;
     public $billing_address = array();
     public $payments = array();             // an array of Payment models cast as arrays
     

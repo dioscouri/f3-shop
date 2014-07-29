@@ -118,7 +118,8 @@ class PaymentMethod extends \Shop\PaymentMethods\PaymentAbstract
     public function validatePayment() 
     {
         $cart = $this->model->cart();
-        $paymentData = $this->model->paymentData();       
+        $paymentData = $this->model->paymentData();
+        $order = $this->model->order();
 
         /*
          Paypal Express returns this in the request after a checkout:
@@ -145,8 +146,26 @@ class PaymentMethod extends \Shop\PaymentMethods\PaymentAbstract
         
         $response = $gateway->fetchCheckout($params)->send();
         
-        throw new \Exception( \Dsc\Debug::dump($response) );
-
+        $success = $response->isSuccessful();
+        
+        if (!$success) 
+        {
+            throw new \Exception('Payment was not successful');
+        }
+        
+        $data = $response->getData();
+        
+        if (empty($data['INVNUM']) || (string) $data['INVNUM'] != (string) $cart->id)
+        {
+            throw new \Exception('Payment transaction not associated with this cart');
+        }
+        
+        // Is any further validation required on the payment response?        
+        $order->financial_status = \Shop\Constants\OrderFinancialStatus::paid;
+        $order->payment_method_id = $this->identifier; 
+        $order->payment_method_validation_result = $data;
+        
+        return $data;
     }
     
 }

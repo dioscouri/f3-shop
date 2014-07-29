@@ -99,6 +99,8 @@ class Settings extends \Admin\Controllers\BaseAuth
     	$this->app->set('meta.title', 'Payment Methods | Shop');
     	    
     	$view = \Dsc\System::instance()->get('theme');
+    	$view->event = $view->trigger( 'onDisplayShopSettingsPaymentMethods', array( 'settings' => $settings, 'tabs' => array(), 'content' => array() ) );
+    	
     	echo $view->renderTheme('Shop/Admin/Views::settings/payments.php');
     }
     
