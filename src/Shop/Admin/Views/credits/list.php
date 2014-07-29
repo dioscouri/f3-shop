@@ -113,7 +113,7 @@
                         </div>
                         <div class="hidden-xs hidden-sm col-md-2">
                             <?php if (empty($item->credit_issued_to_user)) { ?>
-    	                    <a class="btn btn-xs btn-success" data-bootbox="confirm" href="./admin/shop/credit/success/<?php echo $item->id; ?>">
+    	                    <a class="btn btn-xs btn-success" data-bootbox="confirm" href="./admin/shop/credit/issue/<?php echo $item->id; ?>">
     	                        Issue
     	                    </a>
     	                    <?php } else { ?>                        
