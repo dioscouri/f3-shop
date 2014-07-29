@@ -15,6 +15,14 @@ class PaymentMethod extends \Shop\PaymentMethods\PaymentAbstract
     }
     
     /**
+     * Settings form in the admin
+     */
+    public function settings()
+    {
+        echo $this->theme->render('Shop/PaymentMethods/OmnipayPaypalExpress/Views::settings.php');
+    }    
+    
+    /**
      * Does this payment method require a redirect?
      * 
      * @return boolean
