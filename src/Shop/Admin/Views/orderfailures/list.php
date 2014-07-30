@@ -217,7 +217,7 @@
                     <div class="row">
                         <div class="col-xs-12 col-sm-12 col-md-4">
                             <legend>
-                                <a href="./admin/shop/orderfailure/edit/<?php echo $order->id; ?>"><?php echo (new \DateTime($order->{'metadata.created.local'}))->format('F j, Y g:i a'); ?></a>
+                                <a href="./admin/shop/orderfailure/edit/<?php echo $order->id; ?>"><?php echo (new \DateTime($order->{'metadata.created.local'}))->format('F j, Y'); ?></a>
                                 
                                 <?php switch($order->{'status'}) {
                                 	case \Shop\Constants\OrderStatus::cancelled:
