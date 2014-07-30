@@ -165,12 +165,6 @@ class PaymentMethods extends \Dsc\Mongo\Collection
      */
     public function getClass()
     {
-        static $class;
-        
-        if (!empty($class)) {
-            return $class;
-        }
-        
         $class_name = $this->namespace . '\PaymentMethod';
         if (!class_exists($class_name))
         {

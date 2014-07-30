@@ -78,7 +78,13 @@ class ShopBootstrap extends \Dsc\Bootstrap
         \Shop\Models\PaymentMethods::register('\Shop\PaymentMethods\OmnipayPaypalExpress', array(
             'title'=>'Paypal Express (via Omnipay)',
             'identifier'=>'omnipay.paypal_express',            
+        ));
+                
+        \Shop\Models\PaymentMethods::register('\Shop\PaymentMethods\OmnipayCybersource', array(
+            'title'=>'Cybersource (via Omnipay)',
+            'identifier'=>'omnipay.cybersource',
         ));        
+        
     }
 
     protected function preSite()
