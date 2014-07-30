@@ -127,6 +127,7 @@ class PaymentMethod extends \Shop\PaymentMethods\PaymentAbstract
     {
         $cart = $this->model->cart();
         $paymentData = $this->model->paymentData();
+        $user = $this->auth->getIdentity();
         $order = $this->model->order();
 
         /*
@@ -148,6 +149,27 @@ class PaymentMethod extends \Shop\PaymentMethods\PaymentAbstract
         $gateway->setSignature('AFcWxV21C7fd0v3bYYYRCpSSRl31AKyA2GQEqJT5ULWuMj6JThvEWKBw');
         $gateway->setTestMode(true);      
 
+        $cardData = array(
+            'firstName' => $user->first_name,
+            'lastName' => $user->last_name
+        );
+        
+        $card = new \Omnipay\Common\CreditCard($cardData);
+                
+        $paymentDetails = array(
+            'amount' => (float) $cart->total(),
+            'returnUrl' => \Dsc\Url::base() . 'shop/checkout/gateway/omnipay.paypal_express/completePurchase/' . $cart->id,
+            'cancelUrl' => \Dsc\Url::base() . 'shop/checkout/payment',
+            'transactionId' => (string) $cart->id,
+            'description' => 'Cart #' . $cart->id,
+            'currency' => 'USD',
+            'clientIp' => $_SERVER['REMOTE_ADDR'],
+            'card' => $card
+        );
+        
+        $purchase_response = $gateway->completePurchase($paymentDetails)->send();
+        $purchase_data = $purchase_response->getData();        
+        
         $params = array(
             'token' => @$paymentData['token']
         );
@@ -170,8 +192,12 @@ class PaymentMethod extends \Shop\PaymentMethods\PaymentAbstract
         
         // Is any further validation required on the payment response?        
         $order->financial_status = \Shop\Constants\OrderFinancialStatus::paid;
-        $order->payment_method_id = $this->identifier; 
+        $order->payment_method_id = $this->identifier;
+        $order->payment_method_result = $purchase_data;
         $order->payment_method_validation_result = $data;
+        $order->payment_method_status = !empty($purchase_data['PAYMENTINFO_0_PAYMENTSTATUS']) ? $purchase_data['PAYMENTINFO_0_PAYMENTSTATUS'] : null;
+        $order->payment_method_auth_id = !empty($purchase_data['TOKEN']) ? $purchase_data['TOKEN'] : null;
+        $order->payment_method_tran_id = $purchase_response->getTransactionReference();
         
         return $data;
     }
