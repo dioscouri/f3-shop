@@ -173,7 +173,189 @@ class PaymentMethod extends \Shop\PaymentMethods\PaymentAbstract
         
         if (!$response->isSuccessful())
         {
-            throw new \Exception('Payment was not successful');
+            // OK, so lets figure out why payment was not successful
+            
+            switch($response->getReasonCode()) 
+            {
+                case "102": // One or more fields in the request contain invalid data.
+                    // Check invalid_fields, a CSV of the invalid fields.
+                    foreach ($response->getInvalidFields() as $invalid_field) 
+                    {
+                        switch($invalid_field) 
+                        {
+                            case "card_number":
+                                $message = 'Invalid card number.  Please confirm the information submitted and try again.';
+                                throw new \Exception($message);
+                                break;
+                            case "card_expiry_date":
+                                $message = 'Invalid expiration date.  Please confirm the information submitted and try again.';
+                                throw new \Exception($message);                                
+                                break;
+                            case "card_cvn":
+                                $message = 'Invalid card security code.  Please confirm the information submitted and try again.';
+                                throw new \Exception($message);
+                                break;
+                            case "card_type":
+                                $message = 'Invalid card type.  Please try again with a different card.';
+                                throw new \Exception($message);
+                                break;                                
+                        }
+                    } 
+                    
+                case "104": // The access_key and transaction_uuid fields for this authorization request matches the access_key and transaction_uuid of another authorization request that you sent within the past 15 minutes.
+                case "207": // issuing bank unavailable                
+                case "236": // processor failure
+                case "240": // wrong card type
+                    $message = 'There was an error submitting your order.  Please try again.';
+                    throw new \Exception($message);
+                    break;
+                case "202": // expired card
+                    $message = 'Your card has expired.  Please try again with a different card.';
+                    throw new \Exception($message);
+                    break;
+                case "203": // general decline
+                case "205": // lost/stolen card
+                case "208": // inactive card
+                case "210": // card over limit
+                case "221": // customer in negative file
+                case "222": // account frozen
+                case "231": // account number invalid
+                case "232": // card not accepted
+                case "233": // general decline
+                case "234": // error in cybersource setup
+                case "520": // declined by Decision Manager
+                    $message = 'Your card has been declined.  Please try again with a different card.';
+                    throw new \Exception($message);                    
+                    break;                   
+                case "204":
+                    $message = 'Your card has been declined due to insufficient funds.  Please try again with a different card.';
+                    throw new \Exception($message);
+                    break;
+                case "211": // invalid CVN
+                case "230": // CVN fail in cybersource 
+                case "200": // AVS fail in cybersource
+                    // exact message handled below     
+                    break;
+                case "201": // call bank
+                default:
+                    break;
+            }
+            
+            // check CVN response
+            /*
+            D The transaction was considered to be suspicious by the issuing bank.
+            I The CVN failed the processor's data validation.
+            M The CVN matched.
+            N The CVN did not match.
+            P The CVN was not processed by the processor for an unspecified reason.
+            S The CVN is on the card but was not included in the request.
+            U Card verification is not supported by the issuing bank.
+            X Card verification is not supported by the card association.
+            1 Card verification is not supported for this processor or card type.
+            2 An unrecognized result code was returned by the processor for the card
+            verification response.
+            3 No result code was returned by the processor.
+             */
+            switch($response->getCVNCode()) 
+            {
+                case "D":
+                case "I":
+                case "N":
+                case "S":
+                    $message = 'The billing information that you entered does not match your credit card information. Please confirm the Security Code you have provided.';
+                    throw new \Exception($message);
+                    break;
+                case "M":
+                case "P":                
+                case "U":
+                case "X":
+                case "1":
+                case "2":
+                case "3":
+                default: // null
+                    break;
+            }
+            
+            // check AVS response 
+            /*
+            A Partial match Street address matches, but five digit and nine digit postal codes
+            do not match.
+            B Partial match Street address matches, but postal code is not verified.
+            C No match Street address and postal code do not match.
+            D & M Match Street address and postal code match.
+            E Invalid AVS data is invalid or AVS is not allowed for this card type.
+            F Partial match Card member’s name does not match, but billing postal code
+            matches. Returned only for the American Express card type.
+            G Not supported.
+            H Partial match Card member’s name does not match, but street address and
+            postal code match. Returned only for the American Express
+            card type.
+            I No match Address not verified.
+            J Match Card member’s name, billing address, and postal code match.
+            Shipping information verified and chargeback protection
+            guaranteed through the Fraud Protection Program. Returned
+            only if you are signed up to use AAV+ with the American
+            Express Phoenix processor.
+            K Partial match Card member’s name matches, but billing address and billing
+            postal code do not match. Returned only for the American
+            Express card type.
+            L Partial match Card member’s name and billing postal code match, but billing
+            address does not match. Returned only for the American
+            Express card type.
+            M Match Street address and postal code match.
+            N No match One of the following:
+             Street address and postal code do not match.
+             Card member’s name, street address, and postal code do not
+            match. Returned only for the American Express card type.
+            O Partial match Card member’s name and billing address match, but billing
+            postal code does not match. Returned only for the American
+            Express card type.
+            P Partial match Postal code matches, but street address is not verified.
+            Q Match Card member’s name, billing address, and postal code match.
+            Shipping information verified but chargeback protection not
+            guaranteed (Standard program). Returned only if you are
+            registered to use AAV+ with the American Express Phoenix
+            processor.
+            R System unavailable System unavailable.
+            S Not supported U.S.-issuing bank does not support AVS.
+            T Partial match Card member’s name does not match, but street address
+            matches. Returned only for the American Express card type.
+            U System unavailable Address information unavailable for one of these reasons:
+             The U.S. bank does not support non-U.S. AVS.
+             The AVS in a U.S. bank is not functioning properly.
+            V Match Card member’s name, billing address, and billing postal code
+            match. Returned only for the American Express card type.
+            W Partial match Street address does not match, but nine digit postal code
+            matches.
+            X Match Street address and nine digit postal code match.
+            Y Match Street address and five digit postal code match.
+            Z Partial match Street address does not match, but 5-digit postal code matches.
+            1 Not supported AVS is not supported for this processor or card type.
+            2 Unrecognized The processor returned an unrecognized value for the AVS
+            response.
+            3 Match Address is confirmed. Returned only for PayPal Express
+            Checkout.
+            4 No match Address is not confirmed. Returned only for PayPal Express
+            Checkout.
+             */
+            switch($response->getAVSCode())
+            {
+                case "C":
+                case "E":
+                case "I":
+                case "N":
+                case "4":
+                    $message = 'The billing information that you entered does not match your credit card information. Please confirm the Billing Address you have provided.';
+                    throw new \Exception($message);
+                    break;
+                default: // null
+                    break;
+            }            
+
+            // if we reach here, throw a general error
+            //throw new \Exception('Payment was not successful');
+            $message = 'Your card has been declined.  Please try again with a different card.';
+            throw new \Exception($message);
         }
         
         // Check the signature        

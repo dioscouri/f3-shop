@@ -26,9 +26,14 @@ class Gateway extends \Shop\Controllers\Gateway
         try {
             $checkout->validatePayment();
         } catch (\Exception $e) {
-            \Dsc\System::addMessage( 'Payment could not be verified.  Checkout unable to complete.', 'error' );
     
-            // TODO Log this error message
+            // Log this error message
+            $order = $checkout->order();
+            $order->setError($e->getMessage())
+                ->set('errors', $order->getErrors())
+                ->fail();
+
+            \Dsc\System::addMessage( 'Checkout could not complete for the following reason:', 'error' );
             \Dsc\System::addMessage( $e->getMessage(), 'error' );
     
             // redirect to the ./shop/checkout/payment page unless a failure redirect has been set in the session (site.shop.checkout.redirect.fail)
@@ -134,9 +139,14 @@ class Gateway extends \Shop\Controllers\Gateway
         try {
             $checkout->validatePayment();
         } catch (\Exception $e) {
-            \Dsc\System::addMessage( 'Payment could not be verified.  Checkout unable to complete.', 'error' );
             
-            // TODO Log this error message
+            // Log this error message
+            $order = $checkout->order();
+            $order->setError($e->getMessage())
+                ->set('errors', $order->getErrors())
+                ->fail();
+                        
+            \Dsc\System::addMessage( 'Checkout could not complete for the following reason:', 'error' );
             \Dsc\System::addMessage( $e->getMessage(), 'error' );
             
             // redirect to the ./shop/checkout/payment page unless a failure redirect has been set in the session (site.shop.checkout.redirect.fail)

@@ -288,7 +288,8 @@ jQuery(document).ready(function(){
         var card_number = pm.find('.new-card-number').val();
         var card_cvn = pm.find('.new-card-csc').val();
         var card_expiry_date = pm.find('.new-card-month').val()+'-'+pm.find('.new-card-year').val();
-
+        var card_type = null;
+        
         switch (jQuery.payment.cardType(card_number)) {
             case "visa":
                 var card_type = '001';
@@ -322,7 +323,19 @@ jQuery(document).ready(function(){
                 var card_type = '034';
                 break;
         }
-                
+
+        // Validate the data, and if anything fails, add an error message and return false after scrolling to the error message
+        if (!card_number || !card_cvn || !card_expiry_date || !bill_to_surname || !bill_to_forename
+            || !bill_to_address_line1 || !bill_to_address_city || !bill_to_address_state || !bill_to_address_country || !bill_to_address_postal_code
+            || !bill_to_phone
+            ) 
+        {
+            jQuery('body').scrollTo('body', 1000);
+
+    		jQuery(this).closest('form').data('locked', true);
+        	ev.preventDefault();
+            return false;            
+        }        
 
         // build our form
         var template = jQuery('#omnipay-cybersource-template').html();
@@ -341,13 +354,8 @@ jQuery(document).ready(function(){
         template = template.replace( new RegExp("{card_type}", 'g'), card_type);
 
         // then submit our form instead
-        console.log('Submit our form instead');
-                
         jQuery('body').append(template);        
         jQuery('#omnipay-cybersource-form').submit()
-
-        console.log('omnipay.cybersource returning false');
-		jQuery('body').scrollTo('body', 1000);
 		
 		jQuery(this).closest('form').data('locked', true);
     	ev.preventDefault();
