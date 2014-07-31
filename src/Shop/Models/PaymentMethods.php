@@ -12,6 +12,7 @@ class PaymentMethods extends \Dsc\Mongo\Collection
     
     protected $__order = null;             // \Shop\Models\Orders object
     protected $__cart = null;             // \Shop\Models\Carts object
+    protected $__checkout = null;           // \Shop\Models\Checkout object
     protected $__paymentData = array();    
     
     protected $__collection_name = 'shop.payment_methods';
@@ -219,7 +220,7 @@ class PaymentMethods extends \Dsc\Mongo\Collection
      * 
      * @return \Shop\Models\PaymentMethods
      */
-    public function addCart(\Shop\Models\Carts $cart)
+    public function addCart(\Shop\Models\Carts &$cart)
     {
         $this->__cart = $cart;
     
@@ -263,7 +264,7 @@ class PaymentMethods extends \Dsc\Mongo\Collection
      *
      * @return \Shop\Models\PaymentMethods
      */
-    public function addOrder(\Shop\Models\Orders $order)
+    public function addOrder(\Shop\Models\Orders &$order)
     {
         $this->__order = $order;
     
@@ -277,4 +278,26 @@ class PaymentMethods extends \Dsc\Mongo\Collection
     {
         return $this->__order;
     }
+    
+    /**
+     * Add a checkout to the model
+     *
+     * @param \Shop\Models\Checkout $order
+     *
+     * @return \Shop\Models\PaymentMethods
+     */
+    public function addCheckout(\Shop\Models\Checkout $checkout)
+    {
+        $this->__checkout = $checkout;
+    
+        return $this;
+    }
+    
+    /**
+     * Get the checkout
+     */
+    public function checkout()
+    {
+        return $this->__checkout;
+    }    
 }

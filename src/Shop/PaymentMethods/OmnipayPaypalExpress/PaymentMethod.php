@@ -14,6 +14,19 @@ class PaymentMethod extends \Shop\PaymentMethods\PaymentAbstract
         return parent::__construct($config);
     }
     
+    public function gateway()
+    {
+        $gateway = \Omnipay\Omnipay::create('PayPal_Express');
+        
+        // TODO Get these from DB, via admin
+        $gateway->setUsername('info-facilitator_api1.dioscouri.com');
+        $gateway->setPassword('1378432757');
+        $gateway->setSignature('AFcWxV21C7fd0v3bYYYRCpSSRl31AKyA2GQEqJT5ULWuMj6JThvEWKBw');
+        $gateway->setTestMode(true);      
+        
+        return $gateway;
+    }    
+    
     /**
      * Settings form in the admin
      */
@@ -77,14 +90,7 @@ class PaymentMethod extends \Shop\PaymentMethods\PaymentAbstract
         $paymentData = $this->model->paymentData();
         $user = $this->auth->getIdentity();
         
-        $gateway = \Omnipay\Omnipay::create('PayPal_Express');
-        $gateway_settings = $gateway->getDefaultParameters();
-
-        // TODO Get these from DB, via admin
-        $gateway->setUsername('info-facilitator_api1.dioscouri.com');
-        $gateway->setPassword('1378432757');
-        $gateway->setSignature('AFcWxV21C7fd0v3bYYYRCpSSRl31AKyA2GQEqJT5ULWuMj6JThvEWKBw');
-        $gateway->setTestMode(true);
+        $gateway = $this->gateway();
         
         $cardData = array(
             'firstName' => $user->first_name,
@@ -130,24 +136,16 @@ class PaymentMethod extends \Shop\PaymentMethods\PaymentAbstract
         $user = $this->auth->getIdentity();
         $order = $this->model->order();
 
+        $gateway = $this->gateway();
+        
         /*
          Paypal Express returns this in the request after a checkout:
-        
         Array
         (
             [token] => EC-74S42539DC567584C
             [PayerID] => L3BUDRTU6MPKC
         )
         */
-        
-        $gateway = \Omnipay\Omnipay::create('PayPal_Express');
-        $gateway_settings = $gateway->getDefaultParameters();
-        
-        // TODO Get these from DB, via admin
-        $gateway->setUsername('info-facilitator_api1.dioscouri.com');
-        $gateway->setPassword('1378432757');
-        $gateway->setSignature('AFcWxV21C7fd0v3bYYYRCpSSRl31AKyA2GQEqJT5ULWuMj6JThvEWKBw');
-        $gateway->setTestMode(true);      
 
         $cardData = array(
             'firstName' => $user->first_name,

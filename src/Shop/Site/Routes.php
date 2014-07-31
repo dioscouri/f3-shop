@@ -279,6 +279,11 @@ class Routes extends \Dsc\Routes\Group
         // 'action' => 'submitDeleteCard'
         // ) );
         
+        $this->add('/checkout/gateway/@gateway_id/notify', 'GET|POST', array(
+            'controller' => 'Gateway',
+            'action' => 'notify'
+        ));
+        
         $this->add( '/orders', 'GET|POST', array(
             'controller' => 'Order',
             'action' => 'index' 
