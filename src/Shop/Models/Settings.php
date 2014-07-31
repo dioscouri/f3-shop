@@ -73,6 +73,11 @@ class Settings extends \Dsc\Mongo\Collections\Settings
 		    ),
     );
     
+    public $abandoned_cart_time = 60;
+    public $abandoned_cart_subject = 'Your Cart is still ready.';
+    
+    public $abandoned_cart_emails = array();
+    
     public function isShippingMethodEnabled($method=null)
     {
     	$result = false;
@@ -199,5 +204,18 @@ class Settings extends \Dsc\Mongo\Collections\Settings
     	}
     }
     
+    protected function beforeValidate()
+    {
+    	if (!empty($this->abandoned_cart_emails) && is_array($this->abandoned_cart_emails))
+    	{
+    		// TODO: update all emails that are already scheduled to send? and add any additional emails to already abandoned carts, if any were added right now
+    		$this->abandoned_cart_emails = array_filter( array_values($this->abandoned_cart_emails) );
+    		usort($this->abandoned_cart_emails, function($a, $b) {
+    			return $a['delay'] - $b['delay'];
+    		});
+    	}
+    	
+    	return parent::beforeValidate();
+    }
    
 }
