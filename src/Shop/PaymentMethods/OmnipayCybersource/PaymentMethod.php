@@ -233,8 +233,12 @@ class PaymentMethod extends \Shop\PaymentMethods\PaymentAbstract
                     break;
                 case "211": // invalid CVN
                 case "230": // CVN fail in cybersource 
+                    $message = 'The billing information that you entered does not match your credit card information. Please confirm the Security Code you have provided.';
+                    throw new \Exception($message);                    
+                    break;
                 case "200": // AVS fail in cybersource
-                    // exact message handled below     
+                    $message = 'The billing information that you entered does not match your credit card information. Please confirm the Billing Address you have provided.';
+                    throw new \Exception($message);
                     break;
                 case "201": // call bank
                 default:
