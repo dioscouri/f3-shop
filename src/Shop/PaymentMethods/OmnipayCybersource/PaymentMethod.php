@@ -130,7 +130,7 @@ class PaymentMethod extends \Shop\PaymentMethods\PaymentAbstract
             [utf8] =>
             [req_bill_to_address_country] => US
             [auth_avs_code] => X
-            [req_bill_to_phone] => 718-644-1019
+            [req_bill_to_phone] => 800-123-4567
             [req_card_number] => xxxxxxxxxxxx1111
             [req_card_expiry_date] => 01-2017
             [decision] => ACCEPT
@@ -143,7 +143,7 @@ class PaymentMethod extends \Shop\PaymentMethods\PaymentAbstract
             [req_locale] => en-us
             [reason_code] => 100
             [req_bill_to_address_postal_code] => 10033
-            [req_bill_to_address_line1] => 850 West 176th Street #6C
+            [req_bill_to_address_line1] => 1 Main Street #6
             [req_card_type] => 001
             [auth_amount] => 32.63
             [req_bill_to_address_city] => New York
@@ -162,7 +162,7 @@ class PaymentMethod extends \Shop\PaymentMethods\PaymentAbstract
             [auth_trans_ref_no] => 81884333NY88NKVM
             [req_bill_to_surname] => Tushman
             [req_bill_to_forename] => Rafael
-            [req_bill_to_email] => rdiaztushman@dioscouri.com
+            [req_bill_to_email] => email@dioscouri.com
             [req_access_key] => 4571ed37561d32419cab3fa6ad0ff7cb
             [actor_id] => 53bd8b8af02e25fa0af22e6d
             [affiliate_id] => 
@@ -377,8 +377,6 @@ class PaymentMethod extends \Shop\PaymentMethods\PaymentAbstract
         {
             throw new \Exception('Payment transaction not associated with this cart');
         }        
-
-        //$checkout->addCart($cart);
         
         $data = $response->getData();
         
