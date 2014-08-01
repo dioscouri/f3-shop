@@ -1,4 +1,4 @@
-<?php $view_link = $SCHEME . '://' . $HOST . $BASE . '/shop/cart?email=1'; ?>
+<?php $view_link = $SCHEME . '://' . $HOST . $BASE . '/shop/cart/'.(string)$cart->id.'?email=1&user_id='.(string)$user->id.'&idx='.$idx.'&auto_login_token='.$token; ?>
 Hi <?php echo $user->fullName(); ?>
 
 <?php echo $notification['text']['plain']; ?>

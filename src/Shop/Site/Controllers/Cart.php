@@ -8,11 +8,46 @@ class Cart extends \Dsc\Controller
      */
     public function read()
     {
+    	$id = $this->inputfilter->clean( $this->app->get('PARAMS.id'), 'alnum' );
+		$user_id = $this->input->get('user_id','', 'alnum' );
+    	// check, if we're not forcing user to view a certain cart (i. e. after they click on link in email)
+    	if( !empty( $id ) ){
+    		$cart = (new \Shop\Models\Carts)->setState( 'filter.id', $id )->getItem();
+    		if( empty( $cart ) ){ // this cart does not exist so let's not disclose that to people. rather, we say the  cart is empty (which is true)
+    			$this->app->reroute( '/shop/cart' );
+    			return;
+    		}
+    		
+			$identity = $this->getIdentity();
+				
+			if (empty($identity->id) )
+	        {
+				$token = $this->input->get('auto_login_token','', 'alnum' );
+				
+				if( empty($user_id) || empty( $token ) ){
+					\Dsc\System::instance()->get('session')->set('site.login.redirect', '/shop/cart');
+					$this->app->reroute('/sign-in');
+				} else {
+					// try to auto log in user
+		    		$notification_idx = $this->input->get( "idx", 0, 'int' );
+					$this->auth->loginWithToken( $user_id, $token, '/shop/cart?email=1&user_id='.$user_id.'&idx='.$notification_idx );
+				}
+	        } else {
+	        	if( (string)$cart->user_id  != (string)$identity->id ){
+	        		$this->app->reroute( '/shop/cart' );
+	        		return;
+	        	}
+	        }
+    	}
+    	
     	$referal_email = $this->input->get( "email", 0, 'int' );
     	if( $referal_email ){
-    		\Dsc\Activities::track( 'User clicked on link in abandond cart email' );
-    		\Dsc\System::instance()->get('session')->set( 'shop.notification_email', 1 );
-    		
+    		$identity = $this->getIdentity();
+    		if( $identity->id == $user_id ){ // only if the right user is logged in
+    			$notification_idx = $this->input->get( "idx", 0, 'int' );
+    			\Dsc\Activities::track( 'User clicked on link in abandond cart email', array( 'Notification' => $notification_idx ) );
+    			\Dsc\System::instance()->get('session')->set( 'shop.notification_email', 1 );
+    		}
     		$this->app->reroute( '/shop/cart' );
     		return;
     	}

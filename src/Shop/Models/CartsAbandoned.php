@@ -95,10 +95,14 @@ class CartsAbandoned extends \Shop\Models\Carts
     		$recipients = array( $cart->{'user_email'} );
     	}
     	
-    	$recipients = array( 'polak.lukas90@gmail.com' );
+//    	$recipients = array( 'polak.lukas90@gmail.com' );
+    	$token = \Dsc\System::instance()->get('auth')->getAutoLoginToken($user, true );
     	
         \Base::instance()->set('cart', $cart);
         \Base::instance()->set('user', $user);
+        \Base::instance()->set('idx', $notification_idx);
+        \Base::instance()->set('token', $token);
+        
         $notification = $settings->get( 'abandoned_cart_emails.'.$notification_idx );
         if( empty( $notification ) ){
         	$notification = array( 'text' => array( 'html' => '', 'plain' => '') );

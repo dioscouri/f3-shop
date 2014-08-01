@@ -78,6 +78,11 @@ class Routes extends \Dsc\Routes\Group
             'controller' => 'Cart',
             'action' => 'read' 
         ) );
+
+        $this->add( '/cart/@id', 'GET', array(
+        		'controller' => 'Cart',
+        		'action' => 'read'
+        ) );
         
         $this->add( '/cart/add', 'POST', array(
             'controller' => 'Cart',
