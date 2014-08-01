@@ -18,11 +18,22 @@ class PaymentMethod extends \Shop\PaymentMethods\PaymentAbstract
     {
         $gateway = \Omnipay\Omnipay::create('Cybersource');
                 
-        // TODO Get these from DB, via admin
-        $gateway->setProfileId('bangles');
-        $gateway->setAccessKey('4571ed37561d32419cab3fa6ad0ff7cb');
-        $gateway->setSecretKey('43a05941f88947cb881dfcb0e857f80345bb3f23d4ef431c97d07da5e62d4e8a188cce3cd147436e88d9ba1d94e1d48434ff127090064b0190a4390a279b04b207c340821a2449c1a31a37cb5da9f0db2402d1d6c26f4ab09757c19eec1fa1c848b61e2df73941debf9938005a193e4de0ac66dbc0e94e7eae6aa95f6e04cd35');        
-        $gateway->setTestMode(true);
+        switch ($this->model->{'settings.mode'})
+        {
+            case "live":
+                $gateway->setProfileId($this->model->{'settings.live.profile_id'});
+                $gateway->setAccessKey($this->model->{'settings.live.access_key'});
+                $gateway->setSecretKey($this->model->{'settings.live.secret_key'});
+                $gateway->setTestMode(false);                
+                break;
+                
+            case "test":
+                $gateway->setProfileId($this->model->{'settings.test.profile_id'});
+                $gateway->setAccessKey($this->model->{'settings.test.access_key'});
+                $gateway->setSecretKey($this->model->{'settings.test.secret_key'});
+                $gateway->setTestMode(true);                                
+                break;
+        }
         
         return $gateway;
     }
@@ -32,7 +43,44 @@ class PaymentMethod extends \Shop\PaymentMethods\PaymentAbstract
      */
     public function settings()
     {
+        $this->app->set('pm', $this);
+        $this->app->set('model', $this->model);
+        
         echo $this->theme->render('Shop/PaymentMethods/OmnipayCybersource/Views::settings.php');
+    }
+
+    /**
+     * Determines whether or not the payment method's settings have been completely configured for use
+     *
+     * @return boolean
+     */
+    public function isConfigured()
+    {
+        switch ($this->model->{'settings.mode'}) 
+        {
+            case "live":
+                if (!empty($this->model->{'settings.live.profile_id'})
+                    && !empty($this->model->{'settings.live.access_key'})
+                    && !empty($this->model->{'settings.live.secret_key'})
+                ) 
+                {
+                    return true;
+                }
+                break;
+            case "test":
+                if (!empty($this->model->{'settings.test.profile_id'})
+                    && !empty($this->model->{'settings.test.access_key'})
+                    && !empty($this->model->{'settings.test.secret_key'})
+                )
+                {
+                    return true;
+                }                
+                break;
+            default:
+                break;
+        }
+        
+        return false;
     }    
     
     /**

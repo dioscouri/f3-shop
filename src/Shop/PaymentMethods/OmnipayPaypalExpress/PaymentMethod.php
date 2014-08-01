@@ -18,11 +18,22 @@ class PaymentMethod extends \Shop\PaymentMethods\PaymentAbstract
     {
         $gateway = \Omnipay\Omnipay::create('PayPal_Express');
         
-        // TODO Get these from DB, via admin
-        $gateway->setUsername('info-facilitator_api1.dioscouri.com');
-        $gateway->setPassword('1378432757');
-        $gateway->setSignature('AFcWxV21C7fd0v3bYYYRCpSSRl31AKyA2GQEqJT5ULWuMj6JThvEWKBw');
-        $gateway->setTestMode(true);      
+        switch ($this->model->{'settings.mode'})
+        {
+            case "live":
+                $gateway->setUsername($this->model->{'settings.live.username'});
+                $gateway->setPassword($this->model->{'settings.live.password'});
+                $gateway->setSignature($this->model->{'settings.live.signature'});
+                $gateway->setTestMode(false);                
+                break;
+                
+            case "test":
+                $gateway->setUsername($this->model->{'settings.test.username'});
+                $gateway->setPassword($this->model->{'settings.test.password'});
+                $gateway->setSignature($this->model->{'settings.test.signature'});
+                $gateway->setTestMode(true);                                
+                break;
+        }
         
         return $gateway;
     }    
@@ -32,7 +43,44 @@ class PaymentMethod extends \Shop\PaymentMethods\PaymentAbstract
      */
     public function settings()
     {
+        $this->app->set('pm', $this);
+        $this->app->set('model', $this->model);
+        
         echo $this->theme->render('Shop/PaymentMethods/OmnipayPaypalExpress/Views::settings.php');
+    }    
+    
+    /**
+     * Determines whether or not the payment method's settings have been completely configured for use
+     *
+     * @return boolean
+     */
+    public function isConfigured()
+    {
+        switch ($this->model->{'settings.mode'})
+        {
+            case "live":
+                if (!empty($this->model->{'settings.live.username'})
+                && !empty($this->model->{'settings.live.password'})
+                && !empty($this->model->{'settings.live.signature'})
+                )
+                {
+                    return true;
+                }
+                break;
+            case "test":
+                if (!empty($this->model->{'settings.test.username'})
+                && !empty($this->model->{'settings.test.password'})
+                && !empty($this->model->{'settings.test.signature'})
+                )
+                {
+                    return true;
+                }
+                break;
+            default:
+                break;
+        }
+    
+        return false;
     }    
     
     /**
