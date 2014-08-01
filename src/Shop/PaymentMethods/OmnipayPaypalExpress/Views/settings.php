@@ -39,6 +39,10 @@
             <!-- /.row -->        
             
             <hr />        
+            
+            <p class="alert alert-info">
+                See this page for instructions on finding your API credentials: <a href="https://developer.paypal.com/webapps/developer/docs/classic/api/apiCredentials/" target="_blank">https://developer.paypal.com/webapps/developer/docs/classic/api/apiCredentials/</a>
+            </p>
         
             <div class="row">
                 <div class="col-md-2">
@@ -51,13 +55,13 @@
                 <div class="col-md-10">
                 
                     <div class="form-group">
-                        <label>Username</label>
+                        <label>API Username</label>
                         <input name="settings[test][username]" value="<?php echo $model->{'settings.test.username'}; ?>" type="text" class="form-control" /> 
                     </div>
                     <!-- /.form-group -->
                     
                     <div class="form-group">
-                        <label>Password</label>
+                        <label>API Password</label>
                         <input name="settings[test][password]" value="<?php echo $model->{'settings.test.password'}; ?>" type="text" class="form-control" /> 
                     </div>
                     <!-- /.form-group -->
@@ -87,13 +91,13 @@
                 <div class="col-md-10">
                 
                     <div class="form-group">
-                        <label>Username</label>
+                        <label>API Username</label>
                         <input name="settings[live][username]" value="<?php echo $model->{'settings.live.username'}; ?>" type="text" class="form-control" /> 
                     </div>
                     <!-- /.form-group -->
                     
                     <div class="form-group">
-                        <label>Password</label>
+                        <label>API Password</label>
                         <input name="settings[live][password]" value="<?php echo $model->{'settings.live.password'}; ?>" type="text" class="form-control" /> 
                     </div>
                     <!-- /.form-group -->
