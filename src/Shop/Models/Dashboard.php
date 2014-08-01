@@ -180,6 +180,18 @@ class Dashboard extends \Dsc\Models
             'perc' => $perc 
         );
         
+        //Checkout Registration Page
+        $cart_conditions = $base_conditions + array(
+            'action' => new \MongoRegex('/Checkout Registration Page/i'),
+            'properties.app' => 'shop'
+        );
+        $count = count($model->collection()->distinct( 'actor_id', $cart_conditions ));
+        $perc = empty($total) ? 0 : number_format((($count / $total) * 100), 1) . "%";
+        $return['Checkout Registration Page'] = array(
+            'count' => $count,
+            'perc' => $perc
+        );        
+        
         // Started Checkout
         $start_conditions = $base_conditions + array(
             'action' => new \MongoRegex('/Started Checkout/i'),
