@@ -3,6 +3,12 @@ namespace Shop\PaymentMethods;
 
 abstract class PaymentAbstract extends \Dsc\Singleton  
 {
+    //abstract function authorize();
+    //abstract function capture();
+    //abstract function purchase();
+    //abstract function void();
+    //abstract function refund();
+        
     abstract function requiresRedirect();
     abstract function displayName();
     abstract function displayForm();
@@ -29,12 +35,25 @@ abstract class PaymentAbstract extends \Dsc\Singleton
      */
     abstract function validatePayment();
     
-    //abstract function authorize();
-    //abstract function capture();
-    //abstract function purchase();
-    //abstract function void();
-    //abstract function refund();
+    /**
+     * Displays the settings form in the admin
+     */
+    abstract function settings();
     
+    /**
+     * Determines whether or not the payment method's settings have been completely configured for use
+     * 
+     * @return boolean
+     */
+    public function isConfigured()
+    {
+        return false;
+    }
+
+    /**
+     * 
+     * @param array $config
+     */
     public function __construct(array $config=array())
     {
         foreach ($config as $key=>$value) {

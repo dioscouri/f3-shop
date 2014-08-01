@@ -1,4 +1,6 @@
-<p class="alert alert-info">You will be redirected to secure Paypal pages to complete payment.</p>
+<p class="alert alert-info">
+    After clicking "submit order" you will be redirected to secure Paypal pages to complete payment.
+</p>
 <div class="text-center">
     <div>Paypal supports the following payment methods:</div>
     <?php // Latest buttons sourced from https://www.paypal.com/us/webapps/mpp/logos-buttons ?>

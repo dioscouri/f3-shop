@@ -187,7 +187,12 @@ class Order extends \Admin\Controllers\BaseAuth
             if (empty($item->id)) {
                 throw new \Exception;
             }
-            $item->cancel();
+            
+            if( $item->status == \Shop\Constants\OrderStatus::cancelled ){
+            	\Dsc\System::addMessage( 'This order was already cancelled.', 'WARNING' );
+            } else {
+            	$item->cancel();
+            }
         }
         catch(\Exception $e) {
             \Dsc\System::instance()->addMessage('Fulfillment failed with the following errors:', 'error');

@@ -12,6 +12,7 @@ class PaymentMethods extends \Dsc\Mongo\Collection
     
     protected $__order = null;             // \Shop\Models\Orders object
     protected $__cart = null;             // \Shop\Models\Carts object
+    protected $__checkout = null;           // \Shop\Models\Checkout object
     protected $__paymentData = array();    
     
     protected $__collection_name = 'shop.payment_methods';
@@ -52,6 +53,41 @@ class PaymentMethods extends \Dsc\Mongo\Collection
         
         return $this;
     }
+    
+    /**
+     * Gets items from a collection with a query
+     * that uses the model's state
+     * and implements caching (if enabled)
+     */
+    public function getItems($refresh=false)
+    {
+        $items = array();
+        
+        $raw_items = parent::getItems($refresh);
+        
+        $filter_configured = $this->getState('filter.configured');
+        if (is_bool($filter_configured)) 
+        {
+            foreach ($raw_items as $raw_item)
+            {
+                $is_configured = $raw_item->getClass()->isConfigured();
+                if ($is_configured && !empty($filter_configured)) 
+                {
+                    $items[] = $raw_item;
+                }
+                elseif (!$is_configured && empty($filter_configured)) 
+                {
+                    $items[] = $raw_item;
+                }
+            }
+        }
+        else 
+        {
+            $items = $raw_items;
+        }        
+        
+        return $items;
+    }    
 
     protected function beforeValidate()
     {
@@ -165,12 +201,6 @@ class PaymentMethods extends \Dsc\Mongo\Collection
      */
     public function getClass()
     {
-        static $class;
-        
-        if (!empty($class)) {
-            return $class;
-        }
-        
         $class_name = $this->namespace . '\PaymentMethod';
         if (!class_exists($class_name))
         {
@@ -225,7 +255,7 @@ class PaymentMethods extends \Dsc\Mongo\Collection
      * 
      * @return \Shop\Models\PaymentMethods
      */
-    public function addCart(\Shop\Models\Carts $cart)
+    public function addCart(\Shop\Models\Carts &$cart)
     {
         $this->__cart = $cart;
     
@@ -269,7 +299,7 @@ class PaymentMethods extends \Dsc\Mongo\Collection
      *
      * @return \Shop\Models\PaymentMethods
      */
-    public function addOrder(\Shop\Models\Orders $order)
+    public function addOrder(\Shop\Models\Orders &$order)
     {
         $this->__order = $order;
     
@@ -283,4 +313,26 @@ class PaymentMethods extends \Dsc\Mongo\Collection
     {
         return $this->__order;
     }
+    
+    /**
+     * Add a checkout to the model
+     *
+     * @param \Shop\Models\Checkout $order
+     *
+     * @return \Shop\Models\PaymentMethods
+     */
+    public function addCheckout(\Shop\Models\Checkout $checkout)
+    {
+        $this->__checkout = $checkout;
+    
+        return $this;
+    }
+    
+    /**
+     * Get the checkout
+     */
+    public function checkout()
+    {
+        return $this->__checkout;
+    }    
 }

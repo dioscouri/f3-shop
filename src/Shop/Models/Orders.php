@@ -41,6 +41,10 @@ class Orders extends \Dsc\Mongo\Collections\Taggable
     public $payment_method_id = null;
     public $payment_method_result = null;
     public $payment_method_validation_result = null;
+    public $payment_method_status = null;
+    public $payment_method_auth_id = null;
+    public $payment_method_tran_id = null;
+        
     public $billing_address = array();
     public $payments = array();             // an array of Payment models cast as arrays
     
@@ -396,8 +400,53 @@ class Orders extends \Dsc\Mongo\Collections\Taggable
         
         $method = new \Shop\Models\PaymentMethods( $this->{'payment_method'} );
         
+        /*
+        if (!$this->{'payment_method_id'})
+        {
+            return false;
+        }
+        
+        
+        $method = (new \Shop\Models\PaymentMethods)->setState('filter.identifier', $this->{'payment_method_id'})->getItem();
+        
+        if (empty($method->id))
+        {
+            $method = new \Shop\Models\PaymentMethods;
+        }
+        */        
+        
         return $method;
     }
+    
+    /**
+     *
+     */
+    public function paymentMethodStatus()
+    {
+        // TODO Allow $this->paymentmethod() to search thru the result arrays if empty
+    
+        return $this->payment_method_status;
+    }
+    
+    /**
+     *
+     */
+    public function paymentMethodAuthId()
+    {
+        // TODO Allow $this->paymentmethod() to search thru the result arrays if empty
+    
+        return $this->payment_method_auth_id;
+    }
+    
+    /**
+     *
+     */
+    public function paymentMethodTranId()
+    {
+        // TODO Allow $this->paymentmethod() to search thru the result arrays if empty
+    
+        return $this->payment_method_tran_id;
+    }    
     
     /**
      * 
