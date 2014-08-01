@@ -45,11 +45,14 @@ class CartsAbandoned extends \Shop\Models\Carts
         }
     }
     
+    /**
+     * Finds all carts that are abandoned and adds jobs for email notifications to queue manager
+     * 
+     */
     public function findNewlyAbandonedCarts(){
     	
-    	// add emails for newly abandoned carts
-    	$newly_abandoned = array( (new static)->setState( 'filter.abandoned', '1' )
-    							->setState( 'filter.abandoned_only_new', '1' )->getItem() );
+    	$newly_abandoned = (new static)->setState( 'filter.abandoned', '1' )
+    							->setState( 'filter.abandoned_only_new', '1' )->getList();
     	$settings = \Shop\Models\Settings::fetch();
     	
     	if( count( (array)$newly_abandoned ) ){
@@ -67,7 +70,7 @@ class CartsAbandoned extends \Shop\Models\Carts
     				$cart->abandoned_notifications []= new \MongoId( (string)$task->_id );
     			}
     			
-    			// save reference to those task to the cart
+    			// save reference to those task to the cart without modifying last_modified timestamp
     			$cart->collection()->update(
     					array('_id'=> new \MongoId((string) $cart->get('id') ) ),
     					$cart->cast(),
@@ -95,7 +98,6 @@ class CartsAbandoned extends \Shop\Models\Carts
     		$recipients = array( $cart->{'user_email'} );
     	}
     	
-//    	$recipients = array( 'polak.lukas90@gmail.com' );
     	$token = \Dsc\System::instance()->get('auth')->getAutoLoginToken($user, true );
     	
         \Base::instance()->set('cart', $cart);
@@ -130,5 +132,6 @@ class CartsAbandoned extends \Shop\Models\Carts
     	\Dsc\Mongo\Collections\QueueTasks::collection()->remove(
     			array('_id'=> array( '$in' =>  $ids ) )
    		);
+    	$this->abandoned_notifications = array();
     }
 }
