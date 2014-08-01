@@ -400,6 +400,21 @@ class Orders extends \Dsc\Mongo\Collections\Taggable
         
         $method = new \Shop\Models\PaymentMethods( $this->{'payment_method'} );
         
+        /*
+        if (!$this->{'payment_method_id'})
+        {
+            return false;
+        }
+        
+        
+        $method = (new \Shop\Models\PaymentMethods)->setState('filter.identifier', $this->{'payment_method_id'})->getItem();
+        
+        if (empty($method->id))
+        {
+            $method = new \Shop\Models\PaymentMethods;
+        }
+        */        
+        
         return $method;
     }
     
