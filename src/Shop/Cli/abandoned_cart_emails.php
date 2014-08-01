@@ -12,8 +12,6 @@ $app->set('APP_NAME', 'cli');
 require $app->get('PATH_ROOT') . 'config/config.php';
 
 //add a route
-//$app->route('GET /', '\Shop\Models\CartsAbandoned->findNewlyAbandonedCarts');
+$app->route('GET /', '\Shop\Models\CartsAbandoned->findNewlyAbandonedCarts');
 
-//$app->run();
-
-(new \Shop\Models\CartsAbandoned())->setState( 'filter.id', '535922a9f02e255e3558a338' )->getItem()->deleteAbandonedEmailNotifications();
+$app->run();

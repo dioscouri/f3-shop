@@ -8,6 +8,15 @@ class Cart extends \Dsc\Controller
      */
     public function read()
     {
+    	$referal_email = $this->input->get( "email", 0, 'int' );
+    	if( $referal_email ){
+    		\Dsc\Activities::track( 'User clicked on link in abandond cart email' );
+    		\Dsc\System::instance()->get('session')->set( 'shop.notification_email', 1 );
+    		
+    		$this->app->reroute( '/shop/cart' );
+    		return;
+    	}
+    	
         $cart = \Shop\Models\Carts::fetch();
         // Update product fields stored in cart
         foreach ($cart->validateProducts() as $change) {

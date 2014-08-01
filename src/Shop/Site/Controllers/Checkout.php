@@ -118,6 +118,13 @@ class Checkout extends \Dsc\Controller
                 }                
                 
                 \Shop\Models\Activities::track('Completed Checkout', $properties);
+                $abandoned_cart = \Dsc\System::instance()->get('session')->get( 'shop.notification_email' );
+                if( $abandoned_cart == 1 ){ // checkedout abandoned cart
+                	\Shop\Models\Activities::track('Completed Checkout Abandoned Email' );
+                	\Dsc\System::instance()->get('session')->set( 'shop.notification_email', 0 );
+                }
+                
+                
                 /**
                  * END Activity Tracking
                  */
@@ -423,6 +430,10 @@ class Checkout extends \Dsc\Controller
                 return;
             }        
         }
+        
+        // delete all abandoned cart notification for this order
+        $abandoned_cart = \Shop\Models\CartsAbandoned::fetchForUser();
+        $abandoned_cart->deleteAbandonedEmailNotifications();
         
         // the order WAS accepted
         // Fire an afterShopCheckout event
