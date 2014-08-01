@@ -1,7 +1,7 @@
 <?php $view_link = $SCHEME . '://' . $HOST . $BASE . '/shop/cart?email=1'; ?>
 Hi <?php echo $user->fullName(); ?>
 
-<?php echo $notification['plain']; ?>
+<?php echo $notification['text']['plain']; ?>
 
 Your cart contains:
 <?php foreach ($cart->items as $item) { ?>

@@ -431,10 +431,6 @@ class Checkout extends \Dsc\Controller
             }        
         }
         
-        // delete all abandoned cart notification for this order
-        $abandoned_cart = \Shop\Models\CartsAbandoned::fetchForUser();
-        $abandoned_cart->deleteAbandonedEmailNotifications();
-        
         // the order WAS accepted
         // Fire an afterShopCheckout event
         $event_after = new \Joomla\Event\Event( 'afterShopCheckout' );

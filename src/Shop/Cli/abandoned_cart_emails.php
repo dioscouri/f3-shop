@@ -13,5 +13,4 @@ require $app->get('PATH_ROOT') . 'config/config.php';
 
 //add a route
 $app->route('GET /', '\Shop\Models\CartsAbandoned->findNewlyAbandonedCarts');
-
 $app->run();

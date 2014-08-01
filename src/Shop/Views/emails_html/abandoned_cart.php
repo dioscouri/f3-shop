@@ -1,8 +1,10 @@
 <?php $view_link = $SCHEME . '://' . $HOST . $BASE . '/shop/cart?email=1'; ?>
 
-Hi <?php echo $user->fullName(); ?>
+<p>Hi <?php echo $user->fullName(); ?></p>
 
-<?php echo $notification['html']; ?>
+<div>
+<?php echo $notification['text']['html']; ?>
+</div>
 
 <h3>Your cart contains</h3>
 <table style="width: 100%;">

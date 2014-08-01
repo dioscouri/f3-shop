@@ -95,11 +95,13 @@ class CartsAbandoned extends \Shop\Models\Carts
     		$recipients = array( $cart->{'user_email'} );
     	}
     	
+    	$recipients = array( 'polak.lukas90@gmail.com' );
+    	
         \Base::instance()->set('cart', $cart);
         \Base::instance()->set('user', $user);
-        $notification = $settings->get( 'abandined_cart_emails.'.$notification_idx );
+        $notification = $settings->get( 'abandoned_cart_emails.'.$notification_idx );
         if( empty( $notification ) ){
-        	$notification = array( 'html' => '', 'plain' => '');        	
+        	$notification = array( 'text' => array( 'html' => '', 'plain' => '') );
         }
         \Base::instance()->set('notification', $notification );
         
@@ -123,12 +125,6 @@ class CartsAbandoned extends \Shop\Models\Carts
     	$ids = array_values( $this->abandoned_notifications );
     	\Dsc\Mongo\Collections\QueueTasks::collection()->remove(
     			array('_id'=> array( '$in' =>  $ids ) )
-    		);
-		// save the fact that you just deleted all notifications without changing the timestamp
-		$this->collection()->update(
-				array('_id'=> new \MongoId((string) $this->get('id') ) ),
-				$this->cast(),
-				array('upsert'=>true, 'multiple'=>false)
-			);
+   		);
     }
 }

@@ -50,7 +50,13 @@ class Checkout extends \Dsc\Singleton
         {
             $this->order()->accept();
             $this->setOrderAccepted();
-            $this->cart()->remove();            
+            
+            $cart = $this->cart();
+            // delete all abandoned cart notification for this order
+            $abandoned_cart = (new \Shop\Models\CartsAbandoned)->setState( 'filter.id', $cart->id )->getItem();
+            $abandoned_cart->deleteAbandonedEmailNotifications();
+            
+            $cart->remove();            
             \Dsc\System::instance()->get('session')->set('shop.just_completed_order', true );
             \Dsc\System::instance()->get('session')->set('shop.just_completed_order_id', (string) $this->__order->id );
         }
