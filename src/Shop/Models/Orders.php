@@ -160,7 +160,11 @@ class Orders extends \Dsc\Mongo\Collections\Taggable
         }
         
         $filter_financial_status = $this->getState('filter.financial_status');
-        if (strlen($filter_financial_status))
+        if (is_array($filter_financial_status))
+        {
+            $this->setCondition('financial_status', array( '$in' => $filter_financial_status ) );
+        }        
+        elseif (strlen($filter_financial_status))
         {
             $this->setCondition('financial_status', $filter_financial_status);
         }

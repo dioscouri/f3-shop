@@ -26,6 +26,8 @@ class Checkout extends \Dsc\Controller
             \Base::instance()->set('flash', $flash );
             
             $this->app->set('meta.title', 'Login or Register | Checkout');
+            
+            \Shop\Models\Activities::track('Checkout Registration Page');
                         
             $view = \Dsc\System::instance()->get( 'theme' );
             echo $view->render( 'Shop/Site/Views::checkout/identity.php' );

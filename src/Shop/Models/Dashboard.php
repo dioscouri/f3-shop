@@ -7,7 +7,7 @@ class Dashboard extends \Dsc\Models
     {
         $model = (new \Shop\Models\Orders)
             ->setState('filter.status_excludes', \Shop\Constants\OrderStatus::cancelled)
-            ->setState('filter.financial_status', \Shop\Constants\OrderFinancialStatus::paid);
+            ->setState('filter.financial_status', array( \Shop\Constants\OrderFinancialStatus::paid, \Shop\Constants\OrderFinancialStatus::authorized ) );
         
         if (!empty($start)) {
         	$model->setState('filter.created_after', $start);
@@ -179,6 +179,18 @@ class Dashboard extends \Dsc\Models
             'count' => $count,
             'perc' => $perc 
         );
+        
+        //Checkout Registration Page
+        $cart_conditions = $base_conditions + array(
+            'action' => new \MongoRegex('/Checkout Registration Page/i'),
+            'properties.app' => 'shop'
+        );
+        $count = count($model->collection()->distinct( 'actor_id', $cart_conditions ));
+        $perc = empty($total) ? 0 : number_format((($count / $total) * 100), 1) . "%";
+        $return['Checkout Registration Page'] = array(
+            'count' => $count,
+            'perc' => $perc
+        );        
         
         // Started Checkout
         $start_conditions = $base_conditions + array(
