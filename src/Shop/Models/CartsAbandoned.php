@@ -111,8 +111,9 @@ class CartsAbandoned extends \Shop\Models\Carts
         $subject = $settings->get('abandoned_cart_subject');
         $cart = (new static())->setState('filter.id', $cart_id)->getItem();
         
-        if (empty($cart_id))
-        { // cart was deleted so dont do anything
+        // cart was deleted so dont do anything
+        if (empty($cart->id))
+        {
             return;
         }
         $user = (new \Users\Models\Users())->setState('filter.id', $cart->user_id)->getItem();
