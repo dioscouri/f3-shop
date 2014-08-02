@@ -71,6 +71,7 @@ class CartsAbandoned extends \Shop\Models\Carts
         $newly_abandoned = (new static())->setState('filter.abandoned', '1')
             ->setState('filter.abandoned_only_new', '1')
             ->getList();
+        
         $settings = \Shop\Models\Settings::fetch();
         
         if (count((array) $newly_abandoned))
@@ -95,12 +96,7 @@ class CartsAbandoned extends \Shop\Models\Carts
                 }
                 
                 // save reference to those task to the cart without modifying last_modified timestamp
-                $cart->collection()->update(array(
-                    '_id' => new \MongoId((string) $cart->get('id'))
-                ), $cart->cast(), array(
-                    'upsert' => true,
-                    'multiple' => false
-                ));
+                $cart->store();
             }
         }
     }
