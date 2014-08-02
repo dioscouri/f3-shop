@@ -7,7 +7,7 @@ class Dashboard extends \Dsc\Models
     {
         $model = (new \Shop\Models\Orders)
             ->setState('filter.status_excludes', \Shop\Constants\OrderStatus::cancelled)
-            ->setState('filter.financial_status', \Shop\Constants\OrderFinancialStatus::paid);
+            ->setState('filter.financial_status', array( \Shop\Constants\OrderFinancialStatus::paid, \Shop\Constants\OrderFinancialStatus::authorized ) );
         
         if (!empty($start)) {
         	$model->setState('filter.created_after', $start);
