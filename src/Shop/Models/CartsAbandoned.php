@@ -63,7 +63,7 @@ class CartsAbandoned extends \Shop\Models\Carts
     			foreach( $notifications as $idx => $val ){
     				
     				$time = $abandoned_time + $cart->{'metadata.last_modified.time'} + $val['delay'] * 60;
-    				$task = \Dsc\Queue::task( '\\Shop\\Models\\CartsAbandoned::sendAbandonedEmailNotification', array( (string)$cart->id, $idx ), array(
+    				$task = \Dsc\Queue::task( '\Shop\Models\CartsAbandoned::sendAbandonedEmailNotification', array( (string)$cart->id, $idx ), array(
     						'title' => 'Abandoned Cart Email Notification',
     						'when' => $time,
     				) );
@@ -119,8 +119,10 @@ class CartsAbandoned extends \Shop\Models\Carts
             \Dsc\System::instance()->get('mailer')->send($recipient, $subject, array($html, $text) );
         }
         
-//		TODO: uncomment this once we figure out how to use Activities from CRON jobs        
-//        \Dsc\Activities::Track( 'Abandoned Cart Email notification sent', array( 'user' => $user->fullName()  ) );
+        \Dsc\Activities::trackActor( $user->email, 'Sent abandoned cart email notification', array(
+            'cart_value' => $cart->total(),
+            'cart_items_count' => $cart->quantity(), 
+        ) );
     }
     
     public function deleteAbandonedEmailNotifications(){
