@@ -36,6 +36,9 @@ jQuery(document).ready(function(){
                 <li>
                     <a href="#tab-order-confirmation" data-toggle="tab"> Order Confirmation </a>
                 </li>
+                <li>
+                    <a href="#tab-cart-abandonment-emails" data-toggle="tab"> Cart Abandonment Emails </a>
+                </li>
                                                 
                 <?php if (!empty($this->event)) { foreach ((array) $this->event->getArgument('tabs') as $key => $title ) { ?>
                 <li>
@@ -85,6 +88,11 @@ jQuery(document).ready(function(){
 
                 </div>
                 
+                <div class="tab-pane fade in" id="tab-cart-abandonment-emails">
+                
+                    <?php echo $this->renderLayout('Shop/Admin/Views::settings/cart_abandonment_emails.php'); ?>
+
+                </div>
                 
 
                 <?php if (!empty($this->event)) { foreach ((array) $this->event->getArgument('content') as $key => $content ) { ?>

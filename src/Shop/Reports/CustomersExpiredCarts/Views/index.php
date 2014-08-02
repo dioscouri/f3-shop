@@ -173,7 +173,7 @@
                             <?php echo date( 'Y-m-d g:i a', $item->{'metadata.last_modified.time'} ); ?>
                         </div>
                         <div class="col-sm-1">
-                            <a class="btn btn-xs btn-danger" data-bootbox="confirm" href="./admin/shop/cart/delete/<?php echo $item->id; ?>">
+                            <a class="btn btn-xs btn-danger" data-bootbox="confirm" href="./admin/shop/reports/<?php echo $report->slug; ?>/deleteCart/<?php echo $item->id; ?>">
                                 <i class="fa fa-times"></i>
                             </a>                            
                         </div>

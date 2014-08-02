@@ -25,6 +25,7 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
     );
     
     public $shipping_methods = array();    // array of \Shop\Models\ShippingMethod objects, each with a rate
+    public $abandoned_notifications = array(); // was this cart already marked as abandoned ?
     
     protected $__collection_name = 'shop.carts';
     protected $__type = 'shop.carts';
@@ -1219,6 +1220,19 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
         }
         
         return parent::beforeSave();
+    }
+    
+    protected function afterSave()
+    {
+        parent::afterSave();
+        
+        // cart has been updated,
+        // so delete all scheduled abandoned cart notifications
+        \Shop\Models\CartsAbandoned::deleteQueuedEmails( $this );
+                 
+        // and reset its array of email notifications
+        $this->abandoned_notifications = array();        
+        $this->store();
     }
     
     /**
