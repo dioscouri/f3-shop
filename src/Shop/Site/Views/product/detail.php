@@ -276,13 +276,16 @@ jQuery(document).ready(function(){
                             </div>
                         </div>
                         <div class="price-line">
-                            <?php if (((int) $product->get('prices.list') > 0) && $product->get('prices.list') != $product->price() ) { ?>
-                                <span class="list-price"><strike><?php echo \Shop\Models\Currency::format( $product->{'prices.list'} ); ?></strike></span>
+                            <?php if ($product->{'policies.hide_price'}) { ?>
+                                <div class="price"><p>Call for price.</p></div>
+                            <?php } else { ?>                        
+                                <?php if (((int) $product->get('prices.list') > 0) && $product->get('prices.list') != $product->price() ) { ?>
+                                    <span class="list-price"><strike><?php echo \Shop\Models\Currency::format( $product->{'prices.list'} ); ?></strike></span>
+                                <?php } ?>
+                                <div class="product-price">
+                                    <?php echo \Shop\Models\Currency::format( $product->price() ); ?>
+                                </div>
                             <?php } ?>
-                            <div class="product-price">
-                                <?php echo \Shop\Models\Currency::format( $product->price() ); ?>
-                            </div>
-    
                         </div>                        
                
                     </div>
