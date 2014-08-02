@@ -12,6 +12,12 @@ class CartsAbandoned extends \Shop\Models\Carts
         
         if ($filter_abandoned)
         {
+            // abandoned carts are only valid when they have items in them
+            $this->setCondition('items', array(
+                '$not' => array(
+                    '$size' => 0
+                )
+            ));
             
             if (!$or = $this->getCondition('$or'))
             {
@@ -21,14 +27,17 @@ class CartsAbandoned extends \Shop\Models\Carts
             // only users with known emails
             $or[] = array(
                 'user_email' => array(
-                    '$ne' => null
+                    '$nin' => array('', null)
                 )
             );
+            
             $or[] = array(
                 'user_id' => array(
-                    '$ne' => null
+                    '$nin' => array('', null)
                 )
             );
+            
+            $this->setCondition('$or', $or);
             
             $settings = \Shop\Models\Settings::fetch();
             $abandoned_time = $settings->get('abandoned_cart_time') * 60;
@@ -37,11 +46,11 @@ class CartsAbandoned extends \Shop\Models\Carts
             $filter_abandoned_datetime = $this->getState('filter.abandoned.datetime');
             if (!empty($filter_abandoned_datetime))
             {
-                $abandoned_time += $filter_abandoned_datetime;
+                $abandoned_time = $filter_abandoned_datetime - $abandoned_time;
             }
             else
             { // or use current timestamp
-                $abandoned_time += time();
+                $abandoned_time = time() - $abandoned_time;
             }
             
             $this->setCondition('metadata.last_modified.time', array(
@@ -52,21 +61,18 @@ class CartsAbandoned extends \Shop\Models\Carts
             $filter_only_new = $this->getState('filter.abandoned_only_new', 0);
             if ($filter_only_new)
             {
+                // TODO OR NULL
                 $this->setCondition('abandoned_notifications', array(
-                    '$not' => array(
-                        '$size' => 0
-                    )
+                    '$size' => 0
                 ));
             }
-            
-            $this->setCondition('$or', $or);
         }
     }
 
     /**
      * Finds all carts that are abandoned and adds jobs for email notifications to queue manager
      */
-    public function findNewlyAbandonedCarts()
+    public static function queueEmailsForNewlyAbandonedCarts()
     {
         $newly_abandoned = (new static())->setState('filter.abandoned', '1')
             ->setState('filter.abandoned_only_new', '1')
@@ -83,11 +89,13 @@ class CartsAbandoned extends \Shop\Models\Carts
                 $cart->abandoned_notifications = array();
                 foreach ($notifications as $idx => $val)
                 {
-                    
-                    $time = $abandoned_time + $cart->{'metadata.last_modified.time'} + $val['delay'] * 60;
+                    // scheduling should be relative to when this job runs, not the time of the cart's last modification, 
+                    // because that could lead to lots of emails at once for really old carts
+                    // if the cron job is started months after the site goes live
+                    $time = $abandoned_time + time() + $val['delay'] * 60;
                     $task = \Dsc\Queue::task('\Shop\Models\CartsAbandoned::sendAbandonedEmailNotification', array(
                         (string) $cart->id,
-                        $idx
+                        (string) $idx
                     ), array(
                         'title' => 'Abandoned Cart Email Notification',
                         'when' => $time
@@ -101,6 +109,11 @@ class CartsAbandoned extends \Shop\Models\Carts
         }
     }
 
+    /**
+     * 
+     * @param unknown $cart_id
+     * @param unknown $notification_idx
+     */
     public static function sendAbandonedEmailNotification($cart_id, $notification_idx)
     {
         $settings = \Shop\Models\Settings::fetch();
@@ -112,6 +125,15 @@ class CartsAbandoned extends \Shop\Models\Carts
         {
             return;
         }
+        
+        // Has the cart been updated recently?  if so, don't send this email
+        $abandoned_time = $settings->get('abandoned_cart_time') * 60;
+        $abandoned_time = time() - $abandoned_time;
+        if ($cart->{'metadata.last_modified.time'} > $abandoned_time) 
+        {
+            return;
+        }
+        
         $user = (new \Users\Models\Users())->setState('filter.id', $cart->user_id)->getItem();
         
         // get correct user email
@@ -159,25 +181,42 @@ class CartsAbandoned extends \Shop\Models\Carts
             ));
         }
         
-        \Dsc\Activities::trackActor($user->email, 'Sent abandoned cart email notification', array(
-            'cart_value' => $cart->total(),
-            'cart_items_count' => $cart->quantity()
+        $num = $notification_idx + 1;
+        \Dsc\Activities::trackActor($user->email, 'Received abandoned cart email notification #' . $num, array(
+            'cart_value' => (string) $cart->total(),
+            'cart_items_count' => (string) $cart->quantity()
         ));
     }
 
+    /**
+     * Delete any queued email notifications for this cart
+     */
     public function deleteAbandonedEmailNotifications()
     {
-        if (empty($this->abandoned_notifications))
+        return static::deleteQueuedEmails( $this );
+    }
+    
+    /**
+     * Delete any queued email notifications for this cart
+     * 
+     * Kinda chainable
+     */    
+    public static function deleteQueuedEmails( \Shop\Models\Carts $cart )
+    {
+        if (empty($cart->abandoned_notifications))
         {
-            return;
+            return $cart;
         }
         
-        $ids = array_values($this->abandoned_notifications);
-        \Dsc\Mongo\Collections\QueueTasks::collection()->remove(array(
-            '_id' => array(
-                '$in' => $ids
-            )
-        ));
-        $this->abandoned_notifications = array();
+        if ($ids = array_values($cart->abandoned_notifications))
+        {
+            \Dsc\Mongo\Collections\QueueTasks::collection()->remove(array(
+                '_id' => array(
+                    '$in' => $ids
+                )
+            ));
+        }
+        
+        return $cart;
     }
 }

@@ -1,5 +1,5 @@
 <?php $view_link = $SCHEME . '://' . $HOST . $BASE . '/shop/cart/'.(string)$cart->id.'?email=1&user_id='.(string)$user->id.'&idx='.$idx.'&auto_login_token='.$token; ?>
-<p>Hi <?php echo $user->fullName(); ?></p>
+<p><?php echo trim( 'Hi ' . $user->fullName() ); ?>,</p>
 
 <div>
 <?php echo $notification['text']['html']; ?>
@@ -40,4 +40,6 @@
     <?php } ?>
 </table>
 
-If you want to see your cart, click on the following <a href="<?php echo $view_link; ?>">link</a>.
+<p>To complete your purchase, click this link:<br/><a href="<?php echo $view_link; ?>"><?php echo $view_link; ?></a>.</p>
+
+<p>Thanks!</p>

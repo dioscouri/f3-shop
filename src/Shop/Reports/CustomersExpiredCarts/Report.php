@@ -9,6 +9,7 @@ class Report extends \Shop\Abstracts\Report
         
         // Register any custom routes that the report needs
         $this->app->route( 'GET /admin/shop/reports/'.$this->slug().'/purge-expired', '\\' . __CLASS__ . '->purgeExpired' );
+        $this->app->route( 'GET /admin/shop/reports/'.$this->slug().'/deleteCart/@cart_id', '\\' . __CLASS__ . '->deleteCart' );
         
         return parent::bootstrap();
     }
@@ -61,4 +62,34 @@ class Report extends \Shop\Abstracts\Report
         
         $this->app->reroute( '/admin/shop/reports/' . $this->slug() );
     }
+    
+    /**
+     * Purge expired carts
+     *
+     */
+    public function deleteCart()
+    {
+        $cart_id = $this->app->get('PARAMS.cart_id');
+        
+        $item = (new \Shop\Models\Carts)->setState('filter.id', $cart_id)->getItem();
+        if (!empty($item->id)) 
+        {
+            try {
+                $item->remove();
+                \Dsc\System::addMessage( 'Removed cart', 'success' );
+            }
+            catch(\Exception $e) {
+                \Dsc\System::addMessage( 'Could not remove cart', 'error' );
+                \Dsc\System::addMessage( $e->getMessage(), 'error' );
+            }
+        }
+         
+        else 
+        {
+            \Dsc\System::addMessage( 'Invalid Cart ID', 'error' );
+        }
+
+    
+        $this->app->reroute( '/admin/shop/reports/' . $this->slug() );
+    }    
 }

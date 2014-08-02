@@ -1222,6 +1222,19 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
         return parent::beforeSave();
     }
     
+    protected function afterSave()
+    {
+        parent::afterSave();
+        
+        // cart has been updated,
+        // so delete all scheduled abandoned cart notifications
+        \Shop\Models\CartsAbandoned::deleteQueuedEmails( $this );
+                 
+        // and reset its array of email notifications
+        $this->abandoned_notifications = array();        
+        $this->store();
+    }
+    
     /**
      * Converts a cart to an Order
      * 
