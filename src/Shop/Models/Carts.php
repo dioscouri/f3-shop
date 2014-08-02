@@ -25,7 +25,7 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
     );
     
     public $shipping_methods = array();    // array of \Shop\Models\ShippingMethod objects, each with a rate
-    public $abandoned_notifications = array(); // was this cart already marked as abandoned ?
+    public $abandoned_notifications = array(); // an array of \Dsc\Mongo\QueueTask ids, each one is a future-scheduled (or already-sent) notification email
     
     protected $__collection_name = 'shop.carts';
     protected $__type = 'shop.carts';
