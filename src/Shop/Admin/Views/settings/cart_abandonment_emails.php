@@ -3,12 +3,12 @@
 
 <div class="form-group">
     <label>Abandonment Cart Time Limit <small>(in minutes)</small></label>
-    <input type="text" class="form-control" value="<?php echo $flash->old('abandoned_cart_time')?>" placeholder="For example, 10 as in 10 minutes" />
+    <input name="abandoned_cart_time" type="text" class="form-control" value="<?php echo $flash->old('abandoned_cart_time')?>" placeholder="For example, 10 as in 10 minutes" />
 
     </div>
 <div class="form-group">
     <label>Abandonment Cart Email Subject</label>
-    <input type="text" class="form-control" value="<?php echo $flash->old('abandoned_cart_subject')?>" placeholder="Subject for all abandoned cart notification emails" />
+    <input name="abandoned_cart_subject" type="text" class="form-control" value="<?php echo $flash->old('abandoned_cart_subject')?>" placeholder="Subject for all abandoned cart notification emails" />
 </div>
 
 <hr />
