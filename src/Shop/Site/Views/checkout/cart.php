@@ -126,10 +126,12 @@
                             
             </tbody>
             <tfoot>
-                <td><div class="strong">
-                        Total<?php if (!$shippingMethod = $cart->shippingMethod()) { ?> <small>(est)</small> <?php } ?>:
-                    </div></td>
-                <td><div class="price"><?php echo \Shop\Models\Currency::format( $cart->total() ); ?></div></td>
+                <tr>
+                    <td><div class="strong">
+                            Total<?php if (!$shippingMethod = $cart->shippingMethod()) { ?> <small>(est)</small> <?php } ?>:
+                        </div></td>
+                    <td><div class="price"><?php echo \Shop\Models\Currency::format( $cart->total() ); ?></div></td>
+                </tr>
             </tfoot>
         </table>
     </div>

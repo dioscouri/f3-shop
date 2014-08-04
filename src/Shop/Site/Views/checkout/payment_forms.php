@@ -91,7 +91,7 @@ jQuery(document).ready(function(){
     jQuery('#checkout-payment-form').on('submit.shop', function(ev){
         var el = jQuery(this);
 
-        selected_payment_method = el.find('input[name=payment_method]:checked').val();
+        var selected_payment_method = el.find('input[name=payment_method]:checked').val();
         var checkout_payment_validation = new ShopValidation('.payment-method-formfields[data-method="'+selected_payment_method+'"]');
         if (!checkout_payment_validation.validateForm()) {
             window.checkout_payment_validated = false;
