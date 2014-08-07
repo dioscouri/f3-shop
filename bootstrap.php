@@ -85,6 +85,7 @@ class ShopBootstrap extends \Dsc\Bootstrap
             'identifier'=>'omnipay.cybersource',
         ));        
         
+        static::diagnostics();
     }
 
     protected function preSite()
@@ -140,6 +141,27 @@ class ShopBootstrap extends \Dsc\Bootstrap
                 $cart->store();
             }
         }
+        
+        static::diagnostics();
+    }
+    
+    public static function diagnostics()
+    {
+        $settings = \Shop\Models\Settings::fetch();
+        
+        // TODO When did we last pull down the currency list?
+        if (empty($settings->currencies_last_refreshed) || $settings->currencies_last_refreshed < time() - 24*60) 
+        {
+            \Dsc\Queue::task('\Shop\Models\Currencies::refresh', array(), array(
+                'title' => 'Refresh currencies from OpenExchangeRates.org'
+            ));
+        }
+        
+        // TODO When did we last pull down the exchange rates?
+        if (empty($settings->exchangerates_last_refreshed) || $settings->exchangerates_last_refreshed < time() - 24*60)
+        {
+        
+        }        
     }
 }
 

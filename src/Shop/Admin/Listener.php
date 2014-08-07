@@ -248,6 +248,11 @@ class Listener extends \Prefab
                         'icon' => 'fa fa-money'
                 	),
                     array(
+                        'title' => 'Currencies',
+                        'route' => '/admin/shop/settings/currencies',
+                        'icon' => 'fa fa-money'
+                    ),                    
+                    array(
                         'title' => 'Notifications',
                         'route' => '/admin/shop/settings/notifications',
                         'icon' => 'fa fa-envelope'
@@ -256,7 +261,7 @@ class Listener extends \Prefab
                         'title' => 'Feeds',
                         'route' => '/admin/shop/settings/feeds',
                         'icon' => 'fa fa-rss'
-                    ),                    
+                    ),
                 );
                 
                 $settings_item->addChildren($settings_children);

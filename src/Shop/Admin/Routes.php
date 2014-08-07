@@ -257,6 +257,11 @@ class Routes extends \Dsc\Routes\Group
             'controller' => 'Settings',
             'action' => 'feeds'
         ));
+        
+        $this->add('/settings/currencies', 'GET|POST', array(
+            'controller' => 'Settings',
+            'action' => 'currencies'
+        ));        
 
         $this->addCrudGroup('OrderFailures', 'OrderFailure');
         

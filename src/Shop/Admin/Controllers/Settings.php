@@ -128,4 +128,28 @@ class Settings extends \Admin\Controllers\BaseAuth
         echo $this->theme->render('Shop/Admin/Views::settings/feeds.php');
     }    
     
+    public function currencies()
+    {
+        $this->settings_route = '/admin/shop/settings/currencies';
+    
+        switch ($this->app->get('VERB'))
+        {
+            case "POST":
+            case "post":
+                // do the save and redirect to $this->settings_route
+                return $this->save();
+                break;
+        }
+    
+        $flash = \Dsc\Flash::instance();
+        $this->app->set('flash', $flash );
+    
+        $settings = \Shop\Models\Settings::fetch();
+        $flash->store( $settings->cast() );
+    
+        $this->app->set('meta.title', 'Currencies | Shop');
+    
+        echo $this->theme->render('Shop/Admin/Views::settings/currencies.php');
+    }    
+    
 }
