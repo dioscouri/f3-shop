@@ -59,6 +59,8 @@ class Orders extends \Dsc\Mongo\Collections\Taggable
     // internal log of changes to the order
     public $history = array();
     
+    public $source = array(); // id, title, description of the source of this order, all free text
+    
     // TODO Add support for recurring charges products
     //public $recurring = array(
         // enabled => null,         // boolean, is there a trial period or no?                    
@@ -236,6 +238,14 @@ class Orders extends \Dsc\Mongo\Collections\Taggable
                     $all_fulfilled = false;
                 }
             }        	
+        }
+        
+        if (empty($this->source)) 
+        {
+        	$this->source = array(
+        		'id' => 'shop',
+        	    'title' => 'Online'
+        	);
         }
         
         return parent::beforeSave();
