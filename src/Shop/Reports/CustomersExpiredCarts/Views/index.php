@@ -141,10 +141,11 @@
                         <div class="col-sm-4">
                             <?php if (!empty($item->user_id)) { ?>
                                 <div><?php echo $item->user()->fullName(); ?> <span class="label label-success">Registered User</span></div>
-                                <div><?php echo $item->user()->email; ?></div>
+                                <p><?php echo $item->user()->email; ?></p>
                             <?php } else { ?>
-                                <div><?php echo $item->user_email; ?> <span class="label label-warning">Session Cart</span></div>
+                                <p><?php echo $item->user_email; ?> <span class="label label-warning">Session Cart</span></p>
                             <?php } ?>
+                            <div><label>Cart ID:</label> <?php echo $item->id; ?></div>
                         </div>
                         <div class="col-sm-2">
                             <p>Total: <?php echo count($item->items); ?></p>

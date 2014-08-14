@@ -461,8 +461,8 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
                 $this->items[$key]['product'] = $cast;
             }
             
-            // TODO Has the price changed?  If so, update the cart and add message to $return
-            
+            // Has the price changed?  If so, update the cart
+            $this->items[$key]['price'] = $product->price( $variant_id );
         }
         
         if ($change) {

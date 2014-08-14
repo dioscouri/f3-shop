@@ -50,6 +50,7 @@
             <div class="row">
                 <div class="form-group col-xs-12 col-sm-12 col-md-6">
                     <select class="form-control region" data-required="true" name="checkout[shipping_address][region]" id="shipping-region" autocomplete="region">
+                    <option value=""> - Please Select - </option>
                     <?php foreach (\Shop\Models\Regions::byCountry( $cart->shippingCountry() ) as $region) { ?>
                         <option value="<?php echo $region->code; ?>" <?php if ($cart->{'checkout.shipping_address.region'} == $region->code) { echo "selected"; } ?>><?php echo $region->name; ?></option>
                     <?php } ?>
@@ -118,6 +119,7 @@ jQuery(document).ready(function(){
             var lr = jQuery.parseJSON( JSON.stringify(data), false);
             if (lr.result) {
                 regions.find('option').remove();
+                regions.append(jQuery("<option></option>").text(jQuery('<span>').html('- Please Select -').text()).val(''));
                 var count = lr.result.length;
                 var n = 0;
                 jQuery.each(lr.result, function(index,value){

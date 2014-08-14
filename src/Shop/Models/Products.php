@@ -1170,9 +1170,9 @@ class Products extends \Dsc\Mongo\Collections\Content
         	foreach( $user->groups() as $group ){
         		$settings_override = $settings->exists( 'special_group_default_prices.'.$group['slug'] );
         		if( $settings_override ){ // found it, so get the correct number and leave
-        			$type_price = 'sale';
-        			if( empty( $this->{'prices.list'} ) ) {
-        				$type_price = 'regular';
+        		    $type_price = 'regular';
+        			if (!empty($this->{'prices.list'})) {
+        				$type_price = 'sale';
         			}
         			$settings_price_override = 'special_group_default_prices.'.$group['slug'].'.'.$type_price;
         			break;
@@ -1195,6 +1195,7 @@ class Products extends \Dsc\Mongo\Collections\Content
         }
         
         // adjust price based on date ranges too
+        $using_special_price = false;
         $now = strtotime('now');
         $today = date('Y-m-d', $now);
         foreach ((array) $this->{'prices.special'} as $special_price) 
@@ -1205,12 +1206,15 @@ class Products extends \Dsc\Mongo\Collections\Content
         		  && (empty($special_price['end']['time']) || $special_price['end']['time'] > $now )
                 ) {
         			$price = $special_price['price'];
+        			$using_special_price = true;
         			break;
         		}
         	}
         }
         
-        if( $settings_override ){
+        // don't discount special prices
+        if (!$using_special_price && $settings_override)
+        {
         	$ratio = 1.0 - ((float)$settings->{$settings_price_override} / 100.0);
         	$price = $price * $ratio;
         }
