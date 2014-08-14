@@ -7,7 +7,7 @@ jQuery(document).ready(function(){
 
 <div class="well">
 
-<form id="settings-form" role="form" method="post" class="form-horizontal clearfix">
+<form id="settings-form" role="form" method="post" class="clearfix">
 
     <div class="clearfix">
         <button type="submit" class="btn btn-primary pull-right">Save Changes</button>

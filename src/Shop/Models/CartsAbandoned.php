@@ -74,15 +74,25 @@ class CartsAbandoned extends \Shop\Models\Carts
      */
     public static function queueEmailsForNewlyAbandonedCarts()
     {
+        $settings = \Shop\Models\Settings::fetch();
+        
+        if (empty($settings->abandoned_cart_emails_enabled)) 
+        {
+            return;
+        }
+        
+        $notifications = (array) $settings->get('abandoned_cart_emails');
+        if (empty($notifications)) 
+        {
+            return;
+        }
+        
         $newly_abandoned = (new static())->setState('filter.abandoned', '1')
             ->setState('filter.abandoned_only_new', '1')
             ->getList();
         
-        $settings = \Shop\Models\Settings::fetch();
-        
         if (count((array) $newly_abandoned))
         {
-            $notifications = (array) $settings->get('abandoned_cart_emails');
             $abandoned_time = $settings->get('abandoned_cart_time') * 60;
             foreach ($newly_abandoned as $cart)
             {
@@ -117,6 +127,11 @@ class CartsAbandoned extends \Shop\Models\Carts
     public static function sendAbandonedEmailNotification($cart_id, $notification_idx)
     {
         $settings = \Shop\Models\Settings::fetch();
+        if (empty($settings->abandoned_cart_emails_enabled))
+        {
+            return;
+        }
+                
         $subject = $settings->get('abandoned_cart_subject');
         $cart = (new static())->setState('filter.id', $cart_id)->getItem();
         

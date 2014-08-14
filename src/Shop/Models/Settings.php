@@ -75,6 +75,7 @@ class Settings extends \Dsc\Mongo\Collections\Settings
     
     public $abandoned_cart_time = 60;
     public $abandoned_cart_subject = 'Complete your purchase';
+    public $abandoned_cart_emails_enabled = 0;
     
     public $abandoned_cart_emails = array();
     

@@ -2,6 +2,18 @@
 <hr />
 
 <div class="form-group">
+    <label>Enable 'Abandoned Cart' emails?</label>
+    <div class="input-group">
+        <label class="radio-inline">
+            <input type="radio" name="abandoned_cart_emails_enabled" value="0" <?php if ($flash->old('abandoned_cart_emails_enabled') == 0) { echo "checked"; } ?>> No
+        </label>
+        <label class="radio-inline">
+            <input type="radio" name="abandoned_cart_emails_enabled" value="1" <?php if ($flash->old('abandoned_cart_emails_enabled') == 1) { echo "checked"; } ?>> Yes
+        </label>
+    </div>
+</div>
+
+<div class="form-group">
     <label>Abandonment Cart Time Limit <small>(in minutes)</small></label>
     <input name="abandoned_cart_time" type="text" class="form-control" value="<?php echo $flash->old('abandoned_cart_time')?>" placeholder="For example, 10 as in 10 minutes" />
     <p class="help-block">How long must a cart be idle before it is considered abandoned?</p>
@@ -30,24 +42,21 @@
 						<i class="fa fa-times"></i>
 					</a>
 				</div>
-				<div class="col-lg-12 col-xs-12">
-					<div class="form-group clearfix">
-						<label>Time Delay <small>(in minutes)</small></label>
-						<input type="text" value="<?php echo $flash->old( 'abandoned_cart_emails.'.$key.'.delay' ); ?>" name="abandoned_cart_emails[<?php echo $key; ?>][delay]" class="form-control" placeholder="Time delay since the cart was abandoned in minutes" />
-						<p class="help-block">How many minutes should we wait after the cart is abandoned before sending this email?</p>
-					</div>
+				
+				<div class="form-group clearfix">
+					<label>Time Delay <small>(in minutes)</small></label>
+					<input type="text" value="<?php echo $flash->old( 'abandoned_cart_emails.'.$key.'.delay' ); ?>" name="abandoned_cart_emails[<?php echo $key; ?>][delay]" class="form-control" placeholder="Time delay since the cart was abandoned in minutes" />
+					<p class="help-block">How many minutes should we wait after the cart is abandoned before sending this email?</p>
 				</div>
-				<div class="col-lg-12 col-xs-12">
-					<div class="form-group clearfix">
-						<label>Email plain text version</label>
-			            <textarea name="abandoned_cart_emails[<?php echo $key; ?>][text][plain]" class="form-control" rows="4"><?php echo $flash->old( 'abandoned_cart_emails.'.$key.'.text.plain' ); ?></textarea>
-					</div>
+				
+				<div class="form-group clearfix">
+					<label>Email plain text version</label>
+		            <textarea name="abandoned_cart_emails[<?php echo $key; ?>][text][plain]" class="form-control" rows="4"><?php echo $flash->old( 'abandoned_cart_emails.'.$key.'.text.plain' ); ?></textarea>
 				</div>
-				<div class="col-lg-12 col-xs-12">
-					<div class="form-group clearfix">
-						<label>Email HTML version</label>
-			            <textarea name="abandoned_cart_emails[<?php echo $key; ?>][text][html]" class="form-control wysiwyg"><?php echo $flash->old( 'abandoned_cart_emails.'.$key.'.text.html' ); ?></textarea>
-					</div>
+				
+				<div class="form-group clearfix">
+					<label>Email HTML version</label>
+		            <textarea name="abandoned_cart_emails[<?php echo $key; ?>][text][html]" class="form-control wysiwyg"><?php echo $flash->old( 'abandoned_cart_emails.'.$key.'.text.html' ); ?></textarea>
 				</div>
 			</div>
  <?php } ?>
@@ -61,23 +70,20 @@
 						<i class="fa fa-times"></i>
 					</a>
 				</div>
-				<div class="col-lg-12 col-xs-12">
-					<div class="form-group clearfix">
-						<label>Time Delay <small>(in minutes)</small></label>
-						<input type="text" value="" name="abandoned_cart_emails[{id}][delay]" class="form-control" placeholder="Time delay since the cart was abandoned in minutes" />
-					</div>
+				
+				<div class="form-group clearfix">
+					<label>Time Delay <small>(in minutes)</small></label>
+					<input type="text" value="" name="abandoned_cart_emails[{id}][delay]" class="form-control" placeholder="Time delay since the cart was abandoned in minutes" />
 				</div>
-				<div class="col-lg-12 col-xs-12">
-					<div class="form-group clearfix">
-						<label>Email plain text version</label>
-			            <textarea name="abandoned_cart_emails[{id}][text][plain]" class="form-control" rows="4"></textarea>
-					</div>
+				
+				<div class="form-group clearfix">
+					<label>Email plain text version</label>
+		            <textarea name="abandoned_cart_emails[{id}][text][plain]" class="form-control" rows="4"></textarea>
 				</div>
-				<div class="col-lg-12 col-xs-12">
-					<div class="form-group clearfix">
-						<label>Email HTML version</label>
-			            <textarea name="abandoned_cart_emails[{id}][text][html]" class="form-control wysiwyg"></textarea>
-					</div>
+				
+				<div class="form-group clearfix">
+					<label>Email HTML version</label>
+		            <textarea name="abandoned_cart_emails[{id}][text][html]" class="form-control wysiwyg"></textarea>
 				</div>
 			</div>
         </template>
