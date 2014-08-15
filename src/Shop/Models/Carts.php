@@ -27,6 +27,9 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
     public $shipping_methods = array();    // array of \Shop\Models\ShippingMethod objects, each with a rate
     public $abandoned_notifications = array(); // an array of \Dsc\Mongo\QueueTask ids, each one is a future-scheduled (or already-sent) notification email
     
+    public $items_count = 0;
+    public $quantity = 0;
+    
     protected $__collection_name = 'shop.carts';
     protected $__type = 'shop.carts';
     protected $__config = array(
@@ -1218,6 +1221,9 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
         	$this->session_id = null;
         	$this->user_email = $this->user()->email;
         }
+        
+        $this->quantity = $this->quantity();
+        $this->items_count = count($this->items);
         
         return parent::beforeSave();
     }
