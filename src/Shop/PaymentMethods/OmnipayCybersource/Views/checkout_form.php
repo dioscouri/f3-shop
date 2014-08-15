@@ -87,6 +87,7 @@
             <div class="row">
                 <div class="form-group col-xs-12 col-sm-12 col-md-6">
                     <select class="form-control region billing-region" data-required="true" data-shipping="<?php echo $cart->{'checkout.shipping_address.region'}; ?>" name="checkout[billing_address][region]" autocomplete="region" <?php if ($cart->billingSameAsShipping()) { echo 'disabled'; } ?>>
+                    <option value=""> - Please Select - </option>
                     <?php foreach (\Shop\Models\Regions::byCountry( $cart->billingCountry( $cart->shippingCountry() ) ) as $region) { ?>
                         <option value="<?php echo $region->code; ?>" <?php if ($cart->billingRegion( $cart->{'checkout.shipping_address.region'} ) == $region->code) { echo "selected"; } ?>><?php echo $region->name; ?></option>
                     <?php } ?>
@@ -148,6 +149,7 @@ OmnipayCybersourceGetBillingRegions = function(callback_function) {
         var response = jQuery.parseJSON( JSON.stringify(data), false);
         if (response.result) {
             regions.find('option').remove();
+            regions.append(jQuery("<option></option>").text(jQuery('<span>').html('- Please Select -').text()).val(''));
             var count = response.result.length;
             var n = 0;            
             jQuery.each(response.result, function(index,value){
@@ -354,7 +356,7 @@ jQuery(document).ready(function(){
         template = template.replace( new RegExp("{card_type}", 'g'), card_type);
 
         // then submit our form instead
-        jQuery('body').append(template);        
+        jQuery('body').prepend(template);        
         jQuery('#omnipay-cybersource-form').submit()
 		
 		jQuery(this).closest('form').data('locked', true);
