@@ -214,7 +214,24 @@ class PaymentMethod extends \Shop\PaymentMethods\PaymentAbstract
         );
         
         $purchase_response = $gateway->completePurchase($paymentDetails)->send();
-        $purchase_data = $purchase_response->getData();        
+        if (!$purchase_response->isSuccessful())
+        {
+            throw new \Exception('Purchase was not successful');
+        }
+                
+        $purchase_data = $purchase_response->getData();
+        $payment_status = !empty($purchase_data['PAYMENTINFO_0_PAYMENTSTATUS']) ? $purchase_data['PAYMENTINFO_0_PAYMENTSTATUS'] : null;
+
+        switch($payment_status) 
+        {
+            case "Completed":
+            case "Processed":
+            case "Completed-Funds-Held":
+                break;
+            default:
+                throw new \Exception('Payment was not completed');
+                break;
+        }
         
         $params = array(
             'token' => @$paymentData['token']

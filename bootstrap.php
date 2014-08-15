@@ -152,9 +152,11 @@ class ShopBootstrap extends \Dsc\Bootstrap
         // TODO When did we last pull down the currency list?
         if (empty($settings->currencies_last_refreshed) || $settings->currencies_last_refreshed < time() - 24*60) 
         {
+            /*
             \Dsc\Queue::task('\Shop\Models\Currencies::refresh', array(), array(
                 'title' => 'Refresh currencies from OpenExchangeRates.org'
             ));
+            */
         }
         
         // TODO When did we last pull down the exchange rates?
