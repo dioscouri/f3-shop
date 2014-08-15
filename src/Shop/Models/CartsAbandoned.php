@@ -96,25 +96,28 @@ class CartsAbandoned extends \Shop\Models\Carts
             $abandoned_time = $settings->get('abandoned_cart_time') * 60;
             foreach ($newly_abandoned as $cart)
             {
-                $cart->abandoned_notifications = array();
-                foreach ($notifications as $idx => $val)
+                if ($cart->quantity() > 0) 
                 {
-                    // scheduling should be relative to when this job runs, not the time of the cart's last modification, 
-                    // because that could lead to lots of emails at once for really old carts
-                    // if the cron job is started months after the site goes live
-                    $time = $abandoned_time + time() + $val['delay'] * 60;
-                    $task = \Dsc\Queue::task('\Shop\Models\CartsAbandoned::sendAbandonedEmailNotification', array(
-                        (string) $cart->id,
-                        (string) $idx
-                    ), array(
-                        'title' => 'Abandoned Cart Email Notification',
-                        'when' => $time
-                    ));
-                    $cart->abandoned_notifications[] = new \MongoId((string) $task->_id);
+                    $cart->abandoned_notifications = array();
+                    foreach ($notifications as $idx => $val)
+                    {
+                        // scheduling should be relative to when this job runs, not the time of the cart's last modification,
+                        // because that could lead to lots of emails at once for really old carts
+                        // if the cron job is started months after the site goes live
+                        $time = $abandoned_time + time() + $val['delay'] * 60;
+                        $task = \Dsc\Queue::task('\Shop\Models\CartsAbandoned::sendAbandonedEmailNotification', array(
+                            (string) $cart->id,
+                            (string) $idx
+                        ), array(
+                            'title' => 'Abandoned Cart Email Notification',
+                            'when' => $time
+                        ));
+                        $cart->abandoned_notifications[] = new \MongoId((string) $task->_id);
+                    }
+                    
+                    // save reference to those task to the cart without modifying last_modified timestamp
+                    $cart->store();
                 }
-                
-                // save reference to those task to the cart without modifying last_modified timestamp
-                $cart->store();
             }
         }
     }
@@ -145,6 +148,11 @@ class CartsAbandoned extends \Shop\Models\Carts
         $abandoned_time = $settings->get('abandoned_cart_time') * 60;
         $abandoned_time = time() - $abandoned_time;
         if ($cart->{'metadata.last_modified.time'} > $abandoned_time) 
+        {
+            return;
+        }
+        
+        if ($cart->quantity() == 0) 
         {
             return;
         }
