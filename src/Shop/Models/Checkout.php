@@ -24,9 +24,9 @@ class Checkout extends \Dsc\Singleton
      * 
      * @return \Shop\Models\Checkout
      */
-    public function createOrder()
+    public function createOrder($refresh=false)
     {
-        if (!empty($this->__order))
+        if (!empty($this->__order) && empty($refresh))
         {
              return $this;
         }
@@ -65,11 +65,11 @@ class Checkout extends \Dsc\Singleton
     /**
      * 
      */
-    public function order()
+    public function order($refresh=false)
     {
-        if (empty($this->__order))
+        if (empty($this->__order) || $refresh)
         {
-            $this->createOrder();
+            $this->createOrder($refresh);
         }
                 
         return $this->__order;

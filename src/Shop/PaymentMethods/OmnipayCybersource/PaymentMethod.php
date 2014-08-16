@@ -421,14 +421,17 @@ class PaymentMethod extends \Shop\PaymentMethods\PaymentAbstract
         // Verify the cart ID
         if (!\Dsc\Mongo\Collection::isValidId($cart_id))
         {
-            throw new \Exception('Payment transaction has an invalid cart');
+            throw new \Exception('Payment transaction has an invalid cart ID');
         }
         
-        $cart = $cart->setState('filter.id', $cart_id)->getItem();
-        if (empty($cart->id) || (string) $cart->id != (string) $cart_id)
+        $cart = (new \Shop\Models\Carts)->setState('filter.id', $cart_id)->getItem();
+        if (empty($cart->id))
         {
-            throw new \Exception('Payment transaction not associated with this cart');
+            throw new \Exception('Payment transaction has an unrecognized cart ID');
         }        
+        
+        $checkout->addCart($cart);
+        $order = $checkout->order(true);
         
         $data = $response->getData();
         

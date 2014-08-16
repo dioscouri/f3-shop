@@ -321,7 +321,7 @@ class PaymentMethods extends \Dsc\Mongo\Collection
      *
      * @return \Shop\Models\PaymentMethods
      */
-    public function addCheckout(\Shop\Models\Checkout $checkout)
+    public function addCheckout(\Shop\Models\Checkout &$checkout)
     {
         $this->__checkout = $checkout;
     
