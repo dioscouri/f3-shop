@@ -164,7 +164,7 @@ OmnipayCybersourceGetBillingRegions = function(callback_function) {
         }
     });
 
-    var selected = el.find('option:selected');
+    var selected = billing_country.find('option:selected');
     var requires_postal_code = selected.attr('data-requires_postal_code');
     var postal_code = pm.find('.billing-postal_code');
     if (requires_postal_code == 0) {            
@@ -276,6 +276,14 @@ jQuery(document).ready(function(){
             return true;
         }        
 
+        // push the billing address into the cart
+        var form_data = pm.find('.billing-address').find('*').filter(":input").serializeArray();
+        var request = jQuery.ajax({
+            type: 'post', 
+            url: './shop/checkout/update',
+            data: form_data
+        });        
+        
         var name_arr = pm.find('.billing-name').val().split(" ");
         var bill_to_surname = name_arr.pop();
         var bill_to_forename = name_arr.join(" ");
