@@ -1030,7 +1030,10 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
     
         $this->total_sales = 0;
     
-        $conditions = (new \Shop\Models\Orders)->setState('filter.coupon_id', $this->id)->setState('filter.financial_status', \Shop\Constants\OrderFinancialStatus::paid)->conditions();
+        $conditions = (new \Shop\Models\Orders)
+        ->setState('filter.coupon_id', $this->id)
+        ->setState('filter.financial_status', array( \Shop\Constants\OrderFinancialStatus::paid, \Shop\Constants\OrderFinancialStatus::authorized ) )
+        ->conditions();
     
         $agg = \Shop\Models\Orders::collection()->aggregate(array(
             array(
@@ -1063,7 +1066,8 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
     {
         $model = (new \Shop\Models\Orders)
         ->setState('filter.coupon_id', $this->id)
-        ->setState('filter.financial_status', \Shop\Constants\OrderFinancialStatus::paid);
+        ->setState('filter.financial_status', array( \Shop\Constants\OrderFinancialStatus::paid, \Shop\Constants\OrderFinancialStatus::authorized ) )
+        ;
     
         if (!empty($start)) {
             $model->setState('filter.created_after', $start);
@@ -1111,7 +1115,11 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
     
         $this->count_sales = 0;
     
-        $conditions = (new \Shop\Models\Orders)->setState('filter.coupon_id', $this->id)->setState('filter.status_excludes', \Shop\Constants\OrderStatus::cancelled)->setState('filter.financial_status', \Shop\Constants\OrderFinancialStatus::paid)->conditions();
+        $conditions = (new \Shop\Models\Orders)
+        ->setState('filter.coupon_id', $this->id)
+        ->setState('filter.status_excludes', \Shop\Constants\OrderStatus::cancelled)
+        ->setState('filter.financial_status', array( \Shop\Constants\OrderFinancialStatus::paid, \Shop\Constants\OrderFinancialStatus::authorized ) )
+        ->conditions();
     
         $this->count_sales = \Shop\Models\Orders::collection()->count( $conditions );
         
@@ -1131,7 +1139,8 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
     {
         $model = (new \Shop\Models\Orders)
         ->setState('filter.coupon_id', $this->id)
-        ->setState('filter.financial_status', \Shop\Constants\OrderFinancialStatus::paid);
+        ->setState('filter.financial_status', array( \Shop\Constants\OrderFinancialStatus::paid, \Shop\Constants\OrderFinancialStatus::authorized ) )
+        ;
     
         if (!empty($start)) {
             $model->setState('filter.created_after', $start);
