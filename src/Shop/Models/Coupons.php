@@ -1032,6 +1032,7 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
     
         $conditions = (new \Shop\Models\Orders)
         ->setState('filter.coupon_id', $this->id)
+        ->setState('filter.status_excludes', \Shop\Constants\OrderStatus::cancelled)
         ->setState('filter.financial_status', array( \Shop\Constants\OrderFinancialStatus::paid, \Shop\Constants\OrderFinancialStatus::authorized ) )
         ->conditions();
     
@@ -1066,6 +1067,7 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
     {
         $model = (new \Shop\Models\Orders)
         ->setState('filter.coupon_id', $this->id)
+        ->setState('filter.status_excludes', \Shop\Constants\OrderStatus::cancelled)
         ->setState('filter.financial_status', array( \Shop\Constants\OrderFinancialStatus::paid, \Shop\Constants\OrderFinancialStatus::authorized ) )
         ;
     
@@ -1139,6 +1141,7 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
     {
         $model = (new \Shop\Models\Orders)
         ->setState('filter.coupon_id', $this->id)
+        ->setState('filter.status_excludes', \Shop\Constants\OrderStatus::cancelled)
         ->setState('filter.financial_status', array( \Shop\Constants\OrderFinancialStatus::paid, \Shop\Constants\OrderFinancialStatus::authorized ) )
         ;
     
