@@ -45,6 +45,36 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
         
         $this->setCondition( 'type', $this->__type );
         
+        $filter_keyword = $this->getState('filter.keyword');
+        if ($filter_keyword&&is_string($filter_keyword))
+        {
+            $key = new \MongoRegex('/'.$filter_keyword.'/i');
+        
+            $where = array();
+        
+            $regex = '/^[0-9a-z]{24}$/';
+            if (preg_match($regex, (string) $filter_keyword))
+            {
+                $where[] = array(
+                    '_id' => new \MongoId((string) $filter_keyword)
+                );
+                $where[] = array(
+                    'user_id' => new \MongoId((string) $filter_keyword)
+                );                
+            }
+            $where[] = array(
+                'user_email' => $key
+            );
+            $where[] = array(
+                'items.product.title' => $key
+            );
+            $where[] = array(
+                'items.sku' => $key
+            );
+        
+            $this->setCondition('$or', $where);
+        }        
+        
         $filter_user = $this->getState('filter.user');
         if (strlen($filter_user))
         {
