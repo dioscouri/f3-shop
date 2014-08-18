@@ -205,7 +205,9 @@
                                 <small>Price</small>
                             </div>
                             <div class="col-xs-3 col-sm-3 col-md-3">
+                                <?php /* ?>
                                 <small>Status</small>
+                                */ ?>
                             </div>
                         </div>
                     </legend>        
@@ -230,7 +232,7 @@
                                 <?php echo \Shop\Models\Currency::format( $quantity * $price ); ?>
                             </div>
                             <div class="col-xs-3 col-sm-3 col-md-3">
-        
+                                <?php /* ?>
                                 <?php switch(\Dsc\ArrayHelper::get($item, 'fulfillment_status')) {
                                 	case \Shop\Constants\OrderFulfillmentStatus::fulfilled:
                                 	    $label_class = 'label-default';
@@ -248,6 +250,7 @@
                                 <span class="label <?php echo $label_class; ?>">
                                 <?php echo \Dsc\ArrayHelper::get($item, 'fulfillment_status', 'n/a'); ?>
                                 </span>
+                                */ ?>
                                                             
                             </div>                            
                         </div>        
