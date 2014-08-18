@@ -163,7 +163,12 @@ class Listener extends \Prefab
                         'title' => 'Credits',
                         'route' => './admin/shop/credits',
                         'icon' => 'fa fa-exchange'
-                    )
+                    ),
+                    array(
+                        'title' => 'Carts',
+                        'route' => './admin/shop/carts',
+                        'icon' => 'fa fa-shopping-cart'
+                    ),                    
                 );
                 
                 $customers_item->addChildren($customers_children);

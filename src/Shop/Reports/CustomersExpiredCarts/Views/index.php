@@ -140,15 +140,20 @@
                     <div class="row">
                         <div class="col-sm-4">
                             <?php if (!empty($item->user_id)) { ?>
-                                <div><?php echo $item->user()->fullName(); ?> <span class="label label-success">Registered User</span></div>
+                                <p> <span class="label label-success">Registered User</span> <?php echo $item->user()->fullName(); ?></p>
                                 <p><?php echo $item->user()->email; ?></p>
                             <?php } else { ?>
                                 <p><?php echo $item->user_email; ?> <span class="label label-warning">Session Cart</span></p>
                             <?php } ?>
-                            <div><label>Cart ID:</label> <?php echo $item->id; ?></div>
+                            
+                            <p><label>Cart ID:</label> <?php echo $item->id; ?></p>
+                            
+                            <?php if (!empty($item->user_id)) { ?>
+                            <p><a class="btn btn-info" href="./admin/shop/cart/read/<?php echo $item->id; ?>"> View Cart </a></p>
+                            <?php } ?>
                         </div>
                         <div class="col-sm-2">
-                            <p>Total: <?php echo count($item->items); ?></p>
+                            <p>Total Items: <?php echo count($item->items); ?></p>
                             <?php if (!empty($item->items)) { ?>
                             <ul>
                             <?php foreach ($item->items as $cartitem) { ?>

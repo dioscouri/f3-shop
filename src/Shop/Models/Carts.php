@@ -14,6 +14,7 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
     public $discounts = array();    // array of \Shop\Models\Prefabs\Discount objects -- currently unused
     public $giftcards = array();    // array of \Shop\Models\OrderedGiftCards cast as arrays
     public $credit_total = 0;
+    public $tax_total = 0;
     
     public $name = null;            // user-defined name for cart
     
@@ -731,12 +732,17 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
      *
      * @return number
      */
-    public function taxTotal()
+    public function taxTotal($refresh=true)
     {
+        if (empty($refresh)) 
+        {
+            return (float) $this->tax_total;
+        }
+        
         $total = 0;
         
         // loop through the $this->getTaxes line items and sum the totals
-        foreach ($this->taxItems() as $taxItem) 
+        foreach ($this->taxItems($refresh) as $taxItem) 
         {
         	if (!empty($taxItem['total'])) 
         	{
@@ -744,7 +750,9 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
         	}
         }
         
-        return (float) $total;
+        $this->tax_total = (float) $total;
+        
+        return $this->tax_total;
     }
     
     /**
@@ -917,7 +925,7 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
             $total = $total + $shippingMethod->total();
         }
         
-        $total = $total - $this->discountTotal();
+        $total = $total - $this->discountTotal() - $this->creditTotal();
         
         if ($total < 0) {
             $total = 0;
@@ -1769,9 +1777,10 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
         {
             if ($value = (float) $this->user()->{'shop.credits.balance'})
             {
-                if ($this->total() < $value)
+                $total = $this->taxableTotal();
+                if ($total < $value)
                 {
-                    $value = $this->total();
+                    $value = $total;
                 }
             
                 $this->credit_total = $value;

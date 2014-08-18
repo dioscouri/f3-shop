@@ -214,6 +214,51 @@ class Routes extends \Dsc\Routes\Group
         
         $this->addCrudGroup('Carts', 'Cart');
         
+        $this->add('/cart/create-order/@id', 'GET', array(
+            'controller' => 'Cart',
+            'action' => 'createOrderShipping'
+        ));
+        
+        $this->add('/cart/create-order-payment/@id', 'GET', array(
+            'controller' => 'Cart',
+            'action' => 'createOrderPayment'
+        ));
+
+        $this->add('/cart/create-order-payment-manually/@id', 'GET', array(
+            'controller' => 'Cart',
+            'action' => 'createOrderPaymentManually'
+        ));        
+        
+        $this->add('/cart/create-order/@id', 'POST', array(
+            'controller' => 'Cart',
+            'action' => 'createOrder'
+        ));
+        
+        $this->add('/cart/checkout-update/@id', 'POST', array(
+            'controller' => 'Cart',
+            'action' => 'checkoutUpdate'
+        ));
+        
+        $this->add('/cart/shipping-methods/@id', 'GET', array(
+            'controller' => 'Cart',
+            'action' => 'shippingMethods'
+        ));
+        
+        $this->add('/cart/payment-methods/@id', 'GET', array(
+            'controller' => 'Cart',
+            'action' => 'paymentMethods'
+        ));        
+        
+        $this->add('/cart/addGiftCard/@id', 'POST', array(
+            'controller' => 'Cart',
+            'action' => 'addGiftCard'
+        ));
+
+        $this->add('/cart/addCoupon/@id', 'POST', array(
+            'controller' => 'Cart',
+            'action' => 'addCoupon'
+        ));        
+
         $this->addCrudGroup('Customers', 'Customer');
         
         $this->add('/customer/refreshtotals/@id', 'GET', array(

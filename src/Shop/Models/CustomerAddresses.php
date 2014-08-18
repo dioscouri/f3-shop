@@ -73,6 +73,18 @@ class CustomerAddresses extends \Shop\Models\Address
     }
     
     /**
+     * Get the addresses for a specified user id
+     *
+     * @return array \Shop\Models\CustomerAddresses
+     */
+    public static function fetchForId($id)
+    {
+        $items = (new static)->setState('filter.user', (string) $id )->getItems();
+    
+        return $items;
+    }    
+    
+    /**
      * 
      * @return \Shop\Models\CustomerAddresses
      */

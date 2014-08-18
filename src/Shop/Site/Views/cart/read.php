@@ -173,6 +173,17 @@
                                     </td>                            
                                 </tr>
                             <?php } ?>
+                            
+                            <?php if ($credit = $cart->creditTotal()) { ?>
+                                <tr class="auto_discount">
+                                    <td>
+                                        <div class="strong">Store Credit:</div>
+                                    </td>
+                                    <td class="col-xs-6">
+                                        <div class="price">-<?php echo \Shop\Models\Currency::format( $credit ); ?></div>
+                                    </td>                            
+                                </tr>
+                            <?php } ?>                            
                                                         
                             <tr>
                                 <td><div class="strong">
@@ -205,17 +216,6 @@
                                         </td>                            
                                     </tr>
                                 <?php } ?>
-                            <?php } ?>
-                                                        
-                            <?php if ($credit = $cart->creditTotal()) { ?>
-                                <tr class="auto_discount">
-                                    <td>
-                                        <div class="strong">Store Credit:</div>
-                                    </td>
-                                    <td class="col-xs-6">
-                                        <div class="price">-<?php echo \Shop\Models\Currency::format( $credit ); ?></div>
-                                    </td>                            
-                                </tr>
                             <?php } ?>
 
                             </tbody>
