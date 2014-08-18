@@ -199,6 +199,11 @@ class Checkout extends \Dsc\Singleton
      */
     public function processPayment()
     {
+        if (!$this->cart()->paymentRequired()) 
+        {
+            return $this;
+        }
+        
         $paymentMethod = $this->paymentMethod();
         
         $this->__paymentResult = $paymentMethod->addCart( $this->__cart )->addPaymentData( $this->paymentData() )->getClass()->processPayment();
@@ -229,6 +234,11 @@ class Checkout extends \Dsc\Singleton
      */
     public function validatePayment()
     {
+        if (!$this->cart()->paymentRequired())
+        {
+            return $this;
+        }
+                
         $paymentMethod = $this->paymentMethod();
     
         $order = $this->order();
