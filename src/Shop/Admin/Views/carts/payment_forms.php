@@ -81,7 +81,7 @@
                 </div>
             </div>        
         </div>
-        <?php \Dsc\System::instance()->get('session')->set('shop.checkout.redirect', '/admin/shop/cart/create-order-confirmation'); ?>
+        <?php \Dsc\System::instance()->get('session')->set('shop.checkout.redirect', '/admin/shop/orders'); ?>
         <?php \Dsc\System::instance()->get('session')->set('shop.checkout.redirect_fail', '/admin/shop/cart/create-order-payment/' . $cart->id); ?>
     </div>
 

@@ -123,7 +123,7 @@
     
     <div class="input-group form-group">
         <button id="submit-order" type="submit" class="btn btn-primary btn-lg">Submit Order</button>
-        <?php \Dsc\System::instance()->get('session')->set('shop.checkout.redirect', '/admin/shop/cart/create-order-confirmation'); ?>
+        <?php \Dsc\System::instance()->get('session')->set('shop.checkout.redirect', '/admin/shop/orders'); ?>
         <?php \Dsc\System::instance()->get('session')->set('shop.checkout.redirect_fail', '/admin/shop/cart/create-order-payment-manually/' . $cart->id); ?>
         <p class="help-block">This will save the order to the database without authorizing payment with the selected payment gateway.</p>
     </div>

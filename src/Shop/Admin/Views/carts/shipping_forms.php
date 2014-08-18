@@ -84,7 +84,7 @@
 
     <div id="checkout-shipping-methods" class="panel panel-default">
         <div class="panel-heading">
-            <h4 class="panel-title">Shipping Address</h4>
+            <h4 class="panel-title">Shipping Method</h4>
         </div>
         <div class="panel-body">
             <div id="checkout-shipping-methods-container"></div>
