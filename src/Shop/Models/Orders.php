@@ -16,7 +16,8 @@ class Orders extends \Dsc\Mongo\Collections\Taggable
     public $shipping_discount_total = 0;    // the portion of discount_total that applies to shipping 
     public $credit_total = 0;
     public $giftcard_total = 0;
-
+    public $adjustments_total = 0;
+    
     public $customer = array();     // Users\Models\Users cast as an array
     public $customer_name = null;
     public $user_id = null;
