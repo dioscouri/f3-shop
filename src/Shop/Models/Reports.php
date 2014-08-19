@@ -120,7 +120,7 @@ class Reports extends \Dsc\Mongo\Collections\Describable
     {
         $class_name = $this->namespace . '\Report';
         if (!class_exists($class_name)) {
-            throw new \Exception('Class not found');
+            throw new \Exception('Class "'. $class_name .'" not found');
         }
         
         // get an instance of the class
