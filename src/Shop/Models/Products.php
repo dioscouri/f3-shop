@@ -1166,12 +1166,17 @@ class Products extends \Dsc\Mongo\Collections\Content
         $settings_price_override = null;
         $settings_override = false;
         
-        if( !empty( $user ) ) {
-        	foreach( $user->groups() as $group ){
+        if (!empty( $user )) 
+        {
+        	foreach( $user->groups() as $group )
+        	{
         		$settings_override = $settings->exists( 'special_group_default_prices.'.$group['slug'] );
-        		if( $settings_override ){ // found it, so get the correct number and leave
+        		if( $settings_override )
+        		{ 
+        		    // found it, so get the correct number and leave
         		    $type_price = 'regular';
-        			if (!empty($this->{'prices.list'})) {
+        			if (!empty($this->{'prices.list'})) 
+        			{
         				$type_price = 'sale';
         			}
         			$settings_price_override = 'special_group_default_prices.'.$group['slug'].'.'.$type_price;
