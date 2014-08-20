@@ -13,8 +13,15 @@ dataLayer.push({
     <?php $n=0; foreach ($this->order->items as $item) { ?>
     <?php if ($n > 0) { echo ", "; } ?>
     {
-        'sku': '<?php echo \Dsc\ArrayHelper::get($item, 'product.tracking.sku'); ?>',
-        'name': '<?php echo \Dsc\ArrayHelper::get($item, 'product.title'); ?>',
+        <?php 
+        $title = \Dsc\ArrayHelper::get($item, 'product.title');
+        if (\Dsc\ArrayHelper::get($item, 'attribute_title')) {
+            $title .= ' - ' . \Dsc\ArrayHelper::get($item, 'attribute_title');
+        }
+        ?>
+        
+        'sku': '<?php echo \Dsc\ArrayHelper::get($item, 'sku'); ?>',
+        'name': '<?php echo $title; ?>',
         'price': <?php echo (float) \Dsc\ArrayHelper::get($item, 'price'); ?>,
         'quantity': <?php echo (int) \Dsc\ArrayHelper::get($item, 'quantity'); ?>
     }
