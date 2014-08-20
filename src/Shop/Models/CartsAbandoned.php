@@ -96,8 +96,11 @@ class CartsAbandoned extends \Shop\Models\Carts
             $abandoned_time = $settings->get('abandoned_cart_time') * 60;
             foreach ($newly_abandoned as $cart)
             {
+                $email = null;
                 if ($cart->quantity() > 0) 
                 {
+                    $email = $cart->user_email ? $cart->user_email : $cart->user()->email;
+                     
                     $cart->abandoned_notifications = array();
                     foreach ($notifications as $idx => $val)
                     {
@@ -109,7 +112,7 @@ class CartsAbandoned extends \Shop\Models\Carts
                             (string) $cart->id,
                             (string) $idx
                         ), array(
-                            'title' => 'Abandoned Cart Email Notification',
+                            'title' => 'Abandoned Cart Email Notification to ' . $email,
                             'when' => $time
                         ));
                         $cart->abandoned_notifications[] = new \MongoId((string) $task->_id);
@@ -163,9 +166,12 @@ class CartsAbandoned extends \Shop\Models\Carts
         $recipients = array();
         if (empty($cart->{'user_email'}))
         {
-            $recipients = array(
-                $user->email
-            );
+            if (!empty($user->email)) 
+            {
+                $recipients = array(
+                    $user->email
+                );                
+            }
         }
         else
         {
