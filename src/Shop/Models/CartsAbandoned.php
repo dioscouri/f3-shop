@@ -122,8 +122,7 @@ class CartsAbandoned extends \Shop\Models\Carts
         {
             return;
         }
-                
-        $subject = $settings->get('abandoned_cart_subject');
+        
         $cart = (new static())->setState('filter.id', $cart_id)->getItem();
         
         // cart was deleted so dont do anything
@@ -180,6 +179,16 @@ class CartsAbandoned extends \Shop\Models\Carts
         \Base::instance()->set('user', $user);
         \Base::instance()->set('idx', $notification_idx);
         \Base::instance()->set('token', $token);
+        
+        $subject = $settings->get('abandoned_cart_emails.' . $notification_idx . '.subject');
+        if (empty($subject)) 
+        {
+            $subject = $settings->get('abandoned_cart_subject');
+            if (empty($subject)) 
+            {
+                $subject = "Complete your purchase";
+            }
+        }
         
         $notification = $settings->get('abandoned_cart_emails.' . $notification_idx);
         if (empty($notification))

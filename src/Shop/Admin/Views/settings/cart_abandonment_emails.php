@@ -18,8 +18,9 @@
     <input name="abandoned_cart_time" type="text" class="form-control" value="<?php echo $flash->old('abandoned_cart_time')?>" placeholder="For example, 10 as in 10 minutes" />
     <p class="help-block">How long must a cart be idle before it is considered abandoned?</p>
 </div>
+
 <div class="form-group">
-    <label>Abandonment Cart Email Subject</label>
+    <label>Default Email Subject</label>
     <input name="abandoned_cart_subject" type="text" class="form-control" value="<?php echo $flash->old('abandoned_cart_subject')?>" placeholder="Subject for all abandoned cart notification emails" />
 </div>
 
@@ -48,7 +49,12 @@
 					<input type="text" value="<?php echo $flash->old( 'abandoned_cart_emails.'.$key.'.delay' ); ?>" name="abandoned_cart_emails[<?php echo $key; ?>][delay]" class="form-control" placeholder="Time delay since the cart was abandoned in minutes" />
 					<p class="help-block">How many minutes should we wait after the cart is abandoned before sending this email?</p>
 				</div>
-				
+
+				<div class="form-group clearfix">
+					<label>Email subject</label>
+					<input name="abandoned_cart_emails[<?php echo $key; ?>][subject]" type="text" class="form-control" value="<?php echo $flash->old('abandoned_cart_emails.'.$key.'.subject')?>" placeholder="Subject" />
+				</div>
+								
 				<div class="form-group clearfix">
 					<label>Email plain text version</label>
 		            <textarea name="abandoned_cart_emails[<?php echo $key; ?>][text][plain]" class="form-control" rows="4"><?php echo $flash->old( 'abandoned_cart_emails.'.$key.'.text.plain' ); ?></textarea>
@@ -75,6 +81,11 @@
 					<label>Time Delay <small>(in minutes)</small></label>
 					<input type="text" value="" name="abandoned_cart_emails[{id}][delay]" class="form-control" placeholder="Time delay since the cart was abandoned in minutes" />
 				</div>
+				
+				<div class="form-group clearfix">
+					<label>Email subject</label>
+					<input name="abandoned_cart_emails[{id}][subject]" type="text" class="form-control" placeholder="Subject" />
+				</div>				
 				
 				<div class="form-group clearfix">
 					<label>Email plain text version</label>
