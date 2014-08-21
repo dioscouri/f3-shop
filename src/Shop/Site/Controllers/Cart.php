@@ -56,9 +56,10 @@ class Cart extends \Dsc\Controller
         {
             $identity = $this->getIdentity();
             if ($identity->id == $user_id)
-            { // only if the right user is logged in
+            {
+                // only if the right user is logged in
                 $notification_idx = $this->input->get("idx", 0, 'int');
-                \Dsc\Activities::track('User clicked on link in abandond cart email', array(
+                \Dsc\Activities::track('User clicked on link in abandoned cart email', array(
                     'Notification' => $notification_idx
                 ));
                 \Dsc\System::instance()->get('session')->set('shop.notification_email', 1);
