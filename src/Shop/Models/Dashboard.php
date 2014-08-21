@@ -215,7 +215,19 @@ class Dashboard extends \Dsc\Models
             'count' => $count,
             'perc' => $perc
         );      
-
+        
+        // Submitted Payment in Checkout
+        $submitted_payment_conditions = $base_conditions + array(
+            'action' => new \MongoRegex('/Submitted Payment in Checkout/i'),
+            'properties.app' => 'shop'
+        );
+        $count = count($model->collection()->distinct( 'actor_id', $payment_conditions ));
+        $perc = empty($total) ? 0 : number_format((($count / $total) * 100), 1) . "%";
+        $return['Submitted Payment in Checkout'] = array(
+            'count' => $count,
+            'perc' => $perc
+        );
+        
         // Completed Checkout
         $complete_checkout_conditions = $base_conditions + array(
             'action' => new \MongoRegex('/Completed Checkout/i'),
