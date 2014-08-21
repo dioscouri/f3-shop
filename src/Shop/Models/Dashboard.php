@@ -221,7 +221,7 @@ class Dashboard extends \Dsc\Models
             'action' => new \MongoRegex('/Submitted Payment in Checkout/i'),
             'properties.app' => 'shop'
         );
-        $count = count($model->collection()->distinct( 'actor_id', $payment_conditions ));
+        $count = count($model->collection()->distinct( 'actor_id', $submitted_payment_conditions ));
         $perc = empty($total) ? 0 : number_format((($count / $total) * 100), 1) . "%";
         $return['Submitted Payment in Checkout'] = array(
             'count' => $count,
