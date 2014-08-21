@@ -19,25 +19,10 @@ class CartsAbandoned extends \Shop\Models\Carts
                 )
             ));
             
-            if (!$or = $this->getCondition('$or'))
-            {
-                $or = array();
-            }
-            
-            // only users with known emails
-            $or[] = array(
-                'user_email' => array(
-                    '$nin' => array('', null)
-                )
-            );
-            
-            $or[] = array(
-                'user_id' => array(
-                    '$nin' => array('', null)
-                )
-            );
-            
-            $this->setCondition('$or', $or);
+            // only users
+            $this->setCondition('user_id', array(
+                '$nin' => array('', null)
+            ));
             
             $settings = \Shop\Models\Settings::fetch();
             $abandoned_time = $settings->get('abandoned_cart_time') * 60;
@@ -160,7 +145,11 @@ class CartsAbandoned extends \Shop\Models\Carts
             return;
         }
         
-        $user = (new \Users\Models\Users())->setState('filter.id', $cart->user_id)->getItem();
+        $user = $cart->user();        
+        if (empty($user->id) || $user->id != $cart->user_id)
+        {
+            return;
+        }        
         
         // get correct user email
         $recipients = array();
@@ -178,6 +167,11 @@ class CartsAbandoned extends \Shop\Models\Carts
             $recipients = array(
                 $cart->{'user_email'}
             );
+        }
+        
+        if (empty($recipients)) 
+        {
+            return;
         }
         
         $token = \Dsc\System::instance()->get('auth')->getAutoLoginToken($user, true);
