@@ -131,42 +131,6 @@ class Checkout extends \Dsc\Controller
                  * END Activity Tracking
                  */
                 
-                // update kissmetrics, if you can
-                /*$settings = \Admin\Models\Settings::fetch();
-                if( class_exists( '\KM' ) && $settings->enabledIntegration('kissmetrics')){
-                	\KM::init( $settings->{'integration.kissmetrics.key'} );
-                	 
-                	$identity = \Dsc\System::instance()->get('auth')->getIdentity();
-                	\KM::identify( $identity->email );
-                	
-                	$data_km = array( "Revenue" => $order->grand_total );
-                	
-                	$products_km = array();
-                	foreach( $order->items as $item ){
-                		$product = array();
-                		
-                		$product['Product Name'] = \Dsc\ArrayHelper::get($item, 'product.title');
-                		if( \Dsc\ArrayHelper::get($item, 'attribute_title') ) {
-                			$product['Variant'] =  \Dsc\ArrayHelper::get($item, 'attribute_title');
-                		}
-                		\KM::record("Purchased", $product );
-                	}
-                	 
-               		if( count( $order->coupons ) ){
-               			$data_km['Coupons'] = implode( ', ', \Joomla\Utilities\ArrayHelper::getColumn( (array) $order->coupons, 'code' ) );
-               		}
-                		
-               		if( count( $order->auto_coupons ) ){
-               			$data_km['Auto Coupons'] = implode( ', ', \Joomla\Utilities\ArrayHelper::getColumn( (array) $order->auto_coupons, 'code' ) );
-               		}
-                		
-               	    if( !empty( $order->credit_total ) ){
-               			$data_km['Credit'] = $order->credit_total;
-               		}                	
-                	
-                	\KM::record("Finished Checkout", $data_km);
-                }*/
-                
                 // check coupons and discard used generated codes
                 if( count( $order->coupons ) ){
                 	foreach( $order->coupons as $coupon ){

@@ -35,15 +35,6 @@ jQuery(document).ready(function(){
 	            if (response.result) {
 					jQuery( 'select[name="variant_id"] option[value="'+variant_id+'"]' ).attr( 'data-wishlist', "0" );
 	                el.replaceWith("<a href='javascript:void(0);'><i class='glyphicon glyphicon-heart'></i> In your wishlist</a>");
-	                <?php if( $is_kissmetrics ) { ?>
-					<?php // track adding to wishlist ?>
-					var sel = jQuery( 'select[name="variant_id"]' );
-					if( sel.size() ) {
-						_kmq.push(['record', 'Added Product to Wishlist', {'Variant' : jQuery("option:selected", sel).text(), 'Product Name' : '<?php echo $item->title; ?>' }]);
-					} else { // no variants
-						_kmq.push(['record', 'Added Product to Wishlist', { 'Product Name' : '<?php echo $item->title; ?>' }]);
-					}
-	                <?php } ?>
 	            }
 	        });
        } 
@@ -66,25 +57,6 @@ jQuery(document).ready(function(){
 	}
    
 });
-
-<?php if( $is_kissmetrics ) { ?>
-	<?php // track viewed products ?>
-	_kmq.push(['record', 'Viewed Potential Purchase', {'SKU':'<?php echo $item->{'tracking.sku'}; ?>', 'Product Name' : '<?php echo $item->title; ?>' }]);
-
-	<?php // track click on "Added to cart" ?>
-	jQuery(document).ready(function(){
-		jQuery( 'button[data-button="add-to-bag"]' ).on( 'click', function(e){
-			var sel = jQuery( 'select[name="variant_id"]' );
-
-			if( sel.size() ) {
-				_kmq.push(['record', 'Added to Cart', {'Variant' : jQuery("option:selected", sel).text(), 'SKU':'<?php echo $item->{'tracking.sku'}; ?>', 'Product Name' : '<?php echo $item->title; ?>' }]);
-			} else { // no variants
-				_kmq.push(['record', 'Added to Cart', {'SKU':'<?php echo $item->{'tracking.sku'}; ?>', 'Product Name' : '<?php echo $item->title; ?>' }]);
-			}
-		}); 
-	});
-	
-<?php } ?>
 </script>
 
 <div class="container">

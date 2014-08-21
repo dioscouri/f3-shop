@@ -1,31 +1,3 @@
-<?php 
-	$settings = \Admin\Models\Settings::fetch();
-	$is_kissmetrics = $settings->enabledIntegration( 'kissmetrics' );
-	if( $is_kissmetrics ) { ?>
-<script type="text/javascript">
-	<?php // track viewing cart ?>
-	_kmq.push(['record', 'Viewed Wishlist', {'Wishlist ID' : '<?php echo (string)$wishlist->id; ?>' }]);
-
-	<?php // track click on "Added to cart" ?>
-			jQuery(document).ready(function(){
-				jQuery( 'a[data-button="add-to-cart"]' ).on( 'click', function(e){
-					$this = jQuery( e.currentTarget );
-					data = { 'Product Name' : $this.data( 'product-name' ) };
-					
-					if($this.data( 'product-variant' ).length ) {
-						data["Variant"] = $this.data( 'product-variant' );
-					}
-					if($this.data( 'product-sku' ).length ) {
-						data["SKU"] = $this.data( 'product-sku' );
-					}
-
-					_kmq.push(['record', 'Added to Cart from Wishlist', data ]);
-				}); 
-			});
-	
-</script>
-	<?php } ?>
-
 <div class="container">
 
 	<ol class="breadcrumb">
