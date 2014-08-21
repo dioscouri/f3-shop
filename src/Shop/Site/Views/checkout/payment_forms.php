@@ -60,7 +60,7 @@
     <?php echo $this->renderView('Shop/Site/Views::checkout/before_submit_button.php'); ?>
     
     <div class="input-group form-group">
-        <button id="submit-order" type="submit" class="btn btn-default custom-button btn-lg pull-left">Submit Order</button>
+        <button id="submit-order" type="submit" class="btn btn-default custom-button btn-lg pull-left activity-track" data-activity-action="Submitted Payment in Checkout" data-activity-properties='<?php echo json_encode( array('app'=>'shop') ); ?>'>Submit Order</button>
         <div id="submit-working" class="working pull-left hidden">
         	<img src="./minify/Shop/Assets/images/working.gif" alt="Working" />
         	Working ... Please wait
