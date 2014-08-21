@@ -11,12 +11,14 @@ class Cart extends \Dsc\Controller
     {
         $id = $this->inputfilter->clean($this->app->get('PARAMS.id'), 'alnum');
         $user_id = $this->input->get('user_id', '', 'alnum');
+        
         // check, if we're not forcing user to view a certain cart (i. e. after they click on link in email)
         if (!empty($id))
         {
             $cart = (new \Shop\Models\Carts())->setState('filter.id', $id)->getItem();
             if (empty($cart))
-            { // this cart does not exist so let's not disclose that to people. rather, we say the cart is empty (which is true)
+            { 
+                // this cart does not exist so let's not disclose that to people. rather, we say the cart is empty (which is true)
                 $this->app->reroute('/shop/cart');
                 return;
             }
