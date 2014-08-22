@@ -2,7 +2,7 @@
     <div class="col-md-2">
         
         <h3>Prices</h3>
-        <p class="help-block">Some helpful text</p>
+        
                 
     </div>
     <!-- /.col-md-2 -->

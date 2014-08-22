@@ -2,7 +2,6 @@
     <div class="col-md-2">
         
         <h3>Special Pricing</h3>
-        <p><span class="help-block">Some helpful text</span></p>
         
         <div class="form-group">
             <a class="btn btn-warning" id="add-price">Add Special Price</a>
