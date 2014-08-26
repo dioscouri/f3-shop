@@ -537,6 +537,7 @@ class PaymentMethod extends \Shop\PaymentMethods\PaymentAbstract
             case "O":
             case "T":
             // Complete Matches
+            case "D":
             case "D & M":
             case "J":
             case "M":
@@ -661,6 +662,7 @@ class PaymentMethod extends \Shop\PaymentMethods\PaymentAbstract
             case "W":
             case "Z":
             // Complete Matches
+            case "D":
             case "D & M":
             case "J":
             case "M":
