@@ -15,6 +15,12 @@
         <!-- /.form-group -->
         
         <div class="form-group">
+            <label>Slug</label>
+            <input type="text" name="slug" placeholder="Slug" value="<?php echo $flash->old('slug'); ?>" class="form-control" />
+        </div>
+        <!-- /.form-group -->
+        
+        <div class="form-group">
             <label>Type</label>
             <select name="campaign_type" class="form-control">
                 <option value="lto" <?php if ($flash->old('campaign_type') == 'lto') { echo "selected='selected'"; } ?>>Limited Time Offer</option>

@@ -180,9 +180,17 @@
                             </a>
                         </div>
                         <?php if ($item->groups) { ?>
-                        <div class="">
+                        <p class="">
                             <span class='label label-default'><?php echo implode("</span> <span class='label label-default'>", \Joomla\Utilities\ArrayHelper::getColumn( (array) $item->groups, 'title' ) ); ?></span>
-                        </div>
+                        </p>
+                        <?php } ?>
+
+                        <?php if ($item->{'shop.active_campaigns'}) { ?>
+                        <p class="">
+                            <?php foreach ($item->{'shop.active_campaigns'} as $campaign) { ?>
+                            <span class='label label-info'><?php echo $campaign['title']; ?> (<?php echo date('Y-m-d', $campaign['activated']['time']) . ' until ' . date('Y-m-d', $campaign['expires']['time'] ); ?>)</span>
+                            <?php } ?>
+                        </p>
                         <?php } ?>                        
                         
                     </div>
