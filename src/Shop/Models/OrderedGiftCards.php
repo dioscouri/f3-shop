@@ -117,14 +117,10 @@ class OrderedGiftCards extends \Dsc\Mongo\Collections\Nodes
     {
         if (!empty($this->__email_recipient)) 
         {
-        	// TODO Send this code via email
-        	//\Dsc\System::addMessage( 'Would send a gift card via email to ' . $this->__email_recipient );
-        	try {
-        	   $this->sendEmailNewGiftCard( array( $this->__email_recipient ) );
-        	} 
-        	catch (\Exception $e) {
-        		
-        	}
+        	\Dsc\Queue::task('\Shop\Models\OrderedGiftCards::queueEmailNewGiftCard', array(
+        	    'card_id' => $this->id,
+        	    'recipients' => array( $this->__email_recipient )
+        	));
         }
         
         parent::afterCreate();
@@ -247,6 +243,17 @@ class OrderedGiftCards extends \Dsc\Mongo\Collections\Nodes
     	// TODO Track this in f3-activity
     	
     	return $this->save();
+    }
+    
+    public static function queueEmailNewGiftCard( $card_id, array $recipients=array() ) 
+    {
+        $card = (new static)->setState('filter.id', $card_id)->getItem();
+        if (empty($card->id)) 
+        {
+            return;
+        }
+        
+        return $card->sendEmailNewGiftCard( $recipients );
     }
     
     /**
