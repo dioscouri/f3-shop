@@ -151,7 +151,13 @@ class Category extends \Dsc\Controller
         ));
         
         $view = \Dsc\System::instance()->get('theme');
-        echo $view->render('Shop/Site/Views::category/all.php');        
+        
+        $view_file = 'all.php';
+        if ($category->{'display.view'} && $view->findViewFile( 'Shop/Site/Views::category/all/' . $category->{'display.view'} )) {
+            $view_file = 'all/' . $category->{'display.view'};
+        }
+        
+        echo $view->renderTheme('Shop/Site/Views::category/' . $view_file);        
     }
     
     public function viewAllPaginate()
@@ -202,8 +208,15 @@ class Category extends \Dsc\Controller
             if ($paginated->total_items > ($paginated->items_per_page * $paginated->current_page)) 
             {
                 $response->next_page = $paginated->next_page;
-            }            
-            $response->result = $view->renderView('Shop/Site/Views::category/all_grid.php');
+            }
+            
+            $view_file = 'all_grid.php';
+            if ($category->{'display.view'} && $view->findViewFile( 'Shop/Site/Views::category/all_grid/' . $category->{'display.view'} )) {
+                $view_file = 'all_grid/' . $category->{'display.view'};
+            }
+            $response->result = $view->renderView('Shop/Site/Views::category/' . $view_file);                        
+            
+            //$response->result = $view->renderView('Shop/Site/Views::category/all_grid.php');
         }
                 
         $this->outputJson($response);

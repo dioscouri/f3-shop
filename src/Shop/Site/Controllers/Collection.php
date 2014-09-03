@@ -192,7 +192,13 @@ class Collection extends \Dsc\Controller
         ));        
          
         $view = \Dsc\System::instance()->get('theme');
-        echo $view->render('Shop/Site/Views::collection/all.php');    
+        
+        $view_file = 'all.php';
+        if ($collection->{'display.view'} && $view->findViewFile( 'Shop/Site/Views::collection/all/' . $collection->{'display.view'} )) {
+            $view_file = 'all/' . $collection->{'display.view'};
+        }
+         
+        echo $view->renderTheme('Shop/Site/Views::collection/' . $view_file);            
     }    
     
     public function viewAllPaginate()
@@ -272,7 +278,14 @@ class Collection extends \Dsc\Controller
             {
                 $response->next_page = $paginated->next_page;
             }
-            $response->result = $view->renderView('Shop/Site/Views::collection/all_grid.php');
+            
+            $view_file = 'all_grid.php';
+            if ($collection->{'display.view'} && $view->findViewFile( 'Shop/Site/Views::collection/all_grid/' . $collection->{'display.view'} )) {
+                $view_file = 'all_grid/' . $collection->{'display.view'};
+            }
+            $response->result = $view->renderView('Shop/Site/Views::collection/' . $view_file);
+                        
+            //$response->result = $view->renderView('Shop/Site/Views::collection/all_grid.php');
         }
         
         $this->outputJson($response);        
