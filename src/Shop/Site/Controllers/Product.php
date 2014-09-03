@@ -43,8 +43,7 @@ class Product extends \Dsc\Controller
     			throw new \Exception;
     		}
     	} catch ( \Exception $e ) {
-    		\Dsc\System::instance()->addMessage( "Invalid Item", 'error');
-    		$this->app->error( '404' );
+    		$this->app->error( '404', 'Invalid Product' );
     		return;
     	}
     	
