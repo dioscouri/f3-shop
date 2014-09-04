@@ -149,6 +149,16 @@ class ShopBootstrap extends \Dsc\Bootstrap
     
     public static function diagnostics()
     {
+        if (class_exists('\Modules\Factory')) 
+        {
+            \Modules\Models\Conditions::register('\Shop\ModuleConditions\Orders', array(
+                'title'=>'Orders',
+                'icon'=>'fa fa-shopping-cart',
+                'type'=>'shop',
+                'slug'=>'shop-orders',
+            ));
+        }
+                
         $settings = \Shop\Models\Settings::fetch();
         
         // TODO When did we last pull down the currency list?
