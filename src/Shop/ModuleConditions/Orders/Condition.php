@@ -3,19 +3,14 @@ namespace Shop\ModuleConditions\Orders;
 
 class Condition extends \Modules\Abstracts\Condition
 {
-    public function bootstrap()
-    {
-        $this->theme->registerViewPath( __dir__ . '/Views/', 'Shop/ModuleConditions/Orders/Views' );
-    
-        return parent::bootstrap();
-    }
-        
     /**
      * Returns the condition's html
      * for the admin-side module-editing form
      */
     public function html() 
     {
+        $this->theme->registerViewPath( __dir__ . '/Views/', 'Shop/ModuleConditions/Orders/Views' );
+        
         return $this->theme->renderView('Shop/ModuleConditions/Orders/Views::index.php');
     }
     
