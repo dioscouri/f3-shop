@@ -136,7 +136,7 @@ class PaymentMethod extends \Shop\PaymentMethods\PaymentAbstract
             'currency' => 'USD',
             'transaction_type' => $transaction_type,
             'reference_number' => (string) $cart->id,
-            'amount' => number_format( $cart->total(), 2 ),                        
+            'amount' => number_format( $cart->total(), 2, '.', '' ),                        
             'bill_to_email' => $user->email,
             'signed_date_time' => gmdate("Y-m-d\TH:i:s\Z"),
             'signed_field_names' => '',
@@ -246,7 +246,12 @@ class PaymentMethod extends \Shop\PaymentMethods\PaymentAbstract
                             case "card_type":
                                 $message = 'Invalid card type.  Please try again with a different card.';
                                 throw new \Exception($message);
-                                break;                                
+                                break;
+                            case "bill_to_phone":
+                            case "customer_phone":
+                                $message = 'Invalid Billing Phone Number.  Please correct and try again.';
+                                throw new \Exception($message);
+                                break;                                                                                                
                         }
                     } 
                     

@@ -294,7 +294,7 @@ jQuery(document).ready(function(){
         var bill_to_address_state = pm.find('.billing-region').val();
         var bill_to_address_country = pm.find('.billing-country').val();
         var bill_to_address_postal_code = pm.find('.billing-postal_code').val();
-        var bill_to_phone = pm.find('.billing-phone_number').val();
+        var bill_to_phone = pm.find('.billing-phone_number').val().replace(/ /g,'');
 
         var card_number = pm.find('.new-card-number').val();
         var card_cvn = pm.find('.new-card-csc').val();
