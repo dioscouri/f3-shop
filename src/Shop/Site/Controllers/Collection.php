@@ -25,25 +25,53 @@ class Collection extends \Dsc\Controller
     	    $model->setState('filter.collection', $collection->id);
     	    $conditions = \Shop\Models\Collections::getProductQueryConditions($collection->id);
     	    
-    	    if ($filter_tags = (array) $model->getState('filter.tags')) 
+    	    if ($filter_tags = (array) $model->getState('filter.vtags')) 
     	    {
     	        if ($tags = array_filter( array_values( $filter_tags ) )) 
     	        {
-    	            if (!empty($conditions['tags']))
+    	            $conditions['variants.tags'] = array( '$in' => $tags );
+    	            
+    	            // Only return products where the variants tagged with these tags are in stock,
+    	            // so $aggregate to get a list of eligible product_ids
+    	            
+    	            $agg = $model->collection()->aggregate(array(
+    	                array(
+    	                    '$match' => array('variants.tags' => array( '$in' => $tags ) )
+    	                ),
+    	                array(
+    	                    '$unwind' => '$variants'
+    	                ),
+    	                array(
+    	                    '$match' => array(
+    	                        'variants.enabled' => array( '$in' => array( 1, true, '1' ) ),
+    	                        'variants.quantity' => array( '$gt' => 0 ),
+    	                    )
+    	                ),
+    	                array(
+    	                    '$match' => array('variants.tags' => array( '$in' => $tags ) )
+    	                ),
+    	                array(
+    	                    '$group' => array(
+    	                        '_id' => '$_id'
+    	                    )
+    	                ),
+    	            ));
+    	            
+    	            $ids = array( new \MongoId ); // if no variants are in stock, then filter against a fake product_id
+    	            if (!empty($agg['ok']) && !empty($agg['result']))
     	            {
-    	                // Add this to an $and clause
-    	                if (empty($conditions['$and']))
+    	                foreach ($agg['result'] as $result)
     	                {
-    	                    $conditions['$and'] = array();
+    	                    $ids[] = $result['_id'];
     	                }
-    	                $conditions['$and'][] = array('tags' => array( '$in' => $tags ) );
-    	                 
     	            }
-    	            // we're only filtering by this set of tags
-    	            else
+    	            
+    	            // Add this to an $and clause
+    	            if (empty($conditions['$and']))
     	            {
-    	                $conditions['tags'] = array( '$in' => $tags );
+    	                $conditions['$and'] = array();
     	            }
+    	            $conditions['$and'][] = array('_id' => array( '$in' => $ids ) );
     	        }
     	    }
     	    
