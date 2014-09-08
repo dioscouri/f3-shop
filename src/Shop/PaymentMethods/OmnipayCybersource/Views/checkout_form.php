@@ -1,4 +1,5 @@
-<div>
+<div class="checkout_form">
+
         <div class="add-new-card">
             <div class="row">
                 <div class="form-group col-xs-12 col-sm-12 col-md-5">
@@ -317,6 +318,7 @@ jQuery(document).ready(function(){
                 var card_type = '004';
                 break;
             case "unionpay":
+                var card_type = '004';
                 break;
             case "jcb":
                 var card_type = '007';
@@ -334,6 +336,18 @@ jQuery(document).ready(function(){
                 break;
         }
 
+        if (card_type == null) {
+            jQuery('body').scrollTo('body', 1000);
+
+            var msg = jQuery('<p class="alert alert-danger validation-errors">Please provide an accepted credit card type, either Visa, Mastercard, American Express, Discover, Unionpay, or Maestro.</p>');
+            pm.find('.checkout_form').prepend(msg);
+            
+    		jQuery(this).closest('form').data('locked', true);
+        	ev.preventDefault();
+        	jQuery('#submit-order').trigger('reset');
+            return false;            
+        }
+
         // Validate the data, and if anything fails, add an error message and return false after scrolling to the error message
         if (!card_number || !card_cvn || !card_expiry_date || !bill_to_surname || !bill_to_forename
             || !bill_to_address_line1 || !bill_to_address_city || !bill_to_address_state || !bill_to_address_country || !bill_to_address_postal_code
@@ -344,6 +358,7 @@ jQuery(document).ready(function(){
 
     		jQuery(this).closest('form').data('locked', true);
         	ev.preventDefault();
+        	jQuery('#submit-order').trigger('reset');
             return false;            
         }        
 

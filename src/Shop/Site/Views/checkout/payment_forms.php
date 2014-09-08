@@ -160,6 +160,9 @@ jQuery(document).ready(function(){
 		jQuery('#submit-order').removeClass('hidden').show();
 		jQuery('#submit-working').addClass('hidden').hide();
 		jQuery('#submit-working-modal').popup('hide');
+		jQuery('body').css({
+            overflow: 'visible'
+        });
 	});
 
 	jQuery('#submit-working-modal').popup({
