@@ -63,7 +63,15 @@ class Settings extends \Dsc\Mongo\Collections\Settings
             'brand' => null,
             'gender' => null,
             'age_group' => null,
-        )
+        ),
+        'pepperjam_products' => array(
+            'enabled' => 1,
+            'title' => null,
+            'description' => null,
+            'brand' => null,
+            'gender' => null,
+            'age_group' => null,
+        )        
     );
     
     public $special_group_default_prices = array(

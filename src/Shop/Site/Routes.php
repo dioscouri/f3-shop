@@ -368,12 +368,25 @@ class Routes extends \Dsc\Routes\Group
                 'action' => 'productsXml'
             ) );
         }
-        
         else
         {
             $cache_period = 3600*24;
         
             $this->app->route('GET /shop/google-merchant/products.xml', '\Shop\Site\Controllers\GoogleMerchant->productsXml', $cache_period);
-        }        
+        }
+
+        if ($this->app->get('DEBUG') || $this->input->get('refresh', 0, 'int'))
+        {
+            $this->add( '/pepperjam/products.txt', 'GET', array(
+                'controller' => 'PepperJam',
+                'action' => 'productsTxt'
+            ) );
+        }
+        else
+        {
+            $cache_period = 3600*24;
+        
+            $this->app->route('GET /shop/pepperjam/products.txt', '\Shop\Site\Controllers\PepperJam->productsTxt', $cache_period);
+        }
     }
 }

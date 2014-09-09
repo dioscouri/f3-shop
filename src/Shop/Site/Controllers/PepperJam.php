@@ -9,10 +9,10 @@ class PepperJam extends \Dsc\Controller
      * http://www.pepperjamnetwork.com/doc/product_feed_advanced.html
      * 
      */
-    public function products()
+    public function productsTxt()
     {
         $settings = \Shop\Models\Settings::fetch();
-        if (!$settings->{'feeds.gm_products.enabled'}) 
+        if (!$settings->{'feeds.pepperjam_products.enabled'}) 
         {
             return;
         }
@@ -31,36 +31,21 @@ class PepperJam extends \Dsc\Controller
         $cursor = \Shop\Models\Products::collection()->find($conditions)->sort(array('title'=>1));//->limit(10);
 
         /**
-         * Generate XML
+         * name	sku	buy_url	image_url	description_short	description_long	price	manufacturer
          */
-        $x = new \XMLWriter();
-        $x->openMemory();
-        $x->setIndent(true);
-        $x->setIndentString(" ");
-        $x->startDocument('1.0', 'UTF-8');        
-        
-        $x->startElement('rss');
-            $x->writeAttribute('version', '2.0');
-            $x->writeAttribute('xmlns:g', 'http://base.google.com/ns/1.0');
-        
-        $x->startElement('channel');
-        
-        $title = $settings->{'feeds.gm_products.title'} ? $settings->{'feeds.gm_products.title'} : 'Product Feed';
-        $x->startElement('title');
-            $x->text($title);
-        $x->endElement(); // title
-        
-        $link = $base;
-        $x->startElement('link');
-            $x->text($link);
-        $x->endElement(); // link
 
-        if ($description = $settings->{'feeds.gm_products.description'}) 
-        {
-            $x->startElement('description');
-                $x->text($description);
-            $x->endElement(); // description            
-        }
+        $column_headers = array(
+            'name',
+            'sku',
+            'buy_url',
+            'image_url',
+            'description_short',
+            'description_long',
+            'price',
+            'manufacturer'
+        );
+        
+        $string = implode("\t", $column_headers) . "\r\n";
         
         foreach ($cursor as $product_doc) 
         {
@@ -75,140 +60,53 @@ class PepperJam extends \Dsc\Controller
                     continue;
                 }
                 
-                $x->startElement('item');
-                    $x->startElement('title');
-                        $x->text($product->title);
-                    $x->endElement(); // title
-                    
-                    $x->startElement('description');
-                        $x->text(strip_tags( $product->getAbstract() ));
-                    $x->endElement(); // description
-                    
-                    $x->startElement('g:link');
-                        $x->text($base . 'shop/product/' . $product->slug);
-                    $x->endElement(); // g:link
-
-                    // image_link
-                    if ($image = $variant['image'] ? $variant['image'] : $product->{'featured_image.slug'}) 
-                    {
-                        $x->startElement('g:image_link');
-                            $x->text($base . 'asset/' . $image);
-                        $x->endElement(); // g:image_link                        
-                    }
-                    
-                    // google_product_category
-                    if ($product->{'gm_product_category'})
-                    {
-                        $x->startElement('g:google_product_category');
-                            $x->text($product->{'gm_product_category'});
-                        $x->endElement(); // g:google_product_category
-                    }
-                    
-                    // TODO product_type
-                    
-                    // gender = female (or male, unisex)
-                    $gender = $settings->{'feeds.gm_products.gender'};
-                    if ($product->{'gm_products.gender'}) 
-                    {
-                        $gender = $product->{'gm_products.gender'};
-                    }
-                    
-                    if ($gender)
-                    {
-                        $x->startElement('g:gender');
-                            $x->text($gender);
-                        $x->endElement(); // g:gender
-                    }
-                                        
-                    // age_group = adult (or newborn, infanct, toddler, kids)
-                    $age_group = $settings->{'feeds.gm_products.age_group'};
-                    if ($product->{'gm_products.age_group'})
-                    {
-                        $age_group = $product->{'gm_products.age_group'};
-                    }
-                    
-                    if ($age_group)
-                    {
-                        $x->startElement('g:age_group');
-                           $x->text($age_group);
-                        $x->endElement(); // g:age_group
-                    }                    
-                    
-                    // following handles color, size, pattern, material (if they are set as attributes)
-                    foreach ($product->attributes as $attribute) 
-                    {
-                        $att_title = strtolower($attribute['title']);
-                        if (in_array($att_title, array(
-                            'color', 'material', 'pattern', 'size'
-                        ))) {
-                            
-                            $att_id = $attribute['id'];
-                            // get the attribute options
-                            $options = array();
-                            foreach ($attribute['options'] as $option) 
-                            {
-                                $options[] = $option['id'];
-                            }
-                                
-                            if ($found = array_intersect($options, $variant['attributes'])) 
-                            {
-                                $key = array_search($found, $variant['attributes']);                                
-                                if (!empty($variant['attribute_titles'][$key])) 
-                                {
-                                    $x->startElement('g:' . $att_title);
-                                        $x->text($variant['attribute_titles'][$key]);
-                                    $x->endElement(); // g:$att_title
-                                }
-                            }
-                        }
-                    }
-                    
-                    // since we do variants: item_group_id
-                    $x->startElement('g:item_group_id');
-                        $x->text($product->{'tracking.sku'});
-                    $x->endElement(); // g:item_group_id                    
-                                        
-                    $sku = $variant['sku'] ? $variant['sku'] : $product->{'tracking.sku'};
-                    if (!$sku) {
-                        $sku = $variant['id'];
-                    }                    
-                    $x->startElement('g:id');
-                        $x->text($sku);
-                    $x->endElement(); // g:id
-                    
-                    if ($brand = $settings->{'feeds.gm_products.brand'})
-                    {
-                        $x->startElement('g:brand');
-                            $x->text($brand);
-                        $x->endElement(); // g:brand
-                    }
-                    
-                    $x->startElement('g:mpn');
-                        $x->text($sku);
-                    $x->endElement(); // g:mpn                    
-                    
-                    $x->startElement('g:price');
-                        $x->text( $price . ' USD');
-                    $x->endElement(); // g:price
-                    
-                    $x->startElement('g:condition');
-                        $x->text('new');
-                    $x->endElement(); // g:condition
-                    
-                    $x->startElement('g:availability');
-                        $x->text('in stock');
-                    $x->endElement(); // g:availability                                        
-                    
-                $x->endElement(); // item
+                $pieces = array(
+                    'name' => null,
+                    'sku' => null,
+                    'buy_url' => null,
+                    'image_url' => null,
+                    'description_short' => null,
+                    'description_long' => null,
+                    'price' => null,
+                    'manufacturer' => null
+                );
+                
+                $pieces['name'] = $product->title;
+                
+                $sku = $variant['sku'] ? $variant['sku'] : $product->{'tracking.sku'};
+                if (!$sku) {
+                    $sku = $variant['id'];
+                }                
+                $pieces['sku'] = $sku;
+                
+                $pieces['buy_url'] = $base . 'shop/product/' . $product->slug . '?variant_id=' . $variant['id'];
+                
+                // image_link
+                if ($image = $variant['image'] ? $variant['image'] : $product->{'featured_image.slug'})
+                {
+                    $pieces['image_url'] = $base . 'asset/' . $image;
+                }
+                
+                $pieces['description_short'] = $product->title . ' ';
+                if ($attribute_title = \Dsc\ArrayHelper::get($variant, 'attribute_title')) {
+                    $pieces['description_short'] .= $attribute_title;
+                }
+                $pieces['description_short'] = trim($pieces['description_short']);
+                
+                $pieces['description_long'] = strip_tags( $product->getAbstract() );
+                
+                $pieces['price'] = $price;
+                
+                if ($brand = $settings->{'feeds.pepperjam_products.brand'})
+                {
+                    $pieces['manufacturer'] = $brand;
+                }
+                
+                $string .= implode("\t", $pieces) . "\r\n";
             }
         }
 
-        $x->endElement(); // channel
-        $x->endElement(); // rss
-        
-        $x->endDocument();
-
-        header('Content-Type: application/xml; charset=utf-8');
-        echo $x->outputMemory();
+        header('Content-Type: text/plain; charset=utf-8');
+        echo $string;
     }
 }
