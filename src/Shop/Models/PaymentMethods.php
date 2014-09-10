@@ -96,6 +96,8 @@ class PaymentMethods extends \Dsc\Mongo\Collection
             $this->slug = \Web::instance()->slug($this->namespace);
         }
         
+        $this->enabled = (bool) $this->enabled;
+        
         return parent::beforeValidate();
     }
 

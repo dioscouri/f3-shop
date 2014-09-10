@@ -16,6 +16,33 @@
             <div class="row">
                 <div class="col-md-2">
                     
+                    <h3>Enabled</h3>
+                            
+                </div>
+                <!-- /.col-md-2 -->
+                            
+                <div class="col-md-10">
+                
+                    <div class="form-group">
+                        <label>Enable this payment method?</label>
+                        <select name="enabled" class="form-control">
+                            <option value="0" <?php echo !$model->{'enabled'} ? 'selected' : null; ?>>No</option>
+                            <option value="1" <?php echo $model->{'enabled'} ? 'selected' : null; ?>>Yes</option>
+                        </select> 
+                    </div>
+                    <!-- /.form-group -->
+        
+                </div>
+                <!-- /.col-md-10 -->
+                
+            </div>
+            <!-- /.row -->        
+            
+            <hr />                
+        
+            <div class="row">
+                <div class="col-md-2">
+                    
                     <h3>Mode</h3>
                             
                 </div>
