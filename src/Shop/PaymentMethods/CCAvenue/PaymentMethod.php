@@ -87,7 +87,7 @@ class PaymentMethod extends \Shop\PaymentMethods\PaymentAbstract
     public function displayName() 
     {
         // Latest buttons sourced from https://www.paypal.com/us/webapps/mpp/logos-buttons
-        $default = 'Credit Card';
+        $default = 'CCAvenue - Credit Card';
         
         // TODO Check if there is an override in the admin
         // if not, use the default
@@ -108,37 +108,33 @@ class PaymentMethod extends \Shop\PaymentMethods\PaymentAbstract
         $cart = $this->model->cart();
         $user = $this->auth->getIdentity();
         
-        $gateway = $this->gateway();
-        
-        $transaction_type = 'authorization,create_payment_token';
+        $merchant_id = $this->model->{'settings.merchant_id'};
+        $working_key = $this->model->{'settings.encryption_key'};
+        $access_code = $this->model->{'settings.access_code'};
         
         $signed_fields = array(
-            'access_key' => $gateway->getAccessKey(),
-            'profile_id' => $gateway->getProfileId(),
-            'transaction_uuid' => (string) $cart->id . "." . time(),
-            'payment_method' => 'card',
-            'locale' => 'en-us',
-            'currency' => 'USD',
-            'transaction_type' => $transaction_type,
-            'reference_number' => (string) $cart->id,
-            'amount' => number_format( $cart->total(), 2, '.', '' ),                        
-            'bill_to_email' => $user->email,
-            'signed_date_time' => gmdate("Y-m-d\TH:i:s\Z"),
-            'signed_field_names' => '',
-            'unsigned_field_names' => 'card_number,card_cvn,card_expiry_date,card_type,bill_to_forename,bill_to_surname,bill_to_phone,bill_to_address_line1,bill_to_address_line2,bill_to_address_city,bill_to_address_state,bill_to_address_country,bill_to_address_postal_code',
+            'merchant_id' => $merchant_id,
+            'order_id' => (string) $cart->id,
+            'currency' => 'INR',
+            'amount' => number_format( $cart->total(), 0, '.', '' ),
+            'redirect_url' => \Dsc\Url::base() . 'shop/checkout/gateway/ccavenue/completePurchase/' . $cart->id,
+            'cancel_url' => \Dsc\Url::base() . 'shop/checkout/payment',
+            'integration_type' => 'iframe_normal',
+            'language' => 'EN',
         );
 
-        $signed_fields['signed_field_names'] = implode(",", array_keys($signed_fields) );
+        \FB::log($signed_fields);
+        $merchant_data = '';
+        foreach ($signed_fields as $key => $value){
+            $merchant_data.=$key.'='.$value.'&';
+        }
         
-        $signature = $gateway->generateSignature($signed_fields);
+        $encrypted_data = \Shop\PaymentMethods\CCAvenue\Lib\Encrypt::encrypt($merchant_data, $working_key);
         
-        $request = $gateway->authorize($signed_fields);
+        $url = $this->gatewayUrl() . '/transaction/transaction.do?command=initiateTransaction&encRequest='.$encrypted_data.'&access_code='.$access_code;
         
-        $this->app->set('request', $request);
-        $this->app->set('signed_fields', $signed_fields);
-        $this->app->set('signature', $signature);        
+        $this->app->set('url', $url);
         $this->app->set('pm', $this->model);
-        $this->app->set('gateway', $this->gateway() );
                 
         $return = $this->theme->renderView('Shop/PaymentMethods/CCAvenue/Views::checkout_form.php');
 
