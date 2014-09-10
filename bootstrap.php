@@ -85,7 +85,12 @@ class ShopBootstrap extends \Dsc\Bootstrap
         \Shop\Models\PaymentMethods::register('\Shop\PaymentMethods\OmnipayCybersource', array(
             'title'=>'Cybersource (via Omnipay)',
             'identifier'=>'omnipay.cybersource',
-        ));        
+        ));
+
+        \Shop\Models\PaymentMethods::register('\Shop\PaymentMethods\CCAvenue', array(
+            'title'=>'CCAvenue',
+            'identifier'=>'ccavenue',
+        ));
         
         static::diagnostics();
     }
