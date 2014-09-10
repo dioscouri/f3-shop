@@ -1,0 +1,1 @@
+<iframe src="<?php echo $url; ?>" id="paymentFrame" width="482" height="450" frameborder="0" scrolling="No" ></iframe>
