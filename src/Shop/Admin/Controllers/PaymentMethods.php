@@ -23,36 +23,6 @@ class PaymentMethods extends \Admin\Controllers\BaseAuth
         echo $this->theme->render('Shop/Admin/Views::paymentmethods/select.php');
     }    
     
-    public function read()
-    {
-        // load the report
-        $slug = $this->inputfilter->clean( $this->app->get('PARAMS.slug'), 'cmd' );
-        
-        try {
-            $item = (new \Shop\Models\PaymentMethods)->setState('filter.slug', $slug)->getItem();
-            if (empty($item->id)) {
-                throw new \Exception('Report not found');
-            }
-            
-            $class = $item->getClass();
-
-            
-        } catch ( \Exception $e ) {
-
-            \Dsc\System::instance()->addMessage( "Invalid Report", 'error');
-            \Dsc\System::instance()->addMessage( $e->getMessage(), 'error');
-            $this->app->reroute( '/admin/shop/reports' );
-            return;
-        }
-        
-        $this->app->set('report', $item);
-        
-        $this->app->set('meta.title', $item->title . ' | Reports | Shop');
-        
-        // display the report
-        $class->index();
-    }
-    
     public function edit()
     {
         $id = $this->inputfilter->clean( $this->app->get('PARAMS.id'), 'cmd' );
@@ -89,6 +59,16 @@ class PaymentMethods extends \Admin\Controllers\BaseAuth
             $item = (new \Shop\Models\PaymentMethods)->setState('filter.identifier', $id)->getItem();
             if (empty($item->id)) {
                 throw new \Exception('Payment Method not found');
+            }
+            
+            $enabled = $this->app->get('POST.enabled');
+            if (strlen($enabled)) 
+            {
+                $item->enabled = false;
+                if (!empty($enabled)) 
+                {
+                    $item->enabled = true;
+                }
             }
         
             if ($settings_array = (array) $this->inputfilter->clean( $this->app->get('POST.settings'), 'array' )) 

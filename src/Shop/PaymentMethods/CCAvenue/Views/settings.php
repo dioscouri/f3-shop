@@ -8,7 +8,7 @@
         </div>        
     </div>
 
-    <h2>Paypal Express Settings</h2>
+    <h2>CCAvenue Settings</h2>
     
     <div class="panel panel-default">
         <div class="panel-body">
@@ -38,7 +38,7 @@
             </div>
             <!-- /.row -->        
             
-            <hr />                
+            <hr />        
         
             <div class="row">
                 <div class="col-md-2">
@@ -66,15 +66,11 @@
             <!-- /.row -->        
             
             <hr />        
-            
-            <p class="alert alert-info">
-                See this page for instructions on finding your API credentials: <a href="https://developer.paypal.com/webapps/developer/docs/classic/api/apiCredentials/" target="_blank">https://developer.paypal.com/webapps/developer/docs/classic/api/apiCredentials/</a>
-            </p>
         
             <div class="row">
                 <div class="col-md-2">
                     
-                    <h3>Test Credentials</h3>
+                    <h3>Credentials</h3>
                             
                 </div>
                 <!-- /.col-md-2 -->
@@ -82,20 +78,20 @@
                 <div class="col-md-10">
                 
                     <div class="form-group">
-                        <label>API Username</label>
-                        <input name="settings[test][username]" value="<?php echo $model->{'settings.test.username'}; ?>" type="text" class="form-control" /> 
+                        <label>Merchant ID</label>
+                        <input name="settings[merchant_id]" value="<?php echo $model->{'settings.merchant_id'}; ?>" type="text" class="form-control" /> 
                     </div>
                     <!-- /.form-group -->
                     
                     <div class="form-group">
-                        <label>API Password</label>
-                        <input name="settings[test][password]" value="<?php echo $model->{'settings.test.password'}; ?>" type="text" class="form-control" /> 
+                        <label>Access Code</label>
+                        <input name="settings[access_code]" value="<?php echo $model->{'settings.access_code'}; ?>" type="text" class="form-control" /> 
                     </div>
                     <!-- /.form-group -->
                     
                     <div class="form-group">
-                        <label>Signature</label>
-                        <input name="settings[test][signature]" value="<?php echo $model->{'settings.test.signature'}; ?>" type="text" class="form-control" /> 
+                        <label>Encryption Key</label>
+                        <input name="settings[encryption_key]" value="<?php echo $model->{'settings.encryption_key'}; ?>" type="text" class="form-control" /> 
                     </div>
                     <!-- /.form-group -->
         
@@ -104,42 +100,6 @@
                 
             </div>
             <!-- /.row -->        
-            
-            <hr />
-        
-            <div class="row">
-                <div class="col-md-2">
-                    
-                    <h3>Live Credentials</h3>
-                            
-                </div>
-                <!-- /.col-md-2 -->
-                            
-                <div class="col-md-10">
-                
-                    <div class="form-group">
-                        <label>API Username</label>
-                        <input name="settings[live][username]" value="<?php echo $model->{'settings.live.username'}; ?>" type="text" class="form-control" /> 
-                    </div>
-                    <!-- /.form-group -->
-                    
-                    <div class="form-group">
-                        <label>API Password</label>
-                        <input name="settings[live][password]" value="<?php echo $model->{'settings.live.password'}; ?>" type="text" class="form-control" /> 
-                    </div>
-                    <!-- /.form-group -->
-                    
-                    <div class="form-group">
-                        <label>Signature</label>
-                        <input name="settings[live][signature]" value="<?php echo $model->{'settings.live.signature'}; ?>" type="text" class="form-control" /> 
-                    </div>
-                    <!-- /.form-group -->
-        
-                </div>
-                <!-- /.col-md-10 -->
-                
-            </div>
-            <!-- /.row -->
                     
         </div>
     </div>
