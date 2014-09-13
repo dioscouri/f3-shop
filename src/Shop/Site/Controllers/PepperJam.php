@@ -17,6 +17,17 @@ class PepperJam extends \Dsc\Controller
             return;
         }
         
+        $this->app->set('CACHE', true);
+        
+        $cache = \Cache::instance();
+        $cache_period = 3600*24;
+        if ($cache->exists('pepperjam.products_text', $string)) 
+        {
+            header('Content-Type: text/plain; charset=utf-8');
+            echo $string;
+            exit;            
+        }
+        
         $base = \Dsc\Url::base();
         
         $model = (new \Shop\Models\Products)
@@ -105,8 +116,11 @@ class PepperJam extends \Dsc\Controller
                 $string .= implode("\t", $pieces) . "\r\n";
             }
         }
+        
+        $cache->set('pepperjam.products_text', $string, $cache_period);
 
         header('Content-Type: text/plain; charset=utf-8');
         echo $string;
+        exit;
     }
 }
