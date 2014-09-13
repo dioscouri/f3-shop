@@ -176,8 +176,11 @@ class Cart extends \Dsc\Controller
         
         if ($this->app->get('AJAX'))
         {
+            $this->app->set('cart', $cart);
+            
             return $this->outputJson($this->getJsonResponse(array(
-                'result' => true
+                'result' => true,
+                'html' => $this->theme->renderView('Shop/Site/Views::cart/lightbox.php')
             )));
         }
         else
