@@ -87,6 +87,10 @@ class Settings extends \Dsc\Mongo\Collections\Settings
     
     public $abandoned_cart_emails = array();
     
+    public $reviews = array(
+        'enabled' => false,
+    );
+    
     public function isShippingMethodEnabled($method=null)
     {
     	$result = false;
