@@ -369,4 +369,27 @@ class Customers extends \Users\Models\Users
         
         return $model;
     }
+    
+    /**
+     * Determine whether or not the user has purchased a product
+     * 
+     * @param \Users\Models\Users $user
+     * @param \Shop\Models\Products $product
+     * @return boolean
+     */
+    public static function hasUserPurchasedProduct( \Users\Models\Users $user, \Shop\Models\Products $product ) 
+    {
+        $model = (new \Shop\Models\Orders)
+        ->setState('filter.user', $user->id)
+        ->setState('filter.product_id', $product->id)
+        ->setState('filter.status_excludes', \Shop\Constants\OrderStatus::cancelled)
+        ->setState('filter.financial_status', array( \Shop\Constants\OrderFinancialStatus::paid, \Shop\Constants\OrderFinancialStatus::authorized ) );
+        
+        if ($model->getCount() > 0) 
+        {
+            return true;
+        }
+        
+        return false;
+    }
 }

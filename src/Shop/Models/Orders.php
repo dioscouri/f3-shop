@@ -183,6 +183,12 @@ class Orders extends \Dsc\Mongo\Collections\Taggable
         {
             $this->setCondition('coupons.code', $filter_coupon_code);
         }
+        
+        $filter_product_id = $this->getState('filter.product_id');
+        if (strlen($filter_product_id))
+        {
+            $this->setCondition('items.product_id', new \MongoId((string) $filter_product_id));
+        }
                 
         return $this;
     }
