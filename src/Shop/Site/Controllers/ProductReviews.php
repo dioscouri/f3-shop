@@ -54,7 +54,7 @@ class ProductReviews extends Product
         // is the user logged in?
         // can the user review this product?
         // try/catch the save
-    	
+        
     	try 
     	{
     	    $slug = $this->inputfilter->clean( $this->app->get('PARAMS.slug'), 'cmd' );
@@ -73,9 +73,26 @@ class ProductReviews extends Product
     	} 
     	catch ( \Exception $e ) 
     	{
-    		$this->app->error( '404', 'Invalid Product' );
-    		return;
+    	    if ($this->app->get('AJAX'))
+    	    {
+    	        return $this->outputJson($this->getJsonResponse(array(
+    	            'result' => false,
+    	            'error' => true,
+    	            'message' => 'Invalid Product'
+    	        )));
+    	    }
+    	    else
+    	    {
+    	        $this->app->error( '404', 'Invalid Product' );
+    	        return;
+    	    }
     	}
+
+    	$redirect = '/shop/product/' . $item->slug;
+    	if ($custom_redirect = \Dsc\System::instance()->get('session')->get('shop.product_review.redirect'))
+    	{
+    	    $redirect = $custom_redirect;
+    	}    	 
     	
     	try 
     	{
@@ -92,7 +109,10 @@ class ProductReviews extends Product
     	        throw new \Exception( $canReview );
     	    }
     	    
-    	    $review = (new \Shop\Models\ProductReviews($this->app->get('POST')))
+    	    $post = $this->app->get('POST');
+    	    $post['description'] = !empty($post['description']) ? nl2br($post['description']) : null;
+    	    
+    	    $review = (new \Shop\Models\ProductReviews($post))
     	    ->set('product_id', $item->id)
     	    ->set('user_id', $user->id)
     	    ->set('user_name', $user->first_name)
@@ -102,15 +122,39 @@ class ProductReviews extends Product
     	    // Add images, using a model method
     	    $review->addImages($this->app->get('FILES'));
     	    
-    	    \Dsc\System::addMessage( 'Thanks for the review! It will be published following review by our moderators.', 'success' );
-    	    $this->app->reroute( '/shop/product/' . $item->slug );
+    	    $successMessage = 'Thanks for the review! It will be published following review by our moderators.';
+    	    
+    	    if ($this->app->get('AJAX'))
+    	    {
+    	        return $this->outputJson($this->getJsonResponse(array(
+    	            'result' => true,
+    	            'message' => $successMessage 
+    	        )));
+    	    }
+    	    else
+    	    {
+    	        \Dsc\System::addMessage( $successMessage, 'success' );
+    	        $this->app->reroute($redirect);
+    	        return;
+    	    }
     	    
     	}
         catch ( \Exception $e ) 
     	{
-    	    \Dsc\System::addMessage( $e->getMessage(), 'error');
-    	    $this->app->reroute( '/shop/product/' . $item->slug );
-    	    return;    	    
+    	    if ($this->app->get('AJAX'))
+    	    {
+    	        return $this->outputJson($this->getJsonResponse(array(
+    	            'result' => false,
+    	            'error' => true,
+    	            'message' => $e->getMessage()
+    	        )));
+    	    }
+    	    else
+    	    {
+    	        \Dsc\System::addMessage( $e->getMessage(), 'error');
+    	        $this->app->reroute($redirect);
+    	        return;
+    	    }
     	}
     }
 }

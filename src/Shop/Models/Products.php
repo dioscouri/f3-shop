@@ -1422,6 +1422,25 @@ class Products extends \Dsc\Mongo\Collections\Content
     }    
     
     /**
+     * 
+     * @param unknown $variant_id
+     */
+    public function variantImage( $variant_id ) 
+    {
+        $image = $this->image();
+        
+        if ($variant = $this->variant($variant_id)) 
+        {
+            if (!empty($variant['image'])) 
+            {
+                $image = $variant['image'];
+            }
+        }
+        
+        return $image;
+    }
+    
+    /**
      * Determines if a product is available for purchase
      * by checking multiple things, including variant inventory
      * publication dates, etc

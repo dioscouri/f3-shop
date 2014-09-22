@@ -29,7 +29,40 @@ class Account extends \Dsc\Controller
         
         $this->app->set('meta.title', 'My Account');
         
-    	$view = \Dsc\System::instance()->get('theme');
-    	echo $view->render('Shop/Site/Views::account/index.php');
+    	echo $this->theme->render('Shop/Site/Views::account/index.php');
+    }
+    
+    public function productReviews()
+    {
+        $user = $this->getIdentity();
+        
+        $model = new \Shop\Models\Orders;
+        $state = $model->populateState()->getState();
+        
+        $is_reviewed = null;
+        if (strlen($state->get('filter.is_reviewed'))) {
+            if ($state->get('filter.is_reviewed')) {
+                $is_reviewed = true;
+            }
+            else {
+                $is_reviewed = false;
+            }
+        }
+                
+        try {
+            $paginated = \Shop\Models\Customers::purchasedProducts( $user, array(
+                'offset' => $state->get('list.offset'),
+                'keyword' => $state->get('filter.keyword'),
+                'is_reviewed' => $is_reviewed
+            ) );
+        } catch ( \Exception $e ) {
+        
+        }
+        
+        $this->app->set('meta.title', 'My Reviews');
+        $this->app->set('paginated', $paginated);
+        $this->app->set('state', $state);
+        
+        echo $this->theme->render('Shop/Site/Views::account/product_reviews.php');        
     }
 }

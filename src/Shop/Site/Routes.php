@@ -398,5 +398,15 @@ class Routes extends \Dsc\Routes\Group
             'controller' => 'ProductReviews',
             'action' => 'index'
         ) );
+        
+        $this->add( '/account/product-reviews', 'GET|POST', array(
+            'controller' => 'Account',
+            'action' => 'productReviews'
+        ) );
+        
+        $this->add( '/account/product-reviews/page/@page', 'GET', array(
+            'controller' => 'Account',
+            'action' => 'productReviews'
+        ) );
     }
 }

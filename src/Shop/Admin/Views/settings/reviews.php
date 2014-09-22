@@ -19,6 +19,18 @@
         
         <hr/>
                 
+        <div class="form-group">
+            <div class="row">
+                <div class="col-md-6">        
+                    <label>Who is eligible to review a product?</label>
+                    <select name="reviews[eligibile]" class="form-control">
+                        <option value="purchasers" <?php echo ($flash->old('reviews.eligibile') == 'purchasers') ? "selected='selected'" : null; ?>>Purchasers Only (default)</option>
+                        <option value="identified" <?php echo ($flash->old('reviews.eligibile') == 'identified') ? "selected='selected'" : null; ?>>Any logged in user</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <!-- /.form-group -->
                 
     </div>
 </div>

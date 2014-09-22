@@ -30,6 +30,26 @@ class ProductReviews extends \Dsc\Mongo\Collections\Nodes
     public $user_name; // display name for the user in this comment
     public $order_verified = false; // has it been confirmed that this user ordered this product?
     
+    public static function hasUserReviewed( \Users\Models\Users $user, \Shop\Models\Products $product )
+    {
+        if (empty($user->id))
+        {
+            return false;
+        }
+                
+        $has_reviewed = static::collection()->findOne(array(
+            'product_id' => $product->id,
+            'user_id' => $user->id,
+        ));
+
+        if (!$has_reviewed)
+        {
+            return false;
+        }
+        
+        return new static($has_reviewed);
+    }
+    
     /**
      * Returns boolean true if user can review product
      * otherwise, returns string error message  
@@ -40,24 +60,47 @@ class ProductReviews extends \Dsc\Mongo\Collections\Nodes
      */
     public static function canUserReview( \Users\Models\Users $user, \Shop\Models\Products $product ) 
     {
-        if (empty($user->id)) 
+        if (empty($user->id))
         {
             return false;
         }
-        
-        // has the user purchased this item?
-        if (\Shop\Models\Customers::hasUserPurchasedProduct( $user, $product )) 
+                
+        $settings = \Shop\Models\Settings::fetch();        
+        switch ($settings->{'reviews.eligibile'}) 
         {
-            // has the user already reviewed it?
-            $has_reviewed = static::collection()->count(array(
-                'product_id' => $product->id,
-                'user_id' => $user->id,
-            ));
-            
-            if (!$has_reviewed) 
-            {
-                return true;
-            }
+            case "identified":
+                
+                // has the user already reviewed it?
+                $has_reviewed = static::collection()->count(array(
+                    'product_id' => $product->id,
+                    'user_id' => $user->id,
+                ));
+                
+                if (!$has_reviewed)
+                {
+                    return true;
+                }
+                
+                break;
+            case "purchasers":
+            default:
+                
+                // has the user purchased this item?
+                if (\Shop\Models\Customers::hasUserPurchasedProduct( $user, $product ))
+                {
+                    // has the user already reviewed it?
+                    $has_reviewed = static::collection()->count(array(
+                        'product_id' => $product->id,
+                        'user_id' => $user->id,
+                    ));
+                
+                    if (!$has_reviewed)
+                    {
+                        return true;
+                    }
+                }
+                
+                break;
         }
          
         return false;
@@ -192,7 +235,7 @@ class ProductReviews extends \Dsc\Mongo\Collections\Nodes
     {
         $this->publishableBeforeSave();
         
-        $this->description = strip_tags( $this->description );
+        $this->description = strip_tags( str_replace('\n', '<br>', $this->description), '<br><p>' );
         $this->images = array_values( array_filter( $this->images ) );
         $this->rating = (float) $this->rating;
     

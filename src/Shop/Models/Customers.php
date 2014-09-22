@@ -392,4 +392,135 @@ class Customers extends \Users\Models\Users
         
         return false;
     }
+    
+    /**
+     * Get a paginated list of the customer's purchased products
+     *
+     * @param \Users\Models\Users $user
+     * @param \Shop\Models\Products $product
+     * @return boolean
+     */
+    public static function purchasedProducts( \Users\Models\Users $user, $options=array() )
+    {
+        $options = $options + array(
+            'limit' => 10,
+            'offset' => 0,
+            'keyword' => null
+        );
+        
+        $limit = $options['limit'];
+        $offset = $options['offset']; 
+        
+        $model = (new \Shop\Models\Orders)
+        ->setState('filter.keyword', $options['keyword'])
+        ->setState('filter.user', $user->id)
+        ->setState('filter.status_excludes', \Shop\Constants\OrderStatus::cancelled)
+        ->setState('filter.financial_status', array( \Shop\Constants\OrderFinancialStatus::paid, \Shop\Constants\OrderFinancialStatus::authorized ) );
+        
+        $conditions = $model->conditions();
+        
+        $pipeline = array(
+            array(
+                '$match' => $conditions
+            ),
+            array(
+                '$sort' => array( 'metadata.created.time' => -1 )
+            ),            
+            array(
+                '$unwind' => '$items'
+            ),            
+            array(
+                '$project' => array(
+                    '_id' => 0,
+                    'title' => '$items.product.title',
+                    'slug' => '$items.product.slug',
+                    'product_id' => '$items.product_id',
+                    'variant_id' => '$items.variant_id',
+                    'price' => '$items.price',
+                    'quantity' => '$items.quantity',
+                    'attribute_title' => '$items.attribute_title',
+                    'sku' => '$items.sku',
+                    'model_number' => '$items.model_number',
+                    'order_created' => '$metadata.created',
+                    'order_id' => '$_id',
+                )
+            ),
+        );
+
+        if (!empty($options['keyword'])) 
+        {
+            $key = new \MongoRegex('/'.$options['keyword'].'/i');
+            
+            $pipeline[] = array(
+                '$match' => array(
+                    '$or' => array(
+                        array( 'title' => $key ),
+                        array( 'sku' => $key ),
+                        array( 'order_id' => $key ),
+                    )
+                )
+            );
+            
+        }
+        
+        if (isset($options['is_reviewed']) && is_bool($options['is_reviewed'])) 
+        {
+            // get the product_ids that have been reviewed
+            $reviewed_product_ids = \Shop\Models\ProductReviews::collection()->distinct('product_id', array(
+                'user_id' => $user->id
+            )); 
+            
+            if ($options['is_reviewed']) {
+                // Add an $in filter to the pipeline for product_id
+                $pipeline[] = array(
+                    '$match' => array(
+                        'product_id' => array(
+                            '$in' => $reviewed_product_ids
+                        )
+                    )
+                );
+            }
+            else 
+            {
+                // Add an $nin filter to the pipeline for product_id
+                $pipeline[] = array(
+                    '$match' => array(
+                        'product_id' => array(
+                            '$nin' => $reviewed_product_ids
+                        )
+                    )
+                );                
+            }
+        }
+        
+        $pipeline[] = array(
+            '$skip' => $offset * $limit
+        );            
+        
+        $pipeline[] = array(
+            '$limit' => $limit
+        );
+
+        $agg = \Shop\Models\Orders::collection()->aggregate($pipeline);
+
+        
+        $result = null;
+        //\Dsc\System::addMessage(\Dsc\Debug::dump($agg));
+        if (!empty($agg['ok']) && !empty($agg['result']))
+        {
+            $total = \Shop\Models\Orders::collection()->count($conditions); 
+            $result = new \Dsc\Pagination( $total, $limit );
+            $items = array();
+            foreach ($agg['result'] as $doc) 
+            {
+                $item = (new \Shop\Models\Products)->setState('filter.id', $doc['product_id'])->getItem();
+                $item->order_item = $doc;
+                $item->order_item['image'] = $item->variantImage( $item->order_item['variant_id'] );
+                $items[] = $item;
+            }
+            $result->items = $items;
+        }
+    
+        return $result;
+    }
 }

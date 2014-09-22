@@ -27,8 +27,10 @@
     
     <?php // can this user make the review? ?>
     <?php 
-    if (\Shop\Models\ProductReviews::canUserReview($this->auth->getIdentity(), $item) === true) { 
+    if (\Shop\Models\ProductReviews::canUserReview($this->auth->getIdentity(), $item) === true) {
+        $this->app->set('review_key', 0); 
         echo $this->renderView('Shop/Site/Views::product/fragment_reviews_create.php');
+        ?><hr /><?php
     } 
     ?>
     
@@ -112,6 +114,12 @@ jQuery(document).ready(function(){
 
 	jQuery('#load-more-reviews').on('click.reviews', function(){
 	    ShopGetReviews(window.reviews_page);
+	});
+
+	jQuery('.review-text').readmore({
+        moreLink: '<a href="#" class="btn btn-link">Read More</a>',
+        lessLink: '<a href="#" class="btn btn-link">Read Less</a>',
+        speed: 750,
 	});
 });
 </script>
