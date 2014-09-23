@@ -7,14 +7,6 @@
         <li class="active">My Reviews</li>
     </ol>
 
-<?php if (empty($paginated->items)) { ?>
-    
-        <h2>You haven't purchased any items! <a href="./shop"><small>Go Shopping</small></a></h2>
-
-<?php } ?>
-
-<?php if (!empty($paginated->items)) { ?>
-
     <?php \Dsc\System::instance()->get('session')->set('shop.product_review.redirect', $this->app->get('PATH')); ?>
 
     <form action="./shop/account/product-reviews" method="post">
@@ -29,6 +21,14 @@
         </div>
     </form>
 
+    <?php if (empty($paginated->items)) { ?>
+        
+            <div class="list-group-item">
+                No items found.
+            </div>
+    
+    <?php } elseif (!empty($paginated->items)) { ?>
+    
     <div class="list-group-item">
         <div class="row">
             <div class="col-sm-10">
@@ -45,7 +45,7 @@
             </div>
         </div>
     </div>
-
+    
     <?php foreach ($paginated->items as $key=>$item) { ?>
         <div class="list-group-item">
             <div class="row">
@@ -151,6 +151,6 @@
         </div>
     </div>    
     
-<?php } ?>
+    <?php } ?>
 
 </div>

@@ -515,6 +515,9 @@ class Customers extends \Users\Models\Users
             {
                 $item = (new \Shop\Models\Products)->setState('filter.id', $doc['product_id'])->getItem();
                 $item->order_item = $doc;
+                if (empty($item->order_item['variant_id'])) {
+                    $item->order_item['variant_id'] = null;
+                }
                 $item->order_item['image'] = $item->variantImage( $item->order_item['variant_id'] );
                 $items[] = $item;
             }
