@@ -46,4 +46,26 @@ abstract class Report extends \Dsc\Controller
         return $this;
     }
     
+    /**
+     * Get the report object
+     */
+    public function report()
+    {
+        if (!empty($this->report)) 
+        {
+            return $this->report;
+        }
+        
+        $slug = $this->slug();
+        
+        $item = (new \Shop\Models\Reports)->setState('filter.slug', $slug)->getItem();
+        if (empty($item->id)) {
+            throw new \Exception('Report not found');
+        }
+
+        $this->report = $item;
+        
+        return $this->report;
+    }
+    
 }

@@ -11,6 +11,17 @@ class GoogleMerchant extends \Dsc\Controller
             return;
         }
         
+        $this->app->set('CACHE', true);
+        
+        $cache = \Cache::instance();
+        $cache_period = 3600*24;
+        if ($cache->exists('googlemerchant.products_xml', $string))
+        {
+            header('Content-Type: application/xml; charset=utf-8');
+            echo $string;
+            exit;
+        }        
+        
         $base = \Dsc\Url::base();
         
         $model = (new \Shop\Models\Products)
@@ -202,7 +213,10 @@ class GoogleMerchant extends \Dsc\Controller
         
         $x->endDocument();
 
+        $string = $x->outputMemory();
+        $cache->set('googlemerchant.products_xml', $string, $cache_period);
+        
         header('Content-Type: application/xml; charset=utf-8');
-        echo $x->outputMemory();
+        echo $string;
     }
 }
