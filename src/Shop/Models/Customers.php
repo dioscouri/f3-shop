@@ -383,7 +383,7 @@ class Customers extends \Users\Models\Users
         ->setState('filter.user', $user->id)
         ->setState('filter.product_id', $product->id)
         ->setState('filter.status_excludes', \Shop\Constants\OrderStatus::cancelled)
-        ->setState('filter.financial_status', array( \Shop\Constants\OrderFinancialStatus::paid, \Shop\Constants\OrderFinancialStatus::authorized ) );
+        ->setState('filter.financial_status', array( \Shop\Constants\OrderFinancialStatus::paid, \Shop\Constants\OrderFinancialStatus::authorized, \Shop\Constants\OrderFinancialStatus::pending ) );
         
         if ($model->getCount() > 0) 
         {
