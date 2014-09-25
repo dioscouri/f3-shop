@@ -171,6 +171,14 @@
                             <ul class="list-unstyled">
                                 <li><a href="./shop/wishlist">Wishlist</a></li>
                             </ul>
+                            
+                            <?php $settings = \Shop\Models\Settings::fetch(); ?>
+                            <?php if ($settings->{'reviews.enabled'}) { ?>
+                                <h4>Product Reviews</h4>
+                                <ul class="list-unstyled">
+                                    <li><a href="./shop/account/product-reviews">Your Reviews</a></li>
+                                </ul>                            
+                            <?php } ?>                             
                         </div>
                         <div class="col-xs-12 col-sm-12 col-md-6">
                             <?php if (class_exists('\Affiliates\Models\Referrals')) { ?>

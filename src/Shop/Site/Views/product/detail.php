@@ -328,6 +328,6 @@ jQuery(document).ready(function(){
     <?php $settings = \Shop\Models\Settings::fetch(); ?>
     <?php if ($settings->{'reviews.enabled'}) { ?>
         <?php echo $this->renderView('Shop/Site/Views::product/fragment_reviews.php'); ?>
-    <?php } ?>    
+    <?php } ?> 
     
 </div>

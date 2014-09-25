@@ -310,5 +310,6 @@ class Routes extends \Dsc\Routes\Group
 
         $this->addCrudGroup('OrderFailures', 'OrderFailure');
         
+        $this->addCrudGroup('ProductReviews', 'ProductReview');
     }
 }

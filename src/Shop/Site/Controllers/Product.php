@@ -68,6 +68,8 @@ class Product extends \Dsc\Controller
             'Product Name' => $item->title,
             'product_id' => (string) $item->id            
         ));
+        
+        $this->session->set('shop.product_review.redirect', '/shop/product/' . $item->slug);
     	
     	$view = \Dsc\System::instance()->get('theme');
     	echo $view->render('Shop/Site/Views::product/detail.php');

@@ -168,7 +168,12 @@ class Listener extends \Prefab
                         'title' => 'Carts',
                         'route' => './admin/shop/carts',
                         'icon' => 'fa fa-shopping-cart'
-                    ),                    
+                    ),
+                    array(
+                        'title' => 'Product Reviews',
+                        'route' => './admin/shop/productreviews',
+                        'icon' => 'fa fa-comments'
+                    ),
                 );
                 
                 $customers_item->addChildren($customers_children);

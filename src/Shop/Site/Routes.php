@@ -388,5 +388,25 @@ class Routes extends \Dsc\Routes\Group
         
             $this->app->route('GET /shop/pepperjam/products.txt', '\Shop\Site\Controllers\PepperJam->productsTxt', $cache_period);
         }
+        
+        $this->add( '/product/@slug/review', 'POST', array(
+            'controller' => 'ProductReviews',
+            'action' => 'create'
+        ) );
+        
+        $this->add( '/product/@slug/reviews/page/@page [ajax]', 'GET', array(
+            'controller' => 'ProductReviews',
+            'action' => 'index'
+        ) );
+        
+        $this->add( '/account/product-reviews', 'GET|POST', array(
+            'controller' => 'Account',
+            'action' => 'productReviews'
+        ) );
+        
+        $this->add( '/account/product-reviews/page/@page', 'GET', array(
+            'controller' => 'Account',
+            'action' => 'productReviews'
+        ) );
     }
 }
