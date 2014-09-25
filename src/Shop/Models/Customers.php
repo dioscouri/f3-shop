@@ -415,7 +415,8 @@ class Customers extends \Users\Models\Users
         ->setState('filter.keyword', $options['keyword'])
         ->setState('filter.user', $user->id)
         ->setState('filter.status_excludes', \Shop\Constants\OrderStatus::cancelled)
-        ->setState('filter.financial_status', array( \Shop\Constants\OrderFinancialStatus::paid, \Shop\Constants\OrderFinancialStatus::authorized ) );
+        ->setState('filter.financial_status', array( \Shop\Constants\OrderFinancialStatus::paid, \Shop\Constants\OrderFinancialStatus::authorized, \Shop\Constants\OrderFinancialStatus::pending ) )
+        ;
         
         $conditions = $model->conditions();
         
@@ -443,6 +444,13 @@ class Customers extends \Users\Models\Users
                     'model_number' => '$items.model_number',
                     'order_created' => '$metadata.created',
                     'order_id' => '$_id',
+                )
+            ),
+            array(
+                '$match' => array(
+                    'product_id' => array(
+                        '$nin' => array('', null)
+                    )
                 )
             ),
         );
@@ -493,6 +501,16 @@ class Customers extends \Users\Models\Users
             }
         }
         
+        $count_pipeline = $pipeline;
+        $count_pipeline[] = array(
+            '$group' => array(
+                '_id' => null,
+                'count' => array(
+                    '$sum' => 1
+                )
+            )
+        );
+        
         $pipeline[] = array(
             '$skip' => $offset * $limit
         );            
@@ -502,24 +520,33 @@ class Customers extends \Users\Models\Users
         );
 
         $agg = \Shop\Models\Orders::collection()->aggregate($pipeline);
-
         
         $result = null;
         //\Dsc\System::addMessage(\Dsc\Debug::dump($agg));
         if (!empty($agg['ok']) && !empty($agg['result']))
         {
-            $total = \Shop\Models\Orders::collection()->count($conditions); 
+            $agg_count = \Shop\Models\Orders::collection()->aggregate($count_pipeline);
+            $total = isset($agg_count['result'][0]['count']) ? $agg_count['result'][0]['count'] : \Shop\Models\Orders::collection()->count($conditions);
+ 
             $result = new \Dsc\Pagination( $total, $limit );
             $items = array();
             foreach ($agg['result'] as $doc) 
             {
-                $item = (new \Shop\Models\Products)->setState('filter.id', $doc['product_id'])->getItem();
-                $item->order_item = $doc;
-                if (empty($item->order_item['variant_id'])) {
-                    $item->order_item['variant_id'] = null;
+                if (empty($doc['product_id'])) 
+                {
+                    continue;
                 }
-                $item->order_item['image'] = $item->variantImage( $item->order_item['variant_id'] );
-                $items[] = $item;
+                
+                $item = (new \Shop\Models\Products)->setState('filter.id', $doc['product_id'])->getItem();
+                if (!empty($item->id)) 
+                {
+                    $item->order_item = $doc;
+                    if (empty($item->order_item['variant_id'])) {
+                        $item->order_item['variant_id'] = null;
+                    }
+                    $item->order_item['image'] = $item->variantImage( $item->order_item['variant_id'] );
+                    $items[] = $item;                    
+                }
             }
             $result->items = $items;
         }
