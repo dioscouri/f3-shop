@@ -37,7 +37,11 @@ class Checkout extends \Dsc\Controller
         
         $this->app->set('meta.title', 'Shipping | Checkout');
         
-        \Shop\Models\Activities::track('Started Checkout');
+        $props = array();
+        if ($identity->guest) {
+            $props['guest'] = true;
+        }
+        \Shop\Models\Activities::track('Started Checkout', $props);
                 
         $view = \Dsc\System::instance()->get( 'theme' );
         echo $view->render( 'Shop/Site/Views::checkout/index.php' );
@@ -71,7 +75,11 @@ class Checkout extends \Dsc\Controller
         }
         $identity->reload();
         
-        \Shop\Models\Activities::track('Reached Payment Step in Checkout');
+        $props = array();
+        if ($identity->guest) {
+            $props['guest'] = true;
+        }        
+        \Shop\Models\Activities::track('Reached Payment Step in Checkout', $props);
         
         $this->app->set('meta.title', 'Payment | Checkout');
         
@@ -107,6 +115,11 @@ class Checkout extends \Dsc\Controller
                     'Coupons' => \Joomla\Utilities\ArrayHelper::getColumn( (array) $order->coupons, 'code' ),
                     'Auto Coupons' => \Joomla\Utilities\ArrayHelper::getColumn( (array) $order->auto_coupons, 'code' ),
                 );
+                
+                $identity = $this->getIdentity();
+                if ($identity->guest) {
+                    $properties['guest'] = true;
+                }
                 
                 foreach ( $order->items as $item )
                 {
