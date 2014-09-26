@@ -204,6 +204,14 @@ class Dashboard extends \Dsc\Models
             'perc' => $perc
         );
         
+        // Started GUEST Checkout
+        $start_conditions = $base_conditions + array(
+            'action' => new \MongoRegex('/Started Checkout/i'),
+            'properties.app' => 'shop',
+            'properties.guest' => true
+        );
+        $return['Started Checkout']['guest_count'] = count($model->collection()->distinct( 'actor_id', $start_conditions ));
+        
         // Reached Payment Step in Checkout
         $payment_conditions = $base_conditions + array(
             'action' => new \MongoRegex('/Reached Payment Step in Checkout/i'),
@@ -215,6 +223,14 @@ class Dashboard extends \Dsc\Models
             'count' => $count,
             'perc' => $perc
         );      
+        
+        // Reached Payment Step in Checkout as GUEST
+        $payment_conditions = $base_conditions + array(
+            'action' => new \MongoRegex('/Reached Payment Step in Checkout/i'),
+            'properties.app' => 'shop',
+            'properties.guest' => true
+        );
+        $return['Reached Payment Step in Checkout']['guest_count'] = count($model->collection()->distinct( 'actor_id', $payment_conditions ));        
         
         // Submitted Payment in Checkout
         $submitted_payment_conditions = $base_conditions + array(
@@ -239,6 +255,14 @@ class Dashboard extends \Dsc\Models
             'count' => $count,
             'perc' => $perc
         );        
+        
+        // Completed Checkout as GUEST
+        $complete_checkout_conditions = $base_conditions + array(
+            'action' => new \MongoRegex('/Completed Checkout/i'),
+            'properties.app' => 'shop',
+            'properties.guest' => true
+        );
+        $return['Completed Checkout']['guest_count'] = count($model->collection()->distinct( 'actor_id', $complete_checkout_conditions ));        
                 
         return $return;
     }
