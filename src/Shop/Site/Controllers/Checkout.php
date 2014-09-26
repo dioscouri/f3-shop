@@ -431,9 +431,60 @@ class Checkout extends \Dsc\Controller
             // if $checkout_method == guest
             // store email in cart object and then continue
             // create a guest mongoid
-            // TODO Enable this
-        	//case "guest":
-        	    //break;
+        	case "guest":
+        	    
+        	    $real_email = trim( strtolower( $this->input->get( 'email_address', null, 'string' ) ) );
+        	    
+        	    if (\Users\Models\Users::emailExists($real_email)) 
+        	    {
+        	        \Dsc\System::addMessage( 'This email is already registered. Please login to continue.  <a href="./user/forgot-password">If necessary, you can recover your password here.</a>', 'error' );
+        	        $this->app->reroute( '/shop/checkout' );
+        	        return;        	        
+        	    }
+        	    
+        	    $mongo_id = (string) new \MongoId;        	    
+        	    $email = 'guest-' . $mongo_id . '@' . $mongo_id . '.' . $mongo_id;
+        	    $password = \Users\Models\Users::generateRandomString();
+        	    
+        	    $data = array(
+        	        'first_name' => 'Guest',
+        	        'last_name' => 'User',
+        	        'email' => $email,
+        	        'guest_email' => $real_email,
+        	        'new_password' => $password,
+        	        'confirm_new_password' => $password
+        	    );
+        	     
+        	    $user = (new \Users\Models\Users)->bind($data);
+        	    
+        	    try
+        	    {
+        	        // this will handle other validations, such as username uniqueness, etc
+        	        $user->guest = true;
+        	        $user->active = false;
+        	        $user->save();
+        	    }
+        	    catch(\Exception $e)
+        	    {
+        	        \Dsc\System::addMessage( 'Could not create guest account', 'error' );
+        	        \Dsc\System::addMessage( $e->getMessage(), 'error' );
+        	        \Dsc\System::instance()->setUserState('shop.checkout.register.flash_filled', true);
+        	        $flash = \Dsc\Flash::instance();
+        	        $flash->store(array());
+        	        $this->app->reroute('/shop/checkout');
+        	        return;
+        	    }
+        	    
+        	    // if we have reached here, then all is right with the form
+        	    $flash = \Dsc\Flash::instance();
+        	    $flash->store(array());
+        	    
+        	    // login the user, trigger Listeners
+        	    \Dsc\System::instance()->get( 'auth' )->login( $user );
+        	     
+        	    $this->app->reroute( '/shop/checkout' );        	    
+        	    
+        	    break;
             
             // if $checkout_method == register
             // validate data
@@ -462,7 +513,7 @@ class Checkout extends \Dsc\Controller
     	                \Dsc\System::instance()->setUserState('shop.checkout.register.flash_filled', true);
     	                $flash = \Dsc\Flash::instance();
     	                $flash->store($user->cast());
-    	                $f3->reroute( '/shop/checkout' );    	        
+    	                $this->app->reroute( '/shop/checkout' );    	        
     	                return;
     	            }
     	        }
@@ -508,7 +559,7 @@ class Checkout extends \Dsc\Controller
     	        // login the user, trigger Listeners
     	        \Dsc\System::instance()->get( 'auth' )->login( $user );
     	        
-    	        $f3->reroute( '/shop/checkout' );
+    	        $this->app->reroute( '/shop/checkout' );
     	        
     	        break;
         	         
@@ -517,7 +568,7 @@ class Checkout extends \Dsc\Controller
             // redirect back to checkout
     	    default:
     	        \Dsc\System::addMessage( 'Invalid Checkout Method', 'error' );
-    	        $f3->reroute( '/shop/checkout' );
+    	        $this->app->reroute( '/shop/checkout' );
 	            break;
 	             
         }

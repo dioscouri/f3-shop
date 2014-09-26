@@ -137,7 +137,7 @@ class PaymentMethod extends \Shop\PaymentMethods\PaymentAbstract
             'transaction_type' => $transaction_type,
             'reference_number' => (string) $cart->id,
             'amount' => number_format( $cart->total(), 2, '.', '' ),                        
-            'bill_to_email' => $user->email,
+            'bill_to_email' => $user->email(true),
             'signed_date_time' => gmdate("Y-m-d\TH:i:s\Z"),
             'signed_field_names' => '',
             'unsigned_field_names' => 'card_number,card_cvn,card_expiry_date,card_type,bill_to_forename,bill_to_surname,bill_to_phone,bill_to_address_line1,bill_to_address_line2,bill_to_address_city,bill_to_address_state,bill_to_address_country,bill_to_address_postal_code',

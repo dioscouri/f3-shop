@@ -31,24 +31,24 @@
                                 <input type="radio" value="register" id="checkout-method-register" name="checkout_method" <?php if (!$flash->old('checkout_method') || $flash->old('checkout_method') == 'register') { echo "checked"; } ?>>
                                 Register with your email address                    
                             </label>
-                            <?php /* ?>
+
                             <label for="checkout-method-guest" class="radio">
                                 <input type="radio" value="guest" id="checkout-method-guest" name="checkout_method" <?php if ($flash->old('checkout_method') == 'guest') { echo "checked"; } ?>>
                                 Checkout as a Guest
                             </label> 
-                            */ ?>                       
+                       
                         </small>
                     </legend>                
 
-                    <div class="row">
+                    <div id="register-names" class="row">
                         <div class="col-md-6">
-                            <div class="form-group">
+                            <div class="form-group register-name">
                                 <label>First Name</label>
                                 <input type="text" name="first_name" placeholder="First Name" x-autocompletetype="given-name" autocomplete="given-name" class="form-control" required />
                             </div>
                         </div>
                         <div class="col-md-6">
-                            <div class="form-group">
+                            <div class="form-group register-name">
                                 <label>Last Name</label>
                                 <input type="text" name="last_name" placeholder="Last Name" x-autocompletetype="surname" autocomplete="family-name" class="form-control" required />
                             </div>
@@ -57,7 +57,7 @@
                 
                     <div id="email-password" class="form-group">
                         <label>Email Address</label>
-                        <input type="email" name="email_address" class="form-control" required />
+                        <input type="email" name="email_address" class="form-control" placeholder="Email Address" x-autocompletetype="email" autocomplete="email" required />
                         <p id="guest-email-message" class="help-block">Will only be used for order-related communication.</p>
                     </div>
                     
@@ -94,7 +94,11 @@
 jQuery(document).ready(function(){
     jQuery('#checkout-method-guest').click(function(){
         jQuery('#email-password').show();
-        jQuery('#guest-email-message').show() 
+        jQuery('#guest-email-message').show()
+        jQuery('#register-names').hide().find('input').each(function(){
+            jQuery(this).data('required', false);
+            jQuery(this).removeAttr('required'); 
+        });         
         jQuery('#register-password').hide().find('input').each(function(){
             jQuery(this).data('required', false);
             jQuery(this).removeAttr('required'); 
@@ -107,7 +111,12 @@ jQuery(document).ready(function(){
     
     jQuery('#checkout-method-register').click(function(){
         jQuery('#email-password').show();
-        jQuery('#guest-email-message').hide() 
+        jQuery('#register-names').show();
+        jQuery('#guest-email-message').hide()
+        jQuery('#register-names').show().find('input').each(function(){
+            jQuery(this).data('required', true);
+            jQuery(this).attr('required', 'required');
+        });         
         jQuery('#register-password').show().find('input').each(function(){
             jQuery(this).data('required', true);
             jQuery(this).attr('required', 'required');
