@@ -398,6 +398,14 @@ class Routes extends \Dsc\Routes\Group
             'controller' => 'ProductReviews',
             'action' => 'index'
         ) );
+
+        $this->router->route( 'GET /shop/product/@slug/reviews/page', function($app, $params){
+            $app->reroute('/shop/product/' . $params['slug'], true);
+        } );
+                
+        $this->router->route( 'GET /shop/product/@slug/reviews/page/@page', function($app, $params){
+            $app->reroute('/shop/product/' . $params['slug'], true);
+        } );
         
         $this->add( '/account/product-reviews', 'GET|POST', array(
             'controller' => 'Account',
