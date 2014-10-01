@@ -161,6 +161,14 @@ class ShopBootstrap extends \Dsc\Bootstrap
             }
         }
         
+        // symlink to the public folder if necessary
+        if (!is_dir($this->app->get('PATH_ROOT') . 'public/ShopAssets'))
+        {
+            $public_assets = $this->app->get('PATH_ROOT') . 'public/ShopAssets';
+            $app_assets = realpath(__dir__ . '/src/Shop/Assets');
+            $res = symlink($app_assets, $public_assets);
+        }
+        
         static::diagnostics();
     }
     

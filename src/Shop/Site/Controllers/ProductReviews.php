@@ -157,4 +157,68 @@ class ProductReviews extends Product
     	    }
     	}
     }
+    
+    public function customerImage()
+    {
+        try
+        {
+            $slug = $this->inputfilter->clean( $this->app->get('PARAMS.slug'), 'cmd' );
+             
+            $product = $this->model('products')
+            ->setState('filter.slug', $slug)
+            ->setState('filter.published_today', true)
+            ->setState('filter.publication_status', 'published')
+            ->setState('filter.inventory_status', 'in_stock')
+            ->getItem();
+        
+            if (empty($product->id))
+            {
+                throw new \Exception;
+            }
+        }
+        catch ( \Exception $e )
+        {
+            $this->app->error( '404', 'Invalid Product' );
+            return;
+        }
+        
+        $offset = abs( (int) $this->app->get('PARAMS.skip') );
+        $image_count = \Shop\Models\ProductReviews::forProduct( $product, 'image_count' );
+        
+        if (empty($image_count) || $offset > $image_count-1) 
+        {
+            $this->app->error( '404', 'Invalid image offset' );
+            return;            
+        }
+        
+        $reviews = (new \Shop\Models\ProductReviews)->setState('filter.product_id', $product->id)
+        ->setState('filter.published_today', true)
+        ->setState('filter.publication_status', 'published')
+        ->setState('filter.has_image', true)
+        ->setState('list.limit', 1)
+        ->setParam('skip', $offset)
+        ->getItems();
+        
+        if (empty($reviews[0])) 
+        {
+            $this->app->error( '404', 'Invalid image' );
+            return;            
+        }
+        
+        $review = $reviews[0];
+        
+        $next = ($offset + 1 < $image_count) ? $offset + 1 : null;
+        $prev = ($offset - 1 >= 0) ? $offset - 1 : null;
+        
+        $this->app->set('review', $review);
+        $this->app->set('product', $product);
+        $this->app->set('image_count', $image_count);
+        $this->app->set('current', $offset);
+        $this->app->set('next', $next);
+        $this->app->set('prev', $prev);
+        
+        $html = $this->theme->renderView('Shop/Site/Views::product/review_image.php');
+        
+        echo $html;
+    }
 }

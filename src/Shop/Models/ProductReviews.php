@@ -131,6 +131,8 @@ class ProductReviews extends \Dsc\Mongo\Collections\Nodes
     }
 
     /**
+     * Get various data sets/values related to a product's reviews, 
+     * including average rating, count, images, etc
      * 
      * @param \Shop\Models\Products $product
      * @return multitype:
@@ -141,6 +143,24 @@ class ProductReviews extends \Dsc\Mongo\Collections\Nodes
         
         switch ($return_type) 
         {
+            case "image_count":
+            
+                $return = (new static)->setState('filter.product_id', $product->id)
+                ->setState('filter.published_today', true)
+                ->setState('filter.publication_status', 'published')
+                ->setState('filter.has_image', true)
+                ->getCount();
+            
+                break;            
+            case "images":
+                
+                $return = (new static)->setState('filter.product_id', $product->id)
+                ->setState('filter.published_today', true)
+                ->setState('filter.publication_status', 'published')
+                ->setState('filter.has_image', true)
+                ->getList();
+                
+                break;
             case "avg_rating":
             
                 $conditions = (new static)->setState('filter.product_id', $product->id)
@@ -221,6 +241,16 @@ class ProductReviews extends \Dsc\Mongo\Collections\Nodes
             $this->setCondition('user_id', new \MongoId( (string) $filter_user_id ) );
         }
         
+        $filter_has_image = $this->getState('filter.has_image');
+        if (!empty($filter_has_image))
+        {
+            $this->setCondition('images', array(
+                '$not' => array(
+                    '$size' => 0
+                )
+            ));
+        }        
+        
         return $this;
     }
     
@@ -270,5 +300,137 @@ class ProductReviews extends \Dsc\Mongo\Collections\Nodes
         }
     
         return $this->__product;
+    }
+    
+    public static function queueEmailForOrder( \Shop\Models\Orders $order )
+    {
+        $settings = \Shop\Models\Settings::fetch();
+    
+        if (empty($settings->{'reviews.enabled'}))
+        {
+            return;
+        }
+        
+        $days_from_now = $settings->{'reviews.email_days'};
+        if (empty($days_from_now))
+        {
+            return;
+        }
+        
+        $email = $order->user_email;
+        
+        // Schedule the email to be sent $days_from_now
+        $days_from_now = abs($days_from_now);
+        $time = time() + $days_from_now * 86400;
+        $task = \Dsc\Queue::task('\Shop\Models\ProductReviews::sendEmailForOrder', array(
+            (string) $order->id
+        ), array(
+            'title' => 'Request product reviews from ' . $email . ' for order ' . $order->id,
+            'when' => $time,
+            'email' => $email
+        ));        
+    }
+    
+    public static function sendEmailForOrder( $order_id )
+    {
+        $settings = \Shop\Models\Settings::fetch();
+    
+        if (empty($settings->{'reviews.enabled'}))
+        {
+            return;
+        }
+    
+        $days_from_now = $settings->{'reviews.email_days'};
+        if (empty($days_from_now))
+        {
+            return;
+        }
+    
+        // load the order
+        $order = (new \Shop\Models\Orders)->setState('filter.id', $order_id)->getItem();
+        if (empty($order->id))
+        {
+            return;
+        }
+                
+        // check which products from the order have not been reviewed.
+        // If all have been reviewed, don't send the email.
+        $product_ids = array();
+        foreach ($order->items as $item) 
+        {
+            $key = (string) $item['product_id'];
+            $product_ids[$key] = $item['product_id']; 
+        }
+        
+        $products = array_values($product_ids);        
+        $product_reviews = static::collection()->find(array(
+            'product_id' => array(
+                '$in' => $products
+            ),
+            'user_id' => $order->user_id,
+        ));
+        
+        foreach ($product_reviews as $doc) 
+        {
+            $key = (string) $doc['product_id'];
+            unset($product_ids[$key]);
+        }
+        
+        // at this point, $product_ids should have the list of unreviewed products from this order
+        if (empty($product_ids)) 
+        {
+            return;
+        }
+        
+        // so get an array of actual products
+        $products = array();
+        foreach ($product_ids as $product_id) 
+        {
+            foreach ($order->items as $item)
+            {
+                if ($item['product_id'] == $product_id) 
+                {
+                    $products[] = $item;
+                } 
+            }
+        }
+        
+        if (empty($products)) 
+        {
+            return;
+        }
+        
+        // get the recipient's email and send the email
+        $recipients = array(
+            $order->user_email
+        );
+        
+        if (empty($recipients))
+        {
+            return;
+        }
+        
+        $subject = $settings->get('reviews.email_subject');
+        if (empty($subject)) 
+        {
+            $subject = "Please review your recent purchases!";
+        }
+        
+        $user = $order->user();
+        
+        \Base::instance()->set('user', $user);
+        \Base::instance()->set('products', $products);
+        
+        $html = \Dsc\System::instance()->get('theme')->renderView('Shop/Views::emails_html/review_products.php');
+        $text = \Dsc\System::instance()->get('theme')->renderView('Shop/Views::emails_text/review_products.php');
+        
+        foreach ($recipients as $recipient)
+        {
+            \Dsc\System::instance()->get('mailer')->send($recipient, $subject, array(
+                $html,
+                $text
+            ));
+        }
+        
     }
 }

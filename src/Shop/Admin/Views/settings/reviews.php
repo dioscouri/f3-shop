@@ -31,6 +31,19 @@
             </div>
         </div>
         <!-- /.form-group -->
+        
+        <hr/>
+                
+        <div class="form-group">
+            <div class="row">
+                <div class="col-md-6">        
+                    <label>How many days after purchase before emailing customer to request a review?</label>
+                    <input type="text" name="reviews[email_days]" class="form-control" value="<?php echo $flash->old('reviews.email_days'); ?>" />
+                    <p class="help-block">Set this to 0 to disable emails.</p>
+                </div>
+            </div>
+        </div>
+        <!-- /.form-group -->
                 
     </div>
 </div>

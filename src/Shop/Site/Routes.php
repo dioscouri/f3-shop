@@ -416,5 +416,10 @@ class Routes extends \Dsc\Routes\Group
             'controller' => 'Account',
             'action' => 'productReviews'
         ) );
+                
+        $this->add( '/product/@slug/reviews/images/@skip', 'GET', array(
+            'controller' => 'ProductReviews',
+            'action' => 'customerImage'
+        ) );
     }
 }

@@ -1,29 +1,61 @@
 <a name="reviews">&nbsp;</a>
 <div class="reviews-container">
-
-    <hr/>
-    
+    <hr />
     <div class="reviews-header">
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-sm-6">
                 <div itemprop="aggregateRating" itemscope itemtype="http://schema.org/AggregateRating">
                     <h3 class="reviews-count">
-                        Reviews (<span itemprop="reviewCount"><?php echo \Shop\Models\ProductReviews::forProduct($item, 'count'); ?></span>)
+                        Reviews (
+                        <span itemprop="reviewCount"><?php echo \Shop\Models\ProductReviews::forProduct($item, 'count'); ?></span>
+                        )
                     </h3>
                     <div class="reviews-average">
                         <?php $avg_rating = \Shop\Models\ProductReviews::forProduct($item, 'avg_rating'); ?>
                         <meta itemprop="ratingValue" content="<?php echo $avg_rating; ?>">
-                        <input class="rating" data-size="sm" data-disabled="true" data-readonly="true" data-show-clear="false" data-show-caption="false" value="<?php echo $avg_rating; ?>" >
-                    </div>                                
+                        <input class="rating" data-size="sm" data-disabled="true" data-readonly="true" data-show-clear="false" data-show-caption="false" value="<?php echo $avg_rating; ?>">
+                    </div>
                 </div>
             </div>
-            <div class="col-md-6">
-                <?php // Photos in reviews shortcut? ?>
+            <div class="col-sm-6">
+                <div class="pull-right">
+                    <?php // Photos in reviews shortcut? ?>
+                    <?php if ($image_count = \Shop\Models\ProductReviews::forProduct( $item, 'image_count' )) { ?>
+                    
+                    <!-- Button to trigger modal -->
+                    <button class="margin-top btn btn-default btn-lg" data-toggle="modal" data-target="#product-review-images-modal">View Customer Photos (<?php echo $image_count; ?>)</button>
+                    
+                    <!-- Modal -->
+                    <div id="product-review-images-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-body">
+                                    <p>Loading...</p>
+                                    <div class="progress">
+                                        <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%;">
+                                            <span class="sr-only">Loading...</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <script>
+                    jQuery(document).ready(function(){
+                        jQuery('#product-review-images-modal').on('shown.bs.modal', function (e) {
+                            $('.modal-content').load('./shop/product/<?php echo $item->slug; ?>/reviews/images/0', function(result){
+                        	    
+                        	});                            
+                        });                        
+                    });
+                    </script>
+                    <?php } ?>
+                </div>
             </div>
-        </div>    
-    </div>    
-    
-    <hr/>
+        </div>
+    </div>
+    <hr />
     
     <?php // can this user make the review? ?>
     <?php 
@@ -42,39 +74,32 @@
     
         <div class="review" itemprop="review" itemscope itemtype="http://schema.org/Review">
             <div class="row">
-            
                 <div class="col-sm-2 col-md-2">
-                
                     <div class="review-author" itemprop="author"><?php echo $review->user_name; ?></div>
-                    
                     <meta itemprop="datePublished" content="<?php echo date('Y-m-d', $review->{'publication.start.time'} ); ?>">
-                    <div class="review-date"><small class="help-block"><?php echo date('M j, Y', $review->{'publication.start.time'}); ?></small></div>
-                
+                    <div class="review-date">
+                        <small class="help-block"><?php echo date('M j, Y', $review->{'publication.start.time'}); ?></small>
+                    </div>
                 </div>
                 <div class="col-sm-6 col-md-7">
-                
                     <div class="review-metadata">
                         <div class="review-rating" itemprop="reviewRating" itemscope itemtype="http://schema.org/Rating">
                             <meta itemprop="worstRating" content="1" />
                             <meta itemprop="bestRating" content="5" />
-                            <input itemprop="ratingValue" class="rating" data-size="xs" data-disabled="true" data-readonly="true" data-show-clear="false" data-show-caption="false" value="<?php echo (int) $review->rating; ?>" >                            
+                            <input itemprop="ratingValue" class="rating" data-size="xs" data-disabled="true" data-readonly="true" data-show-clear="false" data-show-caption="false" value="<?php echo (int) $review->rating; ?>">
                         </div>
                     </div>
                     <h4 class="review-title" itemprop="name"><?php echo $review->title; ?></h4>
                     <div class="review-text" itemprop="description"><?php echo $review->description; ?></div>
-                    
                 </div>
                 <div class="col-sm-4 col-md-3">
                     <?php if (!empty($review->images[0])) { ?>
                         <img class="img-responsive" src="./asset/thumb/<?php echo $review->images[0]; ?>" />
                     <?php } ?>
                 </div>
-                
             </div>
-
         </div>
-        
-        <hr/>
+        <hr />
         
         <?php } ?>
             

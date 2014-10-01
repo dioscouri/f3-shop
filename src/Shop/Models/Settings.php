@@ -89,7 +89,8 @@ class Settings extends \Dsc\Mongo\Collections\Settings
     
     public $reviews = array(
         'enabled' => false,
-        'eligibile' => 'purchasers'
+        'eligibile' => 'purchasers',
+        'email_days' => 0
     );
     
     public function isShippingMethodEnabled($method=null)
