@@ -10,7 +10,7 @@
     
         <div class="form-group">
             <label>Title</label>
-            <input type="text" name="title" placeholder="Title" value="<?php echo $flash->old('title'); ?>" class="form-control" />
+            <input type="text" name="title" placeholder="Title" value="<?php echo htmlspecialchars( $flash->old('title') ); ?>" class="form-control" />
         </div>
         <!-- /.form-group -->
         
