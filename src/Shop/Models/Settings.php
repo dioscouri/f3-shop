@@ -93,6 +93,13 @@ class Settings extends \Dsc\Mongo\Collections\Settings
         'email_days' => 0
     );
     
+    public $currency = array(
+        'default' => 'USD',
+        'database' => 'USD',
+        'openexchangerates_api_id' => null,
+        'enabled_currencies' => array()
+    );
+    
     public function isShippingMethodEnabled($method=null)
     {
     	$result = false;

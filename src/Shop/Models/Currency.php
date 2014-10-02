@@ -12,8 +12,19 @@ class Currency extends \Dsc\Singleton
      */
     public static function format( $number, $currency_code='USD', $options=array() )
     {
-        // TODO make this support more than just USD
-        $formatted = '$' . number_format( (float) $number, 2, ".", "," );
+        $settings = \Shop\Models\Settings::fetch();
+        
+        // TODO Support custom formatting
+        switch ($settings->{'currency.default'}) 
+        {
+            case "INR":
+                $formatted = 'Rs.' . number_format( (float) $number, 0, ".", "," );
+                break;
+            case "USD":
+            default:
+                $formatted = '$' . number_format( (float) $number, 2, ".", "," );
+                break;
+        }        
         
         return $formatted;
     }

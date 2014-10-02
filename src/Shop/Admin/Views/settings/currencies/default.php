@@ -5,7 +5,11 @@ if (!$currencies = (new \Shop\Models\Currencies)->getItems())
         new \Shop\Models\Currencies(array(
             'code' => 'USD',
             'title' => 'United States Dollar'
-        ))
+        )),
+        new \Shop\Models\Currencies(array(
+            'code' => 'INR',
+            'title' => 'Indian Rupee'
+        )),
     );
 }
 $options = array();
