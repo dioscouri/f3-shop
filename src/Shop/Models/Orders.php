@@ -183,6 +183,12 @@ class Orders extends \Dsc\Mongo\Collections\Taggable
         {
             $this->setCondition('coupons.code', $filter_coupon_code);
         }
+        
+        $filter_product_id = $this->getState('filter.product_id');
+        if (strlen($filter_product_id))
+        {
+            $this->setCondition('items.product_id', new \MongoId((string) $filter_product_id));
+        }
                 
         return $this;
     }
@@ -329,8 +335,9 @@ class Orders extends \Dsc\Mongo\Collections\Taggable
         $order->customer = $user->cast();
         $order->customer_name = $user->fullName();
         
-        if (!empty($user->email)) {
-            $order->user_email = $user->email;
+        $real_email = $user->email(true);
+        if ($real_email != $order->user_email) {
+            $order->user_email = $real_email;
         }
         
         // $order->is_guest = $cart->isGuest(); ? or is that from the checkout object?

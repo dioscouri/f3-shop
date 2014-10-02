@@ -32,14 +32,16 @@ jQuery(document).ready(function(){
                 </li>
                 <li>
                     <a href="#tab-orders" data-toggle="tab"> Order Settings </a>
-                </li>                
+                </li>
                 <li>
                     <a href="#tab-order-confirmation" data-toggle="tab"> Order Confirmation </a>
                 </li>
                 <li>
                     <a href="#tab-cart-abandonment-emails" data-toggle="tab"> Cart Abandonment Emails </a>
                 </li>
-                                                
+                <li>
+                    <a href="#tab-reviews" data-toggle="tab"> Product Review Settings </a>
+                </li>                                                
                 <?php if (!empty($this->event)) { foreach ((array) $this->event->getArgument('tabs') as $key => $title ) { ?>
                 <li>
                     <a href="#tab-<?php echo $key; ?>" data-toggle="tab"> <?php echo $title; ?> </a>
@@ -94,6 +96,9 @@ jQuery(document).ready(function(){
 
                 </div>
                 
+                <div class="tab-pane fade in" id="tab-reviews">                
+                    <?php echo $this->renderLayout('Shop/Admin/Views::settings/reviews.php'); ?>
+                </div>
 
                 <?php if (!empty($this->event)) { foreach ((array) $this->event->getArgument('content') as $key => $content ) { ?>
                 <div class="tab-pane fade in" id="tab-<?php echo $key; ?>">

@@ -18,7 +18,8 @@ class ShopBootstrap extends \Dsc\Bootstrap
             \Minify\Factory::registerPath($this->dir . "/src/");
             
             $files = array(
-                'Shop/Assets/js/jquery.sortable.css'
+                'Shop/Assets/js/jquery.sortable.css',
+                'Shop/Assets/css/jquery.star-rating.css',
             );
             
             foreach ($files as $file)
@@ -29,7 +30,8 @@ class ShopBootstrap extends \Dsc\Bootstrap
             $files = array(
                 'Shop/Assets/js/jquery.sortable.min.js',
                 'Shop/Assets/js/class.js',
-                'Shop/Assets/js/validation.js',                
+                'Shop/Assets/js/validation.js',    
+                'Shop/Assets/js/jquery.star-rating.js',
             );
             
             foreach ($files as $file)
@@ -117,7 +119,8 @@ class ShopBootstrap extends \Dsc\Bootstrap
                 'Shop/Assets/js/site.js',
                 'Shop/Assets/js/jquery.popupoverlay.js',
                 'Shop/Assets/js/jquery.scrollTo.js',
-                'Shop/Assets/js/jquery.payment.js'
+                'Shop/Assets/js/jquery.payment.js',
+                'Shop/Assets/js/jquery.star-rating.js',
             );
             
             if ($check_campaigns = \Dsc\System::instance()->get('session')->get('shop.check_campaigns'))
@@ -128,7 +131,16 @@ class ShopBootstrap extends \Dsc\Bootstrap
             foreach ($files as $file)
             {
                 \Minify\Factory::js($file);
-            }            
+            }
+
+            $files = array(
+                'Shop/Assets/css/jquery.star-rating.css',
+            );
+            
+            foreach ($files as $file)
+            {
+                \Minify\Factory::css($file);
+            }
         }
         
         $app = \Base::instance();
@@ -147,6 +159,14 @@ class ShopBootstrap extends \Dsc\Bootstrap
                 $cart->user_email = $request_kmi;
                 $cart->store();
             }
+        }
+        
+        // symlink to the public folder if necessary
+        if (!is_dir($this->app->get('PATH_ROOT') . 'public/ShopAssets'))
+        {
+            $public_assets = $this->app->get('PATH_ROOT') . 'public/ShopAssets';
+            $app_assets = realpath(__dir__ . '/src/Shop/Assets');
+            $res = symlink($app_assets, $public_assets);
         }
         
         static::diagnostics();

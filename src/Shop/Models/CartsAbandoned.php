@@ -84,7 +84,12 @@ class CartsAbandoned extends \Shop\Models\Carts
                 $email = null;
                 if ($cart->quantity() > 0) 
                 {
-                    $email = $cart->user_email ? $cart->user_email : $cart->user()->email;
+                    if ($cart->user()->guest) {
+                        // don't send emails to guest users
+                        continue;
+                    }
+                    
+                    $email = $cart->user_email ? $cart->user_email : $cart->user()->email();
                      
                     $cart->abandoned_notifications = array();
                     foreach ($notifications as $idx => $val)
@@ -145,7 +150,7 @@ class CartsAbandoned extends \Shop\Models\Carts
         }
         
         $user = $cart->user();        
-        if (empty($user->id) || $user->id != $cart->user_id)
+        if (empty($user->id) || $user->id != $cart->user_id || $user->guest)
         {
             return;
         }        
