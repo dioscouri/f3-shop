@@ -58,6 +58,11 @@ class Listener extends \Prefab
                     'icon' => 'fa fa-flag-o'
                 ),
                 array(
+                    'title' => 'Export',
+                    'route' => './admin/shop/export',
+                    'icon' => 'fa fa-download'
+                ),                
+                array(
                     'title' => 'Configuration',
                     'route' => 'javascript:void(0);',
                     'icon' => 'fa fa-cogs'
@@ -169,6 +174,11 @@ class Listener extends \Prefab
                         'route' => './admin/shop/carts',
                         'icon' => 'fa fa-shopping-cart'
                     ),
+                    array(
+                        'title' => 'Wishlists',
+                        'route' => './admin/shop/wishlists',
+                        'icon' => 'fa fa-birthday-cake'
+                    ),                    
                     array(
                         'title' => 'Product Reviews',
                         'route' => './admin/shop/productreviews',
