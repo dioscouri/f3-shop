@@ -7,6 +7,8 @@ class Wishlists extends \Dsc\Mongo\Collections\Nodes
     public $session_id = null;
     public $items = array(); // array of \Shop\Models\Prefabs\CartItem objects, for easy copying to/from wishlist
     public $name = null; // user-defined name for wishlist
+    public $items_count = null;
+    
     protected $__collection_name = 'shop.wishlists';
     protected $__type = 'shop.wishlists';
     protected $__config = array(
@@ -25,6 +27,20 @@ class Wishlists extends \Dsc\Mongo\Collections\Nodes
         if (strlen( $filter_user ))
         {
             $this->setCondition( 'user_id', new \MongoId( (string) $filter_user ) );
+        }
+        
+        $filter_has_items = $this->getState( 'filter.has_items' );
+        if (strlen( $filter_has_items ))
+        {
+            if (empty($filter_has_items)) 
+            {
+                $this->setCondition( 'items_count', array( '$in' => array( 0, null ) ) );
+            }
+            else 
+            {
+                $this->setCondition( 'items_count', array( '$nin' => array( 0, null ) ) );                
+            }
+            
         }
         
         return $this;
@@ -116,6 +132,18 @@ class Wishlists extends \Dsc\Mongo\Collections\Nodes
         }
         
         return $wishlist;
+    }
+    
+    /**
+     * Gets the associated user object
+     *
+     * @return unknown
+     */
+    public function user()
+    {
+        $user = (new \Users\Models\Users)->load(array('_id'=>$this->user_id));
+    
+        return $user;
     }
 
     /**
@@ -393,7 +421,14 @@ class Wishlists extends \Dsc\Mongo\Collections\Nodes
         
         return parent::beforeValidate();
     }
-
+    
+    protected function beforeSave()
+    {
+        $this->items_count = count($this->items);
+        
+        return parent::beforeSave();
+    }
+        
     /**
      * Determine if a user has added a variant to any of their wishlists
      * 

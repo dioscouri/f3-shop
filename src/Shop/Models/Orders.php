@@ -567,6 +567,9 @@ class Orders extends \Dsc\Mongo\Collections\Taggable
         // #. Add a negative credit record for historical purposes
         $this->deductCredit();
         
+        // #. queue emails requesting product reviews
+        \Shop\Models\ProductReviews::queueEmailForOrder( $this );
+        
         // trigger event
         $this->__accept_event = \Dsc\System::instance()->trigger( 'onShopAcceptOrder', array(
         	'order' => $this

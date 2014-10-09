@@ -311,5 +311,17 @@ class Routes extends \Dsc\Routes\Group
         $this->addCrudGroup('OrderFailures', 'OrderFailure');
         
         $this->addCrudGroup('ProductReviews', 'ProductReview');
+        
+        $this->addCrudGroup('Wishlists', 'Wishlist');
+        
+        $this->add( '/export', 'GET', array(
+            'controller' => 'Export',
+            'action' => 'index'
+        ) );
+        
+        $this->add( '/export/@task', 'GET', array(
+            'controller' => 'Export',
+            'action' => '@task'
+        ) );
     }
 }
