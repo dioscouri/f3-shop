@@ -169,7 +169,7 @@ class Routes extends \Dsc\Routes\Group
             'action' => 'register'
         ) );
         
-        $this->add( '/checkout/payment', 'GET', array(
+        $this->add( '/checkout/payment', 'GET|POST', array(
             'controller' => 'Checkout',
             'action' => 'payment' 
         ) );

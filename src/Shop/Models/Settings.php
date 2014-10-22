@@ -145,7 +145,7 @@ class Settings extends \Dsc\Mongo\Collections\Settings
     	$enabledMethods = array();
     	foreach ((array) $this->{'shippingmethods'} as $methods => $method)
     	{
-    		if ($this->isShippingMethodEnabled(strtolower($method['name'])))
+    		if (!empty($method['name']) && $this->isShippingMethodEnabled(strtolower($method['name'])))
     		{
     			$enabledMethods[] = $this->convertShippingMethod($method['name']);
     		}

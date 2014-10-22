@@ -103,6 +103,6 @@ class GiftCards extends \Shop\Models\Products
     {
         parent::fetchConditions();
     
-        $this->setCondition('giftcard', true );
+        $this->setCondition('product_type','giftcards' );
     }
 }

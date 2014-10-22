@@ -62,7 +62,8 @@ class PepperJam extends \Dsc\Controller
         {
             $product = new \Shop\Models\Products($product_doc);
             foreach ($product->variantsInStock() as $variant) 
-            {
+            {	
+            	$valid = true;
                 $price = $product->price( $variant['id'] );
                 
                 // Skip products where price == 0.00                
@@ -113,7 +114,22 @@ class PepperJam extends \Dsc\Controller
                     $pieces['manufacturer'] = $brand;
                 }
                 
-                $string .= implode("\t", $pieces) . "\r\n";
+                global $product;
+                //walk peices logging empty values and omiting them
+                array_walk($pieces, function(&$value, $key) {
+                	global $product;
+            
+                	if(empty($value)) {
+                		\Dsc\Mongo\Collections\Logs::add($product->title. ' | ID: '.$product->id  . ' is missing ' . $key, 'WARNING', 'PepperJam');
+                		$valid = false;
+                	}
+                });
+                
+                if($valid) {
+                	$string .= implode("\t", $pieces) . "\r\n";
+                }
+                
+                
             }
         }
         
@@ -123,4 +139,6 @@ class PepperJam extends \Dsc\Controller
         echo $string;
         exit;
     }
+    
+    
 }
