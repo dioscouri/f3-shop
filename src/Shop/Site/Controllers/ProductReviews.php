@@ -61,9 +61,6 @@ class ProductReviews extends Product
     	    
     		$item = $this->model('products')
     		->setState('filter.slug', $slug)
-    		->setState('filter.published_today', true)
-    		->setState('filter.publication_status', 'published')
-    		->setState('filter.inventory_status', 'in_stock')
     		->getItem();
     		
     		if (empty($item->id)) 
