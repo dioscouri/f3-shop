@@ -59,7 +59,15 @@ class GiftCard extends \Shop\Admin\Controllers\Product
     }
     
     protected function displayEdit()
-    {
+    {   
+        
+        $item = $this->getItem();
+    	if(empty($item) || $item->product_type != 'giftcards') {
+    		\Dsc\System::addMessage('Item is not a giftcard', 'error');
+    		$this->app->reroute('/admin/shop/giftcards');
+    	}
+        
+        
         $f3 = \Base::instance();
 
         $flash = \Dsc\Flash::instance();
