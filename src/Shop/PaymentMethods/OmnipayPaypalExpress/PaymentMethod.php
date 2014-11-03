@@ -243,6 +243,7 @@ class PaymentMethod extends \Shop\PaymentMethods\PaymentAbstract
         
         if (!$success) 
         {
+            $order->payment_method_validation_result = $response->getData();
             throw new \Exception('Payment was not successful');
         }
         
