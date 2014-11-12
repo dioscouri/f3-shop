@@ -92,6 +92,7 @@ class Products extends \Dsc\Mongo\Collections\Content
         ),
     );
     
+    protected $__enable_trash = true;
     /**
      * Method to auto-populate the model state.
      *
