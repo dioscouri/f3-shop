@@ -265,7 +265,7 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
      * 
      * @param \Shop\Models\Prefabs\CartItem $cartitem
      */
-    public function validateAdd( \Shop\Models\Prefabs\CartItem $cartitem )
+    public function validateAdd(  $cartitem )
     {
         // does the product track inventory?
         if (\Dsc\ArrayHelper::get($cartitem->product, 'policies.track_inventory')) 

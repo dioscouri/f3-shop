@@ -1102,4 +1102,77 @@ class Orders extends \Dsc\Mongo\Collections\Taggable
     
         return $item;
     }
+    
+    /**
+     * Get the current user's cart
+     *
+     * @return \RallyShop\Models\Carts
+     */
+    public static  function buildShippingPackages($id)
+    {
+    
+    	try {
+      
+    		 
+    		$order = (new static)->setState('filter.id', $id)->getItem();
+    
+    
+    		$packer = new \Shop\Models\Packer\Packer();
+    		//add all the boxes
+    		$boxes = (new \Shop\Models\Packages)->find();
+    		foreach($boxes as $box) {
+    			$packer->addBox($box);
+    		}
+    		 
+    		foreach($order->items as $cartitem) {
+    			//convert items in order to cart items again because they need to be instance of interface
+    			$cartitem = new \Shop\Models\Prefabs\CartItem($cartitem);
+    			$packer->addItem($cartitem, $cartitem->quantity);
+    		}
+    
+    
+    		$orderPackedList = array();
+    		 
+    		$boxes = $packer->pack();
+    		 
+    		while ($boxes->count()) {
+    
+    			$packedBox = $boxes->extract();
+    			$box = $packedBox->getBox();
+    			$box = $box->cast();
+    			$box['weight'] = $packedBox->getWeight();
+    			$box['weightremaining'] = $packedBox->getRemainingWeight();
+    			$box['remainingwidth'] = $packedBox->getRemainingWidth();
+    			$box['remaininglength'] = $packedBox->getRemainingLength();
+    			$box['remaningdepth'] = $packedBox->getRemainingDepth();
+    			$items = $packedBox->getItems();
+    			 
+    			$itemsForBox = array();
+    			do {
+    
+    				$item = $items->extract();
+    				$item = $item->cast();
+    				//unset($item['product']);
+    				$itemsForBox[] = $item;
+    			} while ($items->count());
+    			 
+    			 
+    			$orderPackedList[] = array('box' => $box, 'items' => $itemsForBox);
+    
+    
+    		}
+    
+    
+    		$order->set('packedlist',$orderPackedList)->save();
+    
+    	} catch (\Exception $e) {
+    		\Dsc\System::addMessage( $e->getMessage() );
+    		 
+    	}
+    
+    
+    	return $packer->pack();
+    }
+    
+    
 }

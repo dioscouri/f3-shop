@@ -119,7 +119,8 @@ jQuery(document).ready(function(){
                         	jQuery('.owl-nav').show();
                         }
                     }
-                    </script>                
+                    </script>
+                                    
                     <div id="product-image-carousel" class="owl-carousel" data-lazy-load="true" data-scroll-per-page="true" data-items-tablet="[600,3]" data-items-mobile="false" data-after-action="ShopAfterAction">
                         <?php foreach ($images as $key=>$image) { ?>
                         <div id="<?php echo $image; ?>" class="slide">

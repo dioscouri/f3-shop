@@ -242,17 +242,29 @@ class Products extends \Dsc\Mongo\Collections\Content
             $this->setCondition('categories.slug', $filter_category_slug );
         }
         
-        $filter_category_id = $this->getState('filter.category.id');
-        if (strlen($filter_category_id))
-        {
-            if ($filter_category_id == '__uncategorized') {
-            	// where no categories are assigned
-                $this->setCondition('categories', array('$size' => 0) );
-            }
-            else {
-                $this->setCondition('categories.id', new \MongoId( (string) $filter_category_id ) );
-            }            
-        }
+        
+        
+    	 $filter_categories = $this->getState('filter.categories');
+         if (count($filter_categories) && is_array($filter_categories)) {
+	       	
+        	$this->setCondition('categories.id',  array( '$in' => $filter_categories) );
+	       
+         } else {
+        	
+	        $filter_category_id = $this->getState('filter.category.id');
+	        if (strlen($filter_category_id))
+	        {
+	            if ($filter_category_id == '__uncategorized') {
+	            	// where no categories are assigned
+	                $this->setCondition('categories', array('$size' => 0) );
+	            }
+	            else {
+	                $this->setCondition('categories.id', new \MongoId( (string) $filter_category_id ) );
+	            }            
+	        }
+         }
+        
+     
         
         $filter_price_default_min = $this->getState('filter.price.default.min');
         if (strlen($filter_price_default_min))
