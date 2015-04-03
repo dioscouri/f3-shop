@@ -2,7 +2,9 @@
 namespace Shop\Models;
 
 class Manufacturers extends \Dsc\Mongo\Collections\Describable
-{
+{	
+	use \Dsc\Traits\Models\Images;
+	
     protected $__collection_name = 'shop.manufacturers';
     protected $__type = 'shop.manufacturers';
     protected $__config = array(
@@ -10,6 +12,19 @@ class Manufacturers extends \Dsc\Mongo\Collections\Describable
             'title' => 1
         ),
     );
+    
+    
+    protected function fetchConditions() {
+    	$this->imagesFetchConditions();
+    	
+    	parent::fetchConditions();
+    }
+    
+    protected function beforeValidate()
+    {
+    	$this->imagesBeforeValidate();
+    	parent::beforeValidate();
+    }
     
     protected function beforeUpdate()
     {

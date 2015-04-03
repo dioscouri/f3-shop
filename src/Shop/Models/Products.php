@@ -822,56 +822,7 @@ class Products extends \Dsc\Mongo\Collections\Content
         return parent::beforeUpdate();
     }
     
-    /**
-     * Fetches an item from the collection using set conditions
-     *
-     * @return Ambigous <NULL, \Dsc\Mongo\Collection>
-     */
-    protected function fetchItem()
-    {
-        $this->__cursor = $this->collection()->find($this->conditions(), $this->fields());
-    
-        if ($this->getParam('sort')) {
-            $this->__cursor->sort($this->getParam('sort'));
-        }
-        $this->__cursor->limit(1);
-        $this->__cursor->skip(0);
-    
-        $item = null;
-        if ($this->__cursor->hasNext()) {
-            $item = (new static( $this->__cursor->getNext() ))->convert();
-        }
-    
-        return $item;
-    }
-    
-    /**
-     * Fetches multiple items from a collection using set conditions
-     *
-     * @return multitype:\Dsc\Mongo\Collection
-     */
-    protected function fetchItems()
-    {
-        $this->__cursor = $this->collection()->find($this->conditions(), $this->fields());
-    
-        if ($this->getParam('sort')) {
-            $this->__cursor->sort($this->getParam('sort'));
-        }
-        if ($this->getParam('limit')) {
-            $this->__cursor->limit($this->getParam('limit'));
-        }
-        if ($this->getParam('skip')) {
-            $this->__cursor->skip($this->getParam('skip'));
-        }
-    
-        $items = array();
-        foreach ($this->__cursor as $doc) {
-            $item = (new static( $doc ))->convert();
-            $items[] = $item;
-        }
-    
-        return $items;
-    }
+  
     
     public function convert()
     {
