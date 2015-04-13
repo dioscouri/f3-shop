@@ -18,7 +18,10 @@ class Collection extends \Dsc\Controller
     	$model = $this->getModel()->populateState();
     	
     	try {
-    	    $collection = (new \Shop\Models\Collections)->setState('filter.slug', $slug)->getItem();
+    	    $collection = (new \Shop\Models\Collections)->setState('filter.slug', $slug)
+    	    ->setState('filter.published_today', true)
+    		->setState('filter.publication_status', 'published')
+    	    ->getItem();
     	    if (empty($collection->id)) {
     	    	throw new \Exception('Invalid Collection');
     	    }

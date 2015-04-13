@@ -52,6 +52,7 @@ class Products extends \Dsc\Mongo\Collections\Content
     
     // all possible product variations based on the attributes above, each with their product override values
     public $variants = array();          // an array of \Shop\Prefabs\Variant objects cast as an array
+    public $group_items = array();          // an array of \Shop\Models\Prefabs\GroupItem objects cast as an array
     
     public $attributes_count = null;
     public $variants_count = null;
@@ -1310,6 +1311,24 @@ class Products extends \Dsc\Mongo\Collections\Content
         return false;
     }
     
+    public static function variantInstock($product_id, $variant_id) {
+    	
+    	$doc = (new static)->collection()->findOne(array('_id' => new \MongoId($product_id)), array('variants' => 1));
+    	$stock = 'outofstock';
+    	foreach ($doc['variants'] as $variant)
+        {
+            if ($variant['key'] == (string) $variant_id) {
+               if($variant['quantity']) {
+               		$stock = 'instock';
+               } else {
+               	 //CHECK FOR ON ORDER
+               }
+            }
+        }
+    	return $stock;
+    }
+    
+    
     /**
      * Get a variant using its attributes
      *
@@ -1526,4 +1545,108 @@ class Products extends \Dsc\Mongo\Collections\Content
     
         return $distinct;
     }    
+    
+    
+    /**
+     * Checks Stock Status
+     *
+     * @return array
+     */
+    public function stockStatus() {
+    	$status = '';
+    	
+    	if($this->product_type == 'group') {
+    		//if any of the sub items are out of stock the group is out of stock
+    		$items = $this->group_items;
+    		$ids = array_column($items, 'id');
+		    	array_walk($ids, function (&$id) {
+		    		$id = new \MongoId($id);
+		    	});
+		    	$model = new static();
+		    	$docs = $model->collection()->find(array('_id' => array('$in' =>  $ids)), array('quantities.manual' => true));
+		    	foreach($items as $key => $item) {
+		    		foreach ($docs as $doc) {
+		    			if ($key == (string) $doc['_id']) {
+			    			if($item['quantity'] > $doc['quantities']['manual'] ) {
+			    				return 'outofstock';
+			    			}
+		    			}
+		    		}
+		    	}
+		    	return 'instock';
+    	} else {
+
+    		//varients have stock we are instock
+    		if($this->variantsInStock()) {
+    			$status = 'instock';
+    		} else {
+    			//check for open POS
+    			$pos = false;
+    			if($pos) {
+    				$status = 'onorder';
+    			} else {
+    				$status = 'outofstock';
+    			}
+    		}
+    		
+    		
+    	}
+    	
+    	
+    	return (string) $status;
+    	
+    	
+    }
+    
+    /*loads the group items and updates their stock */
+    
+    public function getGroupItems() {
+    	$items = $this->group_items;
+    	$ids = array_column($items, 'id');
+    	$model = new static();
+    	$docs = $model->setState('filter.ids', $ids)->getList();
+    	foreach($items as $key => $item ) :
+    		$item = new \Shop\Models\Prefabs\GroupItem($item);
+    		foreach($docs as $doc) :
+    			if($item->id == $doc->id) :
+    				//check quantity
+    				if($item->quantity > $doc->{'quantities.manual'}) {
+    					$item->stockstatus = 'Out of Stock';
+    				} else {
+    					$item->stockstatus = 'Instock';
+    				}
+    				
+    				if(empty($item->title)) {
+    					$item->title = $doc->title;
+    				}
+    				if(empty($item->description)) {
+    					$item->description = $doc->getAbstract();
+    				}
+    				if(empty($item->image)) {
+    					$item->image = $doc->{'featured_image.slug'};
+    				}
+    				
+    				$items[$key] = $item;
+    				break;
+    			endif;
+    		endforeach;
+    		
+    	endforeach;
+    	return $items;
+    }
+    
+    public function addGroupItem(\Shop\Models\Prefabs\GroupItem $item, $save = true) {
+    	 
+    	$group = $this->group_items;
+    	$group[(string) $item->id] = $item->cast();
+    	$this->set('group_items', $group);
+    	
+    	if($save) {
+    		$this->save();
+    	}
+    	
+    }
+    
+    
+    
 }

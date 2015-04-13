@@ -4,6 +4,7 @@ namespace Shop\Models;
 class Collections extends \Dsc\Mongo\Collections\Describable
 {
 	use \Dsc\Traits\Models\ForSelection;
+	use \Dsc\Traits\Models\Publishable;
 	
     public $products = array();
 
@@ -238,6 +239,44 @@ class Collections extends \Dsc\Mongo\Collections\Describable
         return $conditions;
     }
 
+    protected function fetchConditions()
+    {
+    	parent::fetchConditions();
+    
+    	$filter_keyword = $this->getState('filter.keyword');
+    	if ($filter_keyword&&is_string($filter_keyword))
+    	{
+    		$key = new \MongoRegex('/'.$filter_keyword.'/i');
+    
+    		$where = array();
+    
+    		$regex = '/^[0-9a-z]{24}$/';
+    		if (preg_match($regex, (string) $filter_keyword))
+    		{
+    			$where[] = array(
+    					'_id' => new \MongoId((string) $filter_keyword)
+    			);
+    		}
+    		$where[] = array(
+    				'slug' => $key
+    		);
+    		$where[] = array(
+    				'title' => $key
+    		);
+    		$where[] = array(
+    				'description' => $key
+    		);
+    		$where[] = array(
+    				'metadata.creator.name' => $key
+    		);
+    
+    		$this->setCondition('$or', $where);
+    	}
+    
+    	$this->publishableFetchConditions();
+    
+    	return $this;
+    }
     /**
      * Gets a count of all products returned by this collection's query
      *
@@ -377,6 +416,8 @@ class Collections extends \Dsc\Mongo\Collections\Describable
             	$this->__update_products_ordering = true;
             }
         }
+        
+        $this->publishableBeforeSave();
         
         return parent::beforeSave();
     }

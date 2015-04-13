@@ -25,6 +25,9 @@
     
 </div>
 <!-- /.row -->
+<hr />
+
+<?php echo $this->renderLayout('Shop/Admin/Views::collections/fields_collection_publication.php'); ?>
 
 <hr />
 

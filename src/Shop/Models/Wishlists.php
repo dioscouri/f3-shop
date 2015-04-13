@@ -155,40 +155,8 @@ class Wishlists extends \Dsc\Mongo\Collections\Nodes
      */
     public function addItem( $variant_id,\Shop\Models\Products $product, array $post )
     {
-        $options = ! empty( $post['options'] ) ? $post['options'] : array();
-        $quantity = (! empty( $post['quantity'] ) && $post['quantity'] > 0) ? (int) $post['quantity'] : 1;
-        $price = $product->price();
-        if (! $variant = $product->variant( $variant_id ))
-        {
-            $variant = array();
-        }
         
-        $attribute_title = \Dsc\ArrayHelper::get( $variant, 'attribute_title' );
-        $attribute_titles = \Dsc\ArrayHelper::get( $variant, 'attribute_titles' );
-        $attributes = \Dsc\ArrayHelper::get( $variant, 'attributes' );
-        $sku = \Dsc\ArrayHelper::get( $variant, 'sku' );
-        $model_number = \Dsc\ArrayHelper::get( $variant, 'model_number' );
-        $upc = \Dsc\ArrayHelper::get( $variant, 'upc' );
-        $weight = \Dsc\ArrayHelper::get( $variant, 'weight' );
-        $image = \Dsc\ArrayHelper::get( $variant, 'image' );
-        
-        $wishlistitem = new \Shop\Models\Prefabs\CartItem( array(
-            'variant_id' => (string) $variant_id,
-            'options' => (array) $options,
-            'product' => $product->cast(),
-            'product_id' => $product->id,
-            'quantity' => $quantity,
-            'price' => $price,
-            // Set these based on the variant_id and the product
-            'attribute_title' => ! empty( $attribute_title ) ? $attribute_title : null,
-            'attribute_titles' => ! empty( $attribute_titles ) ? $attribute_titles : array(),
-            'attributes' => ! empty( $attributes ) ? $attributes : array(),
-            'sku' => ! empty( $sku ) ? $sku : $product->{'tracking.sku'},
-            'model_number' => ! empty( $model_number ) ? $model_number : $product->{'tracking.model_number'},
-            'upc' => ! empty( $upc ) ? $upc : $product->{'tracking.upc'},
-            'weight' => ! empty( $weight ) ? $weight : $product->{'shipping.weight'},
-            'image' => ! empty( $image ) ? $image : $product->{'featured_image.slug'} 
-        ) );
+        $wishlistitem = \Shop\Models\Carts::createItem($variant_id, $product,  $post);
         
         // Is the item already in the wishlist?
         // if so, inc quantity
