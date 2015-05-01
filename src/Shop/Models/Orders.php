@@ -1174,5 +1174,23 @@ class Orders extends \Dsc\Mongo\Collections\Taggable
     	return $packer->pack();
     }
     
+    public function toString($glue=' | ', $prefix='', $suffix='')
+    {
+        $strings = array();
+    
+        $strings[] = $this->customer_name;
+        $strings[] = (new \DateTime($this->{'metadata.created.local'}))->format('F j, Y g:i a');
+        $strings[] = \Shop\Models\Currency::format( $this->{'grand_total'} );
+        $strings[] = 'Status: ' . $this->status;
+        $strings[] = $this->number;
+        
+        return $prefix . implode($glue, $strings) . $suffix;
+    }
+    
+    public function __toString()
+    {
+        return $this->toString();
+    }
+    
     
 }
