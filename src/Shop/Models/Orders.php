@@ -60,6 +60,9 @@ class Orders extends \Dsc\Mongo\Collections\Taggable
     // internal log of changes to the order
     public $history = array();
     
+    // they are what you think they are
+    public $admin_notes = array();
+    
     public $source = array(); // id, title, description of the source of this order, all free text
     
     // TODO Add support for recurring charges products
@@ -1190,6 +1193,24 @@ class Orders extends \Dsc\Mongo\Collections\Taggable
     public function __toString()
     {
         return $this->toString();
+    }
+    
+    public function addNote( $message, $save=false )
+    {
+        $identity = \Dsc\System::instance()->get('auth')->getIdentity();
+        
+        array_unshift( $this->admin_notes, array(
+            'created' => \Dsc\Mongo\Metastamp::getDate('now'),
+            'created_by' => $identity->fullName(),
+            'created_by_id' => $identity->id,
+            'message' => $message 
+        ) );
+        
+        if ($save) {
+            return $this->save();
+        }
+        
+        return $this;
     }
     
     
