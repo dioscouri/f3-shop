@@ -3,6 +3,10 @@ namespace Shop\Models;
 
 class Customers extends \Users\Models\Users
 {
+	public $admin_notes = array();
+
+	public $on_hold = false;
+
 	/**
 	 * Gets the customer's highest-ordered Users\Group
 	 * to be used for determining pricing and primary group status
@@ -31,6 +35,13 @@ class Customers extends \Users\Models\Users
 		}
 
 		return $group;
+	}
+
+	protected function beforeSave()
+	{
+		$this->on_hold = boolval($this->on_hold);
+
+		return parent::beforeSave();
 	}
 
 	/**
@@ -565,4 +576,30 @@ class Customers extends \Users\Models\Users
 
 		return $result;
 	}
+
+	/*
+	 * Set hold status
+	 */
+	public function setHoldStatus($status = true) {
+		return $this->set('on_hold', $status)->save();
+	}
+
+	public function addNote( $message, $save=false )
+	{
+		$identity = \Dsc\System::instance()->get('auth')->getIdentity();
+
+		array_unshift( $this->admin_notes, array(
+		'created' => \Dsc\Mongo\Metastamp::getDate('now'),
+		'created_by' => $identity->fullName(),
+		'created_by_id' => $identity->id,
+		'message' => $message
+		) );
+
+		if ($save) {
+			return $this->save();
+		}
+
+		return $this;
+	}
+
 }
