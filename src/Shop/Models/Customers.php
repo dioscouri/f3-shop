@@ -17,7 +17,7 @@ class Customers extends \Users\Models\Users
 			if (!$filter_on_hold) {
 				$where = array();
 				$where[] = array('on_hold' => array('$exists' => false));
-				$where[] = array('on_hold' => false);
+				$where[] = array('on_hold' => array('$ne' => true));
 
 				$this->setCondition('$or', $where);
 			} else {
