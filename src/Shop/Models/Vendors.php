@@ -1,7 +1,7 @@
 <?php 
 namespace Shop\Models;
 
-class Vendors extends \Dsc\Mongo\Collections\Describable
+class Vendors extends \Dsc\Mongo\Collection
 {	
 	
     protected $__collection_name = 'shop.vendors';
