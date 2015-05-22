@@ -7,6 +7,27 @@ class Customers extends \Users\Models\Users
 
 	public $on_hold = false;
 
+	protected function fetchConditions()
+	{
+		parent::fetchConditions();
+
+		$filter_on_hold = $this->getState( 'filter.on_hold' );
+		if (is_bool($filter_on_hold))
+		{
+			if (!$filter_on_hold) {
+				$where = array();
+				$where[] = array('on_hold' => array('$exists' => false));
+				$where[] = array('on_hold' => array('$ne' => true));
+
+				$this->setCondition('$or', $where);
+			} else {
+				$this->setCondition('on_hold', true);
+			}
+		}
+
+		return $this;
+	}
+
 	/**
 	 * Gets the customer's highest-ordered Users\Group
 	 * to be used for determining pricing and primary group status
