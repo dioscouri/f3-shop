@@ -1250,6 +1250,13 @@ class Orders extends \Dsc\Mongo\Collections\Taggable
 		// do these calculations again after getting taxes
 		$total = $total - $discount_total - $giftcard_total - $credit_total;
 
+		if (!empty($this->misc_items)) {
+			foreach ($this->misc_items as $item)
+			{
+				$total += (float)$item['value'];
+			}
+		}
+
 		if ($total < 0) {
 			$total = 0;
 		}
