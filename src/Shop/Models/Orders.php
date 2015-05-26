@@ -3,6 +3,7 @@ namespace Shop\Models;
 
 class Orders extends \Dsc\Mongo\Collections\Taggable
 {
+	public $parent_order_id = null;
 	public $number = null;
 	public $status = \Shop\Constants\OrderStatus::open;
 	public $status_history = array();
@@ -1222,22 +1223,16 @@ class Orders extends \Dsc\Mongo\Collections\Taggable
 	 */
 	public function updatePrice()
 	{
-		//		$total = $this->subtotal();
-		$total = 0;
-		if (!empty($this->items)) {
-			foreach ($this->items as $item)
-			{
-				$total += $item['quantity'] * $item['price'];
-			}
-		}
+		//	$total = $this->subtotal();
+		$total = $this->updateSubTotal();
 
-		//		$credit_total = $this->creditTotal();
+		//	$credit_total = $this->creditTotal();
 		$credit_total = $this->credit_total;
-		//		$this->discountTotal();
+		//	$this->discountTotal();
 		$discount_total = $this->discount_total;
-		//		$this->giftCardTotal();
+		//	$this->giftCardTotal();
 		$giftcard_total = $this->giftcard_total;
-		//		$this->taxTotal();
+		//	$this->taxTotal();
 		$tax_total = $this->tax_total;
 
 		// get taxes
@@ -1262,5 +1257,18 @@ class Orders extends \Dsc\Mongo\Collections\Taggable
 		}
 
 		return (float) $total;
+	}
+
+	public function updateSubTotal()
+	{
+		$sub_total = 0;
+		if (!empty($this->items)) {
+			foreach ($this->items as $item)
+			{
+				$sub_total += $item['quantity'] * $item['price'];
+			}
+		}
+
+		return $sub_total;
 	}
 }
