@@ -41,11 +41,8 @@ class Collections extends \Dsc\Mongo\Collections\Describable
     		}	
     	} else {
     		
-    		if($collection_id instanceof \Shop\Models\Collections) {
-    			
+    		if($collection_id instanceof \Shop\Models\Collections) {  			
     			$collection = $collection_id;
-    			
-    		
     			
     		} else {
     			return array();
@@ -53,10 +50,7 @@ class Collections extends \Dsc\Mongo\Collections\Describable
     		
     	}
     	
-        
-        
-        
-        
+
         
         $conditions = array();
         
@@ -74,6 +68,9 @@ class Collections extends \Dsc\Mongo\Collections\Describable
                 )
             ));
         }
+        
+        if(empty($collection->products)) {
+        
         
         // a range search
         if (!empty($collection->price_minimum) && !empty($collection->price_maximum))
@@ -221,34 +218,34 @@ class Collections extends \Dsc\Mongo\Collections\Describable
             }
         }
         
-        if (!empty($collection->inventory_status))
-        {
-            switch ($collection->inventory_status)
-            {
-                case "low_stock":
-                    $conditions = array_merge($conditions, array(
-                        'inventory_count' => array(
-                            '$lte' => 20
-                        )
-                    ));
-                    break;
-                case "no_stock":
-                    $conditions = array_merge($conditions, array(
-                        'inventory_count' => array(
-                            '$lte' => 0
-                        )
-                    ));
-                    break;
-                case "in_stock":
-                    $conditions = array_merge($conditions, array(
-                        'inventory_count' => array(
-                            '$gte' => 1
-                        )
-                    ));
-                    break;
-            }
+	        if (!empty($collection->inventory_status))
+	        {
+	            switch ($collection->inventory_status)
+	            {
+	                case "low_stock":
+	                    $conditions = array_merge($conditions, array(
+	                        'inventory_count' => array(
+	                            '$lte' => 20
+	                        )
+	                    ));
+	                    break;
+	                case "no_stock":
+	                    $conditions = array_merge($conditions, array(
+	                        'inventory_count' => array(
+	                            '$lte' => 0
+	                        )
+	                    ));
+	                    break;
+	                case "in_stock":
+	                    $conditions = array_merge($conditions, array(
+	                        'inventory_count' => array(
+	                            '$gte' => 1
+	                        )
+	                    ));
+	                    break;
+	            }
+	        }
         }
-        
         // allow event listeners to modify the query conditions
         $eventName = "ShopModelsCollections_getProductQueryConditions";
         $event = \Dsc\System::instance()->trigger($eventName, array(
