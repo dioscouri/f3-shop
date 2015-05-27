@@ -30,13 +30,33 @@ class Collections extends \Dsc\Mongo\Collections\Describable
      */
     public static function getProductQueryConditions($collection_id)
     {
-        $collection = (new static())->load(array(
-            '_id' => new \MongoId((string) $collection_id)
-        ));
-        if (empty($collection->id))
-        {
-            return array();
-        }
+    	
+    	if(\MongoId::isValid($collection_id)) {
+    		$collection = (new static())->load(array(
+    				'_id' => new \MongoId((string) $collection_id)
+    		));
+    		if (empty($collection->id))
+    		{
+    			return array();
+    		}	
+    	} else {
+    		
+    		if($collection_id instanceof \Shop\Models\Collections) {
+    			
+    			$collection = $collection_id;
+    			
+    		
+    			
+    		} else {
+    			return array();
+    		}
+    		
+    	}
+    	
+        
+        
+        
+        
         
         $conditions = array();
         
@@ -58,6 +78,7 @@ class Collections extends \Dsc\Mongo\Collections\Describable
         // a range search
         if (!empty($collection->price_minimum) && !empty($collection->price_maximum))
         {
+        	
             $and = array(
                 array(
                     'prices.default' => array(
@@ -99,8 +120,9 @@ class Collections extends \Dsc\Mongo\Collections\Describable
             ));
         }
         
-        if (!empty($collection->categories))
+        if (!empty(array_filter($collection->categories)))
         {
+        	
             $cats = array();
             foreach ($collection->categories as $cat)
             {
