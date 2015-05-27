@@ -3,6 +3,7 @@ namespace Shop\Models;
 
 class Vendors extends \Dsc\Mongo\Collection
 {
+	public $notes = array();
 
 	protected $__collection_name = 'shop.vendors';
 	protected $__type = 'shop.vendors';
@@ -78,5 +79,23 @@ class Vendors extends \Dsc\Mongo\Collection
 		}
 
 		return $result;
+	}
+
+	public function addNote( $message, $save=false )
+	{
+		$identity = \Dsc\System::instance()->get('auth')->getIdentity();
+
+		array_unshift( $this->notes, array(
+		'created' => \Dsc\Mongo\Metastamp::getDate('now'),
+		'created_by' => $identity->fullName(),
+		'created_by_id' => $identity->id,
+		'message' => $message
+		) );
+
+		if ($save) {
+			return $this->save();
+		}
+
+		return $this;
 	}
 }
