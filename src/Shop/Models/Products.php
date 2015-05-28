@@ -1233,6 +1233,22 @@ class Products extends \Dsc\Mongo\Collections\Content
         return $images;
     }
     
+    public function addImage($slug)
+    {
+    	
+    	if (!empty($this->featured_image['slug'])) {
+    		$this->set('featured_image.slug', $slug );
+    	} else {
+    		$this->images[] = ['image' =>$slug ];
+    	}
+  	 	$this->save(); 
+   
+   		return $this;
+    }
+    
+    
+    
+    
     public function image($tags=array())
     {
         $image = null;

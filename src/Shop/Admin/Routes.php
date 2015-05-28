@@ -22,6 +22,15 @@ class Routes extends \Dsc\Routes\Group
             'action' => 'fulfill'
         ));
         
+        $this->add('/assets/massupload', 'GET', array(
+        		'controller' => 'Assets',
+        		'action' => 'index'
+        ));
+        $this->add('/asset/massupload/handleTraditional', 'POST', array(
+        		'controller' => 'Assets',
+        		'action' => 'handleTraditional'
+        ));
+        
         $this->add('/order/close/@id', 'GET', array(
             'controller' => 'Order',
             'action' => 'close'

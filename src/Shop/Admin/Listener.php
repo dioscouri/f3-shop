@@ -47,6 +47,11 @@ class Listener extends \Prefab
                     'route' => './admin/assets?filter[type]=shop.assets',
                     'icon' => 'fa fa-list'
                 ),
+            	array(
+            		'title' => 'Mass Image Upload',
+            		'route' => './admin/shop/assets/massupload',
+            		'icon' => 'fa fa-list'
+            	),
                 array(
                     'title' => 'Reports',
                     'route' => './admin/shop/reports',

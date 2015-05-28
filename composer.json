@@ -18,8 +18,7 @@
         "dioscouri/f3-lib": "dev-master",
         "dioscouri/f3-admin": "dev-master",
         "dioscouri/f3-minify": "dev-master",
-        "dioscouri/f3-search": "dev-master",
-        "dioscouri/f3-affiliates": "dev-master"
+        "dioscouri/f3-search": "dev-master"
     },
     "autoload": {
         "psr-0": {
