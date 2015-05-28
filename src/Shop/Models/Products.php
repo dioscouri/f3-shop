@@ -1242,15 +1242,18 @@ class Products extends \Dsc\Mongo\Collections\Content
         return $images;
     }
     
-    public function addImage($slug)
+    public function addImage($slug, $order = null)
     {
     	
-    	if (!empty($this->featured_image['slug'])) {
+    	if ($order  == 1) {
     		$this->set('featured_image.slug', $slug );
     	} else {
-    		$this->images[] = ['image' =>$slug ];
+    		$images = $this->images;
+    		$images[$order] = ['image' => $slug ];
+    		ksort($images);
+    		$this->images = $images;
     	}
-  	 	$this->save(); 
+  	 	$this->store(); 
    
    		return $this;
     }

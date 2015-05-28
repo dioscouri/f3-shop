@@ -58,6 +58,8 @@ class Assets extends \Admin\Controllers\BaseAuth
         
         $model_number = $parts[0];
         
+        $order = (int) explode('.',$parts[1])[0];
+        
        	//LOOK FOR A PRODUCT
         $product = (new \Shop\Models\Products)->setCondition('tracking.model_number',$model_number)->getItem();
         if(empty($product->id))  {
@@ -148,7 +150,7 @@ class Assets extends \Admin\Controllers\BaseAuth
             } 
             
             
-            $product->addImage($model->{'slug'});
+            $product->addImage($model->{'slug'},$order);
             
             
             
