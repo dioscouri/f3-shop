@@ -11,12 +11,7 @@
     
         <div class="form-group">
             <label>Category Image</label>
-            <?php if(is_array($flash->old('category_image.slug'))) : ?>
-         <?php echo \Assets\Admin\Controllers\Assets::instance()->fetchElementImage('category_image','', array('field'=>'category_image[slug]') ); ?>
-            
-            <?php else :?>
             <?php echo \Assets\Admin\Controllers\Assets::instance()->fetchElementImage('category_image', $flash->old('category_image.slug'), array('field'=>'category_image[slug]') ); ?>
-       <?php endif;?>
         </div>
         <!-- /.form-group -->
         
@@ -25,6 +20,8 @@
     
 </div>
 <!-- /.row -->
+
+<hr/>
 <div class="row">
     <div class="col-md-2">
         
@@ -38,9 +35,6 @@
     
         <div class="form-group">
             <label>Primary Image</label>
-             <?php if(is_array($flash->old('featured_image.slug'))) :
-            $flash->set('featured_image.slug', '');
-            endif;?>
             <?php echo \Assets\Admin\Controllers\Assets::instance()->fetchElementImage('featured_image', $flash->old('featured_image.slug'), array('field'=>'featured_image[slug]') ); ?>
         </div>
         <!-- /.form-group -->
@@ -52,8 +46,6 @@
 <!-- /.row -->
 
 <hr/>
-
-
 
 <div class="row">
     <div class="col-md-2">
@@ -79,3 +71,4 @@
 <!-- /.row -->
 
 <hr/>
+

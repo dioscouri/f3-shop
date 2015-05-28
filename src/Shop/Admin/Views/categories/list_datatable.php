@@ -65,7 +65,8 @@
 			<th>Title</th>
 			<th>Path</th>
 			<th class="col-md-1">Products</th>
-			<th class="col-md-1"></th>
+			<th class="col-md-1">Cat Specs</th>
+			
 			<th class="col-md-1"></th>
 		</tr>
 	</thead>
@@ -74,30 +75,36 @@
     <?php if (!empty($paginated->items)) { ?>
             
         <?php foreach($paginated->items as $item) { ?>
-        <tr>
+        
+        
+        <tr  class="<?php // if( (string) $item->{'metadata.last_modified_by.name'} == (string)'Justin Smith') { echo 'success';}?>">
             <td class="checkbox-column">
                 <input type="checkbox" class="icheck-input" name="ids[]" value="<?php echo $item->_id; ?>">
             </td>
             
-            <td class="">
+            <td class="" colspan="2">
+    
+    		<?php if(!empty($item->{'category_image.slug'})) : ?>        
+            <img style="float:left; max-width:100px;" class="thumbnail" src="/asset/thumb/<?php echo $item->{'category_image.slug'}; ?>">
+            <?php endif;?>
                 <a href="./admin/shop/category/edit/<?php echo $item->_id; ?>">
                 <?php echo @str_repeat( "&ndash;", substr_count( @$item->path, "/" ) - 1 ) . " " . $item->title; ?>
-                </a>
-            </td>
-            
-            <td class="">
-                <a href="./admin/shop/category/edit/<?php echo $item->_id; ?>">
+                </a> <br>
+                 <a style="color:#333; font-size: 9px;" href="./admin/shop/category/edit/<?php echo $item->_id; ?>">
                 <?php echo $item->path; ?>
                 </a>
             </td>
             
+          
+            
             <td class="">
                 <?php echo \Shop\Models\Categories::productCount( $item->_id ); ?>
             </td>
-            
-            <td>
-                <a href="./shop/category<?php echo $item->get('path'); ?>" target="_blank">Live Preview</a>
+            <td class="">
+                <?php echo count($item->product_specs); ?>
             </td>
+            
+         
                             
             <td class="text-center col-lg-2 col-md-3">
 	        	<?php if( $allow_preview ) { ?>
@@ -114,6 +121,7 @@
                 <a class="btn btn-xs btn-danger" data-bootbox="confirm" href="./admin/shop/category/delete/<?php echo $item->_id; ?>">
                     <i class="fa fa-times"></i>
                 </a>
+                <a class="btn btn-xs btn-info" href="./shop/category<?php echo $item->get('path'); ?>" target="_blank"> <i class="fa fa-globe"></i></a>
             </td>
         </tr>
     <?php } ?>

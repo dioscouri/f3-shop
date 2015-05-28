@@ -1,3 +1,5 @@
+<link href="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet"/>
+<script src="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
 <script src="./ckeditor/ckeditor.js"></script>
 <script>
 jQuery(document).ready(function(){
@@ -34,8 +36,13 @@ jQuery(document).ready(function(){
                             <li>
                                 <a onclick="document.getElementById('primarySubmit').value='save_close'; document.getElementById('detail-form').submit();" href="javascript:void(0);">Save & Close</a>
                             </li>
+                             <li>
+                        <a onclick="document.getElementById('primarySubmit').value='save_next'; document.getElementById('detail-form').submit();" href="javascript:void(0);">Save & Next</a>
+                    </li>
                         </ul>
                     </div>
+                     &nbsp;
+                    <a class="btn btn-primary" onclick="document.getElementById('primarySubmit').value='save_next'; document.getElementById('detail-form').submit();" href="javascript:void(0);">Save & Next</a>
                         
                     &nbsp;
                     <a class="btn btn-default" href="./admin/shop/categories">Cancel</a>
@@ -54,9 +61,24 @@ jQuery(document).ready(function(){
                 <li class="active">
                     <a href="#tab-basics" data-toggle="tab"> Basics </a>
                 </li>
+                
+                 <?php if($item->getDepth() == 1 ): ?>
+                <li>
+                    <a href="#tab-top-level-display" data-toggle="tab">Top Level Display</a>
+                </li>  
+                <?php else : ?>   
                 <li>
                     <a href="#tab-display" data-toggle="tab">Display</a>
-                </li>                
+                </li> 
+                <?php endif; ?> 
+                
+                <li>
+                    <a href="#tab-product_specs" data-toggle="tab">Product Specs</a>
+                </li>  
+                
+                 
+               
+                       
                 <?php if (!empty($this->event)) { foreach ((array) $this->event->getArgument('tabs') as $key => $title ) { ?>
                 <li>
                     <a href="#tab-<?php echo $key; ?>" data-toggle="tab"> <?php echo $title; ?> </a>
@@ -91,14 +113,17 @@ jQuery(document).ready(function(){
                             </div>
                             <!-- /.form-group -->
                             
+                           
                             <div class="form-group">
-                                <?php echo $this->renderLayout('Shop/Admin/Views::categories/list_parents.php'); ?>
+                                <?php  echo $this->renderLayout('Shop/Admin/Views::categories/list_parents.php'); ?>
                             </div>
                             <!-- /.form-group -->
                             
                             <div class="form-group">
                                 <label>Display</label>
+                               
                                 <select name="display[view]" class="form-control">
+                                
                                     <option value="" <?php if (!$flash->old('display.view')) { echo "selected"; } ?>>-- Default --</option>
                                     <?php $variants = \Dsc\System::instance()->get('theme')->variants( 'Shop/Site/Views::category/index.php' ); ?>
                                     <?php foreach ($variants as $group=>$views) { ?>
@@ -112,6 +137,20 @@ jQuery(document).ready(function(){
                             </div>
                             <!-- /.form-group -->
                                 
+                                 <div class="form-group">
+                                <label>Disable YMM Support</label>
+        <p class="help-block">Disable YMM filtering on this Category</p>
+ <div class="checkbox">
+  <label>
+    <input type="checkbox" name="disableymm" value="1" <?php if($flash->old('disableymm') == 1) {echo 'checked="checked"';} ?>>
+   If checked Ymm Filtering will be disabled
+  </label>
+</div>                            </div>
+                           
+    
+  
+
+<hr/>
                         </div>
                         <!-- /.col-md-10 -->
                         
@@ -120,21 +159,28 @@ jQuery(document).ready(function(){
                     
                     <hr />
                     
-                    <?php echo $this->renderLayout('Shop/Admin/Views::categories/fields_seo.php'); ?>
+                    <?php  echo $this->renderLayout('Shop/Admin/Views::categories/fields_seo.php'); ?>
                     
                     <hr/>
                     
-                    <?php echo $this->renderLayout('Shop/Admin/Views::categories/fields_basics_products.php'); ?>
+                    <?php  echo $this->renderLayout('Shop/Admin/Views::categories/fields_basics_products.php'); ?>
                 
                 </div>
                 <!-- /.tab-pane -->
-                
-                <div class="tab-pane" id="tab-display">
-                
-                    <?php echo $this->renderLayout('Shop/Admin/Views::categories/fields_display.php'); ?>
-                
+                   <?php if($item->getDepth() == 1 ): ?>
+                <div class="tab-pane" id="tab-top-level-display">
+                    <?php  echo $this->renderLayout('Shop/Admin/Views::categories/fields_top_level_display.php'); ?>
                 </div>
-                <!-- /.tab-pane -->                
+                  <?php else : ?>  
+                <div class="tab-pane" id="tab-display">
+                    <?php  echo $this->renderLayout('Shop/Admin/Views::categories/fields_display.php'); ?>
+                </div>
+             	 <?php endif; ?>   
+                
+                 <div class="tab-pane" id="tab-product_specs"  class="col-lg-12">
+                 <?php  echo $this->renderLayout('Shop/Admin/Views::categories/product_specs.php'); ?>
+                </div>
+                <!-- /.tab-pane -->                  
                 
                 <?php if (!empty($this->event)) { foreach ((array) $this->event->getArgument('content') as $key => $content ) { ?>
                 <div class="tab-pane" id="tab-<?php echo $key; ?>">
@@ -148,5 +194,4 @@ jQuery(document).ready(function(){
         
     </div>
 </form>
-
 </div>

@@ -210,6 +210,15 @@ class Products extends \Dsc\Mongo\Collections\Content
             $this->setCondition('$or', $where);
         }
         
+        $filter_spec = $this->getState('filter.spec');
+        if ($filter_spec)
+        {
+        	foreach($filter_spec as $key => $value) {
+        		$this->setCondition('specs.'.$key, $value );
+        	}
+        }
+        
+        
         $filter_status_stock = $this->getState('filter.inventory_status');
         if (strlen($filter_status_stock))
         {
