@@ -25,6 +25,41 @@ class Customers extends \Users\Models\Users
 			}
 		}
 
+		$filter_name = $this->getState('filter.name');
+		if (strlen($filter_name))
+		{
+			// add $and conditions to the query stack
+			if (!$and = $this->getCondition('$and'))
+			{
+				$and = array();
+			}
+
+			$details = explode(' ', $filter_name);
+
+			if (count($details) > 1) {
+				$and[] = array(
+						'$and' => array(
+								array(
+										'first_name' => $details[0]
+								),
+								array(
+										'last_name' => $details[1]
+								)
+						)
+				);
+			} else {
+				$and[] = array(
+						'$or' => array(
+								array(
+										'username' => strtolower($details[0])
+								)
+						)
+				);
+			}
+
+			$this->setCondition('$and', $and);
+		}
+
 		return $this;
 	}
 
