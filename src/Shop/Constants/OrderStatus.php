@@ -6,6 +6,7 @@ class OrderStatus
     const open = "open";
     const closed = "closed";
     const cancelled = "cancelled";
+	const unfinished = "unfinished";
     
     public static function fetch() 
     {

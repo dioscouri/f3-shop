@@ -316,53 +316,56 @@ class Orders extends \Dsc\Mongo\Collections\Taggable
 	 */
 	public static function fromCart( \Shop\Models\Carts $cart )
 	{
+		$order = new static();
+		return $order->mergeWithCart( $cart );
+	}
+
+
+	public function mergeWithCart( \Shop\Models\Carts $cart){
 		$cart_array = $cart->cast();
 		unset($cart_array['_id']);
 		unset($cart_array['type']);
 		unset($cart_array['metadata']);
 		unset($cart_array['name']);
 
-		$order = new static($cart_array);
+		$this->bind( $cart_array);
+		$this->number = $this->createNumber();
 
-		$order->number = $order->createNumber();
+		$this->grand_total = $cart->total();
+		$this->sub_total = $cart->subtotal();
+		$this->tax_total = $cart->taxTotal();
+		$this->shipping_total = $cart->shippingTotal();
+		$this->discount_total = $cart->discountTotal();
+		$this->shipping_discount_total = $cart->shippingDiscountTotal();
+		$this->credit_total = $cart->creditTotal();
+		$this->giftcard_total = $cart->giftCardTotal();
 
-		$order->grand_total = $cart->total();
-		$order->sub_total = $cart->subtotal();
-		$order->tax_total = $cart->taxTotal();
-		$order->shipping_total = $cart->shippingTotal();
-		$order->discount_total = $cart->discountTotal();
-		$order->shipping_discount_total = $cart->shippingDiscountTotal();
-		$order->credit_total = $cart->creditTotal();
-		$order->giftcard_total = $cart->giftCardTotal();
-
-		$user = (new \Users\Models\Users)->load(array('_id'=>$order->user_id));
-		$order->customer = $user->cast();
-		$order->customer_name = $user->fullName();
+		$user = (new \Users\Models\Users)->load(array('_id'=>$this->user_id));
+		$this->customer = $user->cast();
+		$this->customer_name = $user->fullName();
 
 		$real_email = $user->email(true);
-		if ($real_email != $order->user_email) {
-			$order->user_email = $real_email;
+		if ($real_email != $this->user_email) {
+			$this->user_email = $real_email;
 		}
 
 		// $order->is_guest = $cart->isGuest(); ? or is that from the checkout object?
 		// $order->ip_address = $cart->ipAddress(); ? or is that from the checkout object?
-		$order->comments = $cart->{'checkout.order_comments'};
+		$this->comments = $cart->{'checkout.order_comments'};
 
 		// Shipping fields
-		$order->shipping_required = $cart->shippingRequired();
+		$this->shipping_required = $cart->shippingRequired();
 		if ($shipping_method = $cart->shippingMethod())
 		{
-			$order->shipping_method = $shipping_method->cast();
+			$this->shipping_method = $shipping_method->cast();
 		}
-		$order->shipping_address = $cart->{'checkout.shipping_address'};
+		$this->shipping_address = $cart->{'checkout.shipping_address'};
 
 		// TODO Payment/Billing fields
-		$order->billing_address = $cart->{'checkout.billing_address'};
-		$order->payment_required = $cart->paymentRequired();
-
-		// TODO Credits
-
-		return $order;
+		$this->billing_address = $cart->{'checkout.billing_address'};
+		$this->payment_required = $cart->paymentRequired();
+		
+		return $this;
 	}
 
 	/**
