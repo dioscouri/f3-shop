@@ -43,6 +43,9 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
     protected $__type = 'shop.coupons';
     protected $__chars = array('c','n','u','m','r','s','e','w','h','b','k','f','z','v','x','p','j','t','q','y','g','a','d');
     
+    
+    
+    
     protected function fetchConditions()
     {
         parent::fetchConditions();
@@ -1159,4 +1162,9 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
     
         return (float) $total;
     }    
+    
+    public function createIndexes($indexes = null) {
+    	$this->publishableCreateIndexes();
+    	parent::createIndexes();
+    }
 }

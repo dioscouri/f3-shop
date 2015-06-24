@@ -93,6 +93,14 @@ class Products extends \Dsc\Mongo\Collections\Content
         ),
     );
     
+    public static $__indexes = array(
+    		['title' => -1],
+    		['slug' => -1],
+    		['category.slug'],
+    		['manufacturer.slug']
+    		
+    );
+    
     protected $__enable_trash = true;
     /**
      * Method to auto-populate the model state.

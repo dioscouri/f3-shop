@@ -16,6 +16,11 @@ class Wishlists extends \Dsc\Mongo\Collections\Nodes
             'metadata.created.time' => - 1 
         ) 
     );
+    
+    public static $__indexes = array(
+    		['metadata.created.time' => -1],
+    		['user_id' => -1]
+    );
 
     protected function fetchConditions()
     {

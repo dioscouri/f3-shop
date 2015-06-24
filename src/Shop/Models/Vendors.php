@@ -13,7 +13,11 @@ class Vendors extends \Dsc\Mongo\Collection
 		),
 	);
 
-
+	public static $__indexes = array(
+			['name' => -1],
+			['slug' => -1]
+	);
+	
 	protected function fetchConditions()
 	{
 		parent::fetchConditions();
