@@ -106,3 +106,7 @@
 <hr />
 
 <?php echo $this->renderLayout('Shop/Admin/Views::collections/fields_basics_categories.php'); ?>
+
+<hr />
+
+<?php echo $this->renderLayout('Shop/Admin/Views::collections/fields_basics_manufacturers.php'); ?>

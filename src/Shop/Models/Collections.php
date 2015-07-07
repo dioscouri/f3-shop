@@ -132,6 +132,24 @@ class Collections extends \Dsc\Mongo\Collections\Describable
                 )
             ));
         }
+
+        if (!empty($collection->manufacturers) && !empty(array_filter($collection->manufacturers)))
+        {
+            
+            $mans = array();
+            foreach ($collection->manufacturers as $man)
+            {
+                if(!empty($man)){
+                    $mans[] = new \MongoId((string) $man);                    
+                }
+            }
+            
+            $conditions = array_merge($conditions, array(
+                'manufacturer.id' => array(
+                    '$in' => $mans
+                )
+            ));
+        }
         
         if (!empty($collection->tags))
         {

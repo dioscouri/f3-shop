@@ -27,7 +27,7 @@
             <a class="remove-image btn btn-xs btn-danger pull-right" onclick="ShopRemoveRelatedImage(this);" href="javascript:void(0);">
                 <i class="fa fa-times"></i>
             </a>                        
-            <label>Image</label>
+            <div class="btn btn-warning"><span class="fa fa-list-ul"></span></div> <label>Image</label>
             <div class="form-group clearfix">
                 <div class="col-md-12">
                     <?php echo \Assets\Admin\Controllers\Assets::instance()->fetchElementImage('image_' . $key, $flash->old('images.'.$key.'.image'), array('field'=>'images['.$key.'][image]') ); ?>

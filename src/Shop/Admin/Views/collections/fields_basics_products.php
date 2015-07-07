@@ -1,3 +1,6 @@
+<?php
+    $products = array_filter( (array)$flash->old('products'));
+?>
 <div class="row">
     <div class="col-md-2">
         
@@ -24,7 +27,6 @@
     
 </div>
 <!-- /.row -->
-
 <script>
 jQuery(document).ready(function() {
     
@@ -45,9 +47,10 @@ jQuery(document).ready(function() {
                 return {results: data.results};
             }
         }
-        <?php if ($flash->old('products')) { ?>
+        <?php 
+        if (count($products)) { ?>
         , initSelection : function (element, callback) {
-        	var data = <?php echo json_encode( \Shop\Models\Products::forSelection( array('_id'=>array('$in'=>array_map( function($input){ return new \MongoId($input); }, $flash->old('products') ) ) ) ) ); ?>;
+        	var data = <?php echo json_encode( \Shop\Models\Products::forSelection( array('_id'=>array('$in'=>array_map( function($input){ return new \MongoId($input); }, $products ) ) ) ) ); ?>;
             callback(data);            
         }
         <?php } ?>
