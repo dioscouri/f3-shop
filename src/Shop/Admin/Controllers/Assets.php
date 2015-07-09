@@ -17,25 +17,10 @@ class Assets extends \Admin\Controllers\BaseAuth
  	
     }
 
-    public function handleTraditional()
+public function handleTraditional()
     {
     	
-    	
-    	
-    	
-    	
-    	
-    	
-    	
-    	
-    	
-    	
-    	
-    	
-    	
-    	
-    	
-    	
+   	
         $app = \Base::instance();
         $files_path = $app->get('TEMP') . "files";
         $chunks_path = $app->get('TEMP') . "chunks";
@@ -146,7 +131,7 @@ class Assets extends \Admin\Controllers\BaseAuth
                 $result["asset_id"] = (string) $storedfile;
                 $result["slug"] = $model->{'slug'};
                 
-                \Dsc\Queue::task('\Assets\Models\Storage\CloudFiles::gridfstoCDN', array($result['asset_id']));
+                \Dsc\Queue::task('\Assets\Models\Storage\CloudFiles::gridfstoCDN', array($result['asset_id'], '/product_images/'.$model_number.'/') );
             } 
             
             
