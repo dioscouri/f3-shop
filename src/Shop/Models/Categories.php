@@ -5,6 +5,12 @@ class Categories extends \Dsc\Mongo\Collections\Categories
 {
     protected $__type = 'shop.categories';
 
+    public $__select2_fields = array(
+        'id' => '_id',
+        'text' => 'path',
+        'slug' => 'slug'
+    );
+
     protected function fetchConditions()
     {
         parent::fetchConditions();

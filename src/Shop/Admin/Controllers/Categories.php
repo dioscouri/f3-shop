@@ -117,5 +117,20 @@ class Categories extends \Admin\Controllers\BaseAuth
         $response->results = $results;
     
         return $this->outputJson($response);
-    }    
+    }
+ 
+    public function forSelection()
+    {
+        $term = $this->input->get('q', null, 'default');
+
+        $key =  new \MongoRegex('/'. $term .'/i');
+        $results = \Shop\Models\Categories::forSelection(array('title'=>$key));
+    
+        $response = new \stdClass;
+        $response->more = false;
+        $response->term = $term;
+        $response->results = $results;
+    
+        return $this->outputJson($response);
+    }
 }

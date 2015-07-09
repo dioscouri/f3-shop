@@ -83,6 +83,10 @@ class Routes extends \Dsc\Routes\Group
             'controller' => 'Categories',
             'action' => 'getCheckboxes'
         ));
+        $this->add('/categories/forSelection [ajax]', 'GET|POST', array(
+                'controller' => 'Categories',
+                'action' => 'forSelection'
+        ));
         
         $this->add('/categories/google-merchant/forSelection [ajax]', 'GET|POST', array(
             'controller' => 'Categories',
