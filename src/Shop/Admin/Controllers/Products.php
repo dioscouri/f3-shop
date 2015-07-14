@@ -32,9 +32,10 @@ class Products extends \Admin\Controllers\BaseAuth
     
     public function forSelection()
     {
+        $field = $this->input->get('value', '_id', 'default');
         $term = $this->input->get('q', null, 'default');
         $key =  new \MongoRegex('/'. $term .'/i');
-        $results = \Shop\Models\Products::forSelection(array('title'=>$key));
+        $results = \Shop\Models\Products::forSelection(array('title'=>$key), $value);
     
         $response = new \stdClass;
         $response->more = false;
