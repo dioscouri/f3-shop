@@ -3,7 +3,7 @@ namespace Shop\Site;
 
 class Listener extends \Dsc\Singleton 
 {
-	public function afterUserLogin( $event ) 
+	/*public function afterUserLogin( $event ) 
 	{
 	    $user = $event->getArgument('identity');
 	    
@@ -49,6 +49,6 @@ class Listener extends \Dsc\Singleton
 	            }
 	        }	        
 	    }	    
-	}
+	}*/
 	
 }

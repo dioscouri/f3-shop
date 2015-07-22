@@ -849,19 +849,17 @@ class Orders extends \Dsc\Mongo\Collections\Taggable
 		{
 			$recipients = array( $this->user_email );
 		}
-
-		\Base::instance()->set('order', $this);
-		\Base::instance()->set('settings', \Shop\Models\Settings::fetch());
-
-		$html = \Dsc\System::instance()->get( 'theme' )->renderView( 'Shop/Views::emails_html/new_order.php' );
-		$text = \Dsc\System::instance()->get( 'theme' )->renderView( 'Shop/Views::emails_text/new_order.php' );
-
-		$order_number = $this->number;
-		$subject = 'Order Confirmation #' . $order_number;
-
-		foreach ($recipients as $recipient)
-		{
-			$this->__sendEmailNewOrder = \Dsc\System::instance()->get('mailer')->send($recipient, $subject, array($html, $text) );
+		
+		
+		$mailer = \Dsc\System::instance()->get('mailer');
+		if ($content = $mailer->getEmailContents('shop.new_order', array(
+				'order' => $this,
+				'settings' => \Shop\Models\Settings::fetch()
+		))) {
+			foreach ($recipients as $email)
+			{
+			$this->__sendEmailNewOrder = $mailer->send( $email, $content['subject'], $content['body'], $content['fromEmail'], $content['fromName'] );
+			}
 		}
 
 		return $this;

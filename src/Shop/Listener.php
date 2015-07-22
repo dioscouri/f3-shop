@@ -9,12 +9,24 @@ class Listener extends \Prefab
     public function onSystemRegisterEmails($event)
     {
     	if (class_exists('\Mailer\Factory'))
-    	{
+    	{	
+    		\Mailer\Models\Events::register('shop.new_order',
+    				[
+    				'title' => 'Thank you for your order',
+    				'copy' => 'Sent to customer when new order is placed',
+    				'app' => 'Shop',
+    				],
+    				[
+    				'event_subject' => 'Thank you for your order',
+    				'event_html' => file_get_contents(__DIR__.'/Emails/html/new_order.php'),
+    				'event_text' => file_get_contents(__DIR__.'/Emails/text/new_order.php')
+    				]
+    		);
           		
     		\Mailer\Models\Events::register('shop.new_order_notification',
     				[
     						'title' => 'New Order Created',
-    						'copy' => 'Sent when a new order is placed',
+    						'copy' => 'Sent to admins when a new order is placed',
     						'app' => 'Shop',
     				],
     				[
