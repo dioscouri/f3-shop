@@ -10,22 +10,7 @@ class Listener extends \Prefab
     {
     	if (class_exists('\Mailer\Factory'))
     	{
-    
-    		$model = (new \Mailer\Models\Events);
-    
-    		\Mailer\Models\Events::register('shop.new_order',
-    				[
-    						'title' => 'New Order Created',
-    						'copy' => 'Sent when a new order is placed',
-    						'app' => 'Shop',
-    				],
-    				[
-    						'event_subject' => 'Thank You For Your Order',
-    						'event_html' => file_get_contents(__DIR__.'/Emails/html/new_order.php'),
-    						'event_text' => file_get_contents(__DIR__.'/Emails/text/new_order.php')
-    				]
-    		);
-    		
+          		
     		\Mailer\Models\Events::register('shop.new_order_notification',
     				[
     						'title' => 'New Order Created',
