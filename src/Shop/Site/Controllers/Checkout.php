@@ -112,8 +112,8 @@ class Checkout extends \Dsc\Controller
                     'Grand Total' => (string) $order->grand_total,
                     'Credit Total' => (string) $order->credit_total,
                     'Products' => array(),
-                    'Coupons' => \Joomla\Utilities\ArrayHelper::getColumn( (array) $order->coupons, 'code' ),
-                    'Auto Coupons' => \Joomla\Utilities\ArrayHelper::getColumn( (array) $order->auto_coupons, 'code' ),
+                    'Coupons' => \DscArrayHelper::getColumn( (array) $order->coupons, 'code' ),
+                    'Auto Coupons' => \DscArrayHelper::getColumn( (array) $order->auto_coupons, 'code' ),
                 );
                 
                 $identity = $this->getIdentity();

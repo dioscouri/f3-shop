@@ -867,7 +867,7 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
      */
     public function userDiscountTotal($exclude_shipping=false)
     {
-        $discount = 0;
+        $totalDiscount = 0;
     
         foreach ($this->coupons as $coupon)
         {
@@ -875,10 +875,18 @@ class Carts extends \Dsc\Mongo\Collections\Nodes
             {
                 continue;            	
             }
-            $discount = $discount + $coupon['amount'];
+            $totalDiscount = $totalDiscount + $coupon['amount'];
         }
+        
+        if(!empty($this->discounts)) {
+        	foreach ($this->discounts as $discount)
+        	{
+        		$totalDiscount = $totalDiscount + $discount['amount'];
+        	}
+        }
+        
     
-        return (float) $discount;
+        return (float) $totalDiscount;
     }
     
     /**

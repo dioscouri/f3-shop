@@ -4,7 +4,7 @@ namespace Shop\Models;
 class Products extends \Dsc\Mongo\Collections\Content
 {
 	public $product_type = null;
-	
+
 	public $categories = array();
     public $featured_image = array();
     public $images = array();       // array of f3-asset slugs
@@ -748,10 +748,10 @@ class Products extends \Dsc\Mongo\Collections\Content
         $prev_product = (new static)->setState('filter.id', $this->id)->getItem();
         
         // get the attribute ids for the prev_product and $this, sorted
-        $prev_attributes = \Joomla\Utilities\ArrayHelper::getColumn($prev_product->attributes, 'id');
+        $prev_attributes = \DscArrayHelper::getColumn($prev_product->attributes, 'id');
         sort( $prev_attributes );
         
-        $this_attributes = \Joomla\Utilities\ArrayHelper::getColumn($this->attributes, 'id');
+        $this_attributes = \DscArrayHelper::getColumn($this->attributes, 'id');
         sort( $this_attributes );
 
         if ($prev_attributes != $this_attributes) 
@@ -1064,7 +1064,7 @@ class Products extends \Dsc\Mongo\Collections\Content
                     }
                 }
             }
-            $traits[] = \Joomla\Utilities\ArrayHelper::getColumn($attribute['options'], 'id');
+            $traits[] = \DscArrayHelper::getColumn($attribute['options'], 'id');
         }
 
         $combos = self::getCombinations( "", $traits, 0, $combos );

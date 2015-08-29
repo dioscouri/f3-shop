@@ -15,7 +15,7 @@
                                <select id="categories"  name="category_ids[]" multiple >
                                <?php if ($categories = \Shop\Models\Categories::find()) { ?>
 									
-								    <?php $current = \Joomla\Utilities\ArrayHelper::getColumn( (array) $flash->old('categories'), 'id' ); ?>
+								    <?php $current = \DscArrayHelper::getColumn( (array) $flash->old('categories'), 'id' ); ?>
 								    <?php foreach ($categories as $one) { ?>
 								    <option <?php if (in_array($one->_id, $current)) { echo "selected='selected'"; } ?> value="<?php echo $one->_id; ?>"><?php echo  $one->title;?></option>
 								    <?php } ?> 
