@@ -111,7 +111,7 @@ public function handleTraditional()
                     'md5' => md5_file( $files_path . "/" . $filename ),
                     'thumb' => $thumb,
                     'url' => null,
-           			"title" => \Joomla\String\Normalise::toSpaceSeparated( $model->inputfilter()->clean( $originalname ) ),
+           			"title" => \Dsc\String::toSpaceSeparated( $model->inputfilter()->clean( $originalname ) ),
                     "filename" => $originalname,
                 );
                                 

@@ -318,7 +318,7 @@ class Checkout extends \Dsc\Controller
         // Fire a beforeShopCheckout event that allows Listeners to hijack the checkout process
         // Payment processing & authorization could occur at this event, and the Listener would update the checkout object
             // Add the checkout model to the event
-        $event = new \Joomla\Event\Event( 'beforeShopCheckout' );
+        $event = new \Dsc\Event\Event( 'beforeShopCheckout' );
         $event->addArgument('checkout', $checkout);
         
         try {
@@ -412,7 +412,7 @@ class Checkout extends \Dsc\Controller
         
         // the order WAS accepted
         // Fire an afterShopCheckout event
-        $event_after = new \Joomla\Event\Event( 'afterShopCheckout' );
+        $event_after = new \Dsc\Event\Event( 'afterShopCheckout' );
         $event_after->addArgument('checkout', $checkout);
         
         try {
