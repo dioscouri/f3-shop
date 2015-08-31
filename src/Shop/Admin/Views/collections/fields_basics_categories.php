@@ -13,7 +13,7 @@
             <?php if ($categories = \Shop\Models\Categories::find()) { ?>
             <div class="max-height-200 list-group-item">
                 
-                <?php $current = \DscArrayHelper::getColumn( (array) $flash->old('categories'), 'id' ); ?>
+                <?php $current = \Dsc\ArrayHelper::getColumn( (array) $flash->old('categories'), 'id' ); ?>
                 <?php foreach ($categories as $one) { ?>
                 <div class="checkbox">
                     <label>

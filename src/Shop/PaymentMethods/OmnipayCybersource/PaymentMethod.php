@@ -461,7 +461,7 @@ class PaymentMethod extends \Shop\PaymentMethods\PaymentAbstract
     {
         if (is_object($data))
         {
-            $data = \DscArrayHelper::fromObject($data);
+            $data = \Dsc\ArrayHelper::fromObject($data);
         }
         
         if (!is_array($data))
@@ -585,7 +585,7 @@ class PaymentMethod extends \Shop\PaymentMethods\PaymentAbstract
     {
         if (is_object($data))
         {
-            $data = \DscArrayHelper::fromObject($data);
+            $data = \Dsc\ArrayHelper::fromObject($data);
         }
         
         if (!is_array($data))
@@ -709,7 +709,7 @@ class PaymentMethod extends \Shop\PaymentMethods\PaymentAbstract
     {
         if (is_object($data)) 
         {
-            $data = \DscArrayHelper::fromObject($data);
+            $data = \Dsc\ArrayHelper::fromObject($data);
         }
         
         if (!is_array($data)) 

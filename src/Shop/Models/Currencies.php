@@ -43,7 +43,7 @@ class Currencies extends \Dsc\Mongo\Collection
         $oer = new \Shop\Lib\OpenExchangeRates( $settings->{'currency.openexchangerates_api_id'} );
         if ($response = $oer->currencies())
         {
-            if ($currencies = \DscArrayHelper::fromObject($response))
+            if ($currencies = \Dsc\ArrayHelper::fromObject($response))
             {
                 foreach ($currencies as $code=>$title)
                 {

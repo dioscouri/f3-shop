@@ -1005,7 +1005,7 @@ class Coupons extends \Dsc\Mongo\Collections\Describable
     			}
     			$code = strtolower($prefix.$suffix);
     			
-    			$all_codes = \DscArrayHelper::getColumn( $codes, 'code' );
+    			$all_codes = \Dsc\ArrayHelper::getColumn( $codes, 'code' );
     			$notUnique = in_array( $code, $all_codes );
     		}
     		

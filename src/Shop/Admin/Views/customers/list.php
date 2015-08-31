@@ -181,7 +181,7 @@
                         </div>
                         <?php if ($item->groups) { ?>
                         <p class="">
-                            <span class='label label-default'><?php echo implode("</span> <span class='label label-default'>", \DscArrayHelper::getColumn( (array) $item->groups, 'title' ) ); ?></span>
+                            <span class='label label-default'><?php echo implode("</span> <span class='label label-default'>", \Dsc\ArrayHelper::getColumn( (array) $item->groups, 'title' ) ); ?></span>
                         </p>
                         <?php } ?>
 

@@ -748,10 +748,10 @@ class Products extends \Dsc\Mongo\Collections\Content
         $prev_product = (new static)->setState('filter.id', $this->id)->getItem();
         
         // get the attribute ids for the prev_product and $this, sorted
-        $prev_attributes = \DscArrayHelper::getColumn($prev_product->attributes, 'id');
+        $prev_attributes = \Dsc\ArrayHelper::getColumn($prev_product->attributes, 'id');
         sort( $prev_attributes );
         
-        $this_attributes = \DscArrayHelper::getColumn($this->attributes, 'id');
+        $this_attributes = \Dsc\ArrayHelper::getColumn($this->attributes, 'id');
         sort( $this_attributes );
 
         if ($prev_attributes != $this_attributes) 
@@ -1064,7 +1064,7 @@ class Products extends \Dsc\Mongo\Collections\Content
                     }
                 }
             }
-            $traits[] = \DscArrayHelper::getColumn($attribute['options'], 'id');
+            $traits[] = \Dsc\ArrayHelper::getColumn($attribute['options'], 'id');
         }
 
         $combos = self::getCombinations( "", $traits, 0, $combos );

@@ -1,7 +1,7 @@
 <?php if (!empty($categories)) { ?>
 <div class="max-height-200 list-group-item">
     
-    <?php $current = \DscArrayHelper::getColumn( (array) $flash->old('metadata.categories'), 'id' ); ?>
+    <?php $current = \Dsc\ArrayHelper::getColumn( (array) $flash->old('metadata.categories'), 'id' ); ?>
     <?php foreach ($categories as $one) { ?>
     <div class="checkbox">
         <label>

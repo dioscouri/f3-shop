@@ -143,7 +143,7 @@
                         <?php if ($item->{'categories'}) { ?>
                         <div class="row">
                             <div class="col-xs-12 col-sm-12 col-md-12">
-                                <label>Categories:</label> <?php echo implode(", ", \DscArrayHelper::getColumn( (array) $item->{'categories'}, 'title' ) ); ?>
+                                <label>Categories:</label> <?php echo implode(", ", \Dsc\ArrayHelper::getColumn( (array) $item->{'categories'}, 'title' ) ); ?>
                             </div>
                         </div>
                         <?php } ?>

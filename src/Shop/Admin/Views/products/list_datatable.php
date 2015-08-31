@@ -191,7 +191,7 @@
                                 <?php if ($item->{'categories'}) { ?>
                     			<p>			                        			
                     				<label>Categories:</label>
-									<span class='label label-warning'><?php echo implode("</span> <span class='label label-warning'>", \DscArrayHelper::getColumn( (array) $item->{'categories'}, 'title' ) ); ?></span>
+									<span class='label label-warning'><?php echo implode("</span> <span class='label label-warning'>", \Dsc\ArrayHelper::getColumn( (array) $item->{'categories'}, 'title' ) ); ?></span>
                     			</p>                                
                                 <?php } ?>
                                 
